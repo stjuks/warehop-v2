@@ -18,6 +18,15 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+svg {
+	stroke-width: 2;
+}
+
 body,
 #root {
     height: 100%;

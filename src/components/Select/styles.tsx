@@ -53,13 +53,23 @@ export const SelectContainer = styled.div<ISelectContainerProps>`
             background: ${theme.colors.white};
         }
 
+        .menu-select__option {
+            border-radius: 0.5rem;
+        }
+
         .menu-select__option--is-selected {
             background: ${theme.colors.primary};
             color: ${theme.colors.lightColor1};
         }
 
-        .menu-select__group {
-            padding-bottom: 1rem;
+        .menu-select__group, 
+        .menu-select__menu-list {
+            margin: 0;
+            padding-bottom: 0;
+        }
+
+        .menu-select__menu-list {
+            padding-bottom: 0.5rem;
         }
 
         .menu-select__indicators {

@@ -7,20 +7,14 @@ export interface IFooterItemProps {
     label?: string;
     isActive?: boolean;
     onClick?: Function;
-    href?: string;
+    to?: string;
 }
 
-function FooterItem({
-    icon,
-    label,
-    isActive,
-    onClick,
-    href
-}: IFooterItemProps) {
+function FooterItem({ icon, label, isActive, onClick, to }: IFooterItemProps) {
     return (
-        <FooterItemContainer href={href} isActive={isActive}>
+        <FooterItemContainer to={to}>
             <IconContainer>{icon}</IconContainer>
-            {label && <LabelContainer>{label}</LabelContainer>}
+            {label && <LabelContainer isActive={isActive}>{label}</LabelContainer>}
         </FooterItemContainer>
     );
 }

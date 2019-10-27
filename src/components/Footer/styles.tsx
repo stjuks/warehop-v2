@@ -1,6 +1,11 @@
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 interface IFooterItemContainerProps {
+    to: string;
+}
+
+interface ILabelContainerProps {
     isActive?: boolean;
 }
 
@@ -19,13 +24,11 @@ export const FooterContainer = styled.div`
     justify-content: space-around;
 `;
 
-export const FooterItemContainer = styled.a<IFooterItemContainerProps>`
+export const FooterItemContainer = styled(Link)<IFooterItemContainerProps>`
     text-decoration: none;
     text-align: center;
     font-family: 'Red Hat Display', sans-serif;
     font-weight: 500;
-
-    ${({ isActive }) => (isActive ? 'font-weight: 700;' : '')}
 
     ${({ theme }) => `
         color: ${theme.colors.text};
@@ -39,7 +42,10 @@ export const IconContainer = styled.div`
     justify-content: center;
 `;
 
-export const LabelContainer = styled.div`
-    margin-top: 0.25rem;
-    font-size: 0.75rem;
+export const LabelContainer = styled.div<ILabelContainerProps>`
+    ${({ isActive }) => `
+        margin-top: 0.25rem;
+        font-size: 0.75rem;
+        ${isActive && 'font-weight: 700;'}
+    `}
 `;

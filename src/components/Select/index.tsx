@@ -11,9 +11,10 @@ interface IOption {
 }
 
 interface ISelectProps {
-    className?: string;
+    className: "menu-select" | "form-select";
     defaultValue?: IOption;
     isSortable?: boolean;
+    isSearchable?: boolean;
 }
 
 interface ISelectWithGroupsProps extends ISelectProps {
@@ -69,7 +70,13 @@ const SortableDropdownIndicator = () => {
     );
 };
 
-function Select({ options, className, defaultValue, isSortable }: SelectProps) {
+function Select({
+    options,
+    className,
+    defaultValue,
+    isSortable,
+    isSearchable = true
+}: SelectProps) {
     return (
         <SelectContainer isSortable={isSortable}>
             <ReactSelect
@@ -80,6 +87,7 @@ function Select({ options, className, defaultValue, isSortable }: SelectProps) {
                         ? SortableDropdownIndicator
                         : CustomDropdownIndicator
                 }}
+                isSearchable={isSearchable}
                 classNamePrefix={className}
                 options={options}
                 defaultValue={defaultValue}

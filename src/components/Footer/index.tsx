@@ -8,16 +8,16 @@ import { FooterContainer } from './styles';
 
 function Footer() {
     const footerItems: IFooterItemProps[] = [
-        { label: 'Kaubad', icon: <FaBoxes />, isActive: true, href: 'index' },
-        { label: 'Ost', icon: <FaShoppingBasket /> },
-        { label: 'Müük', icon: <FaMoneyCheck /> },
-        { icon: <FiMenu /> }
+        { label: 'Kaubad', icon: <FaBoxes />, isActive: true, to: '/products' },
+        { label: 'Ost', icon: <FaShoppingBasket />, isActive: false, to: '/purchases' },
+        { label: 'Müük', icon: <FaMoneyCheck />, isActive: false, to: 'sales' },
+        { icon: <FiMenu />, isActive: false, to: '' }
     ];
 
     return (
         <FooterContainer>
-            {footerItems.map(item => (
-                <FooterItem {...item} />
+            {footerItems.map((item, i) => (
+                <FooterItem  {...item} key={i} />
             ))}
         </FooterContainer>
     );
