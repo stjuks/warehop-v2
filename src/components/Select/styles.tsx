@@ -1,6 +1,7 @@
 import styled from 'styled-components';
+import { InputContainer } from '../Input/styles';
 
-interface ISelectContainerProps {
+interface IMenuSelectContainerProps {
     isSortable?: boolean;
 }
 
@@ -8,10 +9,11 @@ interface ISortButtonContainer {
     sortDirection: Number;
 }
 
-export const SelectContainer = styled.div<ISelectContainerProps>`
+export const MenuSelectContainer = styled.div<IMenuSelectContainerProps>`
     ${({ theme }) => `
         display: flex;
 
+        .form-select-container,
         .menu-select-container {
             flex: 1;
         }
@@ -89,10 +91,8 @@ export const SelectContainer = styled.div<ISelectContainerProps>`
                 cursor: pointer;
 
                 :hover, :focus {
-                    background: ${theme.colors.lightGrey};
+                    background: ${theme.colors.midGrey};
                 }
-
-
             }
         }
 
@@ -137,7 +137,49 @@ export const SortButtonContainer = styled.button<ISortButtonContainer>`
                     : theme.colors.primary
             };
         }
+    `}
+`;
 
+export const FormSelectContainer = styled(InputContainer)`
+    ${({ theme }) => `
+        .form-select__control,
+        .form-select__indicator,
+        .form-select__value-container,
+        .form-select__value-container--has-value,
+        .form-select__single-value {
+            min-height: 0;
+            height: 2rem;
+            border: none;
+            padding: 0;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background: transparent;
+        }
 
+        .form-select__single-value {
+            display: flex;
+            align-items: center;
+            color: ${theme.colors.text};
+            font-weight: 500;
+        }
+
+        .form-select__control--is-focused {
+            outline: none;
+            border: none;
+            box-shadow: none;
+        }
+
+        .form-select-container {
+            flex: 1;
+            height: 2rem;
+        }
+
+        .form-select__indicators {
+            width: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: ${theme.colors.lightText};
+        }
     `}
 `;

@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import ReactSelect, { components } from 'react-select';
 import { FiChevronDown, FiArrowUp, FiArrowDown } from 'react-icons/fi';
-import { TiArrowDown, TiArrowUp } from 'react-icons/ti';
 
-import { SelectContainer, SortButtonContainer } from './styles';
+import {
+    FormSelectContainer,
+    MenuSelectContainer,
+    SortButtonContainer
+} from './styles';
 
 interface IOption {
     value: string | Object | Number | undefined;
@@ -11,7 +14,6 @@ interface IOption {
 }
 
 interface ISelectProps {
-    className: "menu-select" | "form-select";
     defaultValue?: IOption;
     isSortable?: boolean;
     isSearchable?: boolean;
@@ -70,17 +72,16 @@ const SortableDropdownIndicator = () => {
     );
 };
 
-function Select({
+export function MenuSelect({
     options,
-    className,
     defaultValue,
-    isSortable,
+    isSortable = false,
     isSearchable = true
 }: SelectProps) {
     return (
-        <SelectContainer isSortable={isSortable}>
+        <MenuSelectContainer isSortable={isSortable}>
             <ReactSelect
-                className={`${className}-container`}
+                className="menu-select-container"
                 components={{
                     IndicatorSeparator: () => null,
                     DropdownIndicator: isSortable
@@ -88,12 +89,54 @@ function Select({
                         : CustomDropdownIndicator
                 }}
                 isSearchable={isSearchable}
-                classNamePrefix={className}
+                classNamePrefix="menu-select"
                 options={options}
                 defaultValue={defaultValue}
             />
-        </SelectContainer>
+        </MenuSelectContainer>
     );
 }
 
-export default Select;
+interface IFormSelectProps {
+    options: IOption[];
+    isSearchable?: boolean;
+    defaultValue?: IOption;
+    label: string;
+    name: string;
+    error?: string;
+}
+
+export function FormSelect({
+    options,
+    isSearchable = false,
+    defaultValue,
+    label,
+    name,
+    error
+}: IFormSelectProps) {
+    const DropdownIndicator = () => <FiChevronDown />;
+
+    return (
+        <FormSelectContainer value={defaultValue}>
+            <label className="label" htmlFor={name}>
+                {label}
+            </label>
+            <div className="input-wrapper">
+                <ReactSelect
+                    className="form-select-container"
+                    isSearchable={isSearchable}
+                    classNamePrefix="form-select"
+                    options={options}
+                    components={{
+                        IndicatorSeparator: () => null,
+                        DropdownIndicator: DropdownIndicator
+                    }}
+                    name={name}
+                    defaultValue={defaultValue}
+                />
+                <div className="input-underline" />
+            </div>
+            <div className="error-message">{error}</div>
+        </FormSelectContainer>
+    );
+}

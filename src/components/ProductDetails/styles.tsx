@@ -29,13 +29,21 @@ export const TitleContainer = styled.div`
     `}
 `;
 
+export const DetailLabel = styled.div`
+    ${({ theme }) => `
+        ${detailLabel(theme)};
+        margin: 1rem 0;
+    `}
+`;
+
 export const DetailCardContainer = styled.div`
     ${({ theme }) => `
         padding: 1rem;
         margin-top: 1rem;
         background: ${theme.colors.white};
         box-shadow: ${theme.lightShadow};
-        border-radius: 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid ${theme.colors.lightColor1};
 
         .row {
             display: flex;
@@ -57,6 +65,24 @@ export const DetailCardContainer = styled.div`
         .detail-value {
             color: ${theme.colors.text};
             font-weight: 500;
+        }
+    `}
+`;
+
+export const WarehouseRowContainer = styled.div`
+    ${({ theme }) => `
+        display: flex;
+        font-weight: 500;
+        padding: 0.5rem 0;
+        color: ${theme.colors.text};
+
+        :last-child {
+            border-top: 1px solid ${theme.colors.lightColor1};
+            font-weight: 700;
+        }
+
+        .warehouse-name {
+            margin-right: auto;
         }
     `}
 `;

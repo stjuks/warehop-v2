@@ -1,19 +1,25 @@
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { Router, Switch, Route } from 'react-router-dom';
 
+import history from '../../common/history';
 import { AppContainer } from './styles';
 import theme from '../../util/theme';
 import routes from '../../common/routes';
 import Products from '../Products';
 import ProductDetails from '../ProductDetails';
+import NewProduct from '../NewProduct';
 
 function App() {
     return (
         <ThemeProvider theme={theme}>
-            <BrowserRouter>
+            <Router history={history}>
                 <AppContainer>
                     <Switch>
+                        <Route
+                            path={routes.newProduct}
+                            component={NewProduct}
+                        />
                         <Route
                             path={routes.productDetails}
                             component={ProductDetails}
@@ -21,7 +27,7 @@ function App() {
                         <Route path={routes.products} component={Products} />
                     </Switch>
                 </AppContainer>
-            </BrowserRouter>
+            </Router>
         </ThemeProvider>
     );
 }

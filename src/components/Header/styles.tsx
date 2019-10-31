@@ -27,21 +27,28 @@ export const TitleContainer = styled.div`
     display: flex;
 
     .back-button {
-        width: 1.5rem;
+        min-width: 1.5rem;
         display: flex;
         align-items: center;
+
+        .icon-container {
+            display: flex;
+            align-items: center;
+            width: 1.5rem;
+        }
     }
 `;
 
 export const IconsContainer = styled.div`
     display: flex;
+    z-index: 3;
 
     svg {
         stroke-width: 1.5;
     }
-`
+`;
 
-export const IconContainer = styled.div<IIconContainerProps>`
+export const IconContainer = styled.button<IIconContainerProps>`
     ${({ size, highlighted, theme }) => `
         cursor: pointer;
         display: flex;

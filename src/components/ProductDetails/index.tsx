@@ -1,9 +1,19 @@
 import React, { useEffect, useState } from 'react';
+import { FiMoreHorizontal, FiEdit, FiTrash2 } from 'react-icons/fi';
 
-import { TitleContainer, DetailCardContainer } from './styles';
+import {
+    TitleContainer,
+    DetailCardContainer,
+    DetailLabel,
+    WarehouseRowContainer
+} from './styles';
+import theme from '../../util/theme';
+
 import Header from '../Header';
+import { MenuPopover } from '../Popover';
 import { IProductDetailed } from '../../common/types';
 import { stall } from '../../util/helpers';
+import routes from '../../common/routes';
 import sampleData from '../../common/sampleData';
 import { ContentContainer } from '../App/styles';
 import Footer from '../Footer';
@@ -27,9 +37,65 @@ function ProductDetails(props) {
         fetchDetails();
     }, [product]);
 
+    const headerIcons = [
+        {
+            icon: (
+                <MenuPopover
+                    options={[
+                        {
+                            label: (
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center'
+                                    }}
+                                >
+                                    <FiEdit
+                                        style={{ margin: '0 0.25rem 0.1rem 0' }}
+                                    />
+                                    Muuda
+                                </div>
+                            ),
+                            onClick: () => {
+                                console.log('Muuda');
+                            }
+                        },
+                        {
+                            label: (
+                                <div
+                                    style={{
+                                        color: theme.colors.danger,
+                                        display: 'flex',
+                                        alignItems: 'center'
+                                    }}
+                                >
+                                    <FiTrash2
+                                        style={{ margin: '0 0.25rem 0.1rem 0' }}
+                                    />
+                                    Kustuta
+                                </div>
+                            ),
+                            onClick: () => {
+                                console.log('Kustuta');
+                            }
+                        }
+                    ]}
+                    position="bottom"
+                    closeContentOnClick
+                >
+                    <FiMoreHorizontal />
+                </MenuPopover>
+            )
+        }
+    ];
+
     return (
         <>
-            <Header title="Kauba detailid" />
+            <Header
+                title="Kauba detailid"
+                icons={headerIcons}
+                backTo={routes.products}
+            />
             <ContentContainer padded>
                 {product && (
                     <>
@@ -64,7 +130,8 @@ function ProductDetails(props) {
                                 <div className="detail">
                                     <div className="detail-label">Ühik</div>
                                     <div className="detail-value">
-                                        {product.unit.name}
+                                        {product.unit.name} ({product.unit.abbr}
+                                        )
                                     </div>
                                 </div>
                             </div>
@@ -76,6 +143,30 @@ function ProductDetails(props) {
                                     </div>
                                 </div>
                             </div>
+                        </DetailCardContainer>
+                        <DetailLabel>Laoseis</DetailLabel>
+                        <DetailCardContainer>
+                            {product.warehouses.map(wh => (
+                                <WarehouseRowContainer>
+                                    <span className="warehouse-name">
+                                        {wh.name}
+                                    </span>
+                                    <span className="warehouse-quantity">
+                                        {wh.quantity}
+                                        {product.unit.abbr}
+                                    </span>
+                                </WarehouseRowContainer>
+                            ))}
+                            <WarehouseRowContainer>
+                                <span className="warehouse-name">KOKKU</span>
+                                <span className="warehouse-quantity">
+                                    {product.warehouses.reduce(
+                                        (a, wh) => a + wh.quantity,
+                                        0
+                                    )}
+                                    {product.unit.abbr}
+                                </span>
+                            </WarehouseRowContainer>
                         </DetailCardContainer>
                     </>
                 )}

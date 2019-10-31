@@ -11,7 +11,8 @@ const theme: ITheme = {
         primary: '#0668F9',
         lightColor1: '#F1F3F4',
         text: '#062047',
-        lightText: '#869192'
+        lightText: '#869192',
+        midGrey: '#F0F0F0'
     }
 };
 

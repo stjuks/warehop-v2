@@ -5,9 +5,12 @@ interface IContentContainerProps {
 }
 
 export const AppContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+    ${({ theme }) => `
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        color: ${theme.colors.text};
+    `}
 `;
 
 export const ContentContainer = styled.div<IContentContainerProps>`

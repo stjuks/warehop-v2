@@ -1,14 +1,16 @@
 import React, { useContext, useEffect } from 'react';
 import { FiChevronRight, FiSearch, FiPlusCircle } from 'react-icons/fi';
+import { observer } from 'mobx-react-lite';
 
 import { ContentContainer } from '../App/styles';
 import { SortingContainer } from './styles';
-import { observer } from 'mobx-react-lite';
+import history from '../../common/history';
+import routes from '../../common/routes';
 
 import Header from '../Header';
 import ProductItem from '../ProductItem';
 import Footer from '../Footer';
-import Select from '../Select';
+import { MenuSelect } from '../Select';
 import { ProductStoreContext } from '../../stores/ProductStore';
 
 const Products = observer(() => {
@@ -41,7 +43,7 @@ const Products = observer(() => {
         { icon: <FiSearch />, onClick: () => null },
         {
             icon: <FiPlusCircle />,
-            onClick: () => productStore.addProduct(),
+            onClick: () => history.push(routes.newProduct),
             size: '2rem',
             highlighted: true
         }
@@ -55,15 +57,13 @@ const Products = observer(() => {
         <>
             <Header title="Kaubad" icons={headerIcons} />
             <SortingContainer>
-                <Select
-                    className="menu-select"
+                <MenuSelect
                     options={warehouseOptions}
                     defaultValue={warehouseOptions[0].options[0]}
                 />
-                <Select
+                <MenuSelect
                     isSearchable={false}
                     isSortable={true}
-                    className="menu-select"
                     options={sortOptions}
                     defaultValue={sortOptions[0].options[0]}
                 />
