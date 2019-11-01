@@ -34,7 +34,7 @@ function Popover({
             containerStyle={{ overflow: 'visible' }}
             onClickOutside={() => setIsOpen(false)}
         >
-            <button
+            <div
                 style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -43,7 +43,7 @@ function Popover({
                 onClick={() => setIsOpen(!isOpen)}
             >
                 {children}
-            </button>
+            </div>
         </ReactTinyPopover>
     );
 }
@@ -62,8 +62,8 @@ export function MenuPopover({
 }: IMenuPopoverProps) {
     const Content = (
         <ContentContainer>
-            {options.map(option => (
-                <MenuItemContainer onClick={option.onClick}>
+            {options.map((option, i) => (
+                <MenuItemContainer onClick={option.onClick} key={i}>
                     {option.label}
                 </MenuItemContainer>
             ))}

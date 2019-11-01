@@ -3,6 +3,7 @@ import { ContentContainer } from '../App/styles';
 
 interface IInputContainerProps {
     value?: any;
+    isFocused?: boolean;
 }
 
 export const InputContainer = styled.div<IInputContainerProps>`
@@ -54,6 +55,7 @@ export const InputContainer = styled.div<IInputContainerProps>`
             padding: 0;
             font-weight: 500;
             color: ${theme.colors.text};
+            min-width: 0;
 
             :focus { 
                 outline: none; 

@@ -89,6 +89,12 @@ function ProductDetails(props) {
         }
     ];
 
+    const MenuPopoverActions = () => {
+        const [isOpen, setOpen] = useState(false);
+
+        
+    }
+
     return (
         <>
             <Header
@@ -146,8 +152,8 @@ function ProductDetails(props) {
                         </DetailCardContainer>
                         <DetailLabel>Laoseis</DetailLabel>
                         <DetailCardContainer>
-                            {product.warehouses.map(wh => (
-                                <WarehouseRowContainer>
+                            {product.warehouses.map((wh, i) => (
+                                <WarehouseRowContainer key={i}>
                                     <span className="warehouse-name">
                                         {wh.name}
                                     </span>

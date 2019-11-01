@@ -9,6 +9,11 @@ interface ISortButtonContainer {
     sortDirection: Number;
 }
 
+interface IFormSelectContainerProps {
+    isFocused?: boolean;
+    value?: any;
+}
+
 export const MenuSelectContainer = styled.div<IMenuSelectContainerProps>`
     ${({ theme }) => `
         display: flex;
@@ -71,7 +76,7 @@ export const MenuSelectContainer = styled.div<IMenuSelectContainerProps>`
         }
 
         .menu-select__menu-list {
-            padding-bottom: 0.5rem;
+            padding: 0 0.25rem 0.5rem 0.25rem;
         }
 
         .menu-select__indicators {
@@ -140,8 +145,10 @@ export const SortButtonContainer = styled.button<ISortButtonContainer>`
     `}
 `;
 
-export const FormSelectContainer = styled(InputContainer)`
-    ${({ theme }) => `
+export const FormSelectContainer = styled.div<IFormSelectContainerProps>`
+    ${({ theme, isFocused, value }) => `
+        flex: 1;
+
         .form-select__control,
         .form-select__indicator,
         .form-select__value-container,
@@ -174,12 +181,67 @@ export const FormSelectContainer = styled(InputContainer)`
             height: 2rem;
         }
 
+        .form-select__placeholder {
+            margin: 0;
+        }
+
         .form-select__indicators {
-            width: 1.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
             color: ${theme.colors.lightText};
+
+            svg { color: ${theme.colors.lightText}; }
+
+            .indicator-icon {
+                width: 1.5rem;
+            }
+        }
+
+        .form-select__menu {
+            font-weight: 500;
+            margin: 0.25rem 0;
+            border-radius: 0.5rem;
+            border: 1px solid ${theme.colors.lightColor1};
+            box-shadow: ${theme.lightShadow};
+        }
+
+        .form-select__menu-list {
+            padding: 0.25rem;
+        }
+
+        .form-select__option--is-selected {
+            color: ${theme.colors.white};
+            background: ${theme.colors.primary};
+        }
+
+        .form-select__option {
+            border-radius: 0.5rem;
+        }
+
+        ${(isFocused || value) &&
+            `
+            && .input-underline:after {
+                transform: scaleX(1);
+            }
+        `}
+    `}
+`;
+
+export const AddButtonContainer = styled.button`
+    ${({ theme }) => `
+        background: ${theme.colors.white};
+        border: 1px dashed ${theme.colors.primary};
+        color: ${theme.colors.primary};
+        border-radius: 0.5rem;
+        width: 100%;
+        padding: 0.5rem;
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+
+        :hover,
+        :focus {
+            background: ${theme.colors.lightColor1};
         }
     `}
 `;

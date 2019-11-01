@@ -9,7 +9,7 @@ interface IInputProps {
     onChange(event: ChangeEvent<Element>): void;
     label: string;
     error?: string;
-    icon?: ReactElement;
+    icon?: any;
     setFieldValue?: Function;
     type?: 'password' | 'number' | 'text' | 'email';
 }
@@ -49,17 +49,6 @@ function Input({
                 )}
                 {icon && <div className="input-icon">{icon}</div>}
             </div>
-            <div className="error-message">{error}</div>
-        </InputContainer>
-    );
-}
-
-export function Select({ label, name, value, error, onChange }) {
-    return (
-        <InputContainer value={value}>
-            <label className="label" htmlFor={name}>
-                {label}
-            </label>
             <div className="error-message">{error}</div>
         </InputContainer>
     );
