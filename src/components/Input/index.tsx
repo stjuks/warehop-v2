@@ -34,7 +34,7 @@ function Input({
                     type={type}
                     className="input-field"
                     name={name}
-                    value={value}
+                    value={value || ''}
                     onChange={onChange}
                     autoComplete="off"
                 />

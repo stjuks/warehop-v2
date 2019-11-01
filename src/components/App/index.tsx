@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Router, Switch, Route } from 'react-router-dom';
 
@@ -11,6 +11,18 @@ import ProductDetails from '../ProductDetails';
 import NewProduct from '../NewProduct';
 
 function App() {
+    const clearSavedForms = () => {
+        Object.keys(localStorage).forEach(key => {
+            if (key.includes('form')) localStorage.removeItem(key);
+        });
+    };
+
+    useEffect(() => {
+        window.addEventListener('beforeunload', e => {
+            clearSavedForms();
+        })
+    });
+
     return (
         <ThemeProvider theme={theme}>
             <Router history={history}>

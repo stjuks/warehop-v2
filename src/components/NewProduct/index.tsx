@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Formik } from 'formik';
-import { Persist } from 'formik-persist';
 import * as yup from 'yup';
 
 import routes from '../../common/routes';
@@ -11,6 +10,7 @@ import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
 import Input from '../Input';
 import Button from '../Button';
+import Persist from '../Persist';
 import { FormSelect } from '../Select';
 
 const NewProduct = observer(() => {
@@ -59,7 +59,8 @@ const NewProduct = observer(() => {
                         errors,
                         handleSubmit,
                         handleChange,
-                        setFieldValue
+                        setFieldValue,
+                        setValues
                     }) => (
                         <form onSubmit={handleSubmit} id="new-product-form">
                             <Input
@@ -98,6 +99,7 @@ const NewProduct = observer(() => {
                                 name="unit"
                                 isSearchable={true}
                                 options={units}
+                                defaultValue={units[0]}
                                 withAddOption={{
                                     title: '+ Lisa ühik',
                                     onClick: () => alert('Lisa ühik')
@@ -133,6 +135,7 @@ const NewProduct = observer(() => {
                                 onChange={handleChange}
                                 error={errors.description}
                             />
+                            <Persist name="new-product-form" setValues={setValues} />
                         </form>
                     )}
                 </Formik>

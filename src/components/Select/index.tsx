@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Field, FieldProps } from 'formik';
 import ReactSelect, { components } from 'react-select';
 import { FiChevronDown, FiArrowUp, FiArrowDown, FiX } from 'react-icons/fi';
@@ -136,12 +136,10 @@ export function FormSelect({
             <FiChevronDown className="indicator-icon dropdown-indicator" />
         );
 
-        const emptyOption = { label: null, value: null };
-
         const handleClear = e => {
             e.preventDefault();
             e.stopPropagation();
-            form.setFieldValue(field.name, emptyOption);
+            form.setFieldValue(field.name, null);
         };
 
         const ClearIndicator = () => (
@@ -157,7 +155,7 @@ export function FormSelect({
         const AddOptionButton = props => {
             const { data, innerRef, innerProps } = props;
             return withAddOption && data.addButton ? (
-                <div ref={innerRef} {...innerProps}>
+                <div>
                     <AddButtonContainer
                         type="button"
                         onClick={withAddOption.onClick}
@@ -182,7 +180,7 @@ export function FormSelect({
         return (
             <FormSelectContainer isFocused={isFocused} value={value}>
                 <ReactSelect
-                    value={options.find(opt => opt.value == field.value)}
+                    value={field.value}
                     className="form-select-container"
                     isSearchable={isSearchable}
                     classNamePrefix="form-select"
@@ -194,7 +192,7 @@ export function FormSelect({
                     onBlur={() => setFocused(false)}
                     placeholder={placeholder}
                     onChange={(option: any) =>
-                        form.setFieldValue(field.name, option.value)
+                        form.setFieldValue(field.name, option)
                     }
                     components={{
                         IndicatorSeparator: () => null,
@@ -203,7 +201,7 @@ export function FormSelect({
                         Option: AddOptionButton
                     }}
                     name={name}
-                    defaultValue={isRequired ? options[0] : defaultValue}
+                    defaultValue={defaultValue}
                 />
                 <div className="input-underline" />
             </FormSelectContainer>
