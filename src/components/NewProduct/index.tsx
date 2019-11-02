@@ -44,15 +44,15 @@ const NewProduct = observer(() => {
     const partners = sampleData.partners;
     const units = sampleData.units;
 
-    const warehouseOptions = mapSelectOptions({ labelAttr: 'name' }, warehouseStore.warehouses);
+    /* const warehouseOptions = mapSelectOptions({ labelAttr: 'name' }, warehouseStore.warehouses);
     const unitOptions = mapSelectOptions({ labelAttr: 'name' }, units);
-    const partnerOptions = mapSelectOptions({ labelAttr: 'name' }, partners);
+    const partnerOptions = mapSelectOptions({ labelAttr: 'name' }, partners); */
 
     const initialValues: INewProductFormValues = {
         code: '',
         name: '',
         partner: null,
-        unit: unitOptions[0],
+        unit: units[0],
         purchasePrice: '',
         retailPrice: '',
         description: '',
@@ -65,6 +65,15 @@ const NewProduct = observer(() => {
         purchasePrice: yup.number(),
         retailPrice: yup.number(),
         description: yup.string()
+        /* warehouses: yup.array().of(
+            yup
+                .object({
+                    id: yup.number().required(),
+                    name: yup.string().required('Sisesta lao nimi.'),
+                    quantity: yup.number().required('Sisesta kogus.')
+                })
+                .required('Sisesta ladu') 
+        )*/
     });
 
     return (
@@ -102,7 +111,8 @@ const NewProduct = observer(() => {
                                 value={values.partner}
                                 name="partner"
                                 isSearchable={true}
-                                options={partnerOptions}
+                                labelAttribute="name"
+                                options={partners}
                                 withAddOption={{
                                     title: '+ Lisa partner',
                                     onClick: () => alert('Lisa partner')
@@ -115,8 +125,8 @@ const NewProduct = observer(() => {
                                 value={values.unit}
                                 name="unit"
                                 isSearchable={true}
-                                options={unitOptions}
-                                defaultValue={unitOptions[0]}
+                                labelAttribute="name"
+                                options={units}
                                 withAddOption={{
                                     title: '+ Lisa ühik',
                                     onClick: () => alert('Lisa ühik')
@@ -166,8 +176,9 @@ const NewProduct = observer(() => {
                                                           placeholder="Vali ladu"
                                                           value={values.warehouses[i]}
                                                           name={`warehouses[${i}]`}
+                                                          labelAttribute="name"
                                                           isSearchable={true}
-                                                          options={warehouseOptions}
+                                                          options={warehouseStore.warehouses}
                                                           withAddOption={{
                                                               title: '+ Uus ladu',
                                                               onClick: () => alert('Uus ladu')
@@ -179,7 +190,6 @@ const NewProduct = observer(() => {
                                                           setFieldValue={setFieldValue}
                                                           value={values.warehouses[i].quantity}
                                                           onChange={handleChange}
-                                                          error={errors.retailPrice}
                                                       />
                                                       <button type="button" onClick={() => arrayHelpers.remove(i)}>
                                                           <FiTrash2 />
@@ -187,15 +197,7 @@ const NewProduct = observer(() => {
                                                   </FormRowContainer>
                                               ))
                                             : null}
-                                        <AddWarehouseButton
-                                            type="button"
-                                            onClick={() =>
-                                                arrayHelpers.push({
-                                                    name: '',
-                                                    quantity: ''
-                                                })
-                                            }
-                                        >
+                                        <AddWarehouseButton type="button" onClick={() => arrayHelpers.push({})}>
                                             + Lisa ladu
                                         </AddWarehouseButton>
                                     </>

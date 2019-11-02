@@ -126,20 +126,12 @@ export const SortButtonContainer = styled.button<ISortButtonContainer>`
         }
 
         svg:first-child {
-            color: ${
-                sortDirection > 0
-                    ? theme.colors.primary
-                    : theme.colors.lightText
-            };
+            color: ${sortDirection > 0 ? theme.colors.primary : theme.colors.lightText};
             margin-right: -0.125rem;
         }
 
         svg:last-child {
-            color: ${
-                sortDirection > 0
-                    ? theme.colors.lightText
-                    : theme.colors.primary
-            };
+            color: ${sortDirection > 0 ? theme.colors.lightText : theme.colors.primary};
         }
     `}
 `;

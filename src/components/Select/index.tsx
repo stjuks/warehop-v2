@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Field, FieldProps } from 'formik';
 import ReactSelect, { components } from 'react-select';
 import { FiChevronDown, FiArrowUp, FiArrowDown, FiX } from 'react-icons/fi';
+import objectMapper from 'object-mapper';
 
 import { FormSelectContainer, MenuSelectContainer, SortButtonContainer, AddButtonContainer } from './styles';
 
@@ -91,12 +92,13 @@ export function MenuSelect({ options, defaultValue, isSortable = false, isSearch
 }
 
 interface IFormSelectProps {
-    options: IOption[];
+    options: any[];
     label?: string | null;
     name: string;
     isSearchable?: boolean;
     isRequired?: boolean;
-    defaultValue?: IOption;
+    defaultValue?: any;
+    labelAttribute: string;
     withAddOption?: {
         title: string;
         onClick: () => void;
@@ -114,6 +116,7 @@ export function FormSelect({
     label,
     name,
     error,
+    labelAttribute,
     value,
     withAddOption,
     placeholder = 'Vali...'
@@ -124,7 +127,7 @@ export function FormSelect({
         const DropdownIndicator = () => <FiChevronDown className="indicator-icon dropdown-indicator" />;
 
         const handleClear = e => {
-            e.preventDefault();
+            if (e.cancelable) e.preventDefault();
             e.stopPropagation();
             form.setFieldValue(field.name, null);
         };
@@ -148,20 +151,18 @@ export function FormSelect({
             );
         };
 
-        useEffect(() => {
-            if (withAddOption) {
-                options = Object.assign([], [{ addButton: true }, ...options]);
-            }
-        }, []);
+        const modifyOptions = () => {
+            return [{ addButton: true }, ...mapSelectOptions(labelAttribute, options)];
+        };
 
         return (
-            <FormSelectContainer isFocused={isFocused} value={value}>
+            <FormSelectContainer isFocused={isFocused} value={mapSelectOption(labelAttribute, value)}>
                 <ReactSelect
-                    value={options.find(opt => opt.value === field.value)}
+                    value={mapSelectOption(labelAttribute, field.value)}
                     className="form-select-container"
                     isSearchable={isSearchable}
                     classNamePrefix="form-select"
-                    options={options}
+                    options={modifyOptions()}
                     isClearable={!isRequired}
                     openMenuOnFocus={true}
                     tabSelectsValue={false}
@@ -176,7 +177,7 @@ export function FormSelect({
                         Option: AddOptionButton
                     }}
                     name={name}
-                    defaultValue={defaultValue}
+                    defaultValue={mapSelectOption(labelAttribute, defaultValue)}
                 />
                 <div className="input-underline" />
             </FormSelectContainer>
