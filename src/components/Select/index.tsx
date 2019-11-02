@@ -3,16 +3,12 @@ import { Field, FieldProps } from 'formik';
 import ReactSelect, { components } from 'react-select';
 import { FiChevronDown, FiArrowUp, FiArrowDown, FiX } from 'react-icons/fi';
 
-import {
-    FormSelectContainer,
-    MenuSelectContainer,
-    SortButtonContainer,
-    AddButtonContainer
-} from './styles';
+import { FormSelectContainer, MenuSelectContainer, SortButtonContainer, AddButtonContainer } from './styles';
 
 import { InputContainer } from '../Input/styles';
+import { mapSelectOptions, mapSelectOption } from '../../util/helpers';
 
-interface IOption {
+export interface IOption {
     value: string | Object | Number | undefined;
     label: string;
 }
@@ -76,21 +72,14 @@ const SortableDropdownIndicator = () => {
     );
 };
 
-export function MenuSelect({
-    options,
-    defaultValue,
-    isSortable = false,
-    isSearchable = true
-}: SelectProps) {
+export function MenuSelect({ options, defaultValue, isSortable = false, isSearchable = true }: SelectProps) {
     return (
         <MenuSelectContainer isSortable={isSortable}>
             <ReactSelect
                 className="menu-select-container"
                 components={{
                     IndicatorSeparator: () => null,
-                    DropdownIndicator: isSortable
-                        ? SortableDropdownIndicator
-                        : CustomDropdownIndicator
+                    DropdownIndicator: isSortable ? SortableDropdownIndicator : CustomDropdownIndicator
                 }}
                 isSearchable={isSearchable}
                 classNamePrefix="menu-select"
@@ -103,7 +92,7 @@ export function MenuSelect({
 
 interface IFormSelectProps {
     options: IOption[];
-    label: string;
+    label?: string | null;
     name: string;
     isSearchable?: boolean;
     isRequired?: boolean;
@@ -132,9 +121,7 @@ export function FormSelect({
     const SelectField: React.SFC<FieldProps> = ({ field, form }) => {
         const [isFocused, setFocused] = useState(false);
 
-        const DropdownIndicator = () => (
-            <FiChevronDown className="indicator-icon dropdown-indicator" />
-        );
+        const DropdownIndicator = () => <FiChevronDown className="indicator-icon dropdown-indicator" />;
 
         const handleClear = e => {
             e.preventDefault();
@@ -143,23 +130,16 @@ export function FormSelect({
         };
 
         const ClearIndicator = () => (
-            <button
-                tabIndex={-1}
-                onMouseDown={handleClear}
-                onTouchEnd={handleClear}
-            >
+            <button tabIndex={-1} onMouseDown={handleClear} onTouchEnd={handleClear}>
                 <FiX className="indicator-icon clear-indicator" />
             </button>
         );
 
         const AddOptionButton = props => {
-            const { data, innerRef, innerProps } = props;
+            const { data } = props;
             return withAddOption && data.addButton ? (
                 <div>
-                    <AddButtonContainer
-                        type="button"
-                        onClick={withAddOption.onClick}
-                    >
+                    <AddButtonContainer type="button" onClick={withAddOption.onClick}>
                         {withAddOption.title}
                     </AddButtonContainer>
                 </div>
@@ -168,32 +148,27 @@ export function FormSelect({
             );
         };
 
-        let optionsWithButton;
-
-        if (withAddOption) {
-            optionsWithButton = Object.assign(
-                [],
-                [{ addButton: true }, ...options]
-            );
-        }
+        useEffect(() => {
+            if (withAddOption) {
+                options = Object.assign([], [{ addButton: true }, ...options]);
+            }
+        }, []);
 
         return (
             <FormSelectContainer isFocused={isFocused} value={value}>
                 <ReactSelect
-                    value={field.value}
+                    value={options.find(opt => opt.value === field.value)}
                     className="form-select-container"
                     isSearchable={isSearchable}
                     classNamePrefix="form-select"
-                    options={withAddOption ? optionsWithButton : options}
+                    options={options}
                     isClearable={!isRequired}
                     openMenuOnFocus={true}
                     tabSelectsValue={false}
                     onFocus={() => setFocused(true)}
                     onBlur={() => setFocused(false)}
                     placeholder={placeholder}
-                    onChange={(option: any) =>
-                        form.setFieldValue(field.name, option)
-                    }
+                    onChange={(option: any) => form.setFieldValue(field.name, option.value)}
                     components={{
                         IndicatorSeparator: () => null,
                         DropdownIndicator: DropdownIndicator,
@@ -210,9 +185,11 @@ export function FormSelect({
 
     return (
         <InputContainer>
-            <label className="label" htmlFor={name}>
-                {label}
-            </label>
+            {label && (
+                <label className="label" htmlFor={name}>
+                    {label}
+                </label>
+            )}
             <div className="input-wrapper">
                 <Field name={name} component={SelectField} options={options} />
             </div>

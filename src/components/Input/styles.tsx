@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { ContentContainer } from '../App/styles';
 
 interface IInputContainerProps {
     value?: any;
@@ -10,7 +9,6 @@ export const InputContainer = styled.div<IInputContainerProps>`
     ${({ theme, value }) => `
         display: flex;
         flex-direction: column;
-        min-height: 5rem;
 
         .label {
             height: 1.5rem;
@@ -56,6 +54,7 @@ export const InputContainer = styled.div<IInputContainerProps>`
             font-weight: 500;
             color: ${theme.colors.text};
             min-width: 0;
+            font-family: 'Roboto', sans-serif;
 
             :focus { 
                 outline: none; 

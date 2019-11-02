@@ -1,22 +1,24 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Field } from 'formik';
+import { useDebounce } from '../../util/hooks';
 
-const Persist = ({ name, setValues }) => {
+const Persist = ({ name, setValues, values }) => {
     useEffect(() => {
         const savedState: string | null = localStorage.getItem(name);
         const stateObject: Object = JSON.parse(savedState || '{}');
 
         if (stateObject !== {}) {
-            setValues(stateObject);
+            console.log(stateObject);
+            setValues({ ...values, ...stateObject });
         }
-    }, []);
+    }, [name, setValues]);
 
     const Input = ({ form }) => {
-        useEffect(() => {
+        useDebounce(() => {
             if (form.dirty) {
                 localStorage.setItem(name, JSON.stringify(form.values));
             }
-        }, []);
+        }, 300);
 
         return <input type="hidden" />;
     };

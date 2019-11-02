@@ -1,20 +1,21 @@
 import React, { ChangeEvent } from 'react';
 import { FiX } from 'react-icons/fi';
 
-import { InputContainer } from './styles';
+import { InputContainer } from '../Input/styles';
+import { TextareaStyled } from './styles';
 
-interface IInputProps {
+interface ITextareaProps {
     name: string;
     value: any;
     onChange(event: ChangeEvent<Element>): void;
-    label?: string | null;
+    label: string;
     error?: string;
     icon?: any;
     setFieldValue?: Function;
     type?: 'password' | 'number' | 'text' | 'email';
 }
 
-function Input({
+function Textarea({
     name,
     value,
     onChange,
@@ -23,17 +24,14 @@ function Input({
     icon,
     setFieldValue,
     type = 'text'
-}: IInputProps) {
+}: ITextareaProps) {
     return (
         <InputContainer value={value}>
-            {label && (
-                <label className="label" htmlFor={name}>
-                    {label}
-                </label>
-            )}
+            <label className="label" htmlFor={name}>
+                {label}
+            </label>
             <div className="input-wrapper">
-                <input
-                    type={type}
+                <TextareaStyled
                     className="input-field"
                     name={name}
                     value={value || ''}
@@ -56,4 +54,4 @@ function Input({
     );
 }
 
-export default Input;
+export default Textarea;

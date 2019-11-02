@@ -1,10 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Formik } from 'formik';
+import { Formik, FieldArray } from 'formik';
 import * as yup from 'yup';
+import { FiTrash2 } from 'react-icons/fi';
 
 import routes from '../../common/routes';
-import { NewProductContainer, FormRowContainer } from './styles';
+import WarehouseStoreContext from '../../stores/WarehouseStore';
+import { NewProductContainer, FormRowContainer, AddWarehouseButton } from './styles';
 
 import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
@@ -12,28 +14,49 @@ import Input from '../Input';
 import Button from '../Button';
 import Persist from '../Persist';
 import { FormSelect } from '../Select';
+import Textarea from '../Textarea';
+import { mapSelectOptions } from '../../util/helpers';
+import sampleData from '../../common/sampleData';
+
+interface INewProductFormValues {
+    code: string;
+    name: string;
+    partner: {
+        label: string;
+        value: string;
+    } | null;
+    unit: {
+        name: string;
+        abbr: string;
+    };
+    purchasePrice: string;
+    retailPrice: string;
+    description: string;
+    warehouses: {
+        name: string;
+        quantity: number;
+    }[];
+}
 
 const NewProduct = observer(() => {
-    const partners = [
-        { label: 'CIRCLE K', value: 'CIRCLE K' },
-        { label: 'Sevi kodukaubad OÜ', value: 'Sevi kodukaubad OÜ' },
-        { label: 'Alexela', value: 'Alexela' }
-    ];
+    const warehouseStore = useContext(WarehouseStoreContext);
 
-    const units = [
-        { label: 'Tükk', value: { name: 'Tükk', abbr: 'tk' } },
-        { label: 'Kilogramm', value: { name: 'Kilogramm', abbr: 'kg' } },
-        { label: 'Gramm', value: { name: 'Gramm', abbr: 'g' } }
-    ];
+    const partners = sampleData.partners;
+    const units = sampleData.units;
 
-    const initialValues = {
+    const warehouseOptions = mapSelectOptions({ labelAttr: 'name' }, warehouseStore.warehouses);
+    const unitOptions = mapSelectOptions({ labelAttr: 'name' }, units);
+    const partnerOptions = mapSelectOptions({ labelAttr: 'name' }, partners);
+
+    const initialValues: INewProductFormValues = {
         code: '',
         name: '',
         partner: null,
-        unit: null,
+        unit: unitOptions[0],
         purchasePrice: '',
         retailPrice: '',
-        description: ''
+        description: '',
+        warehouses: []
     };
 
     const validationSchema = yup.object({
@@ -54,15 +77,9 @@ const NewProduct = observer(() => {
                     validationSchema={validationSchema}
                     validateOnChange={false}
                 >
-                    {({
-                        values,
-                        errors,
-                        handleSubmit,
-                        handleChange,
-                        setFieldValue,
-                        setValues
-                    }) => (
+                    {({ values, errors, handleSubmit, handleChange, setFieldValue, setValues }) => (
                         <form onSubmit={handleSubmit} id="new-product-form">
+                            <Persist name="new-product-form" setValues={setValues} values={values} />
                             <Input
                                 label="Kood"
                                 name="code"
@@ -85,10 +102,10 @@ const NewProduct = observer(() => {
                                 value={values.partner}
                                 name="partner"
                                 isSearchable={true}
-                                options={partners}
+                                options={partnerOptions}
                                 withAddOption={{
                                     title: '+ Lisa partner',
-                                    onClick: () => alert('Lisa ühik')
+                                    onClick: () => alert('Lisa partner')
                                 }}
                             />
                             <FormSelect
@@ -98,8 +115,8 @@ const NewProduct = observer(() => {
                                 value={values.unit}
                                 name="unit"
                                 isSearchable={true}
-                                options={units}
-                                defaultValue={units[0]}
+                                options={unitOptions}
+                                defaultValue={unitOptions[0]}
                                 withAddOption={{
                                     title: '+ Lisa ühik',
                                     onClick: () => alert('Lisa ühik')
@@ -127,7 +144,7 @@ const NewProduct = observer(() => {
                                     icon={'€'}
                                 />
                             </FormRowContainer>
-                            <Input
+                            <Textarea
                                 label="Märkused"
                                 name="description"
                                 setFieldValue={setFieldValue}
@@ -135,12 +152,60 @@ const NewProduct = observer(() => {
                                 onChange={handleChange}
                                 error={errors.description}
                             />
-                            <Persist name="new-product-form" setValues={setValues} />
+                            <div className="form-subtitle">Laoseis</div>
+                            <FieldArray
+                                name="warehouses"
+                                render={arrayHelpers => (
+                                    <>
+                                        {values.warehouses
+                                            ? values.warehouses.map((wh, i) => (
+                                                  <FormRowContainer key={i} flex={[3, 1]}>
+                                                      <FormSelect
+                                                          isRequired={true}
+                                                          label={i === 0 ? 'Ladu' : null}
+                                                          placeholder="Vali ladu"
+                                                          value={values.warehouses[i]}
+                                                          name={`warehouses[${i}]`}
+                                                          isSearchable={true}
+                                                          options={warehouseOptions}
+                                                          withAddOption={{
+                                                              title: '+ Uus ladu',
+                                                              onClick: () => alert('Uus ladu')
+                                                          }}
+                                                      />
+                                                      <Input
+                                                          label={i === 0 ? 'Kogus' : null}
+                                                          name={`warehouses[${i}].quantity`}
+                                                          setFieldValue={setFieldValue}
+                                                          value={values.warehouses[i].quantity}
+                                                          onChange={handleChange}
+                                                          error={errors.retailPrice}
+                                                      />
+                                                      <button type="button" onClick={() => arrayHelpers.remove(i)}>
+                                                          <FiTrash2 />
+                                                      </button>
+                                                  </FormRowContainer>
+                                              ))
+                                            : null}
+                                        <AddWarehouseButton
+                                            type="button"
+                                            onClick={() =>
+                                                arrayHelpers.push({
+                                                    name: '',
+                                                    quantity: ''
+                                                })
+                                            }
+                                        >
+                                            + Lisa ladu
+                                        </AddWarehouseButton>
+                                    </>
+                                )}
+                            />
                         </form>
                     )}
                 </Formik>
             </NewProductContainer>
-            <FooterContainer style={{ padding: '0.5rem 0.5rem' }}>
+            <FooterContainer style={{ padding: '0.5rem 1rem' }}>
                 <Button title="Lisa kaup" form="new-product-form" />
             </FooterContainer>
         </>

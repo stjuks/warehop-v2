@@ -1,4 +1,4 @@
-import React, { useEffect, useState, ReactElement } from 'react';
+import React, { useState, ReactElement } from 'react';
 import ReactTinyPopover from 'react-tiny-popover';
 
 import { ContentContainer, MenuItemContainer } from './styles';

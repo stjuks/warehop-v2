@@ -8,6 +8,15 @@ export const ButtonContainer = styled.button`
         flex: 1;
         font-weight: 700;
         border-radius: 3rem;
-        padding: 1rem 0;
+        padding: 1rem;
+        transition: all .2s;
+
+        :hover,
+        :focus {
+            background: ${theme.colors.primaryLight};
+            box-shadow: ${theme.blueShadow};
+            transform: scale(1.005);
+            outline: none;
+        }
     `}
 `;

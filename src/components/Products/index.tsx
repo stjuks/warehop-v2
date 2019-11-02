@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { FiChevronRight, FiSearch, FiPlusCircle } from 'react-icons/fi';
+import { FiSearch, FiPlusCircle } from 'react-icons/fi';
 import { observer } from 'mobx-react-lite';
 
 import { ContentContainer } from '../App/styles';
@@ -51,7 +51,7 @@ const Products = observer(() => {
 
     useEffect(() => {
         productStore.fetchProducts(1, 'quantity', 1);
-    }, []);
+    }, [productStore]);
 
     return (
         <>

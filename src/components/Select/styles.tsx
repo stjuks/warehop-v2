@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { InputContainer } from '../Input/styles';
 
 interface IMenuSelectContainerProps {
     isSortable?: boolean;
@@ -56,7 +55,7 @@ export const MenuSelectContainer = styled.div<IMenuSelectContainerProps>`
             border-radius: 0;
             border: solid ${theme.colors.lightColor1};
             border-width: 0 1px 1px 1px;
-            border-radius: 0 0 1.25rem 1.25rem;
+            border-radius: 0 0 0.5rem 0.5rem;
             background: ${theme.colors.white};
         }
 
@@ -76,7 +75,7 @@ export const MenuSelectContainer = styled.div<IMenuSelectContainerProps>`
         }
 
         .menu-select__menu-list {
-            padding: 0 0.25rem 0.5rem 0.25rem;
+            padding: 0 0.25rem 0.25rem 0.25rem;
         }
 
         .menu-select__indicators {

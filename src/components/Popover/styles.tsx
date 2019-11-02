@@ -1,5 +1,4 @@
-import styled, { css } from 'styled-components';
-import ReactTinyPopover from 'react-tiny-popover';
+import styled from 'styled-components';
 import theme from '../../util/theme';
 
 export const ContentContainer = styled.div`

@@ -35,7 +35,7 @@ function ProductDetails(props) {
         };
 
         fetchDetails();
-    }, [product]);
+    }, [product, props.match.params]);
 
     const headerIcons = [
         {
@@ -88,12 +88,6 @@ function ProductDetails(props) {
             )
         }
     ];
-
-    const MenuPopoverActions = () => {
-        const [isOpen, setOpen] = useState(false);
-
-        
-    }
 
     return (
         <>
