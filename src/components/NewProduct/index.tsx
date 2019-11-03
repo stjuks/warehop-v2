@@ -1,12 +1,12 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Formik, FieldArray } from 'formik';
 import * as yup from 'yup';
-import { FiTrash2 } from 'react-icons/fi';
+import { FiTrash2, FiPlusCircle } from 'react-icons/fi';
 
 import routes from '../../common/routes';
 import WarehouseStoreContext from '../../stores/WarehouseStore';
-import { NewProductContainer, FormRowContainer, AddWarehouseButton } from './styles';
+import { NewProductContainer, FormRowContainer, AddWarehouseButton, TrashButtonContainer } from './styles';
 
 import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
@@ -17,6 +17,7 @@ import { FormSelect } from '../Select';
 import Textarea from '../Textarea';
 import { mapSelectOptions } from '../../util/helpers';
 import sampleData from '../../common/sampleData';
+import { IWarehouse, IWarehouseProduct } from '../../common/types';
 
 interface INewProductFormValues {
     code: string;
@@ -33,6 +34,7 @@ interface INewProductFormValues {
     retailPrice: string;
     description: string;
     warehouses: {
+        id: number;
         name: string;
         quantity: number;
     }[];
@@ -44,9 +46,7 @@ const NewProduct = observer(() => {
     const partners = sampleData.partners;
     const units = sampleData.units;
 
-    /* const warehouseOptions = mapSelectOptions({ labelAttr: 'name' }, warehouseStore.warehouses);
-    const unitOptions = mapSelectOptions({ labelAttr: 'name' }, units);
-    const partnerOptions = mapSelectOptions({ labelAttr: 'name' }, partners); */
+    const [warehouseRows, setWarehouseRows] = useState([]);
 
     const initialValues: INewProductFormValues = {
         code: '',
@@ -76,6 +76,14 @@ const NewProduct = observer(() => {
         )*/
     });
 
+    const filterChosenWarehouseOptions = (formValues: IWarehouseProduct[], warehouses: IWarehouse[]) => {
+        return warehouses.filter(wh => formValues.map(whVal => whVal.id).indexOf(wh.id) === -1);
+    };
+
+    const findFirstNonChosenWarehouse = (formValues: IWarehouseProduct[], warehouses: IWarehouse[]) => {
+        return warehouses.find(wh => formValues.map(whVal => whVal.id).indexOf(wh.id) === -1);
+    };
+
     return (
         <>
             <Header title="Uus kaup" backTo={routes.products} />
@@ -89,6 +97,7 @@ const NewProduct = observer(() => {
                     {({ values, errors, handleSubmit, handleChange, setFieldValue, setValues }) => (
                         <form onSubmit={handleSubmit} id="new-product-form">
                             <Persist name="new-product-form" setValues={setValues} values={values} />
+                            <div className="form-subtitle">Põhiandmed</div>
                             <Input
                                 label="Kood"
                                 name="code"
@@ -106,19 +115,6 @@ const NewProduct = observer(() => {
                                 error={errors.name}
                             />
                             <FormSelect
-                                label="Tarnija"
-                                placeholder="Vali tarnija"
-                                value={values.partner}
-                                name="partner"
-                                isSearchable={true}
-                                labelAttribute="name"
-                                options={partners}
-                                withAddOption={{
-                                    title: '+ Lisa partner',
-                                    onClick: () => alert('Lisa partner')
-                                }}
-                            />
-                            <FormSelect
                                 isRequired={true}
                                 label="Ühik"
                                 placeholder="Vali ühik"
@@ -128,8 +124,22 @@ const NewProduct = observer(() => {
                                 labelAttribute="name"
                                 options={units}
                                 withAddOption={{
-                                    title: '+ Lisa ühik',
+                                    title: 'Lisa ühik',
                                     onClick: () => alert('Lisa ühik')
+                                }}
+                            />
+                            <div className="form-subtitle">Lisainfo</div>
+                            <FormSelect
+                                label="Tarnija"
+                                placeholder="Vali tarnija"
+                                value={values.partner}
+                                name="partner"
+                                isSearchable={true}
+                                labelAttribute="name"
+                                options={partners}
+                                withAddOption={{
+                                    title: 'Lisa partner',
+                                    onClick: () => alert('Lisa partner')
                                 }}
                             />
                             <FormRowContainer>
@@ -178,9 +188,12 @@ const NewProduct = observer(() => {
                                                           name={`warehouses[${i}]`}
                                                           labelAttribute="name"
                                                           isSearchable={true}
-                                                          options={warehouseStore.warehouses}
+                                                          options={filterChosenWarehouseOptions(
+                                                              values.warehouses,
+                                                              warehouseStore.warehouses
+                                                          )}
                                                           withAddOption={{
-                                                              title: '+ Uus ladu',
+                                                              title: 'Uus ladu',
                                                               onClick: () => alert('Uus ladu')
                                                           }}
                                                       />
@@ -191,15 +204,29 @@ const NewProduct = observer(() => {
                                                           value={values.warehouses[i].quantity}
                                                           onChange={handleChange}
                                                       />
-                                                      <button type="button" onClick={() => arrayHelpers.remove(i)}>
-                                                          <FiTrash2 />
-                                                      </button>
+                                                      <TrashButtonContainer>
+                                                          <button type="button" onClick={() => arrayHelpers.remove(i)}>
+                                                              <FiTrash2 />
+                                                          </button>
+                                                      </TrashButtonContainer>
                                                   </FormRowContainer>
                                               ))
                                             : null}
-                                        <AddWarehouseButton type="button" onClick={() => arrayHelpers.push({})}>
-                                            + Lisa ladu
-                                        </AddWarehouseButton>
+                                        {values.warehouses.length < warehouseStore.warehouses.length && (
+                                            <AddWarehouseButton
+                                                type="button"
+                                                onClick={() =>
+                                                    arrayHelpers.push(
+                                                        findFirstNonChosenWarehouse(
+                                                            values.warehouses,
+                                                            warehouseStore.warehouses
+                                                        )
+                                                    )
+                                                }
+                                            >
+                                                <FiPlusCircle />&nbsp;Lisa ladu
+                                            </AddWarehouseButton>
+                                        )}
                                     </>
                                 )}
                             />

@@ -8,7 +8,6 @@ const Persist = ({ name, setValues, values }) => {
         const stateObject: Object = JSON.parse(savedState || '{}');
 
         if (stateObject !== {}) {
-            console.log(stateObject);
             setValues({ ...values, ...stateObject });
         }
     }, [name, setValues]);

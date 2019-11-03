@@ -15,16 +15,7 @@ interface ITextareaProps {
     type?: 'password' | 'number' | 'text' | 'email';
 }
 
-function Textarea({
-    name,
-    value,
-    onChange,
-    label,
-    error,
-    icon,
-    setFieldValue,
-    type = 'text'
-}: ITextareaProps) {
+function Textarea({ name, value, onChange, label, error, icon, setFieldValue }: ITextareaProps) {
     return (
         <InputContainer value={value}>
             <label className="label" htmlFor={name}>
@@ -40,12 +31,9 @@ function Textarea({
                 />
                 <div className="input-underline" />
                 {value && setFieldValue && (
-                    <div
-                        className="input-clear"
-                        onClick={() => setFieldValue(name, '')}
-                    >
+                    <button type="button" className="input-clear" onClick={() => setFieldValue(name, '')}>
                         <FiX />
-                    </div>
+                    </button>
                 )}
                 {icon && <div className="input-icon">{icon}</div>}
             </div>

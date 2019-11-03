@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Field, FieldProps } from 'formik';
 import ReactSelect, { components } from 'react-select';
-import { FiChevronDown, FiArrowUp, FiArrowDown, FiX } from 'react-icons/fi';
+import { FiChevronDown, FiArrowUp, FiArrowDown, FiX, FiPlusCircle } from 'react-icons/fi';
 import objectMapper from 'object-mapper';
 
 import { FormSelectContainer, MenuSelectContainer, SortButtonContainer, AddButtonContainer } from './styles';
@@ -133,7 +133,7 @@ export function FormSelect({
         };
 
         const ClearIndicator = () => (
-            <button tabIndex={-1} onMouseDown={handleClear} onTouchEnd={handleClear}>
+            <button type="button" onClick={handleClear} onMouseDown={handleClear} onTouchEnd={handleClear}>
                 <FiX className="indicator-icon clear-indicator" />
             </button>
         );
@@ -143,7 +143,7 @@ export function FormSelect({
             return withAddOption && data.addButton ? (
                 <div>
                     <AddButtonContainer type="button" onClick={withAddOption.onClick}>
-                        {withAddOption.title}
+                        <FiPlusCircle />&nbsp;{withAddOption.title}
                     </AddButtonContainer>
                 </div>
             ) : (

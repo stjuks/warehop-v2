@@ -57,18 +57,39 @@ export const FormRowContainer = styled.div<IFormRowContainerProps>`
 
 export const AddWarehouseButton = styled.button`
     ${({ theme }) => `
-        text-align: center;
         padding: 0.5rem;
         border-radius: 0.5rem;
         font-weight: 500;
         border: 1px dashed ${theme.colors.text};
         width: 100%;
         color: ${theme.colors.text};
+        margin: 0.5rem 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
         :hover, 
         :focus {
             background: ${theme.colors.lightColor1};
             outline: none;
+        }
+    `}
+`;
+
+export const TrashButtonContainer = styled.div`
+    ${({ theme }) => `
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: flex-end;
+        
+        && {
+            padding: 0;
+            padding-bottom: 1.75rem;
+        }
+
+        button {
+            color: ${theme.colors.lightText};
         }
     `}
 `;

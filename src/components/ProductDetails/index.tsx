@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FiMoreHorizontal, FiEdit, FiTrash2 } from 'react-icons/fi';
 
-import {
-    TitleContainer,
-    DetailCardContainer,
-    DetailLabel,
-    WarehouseRowContainer
-} from './styles';
+import { TitleContainer, DetailCardContainer, DetailLabel, WarehouseRowContainer } from './styles';
 import theme from '../../util/theme';
 
 import Header from '../Header';
@@ -27,9 +22,7 @@ function ProductDetails(props) {
         const fetchDetails = async () => {
             await stall(500);
 
-            const sampleProduct = sampleData.products.find(
-                p => p.id === Number(id)
-            );
+            const sampleProduct = sampleData.products.find(p => p.id === Number(id));
 
             if (sampleProduct) setProduct(sampleProduct);
         };
@@ -50,15 +43,11 @@ function ProductDetails(props) {
                                         alignItems: 'center'
                                     }}
                                 >
-                                    <FiEdit
-                                        style={{ margin: '0 0.25rem 0.1rem 0' }}
-                                    />
+                                    <FiEdit style={{ margin: '0 0.25rem 0.1rem 0' }} />
                                     Muuda
                                 </div>
                             ),
-                            onClick: () => {
-                                console.log('Muuda');
-                            }
+                            onClick: () => null
                         },
                         {
                             label: (
@@ -69,15 +58,11 @@ function ProductDetails(props) {
                                         alignItems: 'center'
                                     }}
                                 >
-                                    <FiTrash2
-                                        style={{ margin: '0 0.25rem 0.1rem 0' }}
-                                    />
+                                    <FiTrash2 style={{ margin: '0 0.25rem 0.1rem 0' }} />
                                     Kustuta
                                 </div>
                             ),
-                            onClick: () => {
-                                console.log('Kustuta');
-                            }
+                            onClick: () => null
                         }
                     ]}
                     position="bottom"
@@ -91,11 +76,7 @@ function ProductDetails(props) {
 
     return (
         <>
-            <Header
-                title="Kauba detailid"
-                icons={headerIcons}
-                backTo={routes.products}
-            />
+            <Header title="Kauba detailid" icons={headerIcons} backTo={routes.products} />
             <ContentContainer padded>
                 {product && (
                     <>
@@ -107,40 +88,29 @@ function ProductDetails(props) {
                             <div className="row">
                                 <div className="detail">
                                     <div className="detail-label">Tarnija</div>
-                                    <div className="detail-value">
-                                        {product.partner.name}
-                                    </div>
+                                    <div className="detail-value">{product.partner.name}</div>
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="detail">
                                     <div className="detail-label">Ostuhind</div>
-                                    <div className="detail-value">
-                                        {product.purchasePrice}€
-                                    </div>
+                                    <div className="detail-value">{product.purchasePrice}€</div>
                                 </div>
                                 <div className="detail">
-                                    <div className="detail-label">
-                                        Müügihind
-                                    </div>
-                                    <div className="detail-value">
-                                        {product.retailPrice}€
-                                    </div>
+                                    <div className="detail-label">Müügihind</div>
+                                    <div className="detail-value">{product.retailPrice}€</div>
                                 </div>
                                 <div className="detail">
                                     <div className="detail-label">Ühik</div>
                                     <div className="detail-value">
-                                        {product.unit.name} ({product.unit.abbr}
-                                        )
+                                        {product.unit.name} ({product.unit.abbr})
                                     </div>
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="detail">
                                     <div className="detail-label">Märkused</div>
-                                    <div className="detail-value">
-                                        {product.description}
-                                    </div>
+                                    <div className="detail-value">{product.description}</div>
                                 </div>
                             </div>
                         </DetailCardContainer>
@@ -148,9 +118,7 @@ function ProductDetails(props) {
                         <DetailCardContainer>
                             {product.warehouses.map((wh, i) => (
                                 <WarehouseRowContainer key={i}>
-                                    <span className="warehouse-name">
-                                        {wh.name}
-                                    </span>
+                                    <span className="warehouse-name">{wh.name}</span>
                                     <span className="warehouse-quantity">
                                         {wh.quantity}
                                         {product.unit.abbr}
@@ -160,10 +128,7 @@ function ProductDetails(props) {
                             <WarehouseRowContainer>
                                 <span className="warehouse-name">KOKKU</span>
                                 <span className="warehouse-quantity">
-                                    {product.warehouses.reduce(
-                                        (a, wh) => a + wh.quantity,
-                                        0
-                                    )}
+                                    {product.warehouses.reduce((a, wh) => a + wh.quantity, 0)}
                                     {product.unit.abbr}
                                 </span>
                             </WarehouseRowContainer>

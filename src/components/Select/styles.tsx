@@ -42,7 +42,7 @@ export const MenuSelectContainer = styled.div<IMenuSelectContainerProps>`
         .menu-select__control--is-focused,
         .menu-select__control--is-focused:hover,
         .menu-select__control--is-focused ~ .menu-select__menu {
-            border-color: ${theme.colors.lightText};
+            border-color: ${theme.colors.text};
             box-shadow: none;
         }
 
@@ -229,6 +229,9 @@ export const AddButtonContainer = styled.button`
         padding: 0.5rem;
         font-weight: 500;
         margin-bottom: 0.25rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
         :hover,
         :focus {

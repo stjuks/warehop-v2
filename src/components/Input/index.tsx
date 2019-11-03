@@ -14,16 +14,7 @@ interface IInputProps {
     type?: 'password' | 'number' | 'text' | 'email';
 }
 
-function Input({
-    name,
-    value,
-    onChange,
-    label,
-    error,
-    icon,
-    setFieldValue,
-    type = 'text'
-}: IInputProps) {
+function Input({ name, value, onChange, label, error, icon, setFieldValue, type = 'text' }: IInputProps) {
     return (
         <InputContainer value={value}>
             {label && (
@@ -42,12 +33,9 @@ function Input({
                 />
                 <div className="input-underline" />
                 {value && setFieldValue && (
-                    <div
-                        className="input-clear"
-                        onClick={() => setFieldValue(name, '')}
-                    >
+                    <button type="button" className="input-clear" onClick={() => setFieldValue(name, '')}>
                         <FiX />
-                    </div>
+                    </button>
                 )}
                 {icon && <div className="input-icon">{icon}</div>}
             </div>
