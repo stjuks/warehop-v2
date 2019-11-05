@@ -2,28 +2,17 @@ import React from 'react';
 import { FiChevronLeft } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 
-import {
-    HeaderContainer,
-    IconsContainer,
-    IconContainer,
-    TitleContainer
-} from './styles';
+import { HeaderContainer, IconsContainer, IconContainer, TitleContainer } from './styles';
 
 interface IHeaderProps {
     title: string;
     backTo?: string;
     onBackButtonClick?: Function;
-    icons?: {
-        icon: React.ReactElement;
-        size?: string;
-        onClick: any;
-        highlighted?: boolean;
-        unfocusable?: boolean;
-    }[];
+    components?: React.Component[];
 }
 
 function Header(props) {
-    const { title, icons, backTo }: IHeaderProps = props;
+    const { title, components, backTo }: IHeaderProps = props;
 
     return (
         <HeaderContainer>
@@ -40,18 +29,7 @@ function Header(props) {
                 )}
             </TitleContainer>
             <IconsContainer>
-                {icons &&
-                    icons.map(({ icon, size, highlighted, onClick, unfocusable }, i) => (
-                        <IconContainer
-                            size={size}
-                            highlighted={highlighted}
-                            onClick={onClick}
-                            key={i}
-                            tabIndex={1}
-                        >
-                            {icon}
-                        </IconContainer>
-                    ))}
+                {components && components.map((component, i) => <React.Fragment key={i}>{component}</React.Fragment>)}
             </IconsContainer>
         </HeaderContainer>
     );

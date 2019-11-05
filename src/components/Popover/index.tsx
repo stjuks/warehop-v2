@@ -34,7 +34,7 @@ function Popover({
             containerStyle={{ overflow: 'visible' }}
             onClickOutside={() => setIsOpen(false)}
         >
-            <div
+            <button
                 style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -43,7 +43,7 @@ function Popover({
                 onClick={() => setIsOpen(!isOpen)}
             >
                 {children}
-            </div>
+            </button>
         </ReactTinyPopover>
     );
 }

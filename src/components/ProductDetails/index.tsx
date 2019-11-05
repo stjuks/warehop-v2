@@ -31,52 +31,48 @@ function ProductDetails(props) {
     }, [product, props.match.params]);
 
     const headerIcons = [
-        {
-            icon: (
-                <MenuPopover
-                    options={[
-                        {
-                            label: (
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center'
-                                    }}
-                                >
-                                    <FiEdit style={{ margin: '0 0.25rem 0.1rem 0' }} />
-                                    Muuda
-                                </div>
-                            ),
-                            onClick: () => null
-                        },
-                        {
-                            label: (
-                                <div
-                                    style={{
-                                        color: theme.colors.danger,
-                                        display: 'flex',
-                                        alignItems: 'center'
-                                    }}
-                                >
-                                    <FiTrash2 style={{ margin: '0 0.25rem 0.1rem 0' }} />
-                                    Kustuta
-                                </div>
-                            ),
-                            onClick: () => null
-                        }
-                    ]}
-                    position="bottom"
-                    closeContentOnClick
-                >
-                    <FiMoreHorizontal />
-                </MenuPopover>
-            )
-        }
+        <MenuPopover
+            options={[
+                {
+                    label: (
+                        <div
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center'
+                            }}
+                        >
+                            <FiEdit style={{ margin: '0 0.25rem 0.1rem 0' }} />
+                            Muuda
+                        </div>
+                    ),
+                    onClick: () => null
+                },
+                {
+                    label: (
+                        <div
+                            style={{
+                                color: theme.colors.danger,
+                                display: 'flex',
+                                alignItems: 'center'
+                            }}
+                        >
+                            <FiTrash2 style={{ margin: '0 0.25rem 0.1rem 0' }} />
+                            Kustuta
+                        </div>
+                    ),
+                    onClick: () => null
+                }
+            ]}
+            position="bottom"
+            closeContentOnClick
+        >
+            <FiMoreHorizontal />
+        </MenuPopover>
     ];
 
     return (
         <>
-            <Header title="Kauba detailid" icons={headerIcons} backTo={routes.products} />
+            <Header title="Kauba detailid" components={headerIcons} backTo={routes.products} />
             <ContentContainer padded>
                 {product && (
                     <>

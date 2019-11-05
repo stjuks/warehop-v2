@@ -24,3 +24,17 @@ export const SortingContainer = styled.div`
         }
     }
 `;
+
+export const NewProductButtonContainer = styled.div`
+    ${({ theme }) => `
+        display: flex;
+        color: ${theme.colors.primary};
+        text-shadow: ${theme.blueShadow};
+        cursor: pointer;
+
+        && svg {
+            stroke-width: 2;
+            font-size: 2rem;
+        }
+    `}
+`

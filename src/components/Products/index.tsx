@@ -3,7 +3,7 @@ import { FiSearch, FiPlusCircle } from 'react-icons/fi';
 import { observer } from 'mobx-react-lite';
 
 import { ContentContainer } from '../App/styles';
-import { SortingContainer } from './styles';
+import { SortingContainer, NewProductButtonContainer } from './styles';
 import history from '../../common/history';
 import routes from '../../common/routes';
 
@@ -12,6 +12,7 @@ import ProductItem from '../ProductItem';
 import Footer from '../Footer';
 import { MenuSelect } from '../Select';
 import { ProductStoreContext } from '../../stores/ProductStore';
+import HeaderSearch from '../HeaderSearch';
 
 const Products = observer(() => {
     const productStore = useContext(ProductStoreContext);
@@ -40,13 +41,10 @@ const Products = observer(() => {
     ];
 
     const headerIcons = [
-        { icon: <FiSearch />, onClick: () => null },
-        {
-            icon: <FiPlusCircle />,
-            onClick: () => history.push(routes.newProduct),
-            size: '2rem',
-            highlighted: true
-        }
+        <HeaderSearch onChange={value => console.log(value)} />,
+        <NewProductButtonContainer>
+            <FiPlusCircle />
+        </NewProductButtonContainer>
     ];
 
     useEffect(() => {
@@ -55,12 +53,9 @@ const Products = observer(() => {
 
     return (
         <>
-            <Header title="Kaubad" icons={headerIcons} />
+            <Header title="Kaubad" components={headerIcons} />
             <SortingContainer>
-                <MenuSelect
-                    options={warehouseOptions}
-                    defaultValue={warehouseOptions[0].options[0]}
-                />
+                <MenuSelect options={warehouseOptions} defaultValue={warehouseOptions[0].options[0]} />
                 <MenuSelect
                     isSearchable={false}
                     isSortable={true}
@@ -70,9 +65,7 @@ const Products = observer(() => {
             </SortingContainer>
             <ContentContainer>
                 {!productStore.isLoadingProducts
-                    ? productStore.products.map((product, i) => (
-                          <ProductItem {...product} key={i} />
-                      ))
+                    ? productStore.products.map((product, i) => <ProductItem {...product} key={i} />)
                     : null}
             </ContentContainer>
             <Footer />

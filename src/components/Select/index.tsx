@@ -166,6 +166,7 @@ export function FormSelect({
                     isClearable={!isRequired}
                     openMenuOnFocus={true}
                     tabSelectsValue={false}
+                    menuShouldScrollIntoView={true}
                     onFocus={() => setFocused(true)}
                     onBlur={() => setFocused(false)}
                     placeholder={placeholder}

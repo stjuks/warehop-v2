@@ -23,7 +23,6 @@ export const HeaderContainer = styled.div`
 `;
 
 export const TitleContainer = styled.div`
-    flex: 1;
     display: flex;
 
     .back-button {
@@ -40,12 +39,26 @@ export const TitleContainer = styled.div`
 `;
 
 export const IconsContainer = styled.div`
-    display: flex;
-    z-index: 3;
+    ${({ theme }) => `
+        display: flex;
+        z-index: 3;
+        flex: 1;
+        justify-content: flex-end;
+        font-size: 1.75rem;
+        color: ${theme.colors.text};
+        
+        > * {
+            cursor: pointer;
 
-    svg {
-        stroke-width: 1.5;
-    }
+            :not(:last-child) {
+                margin-right: 0.75rem;
+            }
+        }
+
+        svg {
+            stroke-width: 1.5;
+        }
+    `}
 `;
 
 export const IconContainer = styled.button<IIconContainerProps>`
