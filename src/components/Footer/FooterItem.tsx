@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import { FooterItemContainer, IconContainer, LabelContainer } from './styles';
 
@@ -11,10 +12,22 @@ export interface IFooterItemProps {
 }
 
 function FooterItem({ icon, label, isActive, onClick, to }: IFooterItemProps) {
-    return (
-        <FooterItemContainer to={to}>
+    const ItemComponent = () => (
+        <>
             <IconContainer>{icon}</IconContainer>
             {label && <LabelContainer isActive={isActive}>{label}</LabelContainer>}
+        </>
+    );
+    
+    return (
+        <FooterItemContainer>
+            {to ? (
+                <Link to={to}>
+                    <ItemComponent />
+                </Link>
+            ) : (
+                <ItemComponent />
+            )}
         </FooterItemContainer>
     );
 }

@@ -1,5 +1,7 @@
 export default {
     products: '/products',
     productDetails: '/products/:id',
-    newProduct: '/products/new'
+    newProduct: '/products/new',
+    purchases: '/purchases',
+    sales: '/sales'
 };

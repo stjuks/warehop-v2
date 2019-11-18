@@ -1,10 +1,6 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-interface IFooterItemContainerProps {
-    to: string;
-}
-
 interface ILabelContainerProps {
     isActive?: boolean;
 }
@@ -24,7 +20,7 @@ export const FooterContainer = styled.div`
     justify-content: space-around;
 `;
 
-export const FooterItemContainer = styled(Link)<IFooterItemContainerProps>`
+export const FooterItemContainer = styled.div`
     text-decoration: none;
     text-align: center;
     font-family: 'Red Hat Display', sans-serif;

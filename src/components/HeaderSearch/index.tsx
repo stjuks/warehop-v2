@@ -6,18 +6,18 @@ import { useDebounce } from '../../util/hooks';
 
 interface IHeaderSearchProps {
     onChange(value: string): void;
+    placeholder?: string;
 }
 
-function HeaderSearch({ onChange }: IHeaderSearchProps) {
+function HeaderSearch({ onChange, placeholder }: IHeaderSearchProps) {
     const [isOpened, setOpened] = useState(false);
-    const [isFocused, setFocused] = useState(false);
-    const [value, setValue] = useState('');
+    const [query, setQuery] = useState('');
 
     const input = createRef<HTMLInputElement>();
 
     const handleChange = e => {
         const inputValue = e.target.value;
-        setValue(inputValue);
+        setQuery(inputValue);
     };
 
     const handleButton = () => {
@@ -26,21 +26,21 @@ function HeaderSearch({ onChange }: IHeaderSearchProps) {
         if (!isOpened && input.current) {
             input.current.focus();
         } else {
-            setValue('');
+            setQuery('');
         }
     };
 
     useDebounce(() => {
-        onChange(value);
+        onChange(query);
     });
 
     return (
         <HeaderSearchContainer>
-            <InputContainer isOpened={isOpened || isFocused}>
+            <InputContainer isOpened={isOpened}>
                 <input
-                    value={value}
+                    value={query}
                     className="search-input"
-                    placeholder="Otsi kaupa"
+                    placeholder={placeholder}
                     onChange={handleChange}
                     ref={input}
                 />

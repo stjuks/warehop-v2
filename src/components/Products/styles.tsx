@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 import { ContentContainer } from '../App/styles';
 
-export const ProductsContainer = styled(ContentContainer)`
-`;
+export const ProductsContainer = styled(ContentContainer)``;
 
 export const SortingContainer = styled.div`
     ${({ theme }) => `
@@ -25,7 +24,7 @@ export const SortingContainer = styled.div`
     }
 `;
 
-export const NewProductButtonContainer = styled.div`
+export const NewProductButtonContainer = styled.button`
     ${({ theme }) => `
         display: flex;
         color: ${theme.colors.primary};
@@ -37,4 +36,4 @@ export const NewProductButtonContainer = styled.div`
             font-size: 2rem;
         }
     `}
-`
+`;

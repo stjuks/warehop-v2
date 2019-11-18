@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FiSearch, FiPlusCircle } from 'react-icons/fi';
 import { observer } from 'mobx-react-lite';
 
@@ -13,9 +13,11 @@ import Footer from '../Footer';
 import { MenuSelect } from '../Select';
 import { ProductStoreContext } from '../../stores/ProductStore';
 import HeaderSearch from '../HeaderSearch';
+import Loader from '../Loader';
 
 const Products = observer(() => {
     const productStore = useContext(ProductStoreContext);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const warehouseOptions = [
         {
@@ -41,8 +43,8 @@ const Products = observer(() => {
     ];
 
     const headerIcons = [
-        <HeaderSearch onChange={value => console.log(value)} />,
-        <NewProductButtonContainer>
+        <HeaderSearch onChange={value => setSearchQuery(value)} placeholder="Otsi kaupa" />,
+        <NewProductButtonContainer onClick={() => history.push(routes.newProduct)}>
             <FiPlusCircle />
         </NewProductButtonContainer>
     ];
@@ -64,9 +66,11 @@ const Products = observer(() => {
                 />
             </SortingContainer>
             <ContentContainer>
-                {!productStore.isLoadingProducts
-                    ? productStore.products.map((product, i) => <ProductItem {...product} key={i} />)
-                    : null}
+                {!productStore.isLoadingProducts ? (
+                    productStore.products.map((product, i) => <ProductItem {...product} key={i} />)
+                ) : (
+                    <Loader />
+                )}
             </ContentContainer>
             <Footer />
         </>

@@ -10,16 +10,17 @@ export const HeaderContainer = styled.div`
         background: ${theme.colors.white};
         color: ${theme.colors.text};
         box-shadow: ${theme.colors.lightShadow};
+        
+        font-family: 'Red Hat Display', sans-serif;
+        padding: 0 1rem;
+        height: 4rem;
+        display: flex;
+        font-weight: 500;
+        align-items: center;
+        font-size: 1.25rem;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        z-index: 2;
     `}
-    font-family: 'Red Hat Display', sans-serif;
-    padding: 0 1rem;
-    height: 4rem;
-    display: flex;
-    font-weight: 500;
-    align-items: center;
-    font-size: 1.25rem;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-    z-index: 2;
 `;
 
 export const TitleContainer = styled.div`
@@ -46,16 +47,13 @@ export const IconsContainer = styled.div`
         justify-content: flex-end;
         font-size: 1.75rem;
         color: ${theme.colors.text};
-        
-        > * {
-            cursor: pointer;
 
-            :not(:last-child) {
-                margin-right: 0.75rem;
-            }
+        > *:not(:last-child) {
+            margin-right: 0.75rem;
         }
 
         svg {
+            cursor: pointer;
             stroke-width: 1.5;
         }
     `}

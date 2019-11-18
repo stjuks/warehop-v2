@@ -103,6 +103,9 @@ export const MenuSelectContainer = styled.div<IMenuSelectContainerProps>`
         .menu-select__control,
         .menu-select__menu {
             font-size: 0.875rem;
+        }
+
+        .menu-select__control {
             font-weight: 500;
         }
     `}

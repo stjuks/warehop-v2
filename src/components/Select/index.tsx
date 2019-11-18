@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Field, FieldProps } from 'formik';
 import ReactSelect, { components } from 'react-select';
 import { FiChevronDown, FiArrowUp, FiArrowDown, FiX, FiPlusCircle } from 'react-icons/fi';
-import objectMapper from 'object-mapper';
 
 import { FormSelectContainer, MenuSelectContainer, SortButtonContainer, AddButtonContainer } from './styles';
 
