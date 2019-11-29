@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { FiMoreHorizontal, FiEdit, FiTrash2 } from 'react-icons/fi';
+import { observer } from 'mobx-react-lite';
 
 import { TitleContainer, DetailCardContainer, DetailLabel, WarehouseRowContainer } from './styles';
 import theme from '../../util/theme';
@@ -12,8 +13,10 @@ import routes from '../../common/routes';
 import sampleData from '../../common/sampleData';
 import { ContentContainer } from '../App/styles';
 import Footer from '../Footer';
+import { ProductStoreContext } from '../../stores/ProductStore';
 
-function ProductDetails(props) {
+const ProductDetails = props => {
+    const productStore = useContext(ProductStoreContext);
     const [product, setProduct] = useState<Product>();
 
     useEffect(() => {
@@ -29,6 +32,7 @@ function ProductDetails(props) {
 
         fetchDetails();
     }, [product, props.match.params]);
+
 
     const headerIcons = [
         <MenuPopover

@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
-export const useDebounce = (fn: Function, delay: number = 300) => {
+export const useDebounce = (fn: Function, opts: { delay?: number; deps?: Array<any> }) => {
     useEffect(() => {
-        const timeout = setTimeout(() => fn(), delay);
+        const timeout = setTimeout(() => fn(), opts.delay || 300);
 
         return () => clearTimeout(timeout);
-    });
+    }, opts.deps);
 };

@@ -30,9 +30,12 @@ function HeaderSearch({ onChange, placeholder }: IHeaderSearchProps) {
         }
     };
 
-    useDebounce(() => {
-        onChange(query);
-    });
+    useDebounce(
+        () => {
+            onChange(query);
+        },
+        { delay: 500, deps: [query] }
+    );
 
     return (
         <HeaderSearchContainer>

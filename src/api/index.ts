@@ -10,10 +10,10 @@ interface IRequestArgs {
 }
 
 interface IRequest {
-    get(args: IRequestArgs): Promise<any>;
-    put(args: IRequestArgs): Promise<any>;
-    post(args: IRequestArgs): Promise<any>;
-    delete(args: IRequestArgs): Promise<any>;
+    get<T>(args: IRequestArgs): Promise<T>;
+    put<T>(args: IRequestArgs): Promise<T>;
+    post<T>(args: IRequestArgs): Promise<T>;
+    delete<T>(args: IRequestArgs): Promise<T>;
 }
 
 type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';

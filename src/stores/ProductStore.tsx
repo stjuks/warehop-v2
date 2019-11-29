@@ -1,22 +1,23 @@
 import { observable, action, flow } from 'mobx';
 import { createContext } from 'react';
 
-import { stall } from '../util/helpers';
-import sampleData from '../common/sampleData';
-import { CancellablePromise } from 'mobx/lib/api/flow';
 import api from '../api';
 
 import { ProductSortOption } from '../api/products';
-import { SortDirection, Product } from '../common/types';
+import { SortDirection, Product } from '../common/types';
 
 class ProductStore {
     @observable products: Product[] = [];
+
+    @observable productsSearch: Product[] = [];
 
     @observable isLoadingProducts: boolean = false;
 
     @action addProduct = (product?: Product) => {};
 
-    @action deleteProduct = () => {};
+    @action deleteProduct = (productId: number) => {
+        this.products = this.products.filter(p => p.id !== productId);
+    };
 
     @action editProduct = () => {};
 
@@ -25,7 +26,7 @@ class ProductStore {
         args: { warehouseId: number; sortBy: ProductSortOption; sortDirection: SortDirection }
     ) {
         try {
-            this.isLoadingProducts = true; 
+            this.isLoadingProducts = true;
 
             const products = yield api.getProducts({
                 limit: 10,
@@ -36,6 +37,22 @@ class ProductStore {
             if (products) this.products = products;
 
             this.isLoadingProducts = false;
+        } catch (err) {
+            throw err;
+        }
+    });
+
+    @action searchProducts = flow(function*(this: ProductStore, query: string) {
+        try {
+            if (query) {
+                this.isLoadingProducts = true;
+
+                const products = yield api.searchProducts({ query });
+
+                if (products) this.productsSearch = products;
+
+                this.isLoadingProducts = false;
+            }
         } catch (err) {
             throw err;
         }

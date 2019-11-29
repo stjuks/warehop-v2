@@ -42,8 +42,13 @@ const Products = observer(() => {
         }
     ];
 
+    const handleSearch = query => {
+        setSearchQuery(query);
+        productStore.searchProducts(query);
+    };
+
     const headerIcons = [
-        <HeaderSearch onChange={value => setSearchQuery(value)} placeholder="Otsi kaupa" />,
+        <HeaderSearch onChange={handleSearch} placeholder="Otsi kaupa" />,
         <NewProductButtonContainer onClick={() => history.push(routes.newProduct)}>
             <FiPlusCircle />
         </NewProductButtonContainer>
@@ -52,6 +57,18 @@ const Products = observer(() => {
     useEffect(() => {
         productStore.fetchProducts({ warehouseId: 1, sortBy: 'code', sortDirection: 'asc' });
     }, [productStore]);
+
+    const getProducts = () => {
+        if (productStore.isLoadingProducts) {
+            return <Loader />;
+        }
+
+        if (searchQuery) {
+            return productStore.productsSearch.map(product => <ProductItem {...product} key={product.id} />);
+        }
+
+        return productStore.products.map(product => <ProductItem {...product} key={product.id} />);
+    };
 
     return (
         <>
@@ -65,13 +82,7 @@ const Products = observer(() => {
                     defaultValue={sortOptions[0].options[0]}
                 />
             </SortingContainer>
-            <ContentContainer>
-                {!productStore.isLoadingProducts ? (
-                    productStore.products.map((product, i) => <ProductItem {...product} key={i} />)
-                ) : (
-                    <Loader />
-                )}
-            </ContentContainer>
+            <ContentContainer>{getProducts()}</ContentContainer>
             <Footer />
         </>
     );

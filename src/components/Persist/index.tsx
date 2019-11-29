@@ -13,11 +13,14 @@ const Persist = ({ name, setValues, values }) => {
     }, [name, setValues]);
 
     const Input = ({ form }) => {
-        useDebounce(() => {
-            if (form.dirty) {
-                localStorage.setItem(name, JSON.stringify(form.values));
-            }
-        }, 300);
+        useDebounce(
+            () => {
+                if (form.dirty) {
+                    localStorage.setItem(name, JSON.stringify(form.values));
+                }
+            },
+            { delay: 300 }
+        );
 
         return <input type="hidden" />;
     };

@@ -15,7 +15,14 @@ const getProducts = async (data: {
 };
 
 const searchProducts = async (data: { query: string }): Promise<Product[]> => {
-    return await request.get({ url: '/products/search', data });
+    return await request.get({
+        url: '/products/search',
+        data,
+        mockData: sampleData.products.filter(p => {
+            const { query } = data;
+            return p.code.includes(query) || (p.description && p.description.includes(query)) || p.name.includes(query);
+        })
+    });
 };
 
 const addProduct = async (data: { product: Product }) => {
