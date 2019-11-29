@@ -7,7 +7,7 @@ export interface IFooterItemProps {
     icon: React.ReactElement;
     label?: string;
     isActive?: boolean;
-    onClick?: Function;
+    onClick?: (event?: React.MouseEvent<HTMLElement>) => any;
     to?: string;
 }
 
@@ -18,7 +18,7 @@ function FooterItem({ icon, label, isActive, onClick, to }: IFooterItemProps) {
             {label && <LabelContainer isActive={isActive}>{label}</LabelContainer>}
         </>
     );
-    
+
     return (
         <FooterItemContainer>
             {to ? (
@@ -26,7 +26,9 @@ function FooterItem({ icon, label, isActive, onClick, to }: IFooterItemProps) {
                     <ItemComponent />
                 </Link>
             ) : (
-                <ItemComponent />
+                <button type="button" onClick={onClick}>
+                    <ItemComponent />
+                </button>
             )}
         </FooterItemContainer>
     );

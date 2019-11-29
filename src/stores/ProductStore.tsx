@@ -2,25 +2,19 @@ import { observable, action, flow } from 'mobx';
 import { createContext } from 'react';
 
 import { stall } from '../util/helpers';
-import { IProduct } from '../common/types';
 import sampleData from '../common/sampleData';
 import { CancellablePromise } from 'mobx/lib/api/flow';
+import api from '../api';
 
-interface IProductStore {
-    products: IProduct[];
-    isLoadingProducts: boolean;
-    deleteProduct(): void;
-    addProduct(product: IProduct): void;
-    editProduct(): void;
-    fetchProducts(warehouseId, sortBy, sortDirection): CancellablePromise<void>;
-}
+import { ProductSortOption } from '../api/products';
+import { SortDirection, Product } from '../common/types';
 
-class ProductStore implements IProductStore {
-    @observable products: IProduct[] = [];
+class ProductStore {
+    @observable products: Product[] = [];
 
     @observable isLoadingProducts: boolean = false;
 
-    @action addProduct = (product?: IProduct) => {};
+    @action addProduct = (product?: Product) => {};
 
     @action deleteProduct = () => {};
 
@@ -28,21 +22,24 @@ class ProductStore implements IProductStore {
 
     @action fetchProducts = flow(function*(
         this: ProductStore,
-        warehouseId: number,
-        sortBy: string,
-        sortDirection: 1 | -1
+        args: { warehouseId: number; sortBy: ProductSortOption; sortDirection: SortDirection }
     ) {
         try {
-            this.isLoadingProducts = true;
-            yield stall(500);
+            this.isLoadingProducts = true; 
+
+            const products = yield api.getProducts({
+                limit: 10,
+                offset: 10,
+                ...args
+            });
+
+            if (products) this.products = products;
+
             this.isLoadingProducts = false;
-            this.products = sampleData.products;
         } catch (err) {
             throw err;
         }
     });
 }
 
-export const ProductStoreContext: React.Context<ProductStore> = createContext(
-    new ProductStore()
-);
+export const ProductStoreContext: React.Context<ProductStore> = createContext(new ProductStore());

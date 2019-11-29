@@ -11,6 +11,9 @@ import Products from '../Products';
 import ProductDetails from '../ProductDetails';
 import NewProduct from '../NewProduct';
 import Purchases from '../Purchases';
+import Footer from '../Footer';
+import HamburgerMenu from '../HamburgerMenu';
+import { request } from '../../api';
 
 function App() {
     const clearSavedForms = () => {
@@ -36,6 +39,7 @@ function App() {
                             <Route path={routes.products} component={Products} />
                             <Route path={routes.purchases} component={Purchases} />
                         </Switch>
+                        <HamburgerMenu />
                     </AppContainer>
                 </IconContext.Provider>
             </Router>

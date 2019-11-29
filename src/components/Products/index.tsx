@@ -50,7 +50,7 @@ const Products = observer(() => {
     ];
 
     useEffect(() => {
-        productStore.fetchProducts(1, 'quantity', 1);
+        productStore.fetchProducts({ warehouseId: 1, sortBy: 'code', sortDirection: 'asc' });
     }, [productStore]);
 
     return (

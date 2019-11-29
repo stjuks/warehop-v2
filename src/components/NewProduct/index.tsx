@@ -17,7 +17,7 @@ import { FormSelect } from '../Select';
 import Textarea from '../Textarea';
 import { mapSelectOptions } from '../../util/helpers';
 import sampleData from '../../common/sampleData';
-import { IWarehouse, IWarehouseProduct } from '../../common/types';
+import { Warehouse, ProductQuantityByWarehouse, Unit } from '../../common/types';
 
 interface INewProductFormValues {
     code: string;
@@ -26,18 +26,11 @@ interface INewProductFormValues {
         label: string;
         value: string;
     } | null;
-    unit: {
-        name: string;
-        abbr: string;
-    };
+    unit: Unit;
     purchasePrice: string;
     retailPrice: string;
     description: string;
-    warehouses: {
-        id: number;
-        name: string;
-        quantity: number;
-    }[];
+    warehouses: ProductQuantityByWarehouse[];
 }
 
 const NewProduct = observer(() => {
@@ -46,7 +39,7 @@ const NewProduct = observer(() => {
     const partners = sampleData.partners;
     const units = sampleData.units;
 
-    const [warehouseRows, setWarehouseRows] = useState([]);
+    const [warehouseRows, setWarehouseRows] = useState<ProductQuantityByWarehouse[]>([]);
 
     const initialValues: INewProductFormValues = {
         code: '',
@@ -76,11 +69,11 @@ const NewProduct = observer(() => {
         )*/
     });
 
-    const filterChosenWarehouseOptions = (formValues: IWarehouseProduct[], warehouses: IWarehouse[]) => {
+    const filterChosenWarehouseOptions = (formValues: ProductQuantityByWarehouse[], warehouses: Warehouse[]) => {
         return warehouses.filter(wh => formValues.map(whVal => whVal.id).indexOf(wh.id) === -1);
     };
 
-    const findFirstNonChosenWarehouse = (formValues: IWarehouseProduct[], warehouses: IWarehouse[]) => {
+    const findFirstNonChosenWarehouse = (formValues: ProductQuantityByWarehouse[], warehouses: Warehouse[]) => {
         return warehouses.find(wh => formValues.map(whVal => whVal.id).indexOf(wh.id) === -1);
     };
 
@@ -224,7 +217,8 @@ const NewProduct = observer(() => {
                                                     )
                                                 }
                                             >
-                                                <FiPlusCircle />&nbsp;Lisa ladu
+                                                <FiPlusCircle />
+                                                &nbsp;Lisa ladu
                                             </AddWarehouseButton>
                                         )}
                                     </>

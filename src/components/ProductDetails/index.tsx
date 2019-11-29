@@ -6,7 +6,7 @@ import theme from '../../util/theme';
 
 import Header from '../Header';
 import { MenuPopover } from '../Popover';
-import { IProductDetailed } from '../../common/types';
+import { Product } from '../../common/types';
 import { stall } from '../../util/helpers';
 import routes from '../../common/routes';
 import sampleData from '../../common/sampleData';
@@ -14,7 +14,7 @@ import { ContentContainer } from '../App/styles';
 import Footer from '../Footer';
 
 function ProductDetails(props) {
-    const [product, setProduct] = useState<IProductDetailed>();
+    const [product, setProduct] = useState<Product>();
 
     useEffect(() => {
         const { id } = props.match.params;
@@ -84,7 +84,7 @@ function ProductDetails(props) {
                             <div className="row">
                                 <div className="detail">
                                     <div className="detail-label">Tarnija</div>
-                                    <div className="detail-value">{product.partner.name}</div>
+                                    <div className="detail-value">{product.vendor && product.vendor.name}</div>
                                 </div>
                             </div>
                             <div className="row">
@@ -99,7 +99,7 @@ function ProductDetails(props) {
                                 <div className="detail">
                                     <div className="detail-label">Ühik</div>
                                     <div className="detail-value">
-                                        {product.unit.name} ({product.unit.abbr})
+                                        {product.unit.name} ({product.unit.abbreviation})
                                     </div>
                                 </div>
                             </div>
@@ -112,20 +112,20 @@ function ProductDetails(props) {
                         </DetailCardContainer>
                         <DetailLabel>Laoseis</DetailLabel>
                         <DetailCardContainer>
-                            {product.warehouses.map((wh, i) => (
+                            {product.quantityByWarehouse && product.quantityByWarehouse.map((wh, i) => (
                                 <WarehouseRowContainer key={i}>
                                     <span className="warehouse-name">{wh.name}</span>
                                     <span className="warehouse-quantity">
                                         {wh.quantity}
-                                        {product.unit.abbr}
+                                        {product.unit.abbreviation}
                                     </span>
                                 </WarehouseRowContainer>
                             ))}
                             <WarehouseRowContainer>
                                 <span className="warehouse-name">KOKKU</span>
                                 <span className="warehouse-quantity">
-                                    {product.warehouses.reduce((a, wh) => a + wh.quantity, 0)}
-                                    {product.unit.abbr}
+                                    {product.quantity}
+                                    {product.unit.abbreviation}
                                 </span>
                             </WarehouseRowContainer>
                         </DetailCardContainer>

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 interface TransitionProps {
     transitionName: string;
@@ -16,9 +17,18 @@ export const MenuContainer = styled.div<TransitionProps>`
         top: 0;
         bottom: 0;
         z-index: 9999;
+        padding: 1rem 0;
         
         &.${transitionName}-enter-done {
             right: 0;
+        }
+
+        .divider {
+            width: 100%;
+            background: ${theme.colors.lightColor1};
+            opacity: .1;
+            height: 1px;
+            margin: 1rem 0;
         }
     `}
 `;
@@ -39,6 +49,28 @@ export const BackgroundContainer = styled.div<TransitionProps>`
         &.${transitionName}-enter-done {
             opacity: 1;
             pointer-events: auto;
+        }
+    `}
+`;
+
+export const MenuItemContainer = styled(Link)`
+    ${({ theme }) => `
+        display: flex;
+        color: ${theme.colors.lightColor1};
+        padding: 1rem 1.5rem;
+        align-items: center;
+
+        :hover,
+        :focus {
+            background: rgba(255, 255, 255, .05);
+        }
+
+        .icon-container {
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            margin-right: 1.5rem;
+            opacity: .75;
         }
     `}
 `;

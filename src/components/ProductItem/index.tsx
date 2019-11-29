@@ -2,10 +2,10 @@ import React from 'react';
 
 import { FiChevronRight } from 'react-icons/fi';
 import { ProductItemContainer } from './styles';
-import { IProduct } from '../../common/types';
+import { Product } from '../../common/types';
 import routes from '../../common/routes';
 
-function ProductItem(product: IProduct) {
+function ProductItem(product: Product) {
     const { id, name, retailPrice, code, quantity, unit } = product;
 
     return (
@@ -21,7 +21,7 @@ function ProductItem(product: IProduct) {
                     <div className="product-code">{code}</div>
                     <div className="product-quantity">
                         {quantity}
-                        {unit.abbr}
+                        {unit.abbreviation}
                     </div>
                 </div>
             </div>
