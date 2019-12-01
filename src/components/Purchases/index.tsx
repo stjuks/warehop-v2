@@ -14,12 +14,15 @@ import { MenuSelect } from '../Select';
 import { ProductStoreContext } from '../../stores/ProductStore';
 import HeaderSearch from '../HeaderSearch';
 import Loader from '../Loader';
+import Radio from '../Radio';
+import { PurchaseStoreContext } from '../../stores/PurchaseStore';
+import PurchaseItem from './PurchaseItem';
 
 const Purchases = observer(() => {
-    const headerIcons = [
-        <HeaderSearch onChange={value => null} placeholder="Otsi arvet" />
-    ];
-    
+    const purchaseStore = useContext(PurchaseStoreContext);
+
+    const headerIcons = [<HeaderSearch onChange={value => null} placeholder="Otsi arvet" />];
+
     const sortOptions = [
         {
             label: 'Sorteeri',
@@ -32,19 +35,47 @@ const Purchases = observer(() => {
         }
     ];
 
+    useEffect(() => {
+        purchaseStore.fetchPurchases();
+    }, []);
+
+    const paidOptions = [
+        {
+            label: 'Kõik',
+            value: 'all'
+        },
+        {
+            label: 'Makstud',
+            value: 'paid'
+        },
+        {
+            label: 'Maksmata',
+            value: 'notPaid'
+        }
+    ];
+
     return (
         <>
             <Header title="Ostuarved" components={headerIcons} />
             <SortingContainer>
-                <MenuSelect 
+                <MenuSelect
                     isSearchable={false}
                     isSortable={true}
                     options={sortOptions}
                     defaultValue={sortOptions[0].options[0]}
                 />
+                <Radio
+                    options={paidOptions}
+                    name="radio-paid"
+                    onSelect={value => console.log(value)}
+                    defaultValue={paidOptions[0].value}
+                />
             </SortingContainer>
-            <ContentContainer>Ostuarved...</ContentContainer>
-            <Footer />
+            <ContentContainer>
+                {purchaseStore.purchases.map(purchase => (
+                    <PurchaseItem {...purchase} key={purchase.id} />
+                ))}
+            </ContentContainer>
         </>
     );
 });

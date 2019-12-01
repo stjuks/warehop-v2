@@ -1,10 +1,6 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-interface ILabelContainerProps {
-    isActive?: boolean;
-}
-
 export const FooterContainer = styled.div`
     ${({ theme }) => `
         color: ${theme.colors.text};
@@ -12,7 +8,10 @@ export const FooterContainer = styled.div`
         border: 1px solid ${theme.colors.lightColor1};
     `}
 
+    position: relative;
     border-radius 2rem 2rem 0 0;
+    border-width: 1px 1px 0 1px;
+    box-sizing: border-box;
     padding: 0 1rem;
     height: 3.5rem;
     display: flex
@@ -25,6 +24,12 @@ export const FooterItemContainer = styled.div`
     text-align: center;
     font-family: 'Red Hat Display', sans-serif;
     font-weight: 500;
+    display: flex;
+    align-items: center;
+
+    .footer-item__active {
+        font-weight: 700;
+    }
 
     ${({ theme }) => `
         color: ${theme.colors.text};
@@ -38,10 +43,8 @@ export const IconContainer = styled.div`
     justify-content: center;
 `;
 
-export const LabelContainer = styled.div<ILabelContainerProps>`
-    ${({ isActive }) => `
-        margin-top: 0.25rem;
-        font-size: 0.75rem;
-        ${isActive && 'font-weight: 700;'}
-    `}
+export const LabelContainer = styled.div`
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    width: 3rem;
 `;

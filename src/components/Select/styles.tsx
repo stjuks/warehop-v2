@@ -16,6 +16,7 @@ interface IFormSelectContainerProps {
 export const MenuSelectContainer = styled.div<IMenuSelectContainerProps>`
     ${({ theme }) => `
         display: flex;
+        min-width: 11rem;
 
         .form-select-container,
         .menu-select-container {
@@ -81,7 +82,6 @@ export const MenuSelectContainer = styled.div<IMenuSelectContainerProps>`
         .menu-select__indicators {
             color: ${theme.colors.lightText};
             padding: 0 0 0 0.25rem;
-            z-index: 9999;
 
             .sort-buttons {
                 border: none;

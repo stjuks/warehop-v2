@@ -1,30 +1,29 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useRef } from 'react';
+import { NavLink } from 'react-router-dom';
 
 import { FooterItemContainer, IconContainer, LabelContainer } from './styles';
 
 export interface IFooterItemProps {
     icon: React.ReactElement;
     label?: string;
-    isActive?: boolean;
-    onClick?: (event?: React.MouseEvent<HTMLElement>) => any;
+    onClick?: (ref, event?: React.MouseEvent<HTMLElement>) => any;
     to?: string;
 }
 
-function FooterItem({ icon, label, isActive, onClick, to }: IFooterItemProps) {
+function FooterItem({ icon, label, onClick, to }: IFooterItemProps) {
     const ItemComponent = () => (
         <>
             <IconContainer>{icon}</IconContainer>
-            {label && <LabelContainer isActive={isActive}>{label}</LabelContainer>}
+            {label && <LabelContainer>{label}</LabelContainer>}
         </>
     );
 
     return (
         <FooterItemContainer>
             {to ? (
-                <Link to={to}>
+                <NavLink to={to} activeClassName="footer-item__active">
                     <ItemComponent />
-                </Link>
+                </NavLink>
             ) : (
                 <button type="button" onClick={onClick}>
                     <ItemComponent />

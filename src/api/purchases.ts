@@ -1,7 +1,8 @@
 import { request } from './index';
 import { SortDirection, Invoice } from '../common/types';
+import sampleData from '../common/sampleData';
 
-type PurchaseSortOption = 'invoiceNr' | 'partnerId' | 'purchaseDate' | 'dueDate' | 'sum';
+type PurchaseSortOption = 'invoiceNr' | 'partnerId' | 'purchaseDate' | 'dueDate' | 'sum';
 
 const getPurchases = async (data: {
     limit: number;
@@ -10,5 +11,9 @@ const getPurchases = async (data: {
     sortDirection?: SortDirection;
     isPaid?: boolean;
 }): Promise<Invoice[]> => {
-    return await request.get({ url: '/purchases', data });
+    return await request.get({ url: '/purchases', data, mockData: sampleData.purchases });
+};
+
+export default {
+    getPurchases
 };

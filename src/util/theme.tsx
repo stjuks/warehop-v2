@@ -1,8 +1,8 @@
 import { ITheme } from 'styled-components';
 
 const theme: ITheme = {
-    lightShadow: '0 0 10px rgba(0, 0, 0, .05)',
-    blueShadow: '0 0 10px hsl(216, 100%, 80%)',
+    lightShadow: '0 0 0.5rem rgba(0, 0, 0, .05)',
+    blueShadow: '0 0 0.5rem hsl(216, 100%, 90%)',
     colors: {
         lightGrey: '#FAFAFA',
         danger: '#F53D3D',

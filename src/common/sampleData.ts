@@ -72,9 +72,7 @@ const products: Product[] = [
         description: 'Lahe kaup',
         unit: units[0],
         quantity: 3,
-        quantityByWarehouse: [
-            { ...warehouses[0], quantity: 3 }
-        ],
+        quantityByWarehouse: [{ ...warehouses[0], quantity: 3 }],
         vendor: partners[1]
     },
     {
@@ -87,32 +85,72 @@ const products: Product[] = [
         code: 'PH4932049',
         unit: units[0],
         quantity: 1,
-        quantityByWarehouse: [
-            { ...warehouses[1], quantity: 1 }
-        ],
+        quantityByWarehouse: [{ ...warehouses[1], quantity: 1 }],
         vendor: partners[1]
     }
 ];
 
-const invoices: Invoice[] = [
+const purchases: Invoice[] = [
     {
         id: 1,
         type: 'PURCHASE',
-        number: 'AB-123',
+        number: 'A29030239',
+        creationDate: new Date('11-25-2019'),
+        dueDate: new Date('12-03-2019'),
+        partner: partners[1],
+        sum: 100.99,
+        isPaid: false,
+        description: 'Ülekanne',
+        items: [
+            products[0],
+            products[1]
+        ]
+    },
+    {
+        id: 2,
+        type: 'PURCHASE',
+        number: 'A129031923',
+        creationDate: new Date('11-25-2019'),
+        dueDate: new Date('12-16-2019'),
+        partner: partners[2],
+        sum: 100.99,
+        isPaid: true,
+        description: 'Ülekanne'
+    }
+];
+
+const sales: Invoice[] = [
+    {
+        id: 3,
+        type: 'SALE',
+        number: '19021231',
         creationDate: new Date('11-25-2019'),
         dueDate: new Date('12-16-2019'),
         partner: partners[1],
         sum: 100.99,
         isPaid: true,
         description: 'Ülekanne'
+    },
+    {
+        id: 4,
+        type: 'SALE',
+        number: '19203191',
+        creationDate: new Date('10-25-2019'),
+        dueDate: new Date('11-16-2019'),
+        partner: partners[1],
+        sum: 100.99,
+        isPaid: false,
+        description: 'Ülekanne'
     }
-]
+];
 
 const sampleData = {
     products,
     units,
     partners,
-    warehouses
+    warehouses,
+    purchases,
+    sales
 };
 
 export default sampleData;

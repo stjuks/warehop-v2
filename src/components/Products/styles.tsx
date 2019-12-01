@@ -9,18 +9,12 @@ export const SortingContainer = styled.div`
         border-bottom: 1px solid ${theme.colors.lightColor1};
     `}
     display: flex;
-    padding: 0.75rem 1rem;
+    padding: 0.5rem 0.75rem;
+    flex-wrap: wrap;
 
-    > div {
+    > * {
         flex: 1;
-
-        :not(:first-child) {
-            margin-left: 0.2rem;
-        }
-
-        :not(:last-child) {
-            margin-right: 0.25rem;
-        }
+        padding: 0.25rem;
     }
 `;
 

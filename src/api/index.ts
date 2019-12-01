@@ -2,6 +2,7 @@ import axios from 'axios';
 import productApi from './products';
 import authApi from './auth';
 import warehouseApi from './warehouses';
+import purchaseApi from './purchases';
 
 interface IRequestArgs {
     url: string;
@@ -24,7 +25,7 @@ const baseRequest = async <T>({ url, data, mockData }: IRequestArgs, method: HTT
     const token = localStorage.getItem('access_token');
     let dataKey = '';
 
-    if (method === 'GET' || method === 'POST') dataKey = 'params';
+    if (method === 'GET' || method === 'DELETE') dataKey = 'params';
     else dataKey = 'data';
 
     try {
@@ -61,5 +62,6 @@ export const request: IRequest = {
 export default {
     ...authApi,
     ...productApi,
-    ...warehouseApi
+    ...warehouseApi,
+    ...purchaseApi
 };

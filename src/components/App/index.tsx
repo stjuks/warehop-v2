@@ -15,7 +15,7 @@ import Footer from '../Footer';
 import HamburgerMenu from '../HamburgerMenu';
 import { request } from '../../api';
 
-function App() {
+const App = () => {
     const clearSavedForms = () => {
         Object.keys(localStorage).forEach(key => {
             if (key.includes('form')) localStorage.removeItem(key);
@@ -39,6 +39,7 @@ function App() {
                             <Route path={routes.products} component={Products} />
                             <Route path={routes.purchases} component={Purchases} />
                         </Switch>
+                        <Footer />
                         <HamburgerMenu />
                     </AppContainer>
                 </IconContext.Provider>

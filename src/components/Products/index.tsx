@@ -83,7 +83,6 @@ const Products = observer(() => {
                 />
             </SortingContainer>
             <ContentContainer>{getProducts()}</ContentContainer>
-            <Footer />
         </>
     );
 });

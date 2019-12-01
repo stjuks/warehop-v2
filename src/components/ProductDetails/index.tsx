@@ -136,7 +136,6 @@ const ProductDetails = props => {
                     </>
                 )}
             </ContentContainer>
-            <Footer />
         </>
     );
 }
