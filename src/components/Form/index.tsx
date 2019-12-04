@@ -81,6 +81,7 @@ const Form: React.FC<FormProps> = ({ initialValues, model, onSubmit, id }) => {
                 name={props.name}
                 setFieldValue={formikProps.setFieldValue}
                 value={formikProps.values[props.name]}
+                label={props.label}
             />
         )
     });

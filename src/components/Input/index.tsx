@@ -4,17 +4,28 @@ import { FiX } from 'react-icons/fi';
 import { InputContainer } from './styles';
 
 interface IInputProps {
-    name: string;
+    name?: string;
     value: any;
-    onChange(event: ChangeEvent<Element>): void;
+    onChange?(event: ChangeEvent<Element>): void;
     label?: string | null;
     error?: string;
     icon?: any;
     setFieldValue?: Function;
     type?: 'password' | 'number' | 'text' | 'email' | 'file';
+    readOnly?: boolean;
 }
 
-function Input({ name, value, onChange, label, error, icon, setFieldValue, type = 'text' }: IInputProps) {
+function Input({
+    name,
+    value,
+    onChange,
+    label,
+    error,
+    icon,
+    setFieldValue,
+    type = 'text',
+    readOnly = false
+}: IInputProps) {
     return (
         <InputContainer value={value}>
             {label && (
@@ -24,6 +35,7 @@ function Input({ name, value, onChange, label, error, icon, setFieldValue, type 
             )}
             <div className="input-wrapper">
                 <input
+                    readOnly={readOnly}
                     type={type}
                     className="input-field"
                     name={name}
