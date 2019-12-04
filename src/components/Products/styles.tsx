@@ -9,6 +9,7 @@ export const SortingContainer = styled.div`
         border-bottom: 1px solid ${theme.colors.lightColor1};
     `}
     display: flex;
+    flex-direction: column;
     padding: 0.5rem 0.75rem;
     flex-wrap: wrap;
 
@@ -18,7 +19,7 @@ export const SortingContainer = styled.div`
     }
 `;
 
-export const NewProductButtonContainer = styled.button`
+export const NewItemButtonContainer = styled.button`
     ${({ theme }) => `
         display: flex;
         color: ${theme.colors.primary};

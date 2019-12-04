@@ -11,7 +11,6 @@ export const FooterContainer = styled.div`
     position: relative;
     border-radius 2rem 2rem 0 0;
     border-width: 1px 1px 0 1px;
-    box-sizing: border-box;
     padding: 0 1rem;
     height: 3.5rem;
     display: flex

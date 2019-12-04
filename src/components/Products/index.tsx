@@ -3,7 +3,7 @@ import { FiSearch, FiPlusCircle } from 'react-icons/fi';
 import { observer } from 'mobx-react-lite';
 
 import { ContentContainer } from '../App/styles';
-import { SortingContainer, NewProductButtonContainer } from './styles';
+import { SortingContainer, NewItemButtonContainer } from './styles';
 import history from '../../common/history';
 import routes from '../../common/routes';
 
@@ -49,9 +49,9 @@ const Products = observer(() => {
 
     const headerIcons = [
         <HeaderSearch onChange={handleSearch} placeholder="Otsi kaupa" />,
-        <NewProductButtonContainer onClick={() => history.push(routes.newProduct)}>
+        <NewItemButtonContainer onClick={() => history.push(routes.newProduct)}>
             <FiPlusCircle />
-        </NewProductButtonContainer>
+        </NewItemButtonContainer>
     ];
 
     useEffect(() => {
@@ -74,13 +74,13 @@ const Products = observer(() => {
         <>
             <Header title="Kaubad" components={headerIcons} />
             <SortingContainer>
-                <MenuSelect options={warehouseOptions} defaultValue={warehouseOptions[0].options[0]} />
                 <MenuSelect
                     isSearchable={false}
                     isSortable={true}
                     options={sortOptions}
                     defaultValue={sortOptions[0].options[0]}
                 />
+                <MenuSelect options={warehouseOptions} defaultValue={warehouseOptions[0].options[0]} />
             </SortingContainer>
             <ContentContainer>{getProducts()}</ContentContainer>
         </>

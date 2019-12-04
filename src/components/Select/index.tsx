@@ -30,7 +30,7 @@ interface ISelectWithoutGroupsProps extends ISelectProps {
     options: IOption[];
 }
 
-type SelectProps = ISelectWithGroupsProps | ISelectWithoutGroupsProps;
+export type SelectProps = ISelectWithGroupsProps | ISelectWithoutGroupsProps;
 
 const CustomDropdownIndicator = () => {
     return (
@@ -90,7 +90,7 @@ export function MenuSelect({ options, defaultValue, isSortable = false, isSearch
     );
 }
 
-interface IFormSelectProps {
+export interface FormSelectProps {
     options: any[];
     label?: string | null;
     name: string;
@@ -119,7 +119,7 @@ export function FormSelect({
     value,
     withAddOption,
     placeholder = 'Vali...'
-}: IFormSelectProps) {
+}: FormSelectProps) {
     const SelectField: React.SFC<FieldProps> = ({ field, form }) => {
         const [isFocused, setFocused] = useState(false);
 

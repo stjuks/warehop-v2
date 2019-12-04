@@ -3,7 +3,7 @@ import { FiSearch, FiPlusCircle } from 'react-icons/fi';
 import { observer } from 'mobx-react-lite';
 
 import { ContentContainer } from '../App/styles';
-import { SortingContainer, NewItemButtonContainer } from '../Products/styles';
+import { SortingContainer } from '../Products/styles';
 import history from '../../common/history';
 import routes from '../../common/routes';
 
@@ -11,21 +11,17 @@ import Header from '../Header';
 import ProductItem from '../ProductItem';
 import Footer from '../Footer';
 import { MenuSelect } from '../Select';
+import { ProductStoreContext } from '../../stores/ProductStore';
 import HeaderSearch from '../HeaderSearch';
 import Loader from '../Loader';
 import Radio from '../Radio';
 import { PurchaseStoreContext } from '../../stores/PurchaseStore';
 import PurchaseItem from './PurchaseItem';
 
-const Purchases = observer(() => {
+const Sales = observer(() => {
     const purchaseStore = useContext(PurchaseStoreContext);
 
-    const headerIcons = [
-        <HeaderSearch onChange={value => null} placeholder="Otsi arvet" />,
-        <NewItemButtonContainer onClick={() => history.push(routes.newPurchase)}>
-            <FiPlusCircle />
-        </NewItemButtonContainer>
-    ];
+    const headerIcons = [<HeaderSearch onChange={value => null} placeholder="Otsi arvet" />];
 
     const sortOptions = [
         {
@@ -44,9 +40,18 @@ const Purchases = observer(() => {
     }, []);
 
     const paidOptions = [
-        { label: 'Kõik', value: 'all' },
-        { label: 'Makstud', value: 'paid' },
-        { label: 'Maksmata', value: 'notPaid' }
+        {
+            label: 'Kõik',
+            value: 'all'
+        },
+        {
+            label: 'Makstud',
+            value: 'paid'
+        },
+        {
+            label: 'Maksmata',
+            value: 'notPaid'
+        }
     ];
 
     return (
@@ -75,4 +80,4 @@ const Purchases = observer(() => {
     );
 });
 
-export default Purchases;
+export default Sales;

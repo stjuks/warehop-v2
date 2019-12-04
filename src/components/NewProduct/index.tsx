@@ -17,15 +17,12 @@ import { FormSelect } from '../Select';
 import Textarea from '../Textarea';
 import { mapSelectOptions } from '../../util/helpers';
 import sampleData from '../../common/sampleData';
-import { Warehouse, ProductQuantityByWarehouse, Unit } from '../../common/types';
+import { Warehouse, ProductQuantityByWarehouse, Unit, Partner } from '../../common/types';
 
 interface INewProductFormValues {
     code: string;
     name: string;
-    partner: {
-        label: string;
-        value: string;
-    } | null;
+    partner: Partner | null;
     unit: Unit;
     purchasePrice: string;
     retailPrice: string;

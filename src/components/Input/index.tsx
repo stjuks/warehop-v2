@@ -11,7 +11,7 @@ interface IInputProps {
     error?: string;
     icon?: any;
     setFieldValue?: Function;
-    type?: 'password' | 'number' | 'text' | 'email';
+    type?: 'password' | 'number' | 'text' | 'email' | 'file';
 }
 
 function Input({ name, value, onChange, label, error, icon, setFieldValue, type = 'text' }: IInputProps) {
