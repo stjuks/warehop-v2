@@ -75,7 +75,14 @@ const Form: React.FC<FormProps> = ({ initialValues, model, onSubmit, id }) => {
                 onChange={formikProps.handleChange}
             />
         ),
-        file: <FileInput name={props.name} setFieldValue={formikProps.setFieldValue} />,
+        file: (
+            <FileInput
+                name={props.name}
+                setFieldValue={formikProps.setFieldValue}
+                value={formikProps.values[props.name]}
+                label={props.label}
+            />
+        ),
         date: (
             <DateInput
                 name={props.name}
@@ -93,7 +100,7 @@ const Form: React.FC<FormProps> = ({ initialValues, model, onSubmit, id }) => {
                 <div style={{ display: 'flex' }}>
                     {props.fields &&
                         props.fields.map(({ type, ...restProps }, i) => (
-                            <div style={{ flex: props.flex[i] }}>
+                            <div style={{ flex: props.flex[i] }} key={i}>
                                 {inputTypes({ props: restProps, formikProps })[type]}
                             </div>
                         ))}

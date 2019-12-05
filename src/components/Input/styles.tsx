@@ -55,6 +55,7 @@ export const InputContainer = styled.div<IInputContainerProps>`
             color: ${theme.colors.text};
             min-width: 0;
             font-family: 'Roboto', sans-serif;
+            width: 0;
 
             :focus { 
                 outline: none; 

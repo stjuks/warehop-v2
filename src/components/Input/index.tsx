@@ -35,6 +35,7 @@ function Input({
             )}
             <div className="input-wrapper">
                 <input
+                    tabIndex={readOnly ? -1 : 0}
                     readOnly={readOnly}
                     type={type}
                     className="input-field"

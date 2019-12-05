@@ -21,6 +21,8 @@ const DateInput: React.FC<DateInputProps> = ({ name, setFieldValue, value, label
         <DateInputContainer>
             <Input value={value.format('DD.MM.YYYY')} icon={<FiCalendar />} label={label} readOnly={true} />
             <SingleDatePicker
+                readOnly={true}
+                numberOfMonths={1}
                 date={value}
                 focused={isFocused}
                 onFocusChange={({ focused }) => setFocused(focused)}
