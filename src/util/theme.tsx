@@ -1,6 +1,6 @@
 import { ITheme } from 'styled-components';
 
-const theme: ITheme = {
+const theme = {
     lightShadow: '0 0 0.5rem rgba(0, 0, 0, .05)',
     blueShadow: '0 0 0.5rem hsl(216, 100%, 90%)',
     colors: {

@@ -50,6 +50,7 @@ const units: Unit[] = [
 const products: Product[] = [
     {
         id: 1,
+        type: 'PRODUCT',
         name: 'Külmkapp Electrolux',
         retailPrice: 430.99,
         purchasePrice: 250.99,
@@ -65,6 +66,7 @@ const products: Product[] = [
     },
     {
         id: 2,
+        type: 'PRODUCT',
         name: 'Pliit Electrolux',
         retailPrice: 349.99,
         purchasePrice: 159.99,
@@ -77,6 +79,7 @@ const products: Product[] = [
     },
     {
         id: 3,
+        type: 'PRODUCT',
         name: 'Kõrvaklapid Philips',
         retailPrice: 24.99,
         description:

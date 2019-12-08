@@ -7,7 +7,7 @@ import { DateInputContainer } from './styles';
 
 import Input from '../Input';
 
-interface DateInputProps {
+export interface DateInputProps {
     name: string;
     setFieldValue: Function;
     value: moment.Moment;
@@ -17,10 +17,13 @@ interface DateInputProps {
 const DateInput: React.FC<DateInputProps> = ({ name, setFieldValue, value, label }) => {
     const [isFocused, setFocused] = useState(false);
 
+    const isOutsideRange = () => false;
+
     return (
         <DateInputContainer>
             <Input value={value.format('DD.MM.YYYY')} icon={<FiCalendar />} label={label} readOnly={true} />
             <SingleDatePicker
+                isOutsideRange={isOutsideRange}
                 readOnly={true}
                 numberOfMonths={1}
                 date={value}

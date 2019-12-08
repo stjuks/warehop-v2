@@ -1,47 +1,73 @@
-import React, { useContext, useState } from 'react';
+import React from 'react';
 import { observer } from 'mobx-react-lite';
 import moment from 'moment';
-import { Formik, FieldArray } from 'formik';
 import * as yup from 'yup';
-import { FiTrash2, FiPlusCircle } from 'react-icons/fi';
 
 import routes from '../../common/routes';
-import WarehouseStoreContext from '../../stores/WarehouseStore';
-import { NewProductContainer, FormRowContainer, AddWarehouseButton, TrashButtonContainer } from './styles';
+import { NewProductContainer, AddPurchaseItemBtn } from './styles';
 
 import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
-import Input from '../Input';
 import Button from '../Button';
-import Persist from '../Persist';
-import { FormSelect } from '../Select';
-import Textarea from '../Textarea';
-import { mapSelectOptions } from '../../util/helpers';
 import sampleData from '../../common/sampleData';
-import { Warehouse, ProductQuantityByWarehouse, Unit, Partner } from '../../common/types';
-import FileInput from '../FileInput';
-import Form, { FormModel } from '../Form';
+import { Partner, InvoiceItem } from '../../common/types';
+import Form, { FormModel, generateFormFromJSON } from '../Form';
+import PurchaseItem from './PurchaseItem';
 
 interface NewPurchaseFormValues {
-    partner: Partner | null;
+    partner: Partner | undefined;
+    invoiceNr: string;
+    invoiceFile?: File;
+    creationDate: moment.Moment;
+    dueDate: moment.Moment;
+    description?: string;
+    items: InvoiceItem[];
 }
 
 const NewPurchase = observer(() => {
     const partners = sampleData.partners;
     const units = sampleData.units;
 
-    const initialValues = {
-        partner: null,
+    const initialValues: NewPurchaseFormValues = {
+        partner: undefined,
         invoiceNr: '',
-        invoiceFile: null,
+        invoiceFile: undefined,
         creationDate: moment(),
         dueDate: moment(),
-        description: ''
+        description: '',
+        items: [
+            {
+                type: 'PRODUCT',
+                name: 'Luugi käepide Electrolux',
+                quantity: 5,
+                purchasePrice: 25,
+                code: 'AD-123001232',
+                unit: {
+                    id: 1,
+                    name: 'Tükk',
+                    abbreviation: 'tk'
+                },
+                warehouse: {
+                    id: 1,
+                    name: 'Ladu 1'
+                }
+            },
+            {
+                type: 'SERVICE',
+                name: 'Kuller',
+                quantity: 1,
+                purchasePrice: 5
+            }
+        ]
     };
 
     const validationSchema = yup.object({});
 
     const formModel: FormModel = [
+        {
+            type: 'subtitle',
+            text: 'Arve põhiandmed'
+        },
         {
             type: 'select',
             options: partners,
@@ -94,14 +120,45 @@ const NewPurchase = observer(() => {
             label: 'Märkused'
         },
         {
-            type: 'customField',
-            component: props => <div onClick={() => console.log(props)}>lol</div>
+            type: 'fieldArray',
+            name: 'items',
+            render: ({ formikProps, arrayHelpers }) =>
+                generateFormFromJSON({
+                    model: [
+                        {
+                            type: 'inputRow',
+                            flex: [1, 0],
+                            fields: [
+                                {
+                                    type: 'subtitle',
+                                    text: 'Kaubad'
+                                },
+                                {
+                                    type: 'customField',
+                                    component: () => <AddPurchaseItemBtn>+ Lisa kaup</AddPurchaseItemBtn>
+                                }
+                            ]
+                        },
+                        {
+                            type: 'customField',
+                            component: () =>
+                                formikProps.values.items.map((item, index) => (
+                                    <PurchaseItem
+                                        item={item}
+                                        onDelete={() => arrayHelpers.remove(index)}
+                                        onEdit={() => alert('Muuda')}
+                                    />
+                                ))
+                        }
+                    ],
+                    formikProps
+                })
         }
     ];
 
     return (
         <>
-            <Header title="Uus ostuarve" backTo={routes.products} />
+            <Header title="Uus ostuarve" backTo={routes.purchases} />
             <NewProductContainer padded>
                 <Form
                     id="new-purchase-form"

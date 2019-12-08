@@ -1,62 +1,73 @@
 import React from 'react';
 import { Formik, FieldArray } from 'formik';
 
+import { FormContainer } from './styles';
+
 import { FormSelectProps, FormSelect } from '../Select';
-import Input from '../Input';
+import Input, { InputProps } from '../Input';
 import Textarea from '../Textarea';
-import FileInput from '../FileInput';
-import DateInput from '../DateInput';
+import FileInput, { FileInputProps } from '../FileInput';
+import DateInput, { DateInputProps } from '../DateInput';
+
+interface BaseInput {
+    name: string;
+    label: string;
+}
 
 interface SelectModel extends FormSelectProps {
     type: 'select';
 }
 
-interface FileInputProps {
+interface FileInputModel extends BaseInput {
     type: 'file';
-    name: string;
-    label: string;
 }
 
-interface DateInputProps {
+interface DateInputModel extends BaseInput {
     type: 'date';
-    name: string;
-    label: string;
 }
 
-interface InputProps {
+interface InputModel extends BaseInput {
     type: 'text' | 'textarea';
-    name: string;
-    label: string;
 }
 
-interface InputRowProps {
+interface InputRowModel {
     type: 'inputRow';
     flex: number[];
-    fields: (SelectModel | InputProps | FileInputProps | DateInputProps)[];
+    fields: FormElement[];
 }
 
-interface CustomFieldProps {
+interface CustomFieldModel {
     type: 'customField';
     component: (props) => any;
 }
 
-export type FormModel = (
-    | SelectModel
-    | InputProps
-    | InputRowProps
-    | CustomFieldProps
-    | FileInputProps
-    | DateInputProps
-)[];
+interface SubtitleModel {
+    type: 'subtitle';
+    text: string;
+}
+
+interface FieldArrayModel {
+    type: 'fieldArray';
+    name: string;
+    render: (props) => React.ReactElement;
+}
+
+type FormInputElement = SelectModel | InputModel | FileInputModel | DateInputModel;
+type FormElement = FormInputElement | InputRowModel | CustomFieldModel | SubtitleModel | FieldArrayModel;
+
+export type FormModel = FormElement[];
 
 interface FormProps {
     initialValues: Object;
     id: string;
     model: FormModel;
     onSubmit: (values) => any;
+    padding?: string;
 }
 
-const Form: React.FC<FormProps> = ({ initialValues, model, onSubmit, id }) => {
+export const generateFormFromJSON: any = (args: { model: FormModel; formikProps: any }) => {
+    const { model, formikProps } = args;
+
     const inputTypes = ({ props, formikProps }) => ({
         text: (
             <Input
@@ -97,27 +108,35 @@ const Form: React.FC<FormProps> = ({ initialValues, model, onSubmit, id }) => {
         return {
             ...inputTypes({ props, formikProps }),
             inputRow: (
-                <div style={{ display: 'flex' }}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                     {props.fields &&
                         props.fields.map(({ type, ...restProps }, i) => (
                             <div style={{ flex: props.flex[i] }} key={i}>
-                                {inputTypes({ props: restProps, formikProps })[type]}
+                                {elementTypes({ props: restProps, formikProps })[type]}
                             </div>
                         ))}
                 </div>
             ),
-            customField: props.component && props.component(formikProps)
+            customField: props.component && props.component(formikProps),
+            subtitle: <h4 className="form-subtitle">{props.text}</h4>,
+            fieldArray: (
+                <FieldArray name={props.name} render={arrayHelpers => props.render({ formikProps, arrayHelpers })} />
+            )
         };
     };
 
+    return model.map(({ type, ...restProps }, i) => (
+        <React.Fragment key={i}>{elementTypes({ props: restProps, formikProps })[type]}</React.Fragment>
+    ));
+};
+
+const Form: React.FC<FormProps> = ({ initialValues, model, onSubmit, id }) => {
     return (
         <Formik initialValues={initialValues} onSubmit={onSubmit}>
             {formikProps => (
-                <form id={id} onSubmit={formikProps.handleSubmit}>
-                    {model.map(({ type, ...restProps }, i) => (
-                        <React.Fragment key={i}>{elementTypes({ props: restProps, formikProps })[type]}</React.Fragment>
-                    ))}
-                </form>
+                <FormContainer id={id} onSubmit={formikProps.handleSubmit}>
+                    {generateFormFromJSON({ model, formikProps })}
+                </FormContainer>
             )}
         </Formik>
     );

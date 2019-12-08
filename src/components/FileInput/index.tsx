@@ -4,7 +4,7 @@ import { FiFile } from 'react-icons/fi';
 import { FileInputContainer } from './styles';
 import Input from '../Input';
 
-interface FileInputProps {
+export interface FileInputProps {
     value: File | null;
     setFieldValue: Function;
     name: string;

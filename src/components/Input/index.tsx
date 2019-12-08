@@ -3,7 +3,7 @@ import { FiX } from 'react-icons/fi';
 
 import { InputContainer } from './styles';
 
-interface IInputProps {
+export interface InputProps {
     name?: string;
     value: any;
     onChange?(event: ChangeEvent<Element>): void;
@@ -11,11 +11,11 @@ interface IInputProps {
     error?: string;
     icon?: any;
     setFieldValue?: Function;
-    type?: 'password' | 'number' | 'text' | 'email' | 'file';
+    inputType?: 'password' | 'number' | 'text' | 'email' | 'file';
     readOnly?: boolean;
 }
 
-function Input({
+const Input: React.FC<InputProps> = ({
     name,
     value,
     onChange,
@@ -23,9 +23,9 @@ function Input({
     error,
     icon,
     setFieldValue,
-    type = 'text',
+    inputType = 'text',
     readOnly = false
-}: IInputProps) {
+}) => {
     return (
         <InputContainer value={value}>
             {label && (
@@ -37,7 +37,7 @@ function Input({
                 <input
                     tabIndex={readOnly ? -1 : 0}
                     readOnly={readOnly}
-                    type={type}
+                    type={inputType}
                     className="input-field"
                     name={name}
                     value={value || ''}
@@ -55,6 +55,6 @@ function Input({
             <div className="error-message">{error}</div>
         </InputContainer>
     );
-}
+};
 
 export default Input;

@@ -1,6 +1,7 @@
 interface Article {
     id: number;
     name: string;
+    type: ArticleType;
     retailPrice?: number;
     purchasePrice?: number;
     description?: string;
@@ -9,6 +10,8 @@ interface Article {
 export interface ProductQuantityByWarehouse extends Warehouse {
     quantity: number;
 }
+
+export type ArticleType = 'SERVICE' | 'PRODUCT';
 
 export type InvoiceType = 'SALE' | 'PURCHASE';
 
@@ -40,6 +43,18 @@ export interface Invoice {
     description?: string;
     fileURI?: string;
     items?: (Product | Service)[];
+}
+
+export interface InvoiceItem {
+    type: ArticleType;
+    quantity: number;
+    name: string;
+    id?: number;
+    code?: string;
+    retailPrice?: number;
+    purchasePrice?: number;
+    unit?: Unit;
+    warehouse?: Warehouse;
 }
 
 export interface Partner {

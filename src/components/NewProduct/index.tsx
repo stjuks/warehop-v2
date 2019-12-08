@@ -135,7 +135,7 @@ const NewProduct = observer(() => {
                             <FormRowContainer>
                                 <Input
                                     label="Ostuhind"
-                                    type="number"
+                                    inputType="number"
                                     name="purchasePrice"
                                     setFieldValue={setFieldValue}
                                     value={values.purchasePrice}
@@ -146,7 +146,7 @@ const NewProduct = observer(() => {
                                 <Input
                                     label="Müügihind"
                                     name="retailPrice"
-                                    type="number"
+                                    inputType="number"
                                     setFieldValue={setFieldValue}
                                     value={values.retailPrice}
                                     onChange={handleChange}
