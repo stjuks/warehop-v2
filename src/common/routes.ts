@@ -4,6 +4,7 @@ export default {
     newProduct: '/products/new',
     purchases: '/purchases',
     newPurchase: '/purchases/new',
+    newPurchaseItem: '/purchases/new/item',
     sales: '/sales',
     expenses: '/expenses',
     incomes: '/incomes',

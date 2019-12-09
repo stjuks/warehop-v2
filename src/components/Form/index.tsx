@@ -8,6 +8,7 @@ import Input, { InputProps } from '../Input';
 import Textarea from '../Textarea';
 import FileInput, { FileInputProps } from '../FileInput';
 import DateInput, { DateInputProps } from '../DateInput';
+import Radio, { RadioProps } from '../Radio';
 
 interface BaseInput {
     name: string;
@@ -24,6 +25,10 @@ interface FileInputModel extends BaseInput {
 
 interface DateInputModel extends BaseInput {
     type: 'date';
+}
+
+interface RadioInputModel extends RadioProps {
+    type: 'radio';
 }
 
 interface InputModel extends BaseInput {
@@ -52,7 +57,7 @@ interface FieldArrayModel {
     render: (props) => React.ReactElement;
 }
 
-type FormInputElement = SelectModel | InputModel | FileInputModel | DateInputModel;
+type FormInputElement = SelectModel | InputModel | FileInputModel | DateInputModel | RadioInputModel;
 type FormElement = FormInputElement | InputRowModel | CustomFieldModel | SubtitleModel | FieldArrayModel;
 
 export type FormModel = FormElement[];
@@ -101,7 +106,8 @@ export const generateFormFromJSON: any = (args: { model: FormModel; formikProps:
                 value={formikProps.values[props.name]}
                 label={props.label}
             />
-        )
+        ),
+        radio: <Radio onSelect={value => formikProps.setFieldValue(props.name, value)} {...props} />
     });
 
     const elementTypes = ({ props, formikProps }) => {

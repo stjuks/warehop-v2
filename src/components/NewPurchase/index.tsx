@@ -13,6 +13,8 @@ import sampleData from '../../common/sampleData';
 import { Partner, InvoiceItem } from '../../common/types';
 import Form, { FormModel, generateFormFromJSON } from '../Form';
 import PurchaseItem from './PurchaseItem';
+import { Route } from 'react-router';
+import NewPurchaseItem from './NewPurchaseItem';
 
 interface NewPurchaseFormValues {
     partner: Partner | undefined;
@@ -135,7 +137,23 @@ const NewPurchase = observer(() => {
                                 },
                                 {
                                     type: 'customField',
-                                    component: () => <AddPurchaseItemBtn>+ Lisa kaup</AddPurchaseItemBtn>
+                                    component: () => (
+                                        <React.Fragment>
+                                            <AddPurchaseItemBtn to={routes.newPurchaseItem}>
+                                                + Lisa kaup
+                                            </AddPurchaseItemBtn>
+                                            <Route
+                                                path={routes.newPurchaseItem}
+                                                render={() => (
+                                                    <NewPurchaseItem
+                                                        arrayHelpers={arrayHelpers}
+                                                        onSubmit={() => alert('item added')}
+                                                        index={formikProps.values.items.length}
+                                                    />
+                                                )}
+                                            />
+                                        </React.Fragment>
+                                    )
                                 }
                             ]
                         },
@@ -144,6 +162,7 @@ const NewPurchase = observer(() => {
                             component: () =>
                                 formikProps.values.items.map((item, index) => (
                                     <PurchaseItem
+                                        key={index}
                                         item={item}
                                         onDelete={() => arrayHelpers.remove(index)}
                                         onEdit={() => alert('Muuda')}

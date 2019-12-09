@@ -98,6 +98,7 @@ export interface FormSelectProps {
     isRequired?: boolean;
     defaultValue?: any;
     labelAttribute: string;
+    valueAttribute?: string;
     withAddOption?: {
         title: string;
         onClick: () => void;
@@ -118,6 +119,7 @@ export function FormSelect({
     labelAttribute,
     value,
     withAddOption,
+    valueAttribute,
     placeholder = 'Vali...'
 }: FormSelectProps) {
     const SelectField: React.SFC<FieldProps> = ({ field, form }) => {
@@ -142,7 +144,8 @@ export function FormSelect({
             return withAddOption && data.addButton ? (
                 <div>
                     <AddButtonContainer type="button" onClick={withAddOption.onClick}>
-                        <FiPlusCircle />&nbsp;{withAddOption.title}
+                        <FiPlusCircle />
+                        &nbsp;{withAddOption.title}
                     </AddButtonContainer>
                 </div>
             ) : (
@@ -151,13 +154,19 @@ export function FormSelect({
         };
 
         const modifyOptions = () => {
-            return [{ addButton: true }, ...mapSelectOptions(labelAttribute, options)];
+            if (withAddOption)
+                return [{ addButton: true }, ...mapSelectOptions({ labelAttribute, valueAttribute, values: options })];
+            else return mapSelectOptions({ labelAttribute, valueAttribute, values: options });
+        };
+
+        const mapOption = obj => {
+            return mapSelectOption({ labelAttribute, valueAttribute, obj });
         };
 
         return (
-            <FormSelectContainer isFocused={isFocused} value={mapSelectOption(labelAttribute, value)}>
+            <FormSelectContainer isFocused={isFocused} value={mapOption(value)}>
                 <ReactSelect
-                    value={mapSelectOption(labelAttribute, field.value)}
+                    value={mapOption(field.value)}
                     className="form-select-container"
                     isSearchable={isSearchable}
                     classNamePrefix="form-select"
@@ -177,7 +186,7 @@ export function FormSelect({
                         Option: AddOptionButton
                     }}
                     name={name}
-                    defaultValue={mapSelectOption(labelAttribute, defaultValue)}
+                    defaultValue={mapOption(defaultValue)}
                 />
                 <div className="input-underline" />
             </FormSelectContainer>

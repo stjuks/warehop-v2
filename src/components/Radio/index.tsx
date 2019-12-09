@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import { RadioContainer, RadioOptionContainer } from './styles';
 
-interface RadioProps {
+export interface RadioProps {
     options: {
         label: string;
         value: any;
