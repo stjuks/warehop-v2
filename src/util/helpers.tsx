@@ -4,24 +4,36 @@ export const stall = async (delay: number) => {
     await new Promise(resolve => setTimeout(resolve, delay));
 };
 
-export const mapSelectOption = (args: { labelAttribute: string; obj: any; valueAttribute?: string }) => {
-    const { labelAttribute, valueAttribute, obj } = args;
+export interface MapSelectOptionArgs {
+    labelAttribute: string;
+    valueAttribute?: string;
+    value: any;
+}
 
-    const map = {
-        [labelAttribute]: 'label'
-    };
-
-    if (valueAttribute) {
-        map[valueAttribute] = 'value';
-    }
+export const mapSelectOption = (args: MapSelectOptionArgs) => {
+    const { labelAttribute, valueAttribute, value } = args;
 
     let result: any = {};
 
-    if (obj && obj !== {}) {
-        result = objectMapper(obj, map) || {};
-        if (!valueAttribute) result.value = obj;
+    if (typeof value === 'object') {
+        if (value.value && value.label) return value;
+
+        const map = {
+            [labelAttribute]: 'label'
+        };
+
+        if (valueAttribute) {
+            map[valueAttribute] = 'value';
+        }
+
+        if (value && value !== {}) {
+            result = objectMapper(value, map) || {};
+            if (!valueAttribute) result.value = value;
+        } else {
+            return undefined;
+        }
     } else {
-        result = undefined;
+        return { value, label: value };
     }
 
     return result;
@@ -36,7 +48,7 @@ export const mapSelectOptions = ({
     valueAttribute?: string;
     values: any[];
 }) => {
-    return values.map(obj => mapSelectOption({ labelAttribute, valueAttribute, obj }));
+    return values.map(value => mapSelectOption({ labelAttribute, valueAttribute, value }));
 };
 
 console.log(

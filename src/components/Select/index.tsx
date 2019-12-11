@@ -120,7 +120,7 @@ export function FormSelect({
     value,
     withAddOption,
     valueAttribute,
-    placeholder = 'Vali...'
+    placeholder = ''
 }: FormSelectProps) {
     const SelectField: React.SFC<FieldProps> = ({ field, form }) => {
         const [isFocused, setFocused] = useState(false);
@@ -159,8 +159,8 @@ export function FormSelect({
             else return mapSelectOptions({ labelAttribute, valueAttribute, values: options });
         };
 
-        const mapOption = obj => {
-            return mapSelectOption({ labelAttribute, valueAttribute, obj });
+        const mapOption = value => {
+            return mapSelectOption({ labelAttribute, valueAttribute, value });
         };
 
         return (

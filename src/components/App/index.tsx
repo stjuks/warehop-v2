@@ -16,6 +16,7 @@ import NewPurchase from '../NewPurchase';
 import Purchases from '../Purchases';
 import Footer from '../Footer';
 import HamburgerMenu from '../HamburgerMenu';
+import FormExample from '../FormExample';
 
 const App = () => {
     const clearSavedForms = () => {
@@ -41,6 +42,7 @@ const App = () => {
                             <Route path={routes.products} component={Products} />
                             <Route path={routes.newPurchase} component={NewPurchase} />
                             <Route path={routes.purchases} component={Purchases} />
+                            <Route path="/formExample" component={FormExample} />
                         </Switch>
                         <Footer />
                         <HamburgerMenu />

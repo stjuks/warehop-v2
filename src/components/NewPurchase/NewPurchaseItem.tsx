@@ -4,6 +4,7 @@ import Modal from '../Modal';
 import routes from '../../common/routes';
 import { generateFormFromJSON } from '../Form';
 import history from '../../common/history';
+import sampleData from '../../common/sampleData';
 
 interface NewPurchaseItemProps {
     formikProps: any;
@@ -12,6 +13,8 @@ interface NewPurchaseItemProps {
 }
 
 const NewPurchaseItem = ({ arrayHelpers, onSubmit, index }) => {
+    const units = sampleData.units;
+
     const initialValues = {
         type: { type: 'SERVICE', name: 'Teenus' }
     };
@@ -44,6 +47,29 @@ const NewPurchaseItem = ({ arrayHelpers, onSubmit, index }) => {
                     type: 'text',
                     label: 'Teenuse nimetus',
                     name: 'name'
+                },
+                {
+                    type: 'inputRow',
+                    flex: [3, 4],
+                    fields: [
+                        {
+                            type: 'text',
+                            label: 'Kogus',
+                            name: 'quantity'
+                        },
+                        {
+                            type: 'select',
+                            options: units,
+                            label: 'Ühik',
+                            name: 'unit',
+                            labelAttribute: 'name'
+                        }
+                    ]
+                },
+                {
+                    type: 'text',
+                    label: 'Ostuhind',
+                    name: 'purchasePrice'
                 }
             ],
             EXPENSE: [
