@@ -8,28 +8,33 @@ import DateInput from './DateInput';
 import TextInput from './TextInput';
 import SelectInput from './SelectInput';
 import { request } from '../../api';
+import AriaSelect from './AriaSelect';
 
 interface FormValues {
-    date: moment.Moment;
-    file: File | null;
-    radio: 'tere' | 'headaega' | 'aitäh';
-    userType: number | null;
+    userType: number | undefined;
     username: string;
     password: string;
 }
 
 const FormExample = () => {
     const initialValues: FormValues = {
-        date: moment(),
-        file: null,
-        radio: 'tere',
-        userType: null,
+        userType: undefined,
         username: '',
         password: ''
     };
 
     const validationSchema = yup.object({
-        username: yup.string().required('Palun sisesta kasutajanimi.')
+        username: yup
+            .string()
+            .max(12, 'Username must be less than 12 characters.')
+            .min(3, 'Username must be more than 3 characters.')
+            .required('Please enter username.'),
+        password: yup
+            .string()
+            .max(32, 'Password must be less than 32 characters.')
+            .min(6, 'Password must be more than 6 characters.')
+            .required('Please enter password.'),
+        userType: yup.mixed().required('Please select user type.')
     });
 
     const handleSubmit = values => {
@@ -49,21 +54,15 @@ const FormExample = () => {
             validateOnChange={false}
         >
             {formikProps => (
-                <form onSubmit={formikProps.handleSubmit}>
+                <form onSubmit={formikProps.handleSubmit} style={{ padding: '1rem' }}>
                     <TextInput name="username" label="Kasutajanimi" />
                     <TextInput name="password" label="Parool" type="password" />
-                    <SelectInput
+                    <AriaSelect
                         name="userType"
                         label="Kasutaja tüüp"
                         options={options}
-                        mapValues={{ value: 'id', label: 'name' }}
-                        asyncOptions={request.get({
-                            url: '/mock',
-                            mockData: [
-                                { value: 'tere', label: 'xd' },
-                                { value: 'lol', label: 'ahah' }
-                            ]
-                        })}
+                        optionMap={{ value: 'id', label: 'name' }}
+                        isClearable={true}
                     />
                     <button type="submit">Submit</button>
                 </form>

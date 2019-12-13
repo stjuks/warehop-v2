@@ -4,7 +4,7 @@ import ReactSelect from 'react-select';
 import { FiChevronDown } from 'react-icons/fi';
 
 import { InputContainer } from '../styles';
-import { mapSelectOptions, MapSelectOptionArgs, mapSelectOption } from '../../../util/helpers';
+import { mapSelectOptions, mapSelectOption } from '../../../util/helpers';
 import TextInput, { TextInputBase } from '../TextInput';
 
 interface Option {
@@ -43,8 +43,10 @@ const SelectInputBase: React.FC<SelectInputProps & FieldProps> = ({
 
         if (mapValues) {
             mappedOptions = mapSelectOptions({
-                labelAttribute: mapValues.label,
-                valueAttribute: mapValues.value,
+                attrs: {
+                    label: mapValues.label,
+                    value: mapValues.value
+                },
                 values: mappedOptions
             });
         }

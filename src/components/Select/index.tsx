@@ -155,12 +155,15 @@ export function FormSelect({
 
         const modifyOptions = () => {
             if (withAddOption)
-                return [{ addButton: true }, ...mapSelectOptions({ labelAttribute, valueAttribute, values: options })];
-            else return mapSelectOptions({ labelAttribute, valueAttribute, values: options });
+                return [
+                    { addButton: true },
+                    ...mapSelectOptions({ attrs: { label: labelAttribute, value: valueAttribute }, values: options })
+                ];
+            else return mapSelectOptions({ attrs: { label: labelAttribute, value: valueAttribute }, values: options });
         };
 
         const mapOption = value => {
-            return mapSelectOption({ labelAttribute, valueAttribute, value });
+            return mapSelectOption({ attrs: { label: labelAttribute, value: valueAttribute }, value });
         };
 
         return (
