@@ -6,15 +6,15 @@ import { FiChevronDown } from 'react-icons/fi';
 
 import DateInput from './DateInput';
 import TextInput from './TextInput';
-import SelectInput from './SelectInput';
-import { request } from '../../api';
 import AriaSelect from './AriaSelect';
+import FileInput from './FileInput';
 
 interface FormValues {
-    userType: number | undefined;
     username: string;
     password: string;
     creationDate: Date;
+    userType?: number;
+    userFile?: File;
 }
 
 const FormExample = () => {
@@ -22,7 +22,8 @@ const FormExample = () => {
         userType: undefined,
         username: '',
         password: '',
-        creationDate: new Date()
+        creationDate: new Date(),
+        userFile: undefined
     };
 
     const validationSchema = yup.object({
@@ -69,10 +70,8 @@ const FormExample = () => {
                         optionMap={{ value: 'id', label: 'name' }}
                         isClearable={true}
                     />
-                    <DateInput 
-                        name="creationDate"
-                        label="Loomise aeg"
-                    />
+                    <DateInput name="creationDate" label="Loomise aeg" />
+                    <FileInput name="userFile" label="Fail" />
                     <button type="submit">Submit</button>
                 </form>
             )}

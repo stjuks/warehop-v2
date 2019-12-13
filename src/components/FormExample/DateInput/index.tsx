@@ -21,32 +21,29 @@ const DateInputBase: React.FC<DateInputProps & FieldProps> = ({ name, label, for
     const formattedValue = field.value ? moment(field.value).format('DD.MM.YYYY') : '';
 
     return (
-        <InputContainer>
-            <Flatpickr
-                value={formattedValue}
-                onChange={handleChange}
-                options={{
-                    locale: Estonian,
-                    disableMobile: true,
-                    dateFormat: 'd.m.Y'
-                }}
-                render={({ value }, ref) => {
-                    return (
-                        <TextInputBase
-                            value={value}
-                            name={field.name}
-                            label={label}
-                            inputFieldRef={ref}
-                            readOnly={true}
-                            indicator={<FiCalendar />}
-                            setFieldValue={form.setFieldValue}
-                            errorMessage={form.errors[field.name]}
-                        />
-                    );
-                }}
-            />
-            {/*  */}
-        </InputContainer>
+        <Flatpickr
+            value={formattedValue}
+            onChange={handleChange}
+            options={{
+                locale: Estonian,
+                disableMobile: true,
+                dateFormat: 'd.m.Y'
+            }}
+            render={({ value }, ref) => {
+                return (
+                    <TextInputBase
+                        value={value}
+                        name={field.name}
+                        label={label}
+                        inputFieldRef={ref}
+                        readOnly={true}
+                        indicator={<FiCalendar />}
+                        setFieldValue={form.setFieldValue}
+                        errorMessage={form.errors[field.name]}
+                    />
+                );
+            }}
+        />
     );
 };
 

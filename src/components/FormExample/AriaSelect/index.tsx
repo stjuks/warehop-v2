@@ -65,7 +65,7 @@ const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = ({
 
     const InputComponent = (
         <>
-            <ButtonContainer tag="button" type="button">
+            <ButtonContainer>
                 <div className="inner-btn-container">
                     <span className="value-container">{displayValue}</span>
                     <InputActionButtons

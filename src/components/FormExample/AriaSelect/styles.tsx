@@ -5,7 +5,7 @@ import { Wrapper, Button, Menu, MenuItem } from 'react-aria-menubutton';
 export const WrapperContainer = styled(Wrapper).attrs({ className: 'select-wrapper' })`
     .input-field {
         position: relative;
-        cursor: pointer;
+        cursor: default;
     }
 `;
 
@@ -33,7 +33,7 @@ export const MenuContainer = styled(Menu).attrs({ className: 'select-menu' })`
         padding: 0.25rem;
         box-sizing: border-box;
         border-radius: 0.25rem;
-        z-index: 3;
+        z-index: 99;
 
         ul {
             margin: 0;
@@ -51,6 +51,7 @@ export const MenuItemContainer = styled(({ isActive, ...rest }) => <MenuItem {..
         font-weight: 500;
         outline: none;
         border-radius: 0.25rem;
+
 
         ${
             isActive

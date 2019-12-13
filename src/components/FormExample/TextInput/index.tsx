@@ -37,7 +37,7 @@ export const InputActionButtons: React.FC<InputActionProps> = ({ action, indicat
     return (
         <>
             {action && (
-                <InputIndicatorContainer style={{ cursor: 'pointer', zIndex: 9999 }}>
+                <InputIndicatorContainer style={{ cursor: 'pointer', zIndex: 4 }}>
                     {React.cloneElement(action.icon, { onClick: action.onClick })}
                 </InputIndicatorContainer>
             )}

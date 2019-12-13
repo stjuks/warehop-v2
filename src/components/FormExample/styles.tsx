@@ -23,6 +23,10 @@ export const InputFieldContainer = styled.div<InputFieldProps>`
         box-shadow: 0 1px 0 ${theme.colors.lightText};
         position: relative;
 
+        .flatpickr-input[readonly] {
+            cursor: default;
+        }
+
         :after {
             content: '';
             height: 1px;
