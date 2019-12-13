@@ -14,13 +14,15 @@ interface FormValues {
     userType: number | undefined;
     username: string;
     password: string;
+    creationDate: Date;
 }
 
 const FormExample = () => {
     const initialValues: FormValues = {
         userType: undefined,
         username: '',
-        password: ''
+        password: '',
+        creationDate: new Date()
     };
 
     const validationSchema = yup.object({
@@ -34,7 +36,8 @@ const FormExample = () => {
             .max(32, 'Password must be less than 32 characters.')
             .min(6, 'Password must be more than 6 characters.')
             .required('Please enter password.'),
-        userType: yup.mixed().required('Please select user type.')
+        userType: yup.mixed().required('Please select user type.'),
+        creationDate: yup.mixed().required('Please enter date.')
     });
 
     const handleSubmit = values => {
@@ -52,17 +55,23 @@ const FormExample = () => {
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
             validateOnChange={false}
+            validateOnBlur={false}
+            validateOnMount={false}
         >
             {formikProps => (
                 <form onSubmit={formikProps.handleSubmit} style={{ padding: '1rem' }}>
                     <TextInput name="username" label="Kasutajanimi" />
-                    <TextInput name="password" label="Parool" type="password" />
+                    <TextInput name="password" label="Parool" />
                     <AriaSelect
                         name="userType"
                         label="Kasutaja tüüp"
                         options={options}
                         optionMap={{ value: 'id', label: 'name' }}
                         isClearable={true}
+                    />
+                    <DateInput 
+                        name="creationDate"
+                        label="Loomise aeg"
                     />
                     <button type="submit">Submit</button>
                 </form>

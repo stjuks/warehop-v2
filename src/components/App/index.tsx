@@ -4,6 +4,7 @@ import { Router, Switch, Route } from 'react-router-dom';
 import { IconContext } from 'react-icons';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
+import 'flatpickr/dist/themes/material_green.css'
 
 import history from '../../common/history';
 import { AppContainer } from './styles';

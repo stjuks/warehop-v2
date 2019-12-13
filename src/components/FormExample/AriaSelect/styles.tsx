@@ -33,6 +33,7 @@ export const MenuContainer = styled(Menu).attrs({ className: 'select-menu' })`
         padding: 0.25rem;
         box-sizing: border-box;
         border-radius: 0.25rem;
+        z-index: 3;
 
         ul {
             margin: 0;

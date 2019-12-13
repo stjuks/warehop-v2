@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { FieldProps, Field, FormikErrors } from 'formik';
 
 import {
@@ -13,14 +13,16 @@ import { FiX } from 'react-icons/fi';
 interface InputProps {
     name: string;
     label: string;
-    onChange?: (e: React.ChangeEvent<any>) => any;
+    onChange?: (e: any) => any;
     value?: string;
     errorMessage?: any;
     inputComponent?: JSX.Element;
     indicator?: string | JSX.Element;
     type?: 'text' | 'number' | 'password' | 'email';
-    isClearable?: boolean;
     setFieldValue?: (field: string, value: any) => any;
+    inputFieldRef?: any;
+    readOnly?: boolean;
+    onFocus?: (isFocused: boolean) => any;
 }
 
 interface InputActionProps {
@@ -53,35 +55,45 @@ export const TextInputBase: React.FC<InputProps> = ({
     inputComponent,
     type = 'text',
     indicator,
-    isClearable,
-    setFieldValue
+    setFieldValue,
+    inputFieldRef,
+    readOnly,
+    onFocus
 }) => {
     const [isFocused, setFocused] = useState(false);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     const handleClear = e => {
         e.stopPropagation();
-        console.log('xd');
         if (setFieldValue) setFieldValue(name, '');
+        if (inputRef.current) inputRef.current.focus();
     };
+    
+    const handleFocus = isFocused => {
+        setFocused(isFocused);
+        if (onFocus) onFocus(isFocused);
+    }
 
     return (
         <InputContainer>
             <LabelContainer>{label}</LabelContainer>
             <InputFieldContainer
-                onFocus={() => setFocused(true)}
-                onBlur={() => setFocused(false)}
+                onFocus={() => handleFocus(true)}
+                onBlur={() => handleFocus(false)}
                 isFocused={isFocused || (value != null && value != '')}
                 className="input-field"
             >
                 {inputComponent || (
                     <>
                         <input
+                            ref={inputFieldRef || inputRef}
                             onChange={onChange}
                             value={value}
                             type={type}
                             name={name}
                             autoComplete="off"
                             className="value-container"
+                            readOnly={readOnly}
                         />
                         <InputActionButtons
                             indicator={indicator}
