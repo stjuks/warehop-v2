@@ -24,6 +24,7 @@ const createFlex = (flex: number[]) => {
 export const Row = styled.div<RowProps>`
     ${({ flex = [1] }) => `
         display: flex;
+        flex-wrap: wrap;
         ${createFlex(flex)}
     `}
 `;

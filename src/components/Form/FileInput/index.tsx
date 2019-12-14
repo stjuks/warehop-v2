@@ -1,7 +1,8 @@
 import React, { ChangeEvent, useState } from 'react';
-import { Field, FieldProps } from 'formik';
+import { FieldProps } from 'formik';
 
-import { InputContainer } from '../styles';
+import { Field } from '../index';
+
 import { FileInputStyled } from './styles';
 import { TextInputBase, InputActionButtons } from '../TextInput';
 import { FiFile, FiX } from 'react-icons/fi';

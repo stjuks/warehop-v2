@@ -1,5 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { FieldProps, Field, FormikErrors } from 'formik';
+import { FieldProps, FormikErrors } from 'formik';
+import { FiX } from 'react-icons/fi';
+
+import { Field } from '../index';
 
 import {
     InputContainer,
@@ -8,7 +11,6 @@ import {
     ErrorMessageContainer,
     InputIndicatorContainer
 } from '../styles';
-import { FiX } from 'react-icons/fi';
 
 interface InputProps {
     name: string;

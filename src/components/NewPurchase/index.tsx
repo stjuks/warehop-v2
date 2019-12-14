@@ -69,7 +69,12 @@ const NewPurchase = observer(() => {
         ]
     };
 
-    const validationSchema = yup.object({});
+    const validationSchema = yup.object({
+        partner: yup.object().required('Palun vali tarnija.'),
+        invoiceNr: yup.string().required('Palun sisesta arve number.'),
+        creationDate: yup.mixed().required('Palun sisesta ostukuupäev.'),
+        dueDate: yup.mixed().required('Palun sisesta maksetähtaeg.')
+    });
 
     const ProductList = ({ formikProps }) => (
         <FieldArray name="items">
@@ -107,28 +112,27 @@ const NewPurchase = observer(() => {
             <Header title="Uus ostuarve" backTo={routes.purchases} />
             <NewProductContainer>
                 <Form
-                    validationSchema={null}
+                    validationSchema={validationSchema}
                     initialValues={initialValues}
                     onSubmit={values => console.log(values)}
                     id="new-purchase-form"
                 >
                     {formikProps => (
                         <>
-                            <FormTitle>Arve põhiandmed</FormTitle>
+                            <FormTitle>Põhiandmed</FormTitle>
                             <AriaSelect
                                 name="partner"
                                 label="Tarnija"
                                 options={partners}
                                 optionMap={{ label: 'name' }}
                             />
-                            <Row flex={[1, 1]}>
-                                <TextInput name="invoiceNr" label="Arve nr" />
-                                <FileInput name="invoiceFile" label="Arve (PDF)" />
-                            </Row>
+                            <TextInput name="invoiceNr" label="Arve nr" />
                             <Row flex={[1, 1]}>
                                 <DateInput name="creationDate" label="Ostukuupäev" />
                                 <DateInput name="dueDate" label="Maksetähtaeg" />
                             </Row>
+                            <FormTitle>Lisaandmed</FormTitle>
+                            <FileInput name="invoiceFile" label="Arve fail (PDF)" />
                             <TextInput name="description" label="Märkused" isTextarea />
                             <ProductList formikProps={formikProps} />
                         </>

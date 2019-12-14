@@ -1,12 +1,14 @@
 import React from 'react';
-import { Field, FieldProps } from 'formik';
+import { FieldProps } from 'formik';
 import Flatpickr from 'react-flatpickr';
 import { Estonian } from 'flatpickr/dist/l10n/et';
+import { FiCalendar } from 'react-icons/fi';
 import moment from 'moment';
+
+import { Field } from '../index';
 
 import { InputContainer } from '../styles';
 import { TextInputBase } from '../TextInput';
-import { FiCalendar } from 'react-icons/fi';
 
 interface DateInputProps {
     name: string;

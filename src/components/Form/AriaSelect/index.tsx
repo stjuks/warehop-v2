@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { FieldProps, Field } from 'formik';
+import { FieldProps } from 'formik';
 import { FiChevronDown, FiX } from 'react-icons/fi';
+
+import { Field } from '../index';
 
 import { ButtonContainer, MenuContainer, MenuItemContainer, WrapperContainer } from './styles';
 import { TextInputBase, InputActionButtons } from '../TextInput';
 import { mapSelectOptions } from '../../../util/helpers';
-import { InputIndicatorContainer } from '../styles';
 
 interface Option {
     label: string;

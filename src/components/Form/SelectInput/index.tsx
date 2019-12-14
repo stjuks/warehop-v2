@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Field, FieldProps } from 'formik';
+import { FieldProps } from 'formik';
 import ReactSelect from 'react-select';
-import { FiChevronDown } from 'react-icons/fi';
+
+import { Field } from '../index';
 
 import { InputContainer } from '../styles';
-import { mapSelectOptions, mapSelectOption } from '../../../util/helpers';
-import TextInput, { TextInputBase } from '../TextInput';
+import { mapSelectOptions } from '../../../util/helpers';
 
 interface Option {
     value: any;

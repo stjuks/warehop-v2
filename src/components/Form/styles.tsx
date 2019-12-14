@@ -25,6 +25,7 @@ export const InputContainer = styled.div.attrs({ className: 'input-container' })
     display: flex;
     margin: 0.25rem;
     flex-direction: column;
+    min-width: 11rem;
 `;
 
 export const LabelContainer = styled.label.attrs({ className: 'label' })`
