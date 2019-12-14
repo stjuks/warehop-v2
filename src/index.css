@@ -12,7 +12,8 @@ button {
     font-size: inherit;
 }
 
-input {
+input,
+textarea {
     margin: 0;
     padding: 0;
     border: none;

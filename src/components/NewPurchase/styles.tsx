@@ -11,6 +11,9 @@ export const AddPurchaseItemBtn = styled(Link)`
         border-radius: 0.25rem;
         color: ${theme.colors.lightText};
         font-weight: 500;
+        display: flex;
+        align-items: center;
+        
         white-space: nowrap;
     `}
 `;

@@ -33,8 +33,17 @@ const FileInputBase: React.FC<FileInputProps & FieldProps> = ({ form, field, lab
     const InputComponent = (
         <>
             <FileInputStyled type="file" onChange={handleChange} />
-            <input onChange={handleChange} readOnly={true} value={displayValue} className="value-container" />
-            <InputActionButtons indicator={<FiFile />} action={field.value && { icon: <FiX />, onClick: e => handleClear(e) }} />
+            <input
+                onChange={handleChange}
+                readOnly={true}
+                value={displayValue}
+                className="value-container"
+                tabIndex={-1}
+            />
+            <InputActionButtons
+                indicator={<FiFile />}
+                action={field.value && { icon: <FiX />, onClick: e => handleClear(e) }}
+            />
         </>
     );
 
@@ -45,6 +54,7 @@ const FileInputBase: React.FC<FileInputProps & FieldProps> = ({ form, field, lab
             name={field.name}
             label={label}
             inputComponent={InputComponent}
+            errorMessage={form.errors[field.name]}
         />
     );
 };

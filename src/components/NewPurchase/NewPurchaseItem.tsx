@@ -2,7 +2,6 @@ import React from 'react';
 import { Formik } from 'formik';
 import Modal from '../Modal';
 import routes from '../../common/routes';
-import { generateFormFromJSON } from '../Form';
 import history from '../../common/history';
 import sampleData from '../../common/sampleData';
 
@@ -27,8 +26,8 @@ const NewPurchaseItem = ({ arrayHelpers, onSubmit, index }) => {
 
     const itemTypeOptions = itemTypes.map(type => ({ label: type.name, value: type.type }));
 
-    const itemForm = formikProps =>
-        generateFormFromJSON({
+    const itemForm = formikProps => null
+        /* generateFormFromJSON({
             model: [
                 {
                     type: 'radio',
@@ -38,7 +37,7 @@ const NewPurchaseItem = ({ arrayHelpers, onSubmit, index }) => {
                 }
             ],
             formikProps
-        });
+        }); */
 
     const formTypes = (formikProps, type) => {
         const forms = {
@@ -93,7 +92,7 @@ const NewPurchaseItem = ({ arrayHelpers, onSubmit, index }) => {
             ]
         };
 
-        return forms[type] ? generateFormFromJSON({ model: forms[type], formikProps }) : null;
+        return null;
     };
 
     const handleSubmit = values => {

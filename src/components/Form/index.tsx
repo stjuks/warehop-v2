@@ -1,151 +1,120 @@
-import React from 'react';
-import { Formik, FieldArray } from 'formik';
+import React, { PropsWithChildren } from 'react';
+import { Formik, FieldArray as FormikFieldArray } from 'formik';
+import * as yup from 'yup';
 
 import { FormContainer } from './styles';
 
-import { FormSelectProps, FormSelect } from '../Select';
-import Input, { InputProps } from '../Input';
-import Textarea from '../Textarea';
-import FileInput, { FileInputProps } from '../FileInput';
-import DateInput, { DateInputProps } from '../DateInput';
-import Radio, { RadioProps } from '../Radio';
+import DateInput from './DateInput';
+import TextInput from './TextInput';
+import AriaSelect from './AriaSelect';
+import FileInput from './FileInput';
 
-interface BaseInput {
-    name: string;
-    label: string;
+interface FormValues {
+    username: string;
+    password: string;
+    creationDate: Date;
+    userType?: number;
+    userFile?: File;
 }
 
-interface SelectModel extends FormSelectProps {
-    type: 'select';
-}
-
-interface FileInputModel extends BaseInput {
-    type: 'file';
-}
-
-interface DateInputModel extends BaseInput {
-    type: 'date';
-}
-
-interface RadioInputModel extends RadioProps {
-    type: 'radio';
-}
-
-interface InputModel extends BaseInput {
-    type: 'text' | 'textarea';
-}
-
-interface InputRowModel {
-    type: 'inputRow';
-    flex: number[];
-    fields: FormElement[];
-}
-
-interface CustomFieldModel {
-    type: 'customField';
-    component: (props) => any;
-}
-
-interface SubtitleModel {
-    type: 'subtitle';
-    text: string;
-}
-
-interface FieldArrayModel {
-    type: 'fieldArray';
-    name: string;
-    render: (props) => React.ReactElement;
-}
-
-type FormInputElement = SelectModel | InputModel | FileInputModel | DateInputModel | RadioInputModel;
-type FormElement = FormInputElement | InputRowModel | CustomFieldModel | SubtitleModel | FieldArrayModel;
-
-export type FormModel = FormElement[];
-
-interface FormProps {
-    initialValues: Object;
-    id: string;
-    model: FormModel;
-    onSubmit: (values) => any;
-    padding?: string;
-}
-
-export const generateFormFromJSON: any = (args: { model: FormModel; formikProps: any }) => {
-    const { model, formikProps } = args;
-
-    const inputTypes = ({ props, formikProps }) => ({
-        text: (
-            <Input
-                {...props}
-                setFieldValue={formikProps.setFieldValue}
-                value={formikProps.values[props.name]}
-                onChange={formikProps.handleChange}
-            />
-        ),
-        select: <FormSelect {...props} value={formikProps.values[props.name]} />,
-        textarea: (
-            <Textarea
-                {...props}
-                setFieldValue={formikProps.setFieldValue}
-                value={formikProps.values[props.name]}
-                onChange={formikProps.handleChange}
-            />
-        ),
-        file: (
-            <FileInput
-                name={props.name}
-                setFieldValue={formikProps.setFieldValue}
-                value={formikProps.values[props.name]}
-                label={props.label}
-            />
-        ),
-        date: (
-            <DateInput
-                name={props.name}
-                setFieldValue={formikProps.setFieldValue}
-                value={formikProps.values[props.name]}
-                label={props.label}
-            />
-        ),
-        radio: <Radio onSelect={value => formikProps.setFieldValue(props.name, value)} {...props} />
-    });
-
-    const elementTypes = ({ props, formikProps }) => {
-        return {
-            ...inputTypes({ props, formikProps }),
-            inputRow: (
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    {props.fields &&
-                        props.fields.map(({ type, ...restProps }, i) => (
-                            <div style={{ flex: props.flex[i] }} key={i}>
-                                {elementTypes({ props: restProps, formikProps })[type]}
-                            </div>
-                        ))}
-                </div>
-            ),
-            customField: props.component && props.component(formikProps),
-            subtitle: <h4 className="form-subtitle">{props.text}</h4>,
-            fieldArray: (
-                <FieldArray name={props.name} render={arrayHelpers => props.render({ formikProps, arrayHelpers })} />
-            )
-        };
+const FormExample = () => {
+    const initialValues: FormValues = {
+        userType: undefined,
+        username: '',
+        password: '',
+        creationDate: new Date(),
+        userFile: undefined
     };
 
-    return model.map(({ type, ...restProps }, i) => (
-        <React.Fragment key={i}>{elementTypes({ props: restProps, formikProps })[type]}</React.Fragment>
-    ));
-};
+    const validationSchema = yup.object({
+        username: yup
+            .string()
+            .max(12, 'Username must be less than 12 characters.')
+            .min(3, 'Username must be more than 3 characters.')
+            .required('Please enter username.'),
+        password: yup
+            .string()
+            .max(32, 'Password must be less than 32 characters.')
+            .min(6, 'Password must be more than 6 characters.')
+            .required('Please enter password.'),
+        userType: yup.mixed().required('Please select user type.'),
+        creationDate: yup.mixed().required('Please enter date.')
+    });
 
-const Form: React.FC<FormProps> = ({ initialValues, model, onSubmit, id }) => {
+    const handleSubmit = values => {
+        alert(JSON.stringify(values));
+    };
+
+    const options = [
+        { id: 1, name: 'Admin' },
+        { id: 2, name: 'Guest' }
+    ];
+
     return (
-        <Formik initialValues={initialValues} onSubmit={onSubmit}>
+        <Formik
+            initialValues={initialValues}
+            onSubmit={handleSubmit}
+            validationSchema={validationSchema}
+            validateOnChange={false}
+            validateOnBlur={false}
+            validateOnMount={false}
+        >
             {formikProps => (
-                <FormContainer id={id} onSubmit={formikProps.handleSubmit}>
-                    {generateFormFromJSON({ model, formikProps })}
-                </FormContainer>
+                <form onSubmit={formikProps.handleSubmit} style={{ padding: '1rem' }}>
+                    <TextInput name="username" label="Kasutajanimi" />
+                    <TextInput name="password" label="Parool" />
+                    <AriaSelect
+                        name="userType"
+                        label="Kasutaja tüüp"
+                        options={options}
+                        optionMap={{ value: 'id', label: 'name' }}
+                        isClearable={true}
+                    />
+                    <DateInput name="creationDate" label="Loomise aeg" />
+                    <FileInput name="userFile" label="Fail" />
+                    <button type="submit">Submit</button>
+                </form>
             )}
         </Formik>
     );
 };
+
+interface FieldArrayProps {
+    name: string;
+}
+
+export const FieldArray: React.FC<FieldArrayProps & PropsWithChildren<any>> = ({ name, children }) => (
+    <FormikFieldArray name={name} render={arrayHelpers => children(arrayHelpers)} />
+);
+
+interface FormProps {
+    initialValues: any;
+    onSubmit: (values: any) => any;
+    validationSchema?: any;
+    id: string;
+}
+
+const Form: React.FC<FormProps & React.PropsWithChildren<any>> = ({
+    initialValues,
+    onSubmit,
+    validationSchema,
+    id,
+    children
+}) => (
+    <Formik
+        initialValues={initialValues}
+        onSubmit={onSubmit}
+        validationSchema={validationSchema}
+        validateOnChange={false}
+        validateOnBlur={false}
+        validateOnMount={false}
+    >
+        {formikProps => (
+            <FormContainer id={id} onSubmit={formikProps.handleSubmit}>
+                {children(formikProps)}
+            </FormContainer>
+        )}
+    </Formik>
+);
 
 export default Form;

@@ -11,10 +11,16 @@ import { FooterContainer } from '../Footer/styles';
 import Button from '../Button';
 import sampleData from '../../common/sampleData';
 import { Partner, InvoiceItem } from '../../common/types';
-import Form, { FormModel, generateFormFromJSON } from '../Form';
+import Form, { FieldArray } from '../Form';
 import PurchaseItem from './PurchaseItem';
 import { Route } from 'react-router';
 import NewPurchaseItem from './NewPurchaseItem';
+import AriaSelect from '../Form/AriaSelect';
+import TextInput from '../Form/TextInput';
+import { Row } from '../Layout/styles';
+import FileInput from '../Form/FileInput';
+import DateInput from '../Form/DateInput';
+import { FormTitle } from '../Form/styles';
 
 interface NewPurchaseFormValues {
     partner: Partner | undefined;
@@ -65,126 +71,69 @@ const NewPurchase = observer(() => {
 
     const validationSchema = yup.object({});
 
-    const formModel: FormModel = [
-        {
-            type: 'subtitle',
-            text: 'Arve põhiandmed'
-        },
-        {
-            type: 'select',
-            options: partners,
-            labelAttribute: 'name',
-            label: 'Tarnija',
-            name: 'partner',
-            placeholder: 'Vali tarnija',
-            isSearchable: true,
-            isRequired: true,
-            withAddOption: {
-                title: 'Lisa partner',
-                onClick: () => alert('Lisa partner')
-            }
-        },
-        {
-            type: 'inputRow',
-            flex: [1, 1],
-            fields: [
-                {
-                    type: 'text',
-                    name: 'invoiceNr',
-                    label: 'Arve nr'
-                },
-                {
-                    type: 'file',
-                    name: 'invoiceFile',
-                    label: 'Fail'
-                }
-            ]
-        },
-        {
-            type: 'inputRow',
-            flex: [1, 1],
-            fields: [
-                {
-                    type: 'date',
-                    name: 'creationDate',
-                    label: 'Ostukuupäev'
-                },
-                {
-                    type: 'date',
-                    name: 'dueDate',
-                    label: 'Maksetähtaeg'
-                }
-            ]
-        },
-        {
-            type: 'textarea',
-            name: 'description',
-            label: 'Märkused'
-        },
-        {
-            type: 'fieldArray',
-            name: 'items',
-            render: ({ formikProps, arrayHelpers }) =>
-                generateFormFromJSON({
-                    model: [
-                        {
-                            type: 'inputRow',
-                            flex: [1, 0],
-                            fields: [
-                                {
-                                    type: 'subtitle',
-                                    text: 'Kaubad'
-                                },
-                                {
-                                    type: 'customField',
-                                    component: () => (
-                                        <React.Fragment>
-                                            <AddPurchaseItemBtn to={routes.newPurchaseItem}>
-                                                + Lisa kaup
-                                            </AddPurchaseItemBtn>
-                                            <Route
-                                                path={routes.newPurchaseItem}
-                                                render={() => (
-                                                    <NewPurchaseItem
-                                                        arrayHelpers={arrayHelpers}
-                                                        onSubmit={() => alert('item added')}
-                                                        index={formikProps.values.items.length}
-                                                    />
-                                                )}
-                                            />
-                                        </React.Fragment>
-                                    )
-                                }
-                            ]
-                        },
-                        {
-                            type: 'customField',
-                            component: () =>
-                                formikProps.values.items.map((item, index) => (
-                                    <PurchaseItem
-                                        key={index}
-                                        item={item}
-                                        onDelete={() => arrayHelpers.remove(index)}
-                                        onEdit={() => alert('Muuda')}
-                                    />
-                                ))
-                        }
-                    ],
-                    formikProps
-                })
-        }
-    ];
+    const ProductList = ({ formikProps }) => (
+        <FieldArray name="items">
+            {arrayHelpers => (
+                <>
+                    <Row flex={[1, 0]}>
+                        <FormTitle>Kaubad</FormTitle>
+                        <AddPurchaseItemBtn to={routes.newPurchaseItem}>+ Lisa kaup</AddPurchaseItemBtn>
+                        <Route
+                            path={routes.newPurchaseItem}
+                            render={() => (
+                                <NewPurchaseItem
+                                    arrayHelpers={arrayHelpers}
+                                    onSubmit={() => alert('item added')}
+                                    index={formikProps.values.items.length}
+                                />
+                            )}
+                        />
+                    </Row>
+                    {formikProps.values.items.map((item, index) => (
+                        <PurchaseItem
+                            key={index}
+                            item={item}
+                            onDelete={() => arrayHelpers.remove(index)}
+                            onEdit={() => alert('Muuda')}
+                        />
+                    ))}
+                </>
+            )}
+        </FieldArray>
+    );
 
     return (
         <>
             <Header title="Uus ostuarve" backTo={routes.purchases} />
-            <NewProductContainer padded>
+            <NewProductContainer>
                 <Form
-                    id="new-purchase-form"
-                    model={formModel}
+                    validationSchema={null}
                     initialValues={initialValues}
                     onSubmit={values => console.log(values)}
-                />
+                    id="new-purchase-form"
+                >
+                    {formikProps => (
+                        <>
+                            <FormTitle>Arve põhiandmed</FormTitle>
+                            <AriaSelect
+                                name="partner"
+                                label="Tarnija"
+                                options={partners}
+                                optionMap={{ label: 'name' }}
+                            />
+                            <Row flex={[1, 1]}>
+                                <TextInput name="invoiceNr" label="Arve nr" />
+                                <FileInput name="invoiceFile" label="Arve (PDF)" />
+                            </Row>
+                            <Row flex={[1, 1]}>
+                                <DateInput name="creationDate" label="Ostukuupäev" />
+                                <DateInput name="dueDate" label="Maksetähtaeg" />
+                            </Row>
+                            <TextInput name="description" label="Märkused" isTextarea />
+                            <ProductList formikProps={formikProps} />
+                        </>
+                    )}
+                </Form>
             </NewProductContainer>
             <FooterContainer style={{ padding: '0.5rem 1rem' }}>
                 <Button title="Loo arve" form="new-purchase-form" />

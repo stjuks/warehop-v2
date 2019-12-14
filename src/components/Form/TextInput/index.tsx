@@ -23,12 +23,13 @@ interface InputProps {
     inputFieldRef?: any;
     readOnly?: boolean;
     onFocus?: (isFocused: boolean) => any;
+    isTextarea?: boolean;
 }
 
 interface InputActionProps {
     action?: {
         icon: JSX.Element;
-        onClick: (e: Event) => any;
+        onClick: (e: any) => any;
     };
     indicator?: JSX.Element | string;
 }
@@ -37,8 +38,8 @@ export const InputActionButtons: React.FC<InputActionProps> = ({ action, indicat
     return (
         <>
             {action && (
-                <InputIndicatorContainer style={{ cursor: 'pointer', zIndex: 4 }}>
-                    {React.cloneElement(action.icon, { onClick: action.onClick })}
+                <InputIndicatorContainer style={{ cursor: 'pointer', zIndex: 4 }} onClick={action.onClick}>
+                    {action.icon}
                 </InputIndicatorContainer>
             )}
             {indicator && <InputIndicatorContainer>{indicator}</InputIndicatorContainer>}
@@ -58,7 +59,8 @@ export const TextInputBase: React.FC<InputProps> = ({
     setFieldValue,
     inputFieldRef,
     readOnly,
-    onFocus
+    onFocus,
+    isTextarea
 }) => {
     const [isFocused, setFocused] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -68,11 +70,11 @@ export const TextInputBase: React.FC<InputProps> = ({
         if (setFieldValue) setFieldValue(name, '');
         if (inputRef.current) inputRef.current.focus();
     };
-    
+
     const handleFocus = isFocused => {
         setFocused(isFocused);
         if (onFocus) onFocus(isFocused);
-    }
+    };
 
     return (
         <InputContainer>
@@ -85,16 +87,28 @@ export const TextInputBase: React.FC<InputProps> = ({
             >
                 {inputComponent || (
                     <>
-                        <input
-                            ref={inputFieldRef || inputRef}
-                            onChange={onChange}
-                            value={value}
-                            type={type}
-                            name={name}
-                            autoComplete="off"
-                            className="value-container"
-                            readOnly={readOnly}
-                        />
+                        {isTextarea ? (
+                            <textarea
+                                ref={inputFieldRef || inputRef}
+                                onChange={onChange}
+                                value={value}
+                                name={name}
+                                autoComplete="off"
+                                className="value-container"
+                            />
+                        ) : (
+                            <input
+                                ref={inputFieldRef || inputRef}
+                                onChange={onChange}
+                                value={value}
+                                type={type}
+                                name={name}
+                                autoComplete="off"
+                                className="value-container"
+                                readOnly={readOnly}
+                            />
+                        )}
+
                         <InputActionButtons
                             indicator={indicator}
                             action={value ? { icon: <FiX />, onClick: e => handleClear(e) } : undefined}
