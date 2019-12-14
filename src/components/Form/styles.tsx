@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 interface InputFieldProps {
     isFocused?: boolean;
+    isMounted?: boolean;
 }
 
 export const FormContainer = styled.form`
@@ -36,7 +37,7 @@ export const LabelContainer = styled.label.attrs({ className: 'label' })`
 `;
 
 export const InputFieldContainer = styled.div<InputFieldProps>`
-    ${({ isFocused, theme }) => `
+    ${({ isFocused, theme, isMounted = true }) => `
         min-height: 2.5rem;
         display: flex;
         box-shadow: 0 1px 0 ${theme.colors.lightText};
@@ -50,7 +51,7 @@ export const InputFieldContainer = styled.div<InputFieldProps>`
             content: '';
             height: 1px;
             width: ${isFocused ? '100%' : '0%'};
-            transition: all .2s;
+            transition: ${isMounted ? 'all .2s' : 'none'};
             position: absolute;
             background: ${theme.colors.primary};
             bottom: 0;

@@ -1,8 +1,6 @@
-import React, { useState, useRef } from 'react';
-import { FieldProps, FormikErrors } from 'formik';
+import React, { useState, useRef, useEffect } from 'react';
+import { FieldProps, Field } from 'formik';
 import { FiX } from 'react-icons/fi';
-
-import { Field } from '../index';
 
 import {
     InputContainer,
@@ -65,6 +63,7 @@ export const TextInputBase: React.FC<InputProps> = ({
     isTextarea
 }) => {
     const [isFocused, setFocused] = useState(false);
+    const [isMounted, setMounted] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
 
     const handleClear = e => {
@@ -78,6 +77,10 @@ export const TextInputBase: React.FC<InputProps> = ({
         if (onFocus) onFocus(isFocused);
     };
 
+    useEffect(() => {
+        setTimeout(() => setMounted(true), 100);
+    }, []);
+
     return (
         <InputContainer>
             <LabelContainer>{label}</LabelContainer>
@@ -85,6 +88,7 @@ export const TextInputBase: React.FC<InputProps> = ({
                 onFocus={() => handleFocus(true)}
                 onBlur={() => handleFocus(false)}
                 isFocused={isFocused || (value != null && value != '')}
+                isMounted={isMounted}
                 className="input-field"
             >
                 {inputComponent || (
@@ -93,7 +97,7 @@ export const TextInputBase: React.FC<InputProps> = ({
                             <textarea
                                 ref={inputFieldRef || inputRef}
                                 onChange={onChange}
-                                value={value}
+                                value={value || ''}
                                 name={name}
                                 autoComplete="off"
                                 className="value-container"
@@ -102,7 +106,7 @@ export const TextInputBase: React.FC<InputProps> = ({
                             <input
                                 ref={inputFieldRef || inputRef}
                                 onChange={onChange}
-                                value={value}
+                                value={value || ''}
                                 type={type}
                                 name={name}
                                 autoComplete="off"

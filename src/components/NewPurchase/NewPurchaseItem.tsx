@@ -1,9 +1,13 @@
-import React from 'react';
-import { Formik } from 'formik';
+import React, { useState } from 'react';
+import { Formik, FormikProps } from 'formik';
 import Modal from '../Modal';
 import routes from '../../common/routes';
 import history from '../../common/history';
 import sampleData from '../../common/sampleData';
+import Form from '../Form';
+
+import AriaSelect from '../Form/AriaSelect';
+import TextInput from '../Form/TextInput';
 
 interface NewPurchaseItemProps {
     formikProps: any;
@@ -11,106 +15,103 @@ interface NewPurchaseItemProps {
     index: number;
 }
 
+const DEFAULT_ITEM_TYPE = { id: 'PRODUCT', name: 'Laokaup' };
+
+const units = sampleData.units;
+const warehouses = sampleData.warehouses;
+
+const serviceAndExpenseForm = {
+    initialValues: {
+        name: '',
+        quantity: '',
+        unit: undefined,
+        purchasePrice: ''
+    },
+    render: (
+        <>
+            <TextInput name="name" label="Nimetus" />
+            <TextInput name="quantity" label="Kogus" type="number" />
+            <AriaSelect name="unit" label="Ühik" options={units} optionMap={{ label: 'name' }} />
+            <TextInput name="purchasePrice" label="Ostuhind" type="number" />
+        </>
+    ),
+    fields: ['itemType', 'name', 'quantity', 'unit', 'purchasePrice']
+};
+
+const forms = {
+    PRODUCT: {
+        initialValues: {
+            name: '',
+            code: '',
+            quantity: '',
+            unit: units[0],
+            warehouse: warehouses[0],
+            purchasePrice: '',
+            retailPrice: ''
+        },
+        render: (
+            <>
+                <TextInput name="name" label="Nimetus" />
+                <TextInput name="code" label="Kood" />
+                <TextInput name="quantity" label="Kogus" type="number" />
+                <AriaSelect name="unit" label="Ühik" options={units} optionMap={{ label: 'name' }} />
+                <AriaSelect name="warehouse" label="Ladu" options={warehouses} optionMap={{ label: 'name' }} />
+                <TextInput name="purchasePrice" label="Ostuhind" type="number" />
+                <TextInput name="retailPrice" label="Müügihind" type="number" />
+            </>
+        ),
+        fields: ['itemType', 'name', 'code', 'quantity', 'unit', 'warehouse', 'purchasePrice', 'retailPrice']
+    },
+    SERVICE: serviceAndExpenseForm,
+    EXPENSE: serviceAndExpenseForm
+};
+
 const NewPurchaseItem = ({ arrayHelpers, onSubmit, index }) => {
-    const units = sampleData.units;
+    const [activeItemType, setActiveItemType] = useState(DEFAULT_ITEM_TYPE.id);
 
     const initialValues = {
-        type: { type: 'SERVICE', name: 'Teenus' }
+        itemType: DEFAULT_ITEM_TYPE,
+        ...forms[activeItemType].initialValues
     };
 
     const itemTypes = [
-        { type: 'PRODUCT', name: 'Laokaup' },
-        { type: 'SERVICE', name: 'Teenus' },
-        { type: 'EXPENSE', name: 'Kuluartikkel' }
+        { id: 'PRODUCT', name: 'Laokaup' },
+        { id: 'SERVICE', name: 'Teenus' },
+        { id: 'EXPENSE', name: 'Kuluartikkel' }
     ];
 
-    const itemTypeOptions = itemTypes.map(type => ({ label: type.name, value: type.type }));
-
-    const itemForm = formikProps => null
-        /* generateFormFromJSON({
-            model: [
-                {
-                    type: 'radio',
-                    options: itemTypeOptions,
-                    name: 'type',
-                    defaultValue: itemTypeOptions[0].value
-                }
-            ],
-            formikProps
-        }); */
-
-    const formTypes = (formikProps, type) => {
-        const forms = {
-            SERVICE: [
-                {
-                    type: 'text',
-                    label: 'Teenuse nimetus',
-                    name: 'name'
-                },
-                {
-                    type: 'inputRow',
-                    flex: [3, 4],
-                    fields: [
-                        {
-                            type: 'text',
-                            label: 'Kogus',
-                            name: 'quantity'
-                        },
-                        {
-                            type: 'select',
-                            options: units,
-                            label: 'Ühik',
-                            name: 'unit',
-                            labelAttribute: 'name'
-                        }
-                    ]
-                },
-                {
-                    type: 'text',
-                    label: 'Ostuhind',
-                    name: 'purchasePrice'
-                }
-            ],
-            EXPENSE: [
-                {
-                    type: 'text',
-                    label: 'Kulu nimetus',
-                    name: 'name'
-                }
-            ],
-            PRODUCT: [
-                {
-                    type: 'text',
-                    label: 'Kauba nimetus',
-                    name: 'name'
-                },
-                {
-                    type: 'text',
-                    label: 'Kood',
-                    name: 'code'
-                }
-            ]
-        };
-
-        return null;
+    const handleSubmit = values => {
+        console.log(values);
+        // arrayHelpers.push(values);
+        // history.push(routes.newPurchase);
     };
 
-    const handleSubmit = values => {
-        arrayHelpers.push(values);
-        history.push(routes.newPurchase);
+    const handleTypeSelect = ({ changedField, formik }) => {
+        if (changedField.name === 'itemType') {
+            const itemTypeId = changedField.value.id;
+            const newValues = forms[itemTypeId].initialValues;
+
+            forms[itemTypeId].fields.forEach(field => (newValues[field] = formik.values[field]));
+            formik.setValues(newValues);
+
+            setActiveItemType(itemTypeId);
+        }
     };
 
     return (
         <Modal isOpen={true} title="Lisa kaup" backTo={routes.newPurchase}>
-            <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-                {formikProps => (
-                    <React.Fragment>
-                        {itemForm(formikProps)}
-                        {formTypes(formikProps, formikProps.values.type)}
-                        <button onClick={() => formikProps.handleSubmit()}>Submit</button>
-                    </React.Fragment>
-                )}
-            </Formik>
+            <Form
+                id="new-purchase-item-form"
+                initialValues={initialValues}
+                onSubmit={handleSubmit}
+                onChange={handleTypeSelect}
+            >
+                <>
+                    <AriaSelect name="itemType" label="Kauba tüüp" options={itemTypes} optionMap={{ label: 'name' }} />
+                    {forms[activeItemType].render}
+                    <button>Submit</button>
+                </>
+            </Form>
         </Modal>
     );
 };

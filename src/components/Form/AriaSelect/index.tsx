@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { FieldProps } from 'formik';
+import { FieldProps, Field } from 'formik';
 import { FiChevronDown, FiX } from 'react-icons/fi';
-
-import { Field } from '../index';
 
 import { ButtonContainer, MenuContainer, MenuItemContainer, WrapperContainer } from './styles';
 import { TextInputBase, InputActionButtons } from '../TextInput';
-import { mapSelectOptions } from '../../../util/helpers';
+import { mapSelectOptions, mapSelectOption } from '../../../util/helpers';
 
 interface Option {
     label: string;
@@ -22,6 +20,8 @@ interface AriaSelectProps {
         label: string;
     };
     isClearable?: boolean;
+    unregisterOnUnmount?: boolean;
+    onChange?: (value: Option) => any;
 }
 
 const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = ({
@@ -30,7 +30,8 @@ const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = ({
     form,
     options,
     optionMap,
-    isClearable
+    isClearable,
+    onChange
 }) => {
     const [mappedOptions, setMappedOptions] = useState<Option[]>([]);
     const [isLoadingOptions, setLoadingOptions] = useState(false);
@@ -53,12 +54,24 @@ const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = ({
         loadOptions();
     }, [optionMap, options]);
 
+    useEffect(() => {
+        console.log(field.name);
+        console.log('xd');
+
+        if (field.value) {
+            setDisplayValue(field.value[optionMap.label]);
+        }
+    }, []);
+
     const handleSelect = ({ value, label }) => {
-        form.setFieldValue(field.name, value);
-        setDisplayValue(label);
+        if (onChange) onChange({ value, label });
+        else {
+            form.setFieldValue(field.name, value);
+            setDisplayValue(label);
+        }
     };
 
-    const handleClear = (e) => {
+    const handleClear = e => {
         e.stopPropagation();
         form.setFieldValue(field.name, undefined);
         setDisplayValue('');
@@ -71,7 +84,9 @@ const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = ({
                     <span className="value-container">{displayValue}</span>
                     <InputActionButtons
                         indicator={<FiChevronDown />}
-                        action={isClearable && displayValue ? { icon: <FiX />, onClick: e => handleClear(e) } : undefined}
+                        action={
+                            isClearable && displayValue ? { icon: <FiX />, onClick: e => handleClear(e) } : undefined
+                        }
                     />
                 </div>
             </ButtonContainer>

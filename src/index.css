@@ -50,5 +50,5 @@ body,
 }
 
 .ReactModal__Overlay.ReactModal__Overlay--after-open {
-    z-index: 3;
+    z-index: 99;
 }

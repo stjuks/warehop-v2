@@ -1,11 +1,9 @@
 import React from 'react';
-import { FieldProps } from 'formik';
+import { FieldProps, Field } from 'formik';
 import Flatpickr from 'react-flatpickr';
 import { Estonian } from 'flatpickr/dist/l10n/et';
 import { FiCalendar } from 'react-icons/fi';
 import moment from 'moment';
-
-import { Field } from '../index';
 
 import { InputContainer } from '../styles';
 import { TextInputBase } from '../TextInput';

@@ -1,7 +1,5 @@
 import React, { ChangeEvent, useState } from 'react';
-import { FieldProps } from 'formik';
-
-import { Field } from '../index';
+import { FieldProps, Field } from 'formik';
 
 import { FileInputStyled } from './styles';
 import { TextInputBase, InputActionButtons } from '../TextInput';
