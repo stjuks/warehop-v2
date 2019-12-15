@@ -29,32 +29,6 @@ interface FormProps {
     onChange: () => any;
 }
 
-export const FieldBase: React.FC<FieldProps> = ({ unregisterOnUnmount, name, children, formik, ...restProps }) => {
-    const { setValues, values } = formik;
-
-    const unregisterFormValue = () => {
-        const newValues = {};
-
-        if (values instanceof Object) {
-            Object.keys(values).forEach(key => {
-                if (key !== name) newValues[key] = values[key];
-            });
-        }
-
-        setValues(newValues);
-    };
-
-    useEffect(() => {
-        return () => {
-            if (unregisterOnUnmount) {
-                unregisterFormValue();
-            }
-        };
-    }, []);
-
-    return <FormikField {...restProps} name={name} children={children} />;
-};
-
 interface FormikOnChangeProps {
     onChange: (values: any) => any;
     formik?: any;
@@ -79,8 +53,6 @@ const FormikOnChangeBase: React.FC<FormikOnChangeProps> = ({ onChange, formik })
 };
 
 export const FormikOnChange = connect(FormikOnChangeBase);
-
-export const Field = connect(FieldBase);
 
 export const FieldArray: React.FC<FieldArrayProps & PropsWithChildren<any>> = ({ name, children }) => (
     <FormikFieldArray name={name} render={arrayHelpers => children(arrayHelpers)} />

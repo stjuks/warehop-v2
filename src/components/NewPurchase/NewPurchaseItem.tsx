@@ -5,6 +5,7 @@ import routes from '../../common/routes';
 import history from '../../common/history';
 import sampleData from '../../common/sampleData';
 import Form from '../Form';
+import * as yup from 'yup';
 
 import AriaSelect from '../Form/AriaSelect';
 import TextInput from '../Form/TextInput';
@@ -60,7 +61,16 @@ const forms = {
                 <TextInput name="retailPrice" label="Müügihind" type="number" />
             </>
         ),
-        fields: ['itemType', 'name', 'code', 'quantity', 'unit', 'warehouse', 'purchasePrice', 'retailPrice']
+        fields: ['itemType', 'name', 'code', 'quantity', 'unit', 'warehouse', 'purchasePrice', 'retailPrice'],
+        validationSchema: yup.object({
+            name: yup.string().required('Palun sisesta kauba nimetus.'),
+            code: yup.string().required('Palun sisesta kauba kood.'),
+            quantity: yup.number('Kogus peab olema number.').required('Palun sisesta kauba kogus.'),
+            unit: yup.object().required('Palun vali kauba ühik.'),
+            warehouse: yup.object().required('Palun vali kauba sihtladu.'),
+            purchasePrice: yup.number('Hind peab olema number.').required('Palun sisesta kauba ostuhind.'),
+            retailPrice: yup.number('Hind peab olema number.')
+        })
     },
     SERVICE: serviceAndExpenseForm,
     EXPENSE: serviceAndExpenseForm
@@ -93,22 +103,27 @@ const NewPurchaseItem = ({ arrayHelpers, onSubmit, index }) => {
 
             forms[itemTypeId].fields.forEach(field => (newValues[field] = formik.values[field]));
             formik.setValues(newValues);
+            formik.setErrors({});
 
             setActiveItemType(itemTypeId);
         }
     };
 
+    const validationSchema = forms[activeItemType].validationSchema;
+    const form = forms[activeItemType].render;
+
     return (
         <Modal isOpen={true} title="Lisa kaup" backTo={routes.newPurchase}>
             <Form
                 id="new-purchase-item-form"
+                validationSchema={validationSchema}
                 initialValues={initialValues}
                 onSubmit={handleSubmit}
                 onChange={handleTypeSelect}
             >
                 <>
                     <AriaSelect name="itemType" label="Kauba tüüp" options={itemTypes} optionMap={{ label: 'name' }} />
-                    {forms[activeItemType].render}
+                    {form}
                     <button>Submit</button>
                 </>
             </Form>

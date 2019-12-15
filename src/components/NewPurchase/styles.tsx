@@ -21,6 +21,7 @@ export const AddPurchaseItemBtn = styled(Link)`
 export const PurchaseItemContainer = styled.div`
     ${({ theme }) => `
         padding: 1rem 0;
+        margin: 0 0.25rem;
 
         :not(:last-child) {
             border-bottom: 1px solid ${theme.colors.midGrey};

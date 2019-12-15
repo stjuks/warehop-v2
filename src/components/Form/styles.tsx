@@ -3,6 +3,7 @@ import styled from 'styled-components';
 interface InputFieldProps {
     isFocused?: boolean;
     isMounted?: boolean;
+    hasValue?: boolean;
 }
 
 export const FormContainer = styled.form`
@@ -18,7 +19,7 @@ export const FormTitle = styled.h3`
         font-family: 'Red Hat Display', sans-serif;
         font-size: 0.875rem;
         font-weight: 500;
-        margin: 1rem 0 1rem 0;
+        margin: 1rem 0 1.5rem 0.25rem;
     `}
 `;
 
@@ -37,11 +38,15 @@ export const LabelContainer = styled.label.attrs({ className: 'label' })`
 `;
 
 export const InputFieldContainer = styled.div<InputFieldProps>`
-    ${({ isFocused, theme, isMounted = true }) => `
+    ${({ isFocused, theme, hasValue, isMounted = true }) => `
         min-height: 2.5rem;
         display: flex;
         box-shadow: 0 1px 0 ${theme.colors.lightText};
         position: relative;
+        background: ${isFocused ? theme.colors.midGrey : 'transparent'};
+        border-top-left-radius: 0.25rem;
+        border-top-right-radius: 0.25rem;
+        transition: background .2s;
 
         .flatpickr-input[readonly] {
             cursor: default;
@@ -50,8 +55,8 @@ export const InputFieldContainer = styled.div<InputFieldProps>`
         :after {
             content: '';
             height: 1px;
-            width: ${isFocused ? '100%' : '0%'};
-            transition: ${isMounted ? 'all .2s' : 'none'};
+            width: ${isFocused || hasValue ? '100%' : '0%'};
+            transition: ${isMounted ? 'width .2s' : 'none'};
             position: absolute;
             background: ${theme.colors.primary};
             bottom: 0;

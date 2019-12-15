@@ -15,7 +15,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, children, header, title, backTo }
     return (
         <ModalContainer isOpen={isOpen}>
             <Header title={title} backTo={backTo} />
-            <ContentContainer padded>
+            <ContentContainer>
                 {children}
             </ContentContainer>
         </ModalContainer>

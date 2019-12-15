@@ -24,6 +24,7 @@ interface InputProps {
     readOnly?: boolean;
     onFocus?: (isFocused: boolean) => any;
     isTextarea?: boolean;
+    validate?: any;
 }
 
 interface InputActionProps {
@@ -87,8 +88,9 @@ export const TextInputBase: React.FC<InputProps> = ({
             <InputFieldContainer
                 onFocus={() => handleFocus(true)}
                 onBlur={() => handleFocus(false)}
-                isFocused={isFocused || (value != null && value != '')}
+                isFocused={isFocused}
                 isMounted={isMounted}
+                hasValue={value != null && value != ''}
                 className="input-field"
             >
                 {inputComponent || (
@@ -128,7 +130,7 @@ export const TextInputBase: React.FC<InputProps> = ({
 };
 
 const TextInput: React.FC<InputProps> = props => (
-    <Field name={props.name}>
+    <Field name={props.name} validate={props.validate}>
         {({ field, form }: FieldProps) => (
             <TextInputBase
                 setFieldValue={form.setFieldValue}
