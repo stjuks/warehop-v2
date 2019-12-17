@@ -9,6 +9,9 @@ import * as yup from 'yup';
 
 import AriaSelect from '../Form/AriaSelect';
 import TextInput from '../Form/TextInput';
+import { Row } from '../Layout/styles';
+import AutosuggestInput from '../Form/AutosuggestInput';
+import api from '../../api';
 
 interface NewPurchaseItemProps {
     formikProps: any;
@@ -28,14 +31,6 @@ const serviceAndExpenseForm = {
         unit: undefined,
         purchasePrice: ''
     },
-    render: (
-        <>
-            <TextInput name="name" label="Nimetus" />
-            <TextInput name="quantity" label="Kogus" type="number" />
-            <AriaSelect name="unit" label="Ühik" options={units} optionMap={{ label: 'name' }} />
-            <TextInput name="purchasePrice" label="Ostuhind" type="number" />
-        </>
-    ),
     fields: ['itemType', 'name', 'quantity', 'unit', 'purchasePrice']
 };
 
@@ -50,17 +45,6 @@ const forms = {
             purchasePrice: '',
             retailPrice: ''
         },
-        render: (
-            <>
-                <TextInput name="name" label="Nimetus" />
-                <TextInput name="code" label="Kood" />
-                <TextInput name="quantity" label="Kogus" type="number" />
-                <AriaSelect name="unit" label="Ühik" options={units} optionMap={{ label: 'name' }} />
-                <AriaSelect name="warehouse" label="Ladu" options={warehouses} optionMap={{ label: 'name' }} />
-                <TextInput name="purchasePrice" label="Ostuhind" type="number" />
-                <TextInput name="retailPrice" label="Müügihind" type="number" />
-            </>
-        ),
         fields: ['itemType', 'name', 'code', 'quantity', 'unit', 'warehouse', 'purchasePrice', 'retailPrice'],
         validationSchema: yup.object({
             name: yup.string().required('Palun sisesta kauba nimetus.'),
@@ -74,6 +58,49 @@ const forms = {
     },
     SERVICE: serviceAndExpenseForm,
     EXPENSE: serviceAndExpenseForm
+};
+
+const ItemForm = ({ type }) => {
+    if (type === 'PRODUCT') {
+        return (
+            <>
+                <AutosuggestInput
+                    name="code"
+                    label="Kood"
+                    getSuggestions={query => api.getProducts({ limit: 10, offset: 10 })}
+                    suggestionMap={{ label: 'code' }}
+                    onSelect={({ suggestion, suggestionValue, formik }) => {
+                        const values = { code: suggestionValue };
+
+                        forms.PRODUCT.fields.forEach(field => {
+                            if (suggestion.value[field]) values[field] = suggestion.value[field];
+                        });
+
+                        formik.setValues({ ...formik.values, ...values });
+                    }}
+                />
+                <TextInput name="name" label="Nimetus" />
+                <Row flex={[1, 1]}>
+                    <TextInput name="quantity" label="Kogus" type="number" />
+                    <AriaSelect name="unit" label="Ühik" options={units} optionMap={{ label: 'name' }} />
+                </Row>
+                <AriaSelect name="warehouse" label="Ladu" options={warehouses} optionMap={{ label: 'name' }} />
+                <TextInput name="purchasePrice" label="Ostuhind" type="number" indicator={'€'} />
+                <TextInput name="retailPrice" label="Müügihind" type="number" indicator={'€'} />
+            </>
+        );
+    }
+
+    return (
+        <>
+            <TextInput name="name" label="Nimetus" />
+            <Row flex={[1, 1]}>
+                <TextInput name="quantity" label="Kogus" type="number" />
+                <AriaSelect name="unit" label="Ühik" options={units} optionMap={{ label: 'name' }} />
+            </Row>
+            <TextInput name="purchasePrice" label="Ostuhind" type="number" indicator={'€'} />
+        </>
+    );
 };
 
 const NewPurchaseItem = ({ arrayHelpers, onSubmit, index }) => {
@@ -101,7 +128,9 @@ const NewPurchaseItem = ({ arrayHelpers, onSubmit, index }) => {
             const itemTypeId = changedField.value.id;
             const newValues = forms[itemTypeId].initialValues;
 
-            forms[itemTypeId].fields.forEach(field => (newValues[field] = formik.values[field]));
+            forms[itemTypeId].fields.forEach(field => {
+                if (formik.values[field]) newValues[field] = formik.values[field];
+            });
             formik.setValues(newValues);
             formik.setErrors({});
 
@@ -110,7 +139,6 @@ const NewPurchaseItem = ({ arrayHelpers, onSubmit, index }) => {
     };
 
     const validationSchema = forms[activeItemType].validationSchema;
-    const form = forms[activeItemType].render;
 
     return (
         <Modal isOpen={true} title="Lisa kaup" backTo={routes.newPurchase}>
@@ -123,7 +151,7 @@ const NewPurchaseItem = ({ arrayHelpers, onSubmit, index }) => {
             >
                 <>
                     <AriaSelect name="itemType" label="Kauba tüüp" options={itemTypes} optionMap={{ label: 'name' }} />
-                    {form}
+                    <ItemForm type={activeItemType} />
                     <button>Submit</button>
                 </>
             </Form>

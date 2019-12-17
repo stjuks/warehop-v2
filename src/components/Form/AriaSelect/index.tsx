@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { FieldProps, Field } from 'formik';
 import { FiChevronDown, FiX } from 'react-icons/fi';
+import { Menu, MenuItem } from 'react-aria-menubutton';
 
-import { ButtonContainer, MenuContainer, MenuItemContainer, WrapperContainer } from './styles';
+import { ButtonContainer, WrapperContainer } from './styles';
 import { TextInputBase, InputActionButtons } from '../TextInput';
-import { mapSelectOptions, mapSelectOption } from '../../../util/helpers';
+import { mapSelectOptions } from '../../../util/helpers';
+import { DropdownMenu } from '../util/DropdownMenu';
 
 interface Option {
     label: string;
@@ -55,9 +57,6 @@ const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = ({
     }, [optionMap, options]);
 
     useEffect(() => {
-        console.log(field.name);
-        console.log('xd');
-
         if (field.value) {
             setDisplayValue(field.value[optionMap.label]);
         }
@@ -91,21 +90,16 @@ const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = ({
                 </div>
             </ButtonContainer>
             {isLoadingOptions && 'Loading...'}
-            <MenuContainer>
-                <ul>
-                    {mappedOptions.map((option: Option, i) => (
-                        <li key={i}>
-                            <MenuItemContainer
-                                value={option}
-                                text={option.label}
-                                isActive={displayValue === option.label}
-                            >
-                                {option.label}
-                            </MenuItemContainer>
-                        </li>
-                    ))}
-                </ul>
-            </MenuContainer>
+            <DropdownMenu
+                items={mappedOptions}
+                menuProps={{ as: Menu }}
+                menuItemProps={item => ({
+                    as: MenuItem,
+                    value: item,
+                    text: item.label,
+                    isActive: displayValue === item.label
+                })}
+            />
         </>
     );
 

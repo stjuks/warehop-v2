@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 interface InputFieldProps {
     isFocused?: boolean;
@@ -48,6 +48,7 @@ export const InputFieldContainer = styled.div<InputFieldProps>`
         border-top-right-radius: 0.25rem;
         transition: background .2s;
 
+
         .flatpickr-input[readonly] {
             cursor: default;
         }
@@ -63,7 +64,8 @@ export const InputFieldContainer = styled.div<InputFieldProps>`
         }
 
         .value-container,
-        .select-btn {
+        .select-btn,
+        .react-autosuggest__container {
             flex: 1;
             width: 100%;
             height: 100%;

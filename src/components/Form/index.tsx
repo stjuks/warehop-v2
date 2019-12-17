@@ -1,25 +1,9 @@
-import React, { PropsWithChildren, useEffect, useState } from 'react';
-import {
-    Formik,
-    FieldArray as FormikFieldArray,
-    Field as FormikField,
-    FormikProps,
-    useFormikContext,
-    connect
-} from 'formik';
-import usePrevious from 'react-use/lib/usePrevious';
+import React from 'react';
+import { Formik } from 'formik';
 
 import { FormContainer } from './styles';
 
-interface FieldArrayProps {
-    name: string;
-}
-
-interface FieldProps {
-    name: string;
-    unregisterOnUnmount?: boolean;
-    [x: string]: any;
-}
+import FormikOnChange from './util/FormikOnChange';
 
 interface FormProps {
     initialValues: any;
@@ -28,35 +12,6 @@ interface FormProps {
     validationSchema?: any;
     onChange: () => any;
 }
-
-interface FormikOnChangeProps {
-    onChange: (values: any) => any;
-    formik?: any;
-}
-
-const FormikOnChangeBase: React.FC<FormikOnChangeProps> = ({ onChange, formik }) => {
-    const { values } = formik;
-    const prevValues = usePrevious(values);
-
-    const findChangedField = () => {
-        if (values instanceof Object) {
-            const changedKey = Object.keys(values).find(key => prevValues[key] != values[key]);
-            return { name: changedKey, value: changedKey ? values[changedKey] : undefined };
-        }
-    };
-
-    useEffect(() => {
-        if (prevValues) onChange({ prevValues, nextValues: values, changedField: findChangedField(), formik });
-    }, [values]);
-
-    return null;
-};
-
-export const FormikOnChange = connect(FormikOnChangeBase);
-
-export const FieldArray: React.FC<FieldArrayProps & PropsWithChildren<any>> = ({ name, children }) => (
-    <FormikFieldArray name={name} render={arrayHelpers => children(arrayHelpers)} />
-);
 
 const Form: React.FC<FormProps & React.PropsWithChildren<any>> = ({
     initialValues,
