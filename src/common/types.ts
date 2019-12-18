@@ -11,7 +11,10 @@ export interface ProductQuantityByWarehouse extends Warehouse {
     quantity: number;
 }
 
-export type ArticleType = 'SERVICE' | 'PRODUCT';
+export interface ArticleType {
+    id: 'SERVICE' | 'PRODUCT' | 'EXPENSE';
+    name: string;
+};
 
 export type InvoiceType = 'SALE' | 'PURCHASE';
 

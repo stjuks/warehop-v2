@@ -7,17 +7,19 @@ interface DropdownMenuProps {
         value: any;
     }[];
     menuProps?: any;
-    menuItemProps?: (item: any) => any;
+    menuItemProps?: (item: any) => { isActive: boolean };
 }
 
 export const DropdownMenu: React.FC<DropdownMenuProps> = ({ items, menuProps, menuItemProps }) => (
     <MenuContainer {...menuProps}>
         <ul>
             {items.map((item, i) => {
-                const itemProps = menuItemProps ? menuItemProps(item) : {};
+                const { isActive, ...restProps } = menuItemProps ? menuItemProps(item) : { isActive: false };
                 return (
                     <li key={i}>
-                        <MenuItemContainer {...itemProps}>{item.label}</MenuItemContainer>
+                        <MenuItemContainer {...restProps} data-active={isActive}>
+                            {item.label}
+                        </MenuItemContainer>
                     </li>
                 );
             })}
@@ -59,34 +61,25 @@ export const MenuContainer = styled.div.attrs({ className: 'select-menu' })`
     `}
 `;
 
-interface MenuItemProps {
-    isActive?: boolean;
-    [x: string]: any;
-}
-
 export const MenuItemContainer = styled.div.attrs({
     className: 'select-menu-item'
-})<MenuItemProps>`
-    ${({ theme, isActive }) => `
+})`
+    ${({ theme }) => `
         padding: 0.5rem 1rem;
         font-weight: 500;
         outline: none;
         border-radius: 0.25rem;
 
+        :focus,
+        :hover {
+            box-shadow: ${theme.lightShadow};
+            background: ${theme.colors.midGrey};
+        }
 
-        ${
-            isActive
-                ? `
+        &[data-active="true"] {
             background: ${theme.colors.primary};
             box-shadow: none;
             color: ${theme.colors.lightGrey};
-        `
-                : `
-            :focus,
-            :hover {
-            box-shadow: ${theme.lightShadow};
-            background: ${theme.colors.midGrey};
-        }`
         }
     `}
 `;

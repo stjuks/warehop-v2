@@ -37,7 +37,7 @@ const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = ({
 }) => {
     const [mappedOptions, setMappedOptions] = useState<Option[]>([]);
     const [isLoadingOptions, setLoadingOptions] = useState(false);
-    const [displayValue, setDisplayValue] = useState('');
+    const [displayValue, setDisplayValue] = useState(field.value ? field.value[optionMap.label] : '');
 
     useEffect(() => {
         const loadOptions = async () => {
@@ -54,12 +54,6 @@ const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = ({
         };
 
         loadOptions();
-    }, [optionMap, options]);
-
-    useEffect(() => {
-        if (field.value) {
-            setDisplayValue(field.value[optionMap.label]);
-        }
     }, []);
 
     const handleSelect = ({ value, label }) => {

@@ -19,6 +19,8 @@ const PurchaseItem: React.FC<PurchaseItemProps> = ({ item, onDelete, onEdit }) =
         PRODUCT: 'Laoartikkel'
     };
 
+    console.log(item);
+
     return (
         <PurchaseItemContainer>
             <div className="row row-1">
@@ -33,7 +35,7 @@ const PurchaseItem: React.FC<PurchaseItemProps> = ({ item, onDelete, onEdit }) =
                 </span>
             </div>
             <div className="row row-3">
-                <span className="item-type">{item.warehouse ? item.warehouse.name : itemTypes[item.type]}</span>
+                <span className="item-type">{item.warehouse ? item.warehouse.name : item.type.name}</span>
                 <span className="item-actions">
                     <button className="edit-item-btn" onClick={onEdit}>
                         Muuda

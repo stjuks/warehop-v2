@@ -36,6 +36,7 @@ interface NewPurchaseFormValues {
 const NewPurchase = observer(() => {
     const partners = sampleData.partners;
     const units = sampleData.units;
+    const products = sampleData.products;
 
     const initialValues: NewPurchaseFormValues = {
         partner: undefined,
@@ -44,30 +45,7 @@ const NewPurchase = observer(() => {
         creationDate: moment(),
         dueDate: moment(),
         description: '',
-        items: [
-            {
-                type: 'PRODUCT',
-                name: 'Luugi käepide Electrolux',
-                quantity: 5,
-                purchasePrice: 25,
-                code: 'AD-123001232',
-                unit: {
-                    id: 1,
-                    name: 'Tükk',
-                    abbreviation: 'tk'
-                },
-                warehouse: {
-                    id: 1,
-                    name: 'Ladu 1'
-                }
-            },
-            {
-                type: 'SERVICE',
-                name: 'Kuller',
-                quantity: 1,
-                purchasePrice: 5
-            }
-        ]
+        items: [products[0], products[1]]
     };
 
     const validationSchema = yup.object({

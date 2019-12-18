@@ -12,6 +12,7 @@ import TextInput from '../Form/TextInput';
 import { Row } from '../Layout/styles';
 import AutosuggestInput from '../Form/AutosuggestInput';
 import api from '../../api';
+import { ArticleType } from '../../common/types';
 
 interface NewPurchaseItemProps {
     formikProps: any;
@@ -19,10 +20,11 @@ interface NewPurchaseItemProps {
     index: number;
 }
 
-const DEFAULT_ITEM_TYPE = { id: 'PRODUCT', name: 'Laokaup' };
-
+const itemTypes = sampleData.itemTypes;
 const units = sampleData.units;
 const warehouses = sampleData.warehouses;
+
+const DEFAULT_ITEM_TYPE = itemTypes[0];
 
 const serviceAndExpenseForm = {
     initialValues: {
@@ -31,7 +33,12 @@ const serviceAndExpenseForm = {
         unit: undefined,
         purchasePrice: ''
     },
-    fields: ['itemType', 'name', 'quantity', 'unit', 'purchasePrice']
+    fields: ['type', 'name', 'quantity', 'unit', 'purchasePrice'],
+    validationSchema: yup.object({
+        name: yup.string().required('Palun sisesta artikli nimetus.'),
+        quantity: yup.number('Kogus peab olema number.').required('Palun sisesta artikli kogus.'),
+        purchasePrice: yup.number('Hind peab olema number.').required('Palun sisesta kauba ostuhind.')
+    })
 };
 
 const forms = {
@@ -45,14 +52,13 @@ const forms = {
             purchasePrice: '',
             retailPrice: ''
         },
-        fields: ['itemType', 'name', 'code', 'quantity', 'unit', 'warehouse', 'purchasePrice', 'retailPrice'],
+        fields: ['type', 'name', 'code', 'quantity', 'unit', 'warehouse', 'purchasePrice', 'retailPrice'],
         validationSchema: yup.object({
             name: yup.string().required('Palun sisesta kauba nimetus.'),
             code: yup.string().required('Palun sisesta kauba kood.'),
             quantity: yup.number('Kogus peab olema number.').required('Palun sisesta kauba kogus.'),
             unit: yup.object().required('Palun vali kauba ühik.'),
             warehouse: yup.object().required('Palun vali kauba sihtladu.'),
-            purchasePrice: yup.number('Hind peab olema number.').required('Palun sisesta kauba ostuhind.'),
             retailPrice: yup.number('Hind peab olema number.')
         })
     },
@@ -60,8 +66,20 @@ const forms = {
     EXPENSE: serviceAndExpenseForm
 };
 
-const ItemForm = ({ type }) => {
-    if (type === 'PRODUCT') {
+const ItemForm = ({ type }: { type: ArticleType }) => {
+
+    // autofill fields on select
+    const handleAutosuggestSelect = ({ suggestion, formik }) => {
+        const values = {};
+
+        forms[type.id].fields.forEach(field => {
+            if (suggestion.value[field]) values[field] = suggestion.value[field];
+        });
+
+        formik.setValues({ ...formik.values, ...values });
+    };
+
+    if (type.id === 'PRODUCT') {
         return (
             <>
                 <AutosuggestInput
@@ -69,17 +87,15 @@ const ItemForm = ({ type }) => {
                     label="Kood"
                     getSuggestions={query => api.getProducts({ limit: 10, offset: 10 })}
                     suggestionMap={{ label: 'code' }}
-                    onSelect={({ suggestion, suggestionValue, formik }) => {
-                        const values = { code: suggestionValue };
-
-                        forms.PRODUCT.fields.forEach(field => {
-                            if (suggestion.value[field]) values[field] = suggestion.value[field];
-                        });
-
-                        formik.setValues({ ...formik.values, ...values });
-                    }}
+                    onSelect={handleAutosuggestSelect}
                 />
-                <TextInput name="name" label="Nimetus" />
+                <AutosuggestInput
+                    name="name"
+                    label="Nimetus"
+                    getSuggestions={query => api.getProducts({ limit: 10, offset: 10 })}
+                    suggestionMap={{ label: 'name' }}
+                    onSelect={handleAutosuggestSelect}
+                />
                 <Row flex={[1, 1]}>
                     <TextInput name="quantity" label="Kogus" type="number" />
                     <AriaSelect name="unit" label="Ühik" options={units} optionMap={{ label: 'name' }} />
@@ -104,41 +120,36 @@ const ItemForm = ({ type }) => {
 };
 
 const NewPurchaseItem = ({ arrayHelpers, onSubmit, index }) => {
-    const [activeItemType, setActiveItemType] = useState(DEFAULT_ITEM_TYPE.id);
+    const [activeItemType, setActiveItemType] = useState<ArticleType>(DEFAULT_ITEM_TYPE);
 
     const initialValues = {
-        itemType: DEFAULT_ITEM_TYPE,
-        ...forms[activeItemType].initialValues
+        type: DEFAULT_ITEM_TYPE,
+        ...forms[activeItemType.id].initialValues
     };
-
-    const itemTypes = [
-        { id: 'PRODUCT', name: 'Laokaup' },
-        { id: 'SERVICE', name: 'Teenus' },
-        { id: 'EXPENSE', name: 'Kuluartikkel' }
-    ];
 
     const handleSubmit = values => {
         console.log(values);
-        // arrayHelpers.push(values);
-        // history.push(routes.newPurchase);
+        arrayHelpers.push(values);
+        history.push(routes.newPurchase);
     };
 
     const handleTypeSelect = ({ changedField, formik }) => {
-        if (changedField.name === 'itemType') {
+        if (changedField.name === 'type') {
             const itemTypeId = changedField.value.id;
             const newValues = forms[itemTypeId].initialValues;
 
             forms[itemTypeId].fields.forEach(field => {
                 if (formik.values[field]) newValues[field] = formik.values[field];
             });
+
             formik.setValues(newValues);
             formik.setErrors({});
 
-            setActiveItemType(itemTypeId);
+            setActiveItemType(changedField.value);
         }
     };
 
-    const validationSchema = forms[activeItemType].validationSchema;
+    const validationSchema = forms[activeItemType.id].validationSchema;
 
     return (
         <Modal isOpen={true} title="Lisa kaup" backTo={routes.newPurchase}>
@@ -150,7 +161,7 @@ const NewPurchaseItem = ({ arrayHelpers, onSubmit, index }) => {
                 onChange={handleTypeSelect}
             >
                 <>
-                    <AriaSelect name="itemType" label="Kauba tüüp" options={itemTypes} optionMap={{ label: 'name' }} />
+                    <AriaSelect name="type" label="Kauba tüüp" options={itemTypes} optionMap={{ label: 'name' }} />
                     <ItemForm type={activeItemType} />
                     <button>Submit</button>
                 </>

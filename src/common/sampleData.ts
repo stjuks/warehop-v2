@@ -1,4 +1,4 @@
-import { Warehouse, Partner, Unit, Product, Invoice } from './types';
+import { Warehouse, Partner, Unit, Product, Invoice, ArticleType } from './types';
 
 const warehouses: Warehouse[] = [
     {
@@ -10,6 +10,12 @@ const warehouses: Warehouse[] = [
         name: 'Ladu 2'
     }
 ];
+
+const itemTypes: ArticleType[] = [
+    { id: 'PRODUCT', name: 'Laokaup' },
+    { id: 'SERVICE', name: 'Teenus' },
+    { id: 'EXPENSE', name: 'Kuluartikkel' }
+]
 
 const partners: Partner[] = [
     {
@@ -50,7 +56,7 @@ const units: Unit[] = [
 const products: Product[] = [
     {
         id: 1,
-        type: 'PRODUCT',
+        type: itemTypes[0],
         name: 'Külmkapp Electrolux',
         retailPrice: 430.99,
         purchasePrice: 250.99,
@@ -66,7 +72,7 @@ const products: Product[] = [
     },
     {
         id: 2,
-        type: 'PRODUCT',
+        type: itemTypes[0],
         name: 'Pliit Electrolux',
         retailPrice: 349.99,
         purchasePrice: 159.99,
@@ -79,7 +85,7 @@ const products: Product[] = [
     },
     {
         id: 3,
-        type: 'PRODUCT',
+        type: itemTypes[0],
         name: 'Kõrvaklapid Philips',
         retailPrice: 24.99,
         description:
@@ -153,7 +159,8 @@ const sampleData = {
     partners,
     warehouses,
     purchases,
-    sales
+    sales,
+    itemTypes
 };
 
 export default sampleData;
