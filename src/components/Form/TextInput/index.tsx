@@ -12,7 +12,7 @@ import {
 
 interface InputProps {
     name: string;
-    label: string;
+    label?: string;
     onChange?: (e: any) => any;
     value?: string;
     errorMessage?: any;
@@ -84,7 +84,7 @@ export const TextInputBase: React.FC<InputProps> = ({
 
     return (
         <InputContainer>
-            <LabelContainer>{label}</LabelContainer>
+            {label && <LabelContainer>{label}</LabelContainer>}
             <InputFieldContainer
                 onFocus={() => handleFocus(true)}
                 onBlur={() => handleFocus(false)}

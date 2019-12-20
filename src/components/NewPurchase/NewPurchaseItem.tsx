@@ -13,6 +13,10 @@ import { Row } from '../Layout/styles';
 import AutosuggestInput from '../Form/AutosuggestInput';
 import api from '../../api';
 import { ArticleType } from '../../common/types';
+import Header from '../Header';
+import { ContentContainer } from '../App/styles';
+import { FooterContainer } from '../Footer/styles';
+import Button from '../Button';
 
 interface NewPurchaseItemProps {
     formikProps: any;
@@ -59,6 +63,7 @@ const forms = {
             quantity: yup.number('Kogus peab olema number.').required('Palun sisesta kauba kogus.'),
             unit: yup.object().required('Palun vali kauba ühik.'),
             warehouse: yup.object().required('Palun vali kauba sihtladu.'),
+            purchasePrice: yup.number().required('Palun sisesta kauba ostuhind.'),
             retailPrice: yup.number('Hind peab olema number.')
         })
     },
@@ -67,7 +72,6 @@ const forms = {
 };
 
 const ItemForm = ({ type }: { type: ArticleType }) => {
-
     // autofill fields on select
     const handleAutosuggestSelect = ({ suggestion, formik }) => {
         const values = {};
@@ -128,7 +132,6 @@ const NewPurchaseItem = ({ arrayHelpers, onSubmit, index }) => {
     };
 
     const handleSubmit = values => {
-        console.log(values);
         arrayHelpers.push(values);
         history.push(routes.newPurchase);
     };
@@ -153,19 +156,24 @@ const NewPurchaseItem = ({ arrayHelpers, onSubmit, index }) => {
 
     return (
         <Modal isOpen={true} title="Lisa kaup" backTo={routes.newPurchase}>
-            <Form
-                id="new-purchase-item-form"
-                validationSchema={validationSchema}
-                initialValues={initialValues}
-                onSubmit={handleSubmit}
-                onChange={handleTypeSelect}
-            >
-                <>
-                    <AriaSelect name="type" label="Kauba tüüp" options={itemTypes} optionMap={{ label: 'name' }} />
-                    <ItemForm type={activeItemType} />
-                    <button>Submit</button>
-                </>
-            </Form>
+            <Header title="Lisa arvekaup" backTo={routes.newPurchase} />
+            <ContentContainer>
+                <Form
+                    id="new-purchase-item-form"
+                    validationSchema={validationSchema}
+                    initialValues={initialValues}
+                    onSubmit={handleSubmit}
+                    onChange={handleTypeSelect}
+                >
+                    <>
+                        <AriaSelect name="type" label="Kauba tüüp" options={itemTypes} optionMap={{ label: 'name' }} />
+                        <ItemForm type={activeItemType} />
+                    </>
+                </Form>
+            </ContentContainer>
+            <FooterContainer style={{ padding: '0.25rem 1rem' }}>
+                <Button title="Lisa kaup" form="new-purchase-item-form" type="submit" />
+            </FooterContainer>
         </Modal>
     );
 };

@@ -12,6 +12,8 @@ export const FormContainer = styled.form`
 
 export const FormTitle = styled.h3`
     ${({ theme }) => `
+        display: flex;
+        align-items: center;
         padding: 0.25rem 1rem;
         text-transform: uppercase;
         box-shadow: inset 2px 0 0 ${theme.colors.primary};

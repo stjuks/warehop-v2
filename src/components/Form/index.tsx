@@ -10,10 +10,10 @@ interface FormProps {
     onSubmit: (values: any) => any;
     id: string;
     validationSchema?: any;
-    onChange: () => any;
+    onChange?: (values: any) => any;
 }
 
-const Form: React.FC<FormProps & React.PropsWithChildren<any>> = ({
+const Form: React.FC<React.PropsWithChildren<FormProps>> = ({
     initialValues,
     onSubmit,
     validationSchema,
@@ -31,9 +31,10 @@ const Form: React.FC<FormProps & React.PropsWithChildren<any>> = ({
             initialValues={initialValues}
             onSubmit={onSubmit}
             validationSchema={validationSchema}
-            validateOnChange={false}
+            validateOnChange={true}
             validateOnBlur={false}
-            validateOnMount={false}
+            validateOnMount={true}
+            isInitialValid={false}
         >
             {formikProps => (
                 <>

@@ -59,20 +59,19 @@ const NewPurchase = observer(() => {
         <FieldArray name="items">
             {arrayHelpers => (
                 <>
-                    <Row flex={[1, 0]}>
-                        <FormTitle>Kaubad</FormTitle>
-                        <AddPurchaseItemBtn to={routes.newPurchaseItem}>+ Lisa kaup</AddPurchaseItemBtn>
-                        <Route
-                            path={routes.newPurchaseItem}
-                            render={() => (
-                                <NewPurchaseItem
-                                    arrayHelpers={arrayHelpers}
-                                    onSubmit={() => alert('item added')}
-                                    index={formikProps.values.items.length}
-                                />
-                            )}
-                        />
-                    </Row>
+                    <FormTitle>
+                        Kaubad <AddPurchaseItemBtn to={routes.newPurchaseItem}>+ Lisa kaup</AddPurchaseItemBtn>
+                    </FormTitle>
+                    <Route
+                        path={routes.newPurchaseItem}
+                        render={() => (
+                            <NewPurchaseItem
+                                arrayHelpers={arrayHelpers}
+                                onSubmit={() => alert('item added')}
+                                index={formikProps.values.items.length}
+                            />
+                        )}
+                    />
                     {formikProps.values.items.map((item, index) => (
                         <PurchaseItem
                             key={index}
@@ -118,8 +117,8 @@ const NewPurchase = observer(() => {
                     )}
                 </Form>
             </NewProductContainer>
-            <FooterContainer style={{ padding: '0.5rem 1rem' }}>
-                <Button title="Loo arve" form="new-purchase-form" />
+            <FooterContainer style={{ padding: '0.25rem 1rem' }}>
+                <Button title="Loo arve" form="new-purchase-form" type="submit" />
             </FooterContainer>
         </>
     );

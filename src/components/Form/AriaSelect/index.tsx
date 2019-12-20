@@ -15,12 +15,12 @@ interface Option {
 
 interface AriaSelectProps {
     name: string;
-    label: string;
     options: any[];
     optionMap: {
         value?: string;
         label: string;
     };
+    label?: string;
     isClearable?: boolean;
     unregisterOnUnmount?: boolean;
     onChange?: (value: Option) => any;
@@ -33,7 +33,8 @@ const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = ({
     options,
     optionMap,
     isClearable,
-    onChange
+    onChange,
+    name
 }) => {
     const [mappedOptions, setMappedOptions] = useState<Option[]>([]);
     const [isLoadingOptions, setLoadingOptions] = useState(false);

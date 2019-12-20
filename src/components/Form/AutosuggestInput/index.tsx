@@ -95,6 +95,7 @@ const AutosuggestInputBase: React.FC<AutosuggestInputProps & FieldProps> = ({
                     <InputActionButtons indicator={isLoadingSuggestions ? <Loader /> : undefined} />
                 </>
             }
+            errorMessage={form.errors[field.name]}
         />
     );
 };

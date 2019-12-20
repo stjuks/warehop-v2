@@ -15,7 +15,7 @@ export const AppContainer = styled.div`
 
 export const ContentContainer = styled.div<IContentContainerProps>`
     ${({ theme, padded }) => `
-        background: ${theme.colors.white};
+        background: ${theme.colors.lightGrey};
         flex: 1;
         overflow: auto;
         ${padded && 'padding: 1rem;'}

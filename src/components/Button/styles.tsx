@@ -8,7 +8,7 @@ export const ButtonContainer = styled.button`
         flex: 1;
         font-weight: 700;
         border-radius: 3rem;
-        padding: 1rem;
+        padding: 0.75rem;
         transition: all .2s;
 
         :hover,
@@ -17,6 +17,15 @@ export const ButtonContainer = styled.button`
             box-shadow: ${theme.blueShadow};
             transform: scale(1.005);
             outline: none;
+        }
+
+        :disabled,
+        :disabled :hover,
+        :disabled :focus {
+            background: ${theme.colors.midGrey};
+            color: ${theme.colors.lightText};
+            box-shadow: none;
+            transform: none;
         }
     `}
 `;
