@@ -14,6 +14,11 @@ const getPurchases = async (data: {
     return await request.get({ url: '/purchases', data, mockData: sampleData.purchases });
 };
 
+const addPurchase = async (data: Invoice) => {
+    return await request.post({ url: '/purchases', data });
+};
+
 export default {
-    getPurchases
+    getPurchases,
+    addPurchase
 };

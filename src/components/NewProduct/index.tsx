@@ -9,12 +9,7 @@ import { NewProductContainer, FormRowContainer, AddWarehouseButton, TrashButtonC
 
 import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
-import Input from '../Input';
 import Button from '../Button';
-import Persist from '../Persist';
-import { FormSelect } from '../Select';
-import Textarea from '../Textarea';
-import { mapSelectOptions } from '../../util/helpers';
 import sampleData from '../../common/sampleData';
 import { Warehouse, ProductQuantityByWarehouse, Unit, Partner } from '../../common/types';
 import Form from '../Form';
@@ -41,8 +36,6 @@ const NewProduct = observer(() => {
     const partners = sampleData.partners;
     const units = sampleData.units;
 
-    const [warehouseRows, setWarehouseRows] = useState<ProductQuantityByWarehouse[]>([]);
-
     const initialValues: INewProductFormValues = {
         code: '',
         name: '',
@@ -60,15 +53,6 @@ const NewProduct = observer(() => {
         purchasePrice: yup.number(),
         retailPrice: yup.number(),
         description: yup.string()
-        /* warehouses: yup.array().of(
-            yup
-                .object({
-                    id: yup.number().required(),
-                    name: yup.string().required('Sisesta lao nimi.'),
-                    quantity: yup.number().required('Sisesta kogus.')
-                })
-                .required('Sisesta ladu') 
-        )*/
     });
 
     const filterChosenWarehouseOptions = (formValues: ProductQuantityByWarehouse[], warehouses: Warehouse[]) => {
@@ -83,7 +67,12 @@ const NewProduct = observer(() => {
         <>
             <Header title="Uus kaup" backTo={routes.products} />
             <NewProductContainer>
-                <Form id="new-product-form" initialValues={initialValues} onSubmit={values => console.log(values)}>
+                <Form
+                    id="new-product-form"
+                    initialValues={initialValues}
+                    validationSchema={validationSchema}
+                    onSubmit={values => console.log(values)}
+                >
                     {formikProps => (
                         <>
                             <FormTitle>Põhiandmed</FormTitle>

@@ -72,7 +72,6 @@ export const MenuItemContainer = styled.div.attrs({
 
         :focus,
         :hover {
-            box-shadow: ${theme.lightShadow};
             background: ${theme.colors.midGrey};
         }
 

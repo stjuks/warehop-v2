@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { useState } from 'react';
 import { FieldProps, Field } from 'formik';
 
 import { FileInputStyled } from './styles';

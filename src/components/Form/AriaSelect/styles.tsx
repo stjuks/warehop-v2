@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Wrapper, Button, Menu, MenuItem } from 'react-aria-menubutton';
 
@@ -68,8 +67,7 @@ export const MenuItemContainer = styled.div.attrs({
                 : `
             :focus,
             :hover {
-            box-shadow: ${theme.lightShadow};
-            background: ${theme.colors.midGrey};
+                background: ${theme.colors.midGrey};
         }`
         }
     `}

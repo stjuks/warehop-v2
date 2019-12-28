@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, PropsWithChildren } from 'react';
+import { withRouter } from 'react-router-dom';
 import { Formik, FormikProps } from 'formik';
 import Modal from '../Modal';
 import routes from '../../common/routes';
@@ -17,11 +18,11 @@ import Header from '../Header';
 import { ContentContainer } from '../App/styles';
 import { FooterContainer } from '../Footer/styles';
 import Button from '../Button';
+import { RouteComponentProps } from 'react-router';
+import { filterObjectProperties } from '../../util/helpers';
 
 interface NewPurchaseItemProps {
-    formikProps: any;
-    onSubmit: () => any;
-    index: number;
+    arrayHelpers: any;
 }
 
 const itemTypes = sampleData.itemTypes;
@@ -123,29 +124,33 @@ const ItemForm = ({ type }: { type: ArticleType }) => {
     );
 };
 
-const NewPurchaseItem = ({ arrayHelpers, onSubmit, index }) => {
-    const [activeItemType, setActiveItemType] = useState<ArticleType>(DEFAULT_ITEM_TYPE);
+const NewPurchaseItem = props => {
+    const {
+        location: { state },
+        arrayHelpers
+    } = props;
 
-    const initialValues = {
+    const [activeItemType, setActiveItemType] = useState<ArticleType>((state && state.item.type) || DEFAULT_ITEM_TYPE);
+
+    const initialValues = (state && state.item) || {
         type: DEFAULT_ITEM_TYPE,
         ...forms[activeItemType.id].initialValues
     };
 
     const handleSubmit = values => {
-        arrayHelpers.push(values);
+        const filteredValues = filterObjectProperties(values, forms[values.type.id].fields);
+
+        if (state && state.index !== undefined) {
+            arrayHelpers.replace(state.index, filteredValues);
+        } else {
+            arrayHelpers.push(filteredValues);
+        }
+
         history.push(routes.newPurchase);
     };
 
     const handleTypeSelect = ({ changedField, formik }) => {
         if (changedField.name === 'type') {
-            const itemTypeId = changedField.value.id;
-            const newValues = forms[itemTypeId].initialValues;
-
-            forms[itemTypeId].fields.forEach(field => {
-                if (formik.values[field]) newValues[field] = formik.values[field];
-            });
-
-            formik.setValues(newValues);
             formik.setErrors({});
 
             setActiveItemType(changedField.value);
@@ -153,10 +158,12 @@ const NewPurchaseItem = ({ arrayHelpers, onSubmit, index }) => {
     };
 
     const validationSchema = forms[activeItemType.id].validationSchema;
+    const headerTitle = state && state.index !== undefined ? 'Muuda arvekaupa' : 'Lisa arvekaup';
+    const submitBtnTitle = state && state.index !== undefined ? 'Muuda kaupa' : 'Lisa kaup';
 
     return (
         <Modal isOpen={true} title="Lisa kaup" backTo={routes.newPurchase}>
-            <Header title="Lisa arvekaup" backTo={routes.newPurchase} />
+            <Header title={headerTitle} backTo={routes.newPurchase} />
             <ContentContainer>
                 <Form
                     id="new-purchase-item-form"
@@ -172,10 +179,14 @@ const NewPurchaseItem = ({ arrayHelpers, onSubmit, index }) => {
                 </Form>
             </ContentContainer>
             <FooterContainer style={{ padding: '0.25rem 1rem' }}>
-                <Button title="Lisa kaup" form="new-purchase-item-form" type="submit" />
+                <Button
+                    title={submitBtnTitle}
+                    form="new-purchase-item-form"
+                    type="submit"
+                />
             </FooterContainer>
         </Modal>
     );
 };
 
-export default NewPurchaseItem;
+export default withRouter(NewPurchaseItem);

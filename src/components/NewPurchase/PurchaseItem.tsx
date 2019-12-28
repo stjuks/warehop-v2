@@ -18,8 +18,12 @@ const PurchaseItem: React.FC<PurchaseItemProps> = ({ item, onDelete, onEdit }) =
     return (
         <PurchaseItemContainer>
             <div className="action-items">
-                <button className="btn btn__delete" onClick={onEdit}><FiEdit /></button>
-                <button className="btn btn__edit" onClick={onDelete}><FiTrash2 /></button>
+                <button className="btn btn__delete" onClick={onEdit} type="button">
+                    <FiEdit />
+                </button>
+                <button className="btn btn__edit" onClick={onDelete} type="button">
+                    <FiTrash2 />
+                </button>
             </div>
             <div className="row row-1">
                 <span className="attr-1">{item.name}</span>

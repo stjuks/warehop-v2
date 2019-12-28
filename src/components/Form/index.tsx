@@ -31,10 +31,9 @@ const Form: React.FC<React.PropsWithChildren<FormProps>> = ({
             initialValues={initialValues}
             onSubmit={onSubmit}
             validationSchema={validationSchema}
-            validateOnChange={true}
+            validateOnChange={false}
             validateOnBlur={false}
-            validateOnMount={true}
-            isInitialValid={false}
+            validateOnMount={false}
         >
             {formikProps => (
                 <>

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { FiSearch, FiPlusCircle } from 'react-icons/fi';
+import { FiPlusCircle, FiSliders } from 'react-icons/fi';
 import { observer } from 'mobx-react-lite';
 
 import { ContentContainer } from '../App/styles';
@@ -8,20 +8,21 @@ import history from '../../common/history';
 import routes from '../../common/routes';
 
 import Header from '../Header';
-import ProductItem from '../ProductItem';
-import Footer from '../Footer';
-import { MenuSelect } from '../Select';
 import HeaderSearch from '../HeaderSearch';
-import Loader from '../Loader';
 import Radio from '../Radio';
 import { PurchaseStoreContext } from '../../stores/PurchaseStore';
 import PurchaseItem from './PurchaseItem';
+import { Formik } from 'formik';
+import { SelectStyled } from './styles';
 
 const Purchases = observer(() => {
     const purchaseStore = useContext(PurchaseStoreContext);
 
     const headerIcons = [
         <HeaderSearch onChange={value => null} placeholder="Otsi arvet" />,
+        <button style={{ display: 'flex' }}>
+            <FiSliders />
+        </button>,
         <NewItemButtonContainer onClick={() => history.push(routes.newPurchase)}>
             <FiPlusCircle />
         </NewItemButtonContainer>
@@ -49,16 +50,29 @@ const Purchases = observer(() => {
         { label: 'Maksmata', value: 'notPaid' }
     ];
 
+    const initialFilterValues = {
+        sortOptions: undefined
+    };
+
     return (
         <>
             <Header title="Ostuarved" components={headerIcons} />
             <SortingContainer>
-                <MenuSelect
+                <Formik initialValues={initialFilterValues} onSubmit={values => console.log(values)}>
+                    <SelectStyled
+                        name="sortOptions"
+                        options={sortOptions[0].options}
+                        optionMap={{ label: 'label' }}
+                        placeholder="Sorteeri"
+                    />
+                </Formik>
+
+                {/* <MenuSelect
                     isSearchable={false}
                     isSortable={true}
                     options={sortOptions}
                     defaultValue={sortOptions[0].options[0]}
-                />
+                /> */}
                 <Radio
                     options={paidOptions}
                     name="radio-paid"

@@ -12,7 +12,7 @@ class PurchaseStore {
         try {
             this.isLoadingPurchases = true;
 
-            const purchases = yield api.getPurchases({
+            const purchases: any = yield api.getPurchases({
                 limit: 10,
                 offset: this.purchases.length
             });
@@ -20,6 +20,19 @@ class PurchaseStore {
             if (purchases) this.purchases = purchases;
 
             this.isLoadingPurchases = false;
+        } catch (err) {
+            throw err;
+        }
+    });
+
+    @action addPurchase = flow(function*(this: PurchaseStore, purchase: Invoice) {
+        try {
+            const addedPurchase: any = yield api.addPurchase(purchase);
+
+            this.purchases.push({
+                ...purchase,
+                ...addedPurchase
+            });
         } catch (err) {
             throw err;
         }

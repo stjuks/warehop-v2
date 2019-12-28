@@ -7,7 +7,7 @@ interface FormikOnChangeProps {
     formik?: any;
 }
 
-const FormikOnChangeBase: React.FC<FormikOnChangeProps> = ({ onChange, formik }) => {
+const FormikOnChange: React.FC<FormikOnChangeProps> = ({ onChange, formik }) => {
     const { values } = formik;
     const prevValues = usePrevious(values);
 
@@ -25,4 +25,4 @@ const FormikOnChangeBase: React.FC<FormikOnChangeProps> = ({ onChange, formik })
     return null;
 };
 
-export default connect(FormikOnChangeBase);
+export default connect(FormikOnChange);

@@ -5,7 +5,7 @@ import { Menu, MenuItem } from 'react-aria-menubutton';
 
 import { ButtonContainer, WrapperContainer } from './styles';
 import { TextInputBase, InputActionButtons } from '../TextInput';
-import { mapSelectOptions } from '../../../util/helpers';
+import { mapSelectOptions, mapSelectOption } from '../../../util/helpers';
 import { DropdownMenu } from '../util/DropdownMenu';
 
 interface Option {
@@ -16,10 +16,12 @@ interface Option {
 interface AriaSelectProps {
     name: string;
     options: any[];
-    optionMap: {
+    optionMap?: {
         value?: string;
         label: string;
     };
+    placeholder?: string;
+    className?: string;
     label?: string;
     isClearable?: boolean;
     unregisterOnUnmount?: boolean;
@@ -34,11 +36,12 @@ const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = ({
     optionMap,
     isClearable,
     onChange,
-    name
+    className,
+    placeholder
 }) => {
     const [mappedOptions, setMappedOptions] = useState<Option[]>([]);
     const [isLoadingOptions, setLoadingOptions] = useState(false);
-    const [displayValue, setDisplayValue] = useState(field.value ? field.value[optionMap.label] : '');
+    const [displayValue, setDisplayValue] = useState('');
 
     useEffect(() => {
         const loadOptions = async () => {
@@ -49,6 +52,10 @@ const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = ({
                 attrs: optionMap,
                 values: loadedOptions
             });
+
+            if (field.value) {
+                setDisplayValue(mapSelectOption({ attrs: optionMap, value: field.value }).label);
+            }
 
             setMappedOptions(_mappedOptions);
             setLoadingOptions(false);
@@ -75,7 +82,9 @@ const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = ({
         <>
             <ButtonContainer>
                 <div className="inner-btn-container">
-                    <span className="value-container">{displayValue}</span>
+                    <span className={`value-container ${!displayValue && `placeholder`}`}>
+                        {displayValue || placeholder}
+                    </span>
                     <InputActionButtons
                         indicator={<FiChevronDown />}
                         action={
@@ -84,7 +93,6 @@ const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = ({
                     />
                 </div>
             </ButtonContainer>
-            {isLoadingOptions && 'Loading...'}
             <DropdownMenu
                 items={mappedOptions}
                 menuProps={{ as: Menu }}
@@ -99,7 +107,7 @@ const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = ({
     );
 
     return (
-        <WrapperContainer className="select-wrapper" onSelection={handleSelect}>
+        <WrapperContainer className={className} onSelection={handleSelect}>
             <TextInputBase
                 label={label}
                 name={`${field.name}Display`}

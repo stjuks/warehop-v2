@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { FaBoxes, FaShoppingBasket, FaMoneyCheck } from 'react-icons/fa';
 import { FiMenu } from 'react-icons/fi';
 import { observer } from 'mobx-react-lite';

@@ -13,7 +13,7 @@ const theme = {
         primaryLight: 'hsl(216, 100%, 55%)',
         lightColor1: '#F1F3F4',
         text: '#062047',
-        lightText: '#869192',
+        lightText: '#6D7878',
         midGrey: '#F0F0F0'
     }
 };

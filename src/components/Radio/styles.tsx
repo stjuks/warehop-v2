@@ -20,21 +20,23 @@ export const RadioContainer = styled.div`
             background: ${theme.colors.white};
             border-radius: 4rem;
             box-sizing: border-box;
+            transition: all .2s;
             border: 1px solid ${theme.colors.lightColor1};
+            color: ${theme.colors.lightText};
             justify-content: center;
-        }
-
-        input:checked ~ label {
-            color: ${theme.colors.primary};
-            border-color: ${theme.colors.primary};
-            box-shadow: ${theme.lightShadow};
         }
 
         input:focus ~ label,
         input:hover ~ label {
-            box-shadow: ${theme.blueShadow};
-            background: ${theme.colors.lightGrey}
+            border-color: ${theme.colors.lightText};
         }
+
+        input:checked ~ label {
+            font-weight: 500;
+            color: ${theme.colors.primary};
+            border-color: ${theme.colors.primary};
+            box-shadow: ${theme.lightShadow};
+        } 
     `}
 `;
 

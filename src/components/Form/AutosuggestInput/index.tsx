@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { Field, FieldProps } from 'formik';
 import ReactAutosuggest from 'react-autosuggest';
-// import useDebounce from 'react-use/lib/useDebounce';
 
 import { useDebounce } from '../../../util/hooks';
 import { mapSelectOptions } from '../../../util/helpers';
 import { MenuItemContainer, MenuContainer } from '../util/DropdownMenu';
 import { TextInputBase, InputActionButtons } from '../TextInput';
-import { FiLoader } from 'react-icons/fi';
+import { FiX } from 'react-icons/fi';
 import Loader from '../util/Loader';
 
 interface AutosuggestInputProps {
@@ -60,14 +59,14 @@ const AutosuggestInputBase: React.FC<AutosuggestInputProps & FieldProps> = ({
 
     const onSuggestionsFetchRequested = ({ value }) => {
         loadSuggestions(value);
-    }
+    };
 
     const onSuggestionsClearRequested = () => {
         setSuggestions([]);
     };
 
     const inputProps = {
-        value: field.value,
+        value: field.value || '',
         name: field.name,
         onChange: handleChange,
         className: 'value-container'
@@ -92,7 +91,10 @@ const AutosuggestInputBase: React.FC<AutosuggestInputProps & FieldProps> = ({
                             <MenuContainer {...containerProps}>{children}</MenuContainer>
                         )}
                     />
-                    <InputActionButtons indicator={isLoadingSuggestions ? <Loader /> : undefined} />
+                    <InputActionButtons
+                        indicator={isLoadingSuggestions ? <Loader /> : undefined}
+                        action={field.value && { icon: <FiX />, onClick: () => form.setFieldValue(field.name, '') }}
+                    />
                 </>
             }
             errorMessage={form.errors[field.name]}

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { FiSearch, FiPlusCircle } from 'react-icons/fi';
+import { FiPlusCircle } from 'react-icons/fi';
 import { observer } from 'mobx-react-lite';
 
 import { ContentContainer } from '../App/styles';
@@ -9,37 +9,27 @@ import routes from '../../common/routes';
 
 import Header from '../Header';
 import ProductItem from '../ProductItem';
-import Footer from '../Footer';
-import { MenuSelect } from '../Select';
 import { ProductStoreContext } from '../../stores/ProductStore';
 import HeaderSearch from '../HeaderSearch';
 import Loader from '../Loader';
+import { Formik } from 'formik';
+import { SelectStyled } from '../Purchases/styles';
 
 const Products = observer(() => {
     const productStore = useContext(ProductStoreContext);
     const [searchQuery, setSearchQuery] = useState('');
 
     const warehouseOptions = [
-        {
-            label: 'Vali ladu',
-            options: [
-                { label: 'Kõik laod', value: 'Kõik laod' },
-                { label: 'pesumasinate varuosad', value: 'Ladu 1' },
-                { label: 'Ladu 2', value: 'Ladu 2' }
-            ]
-        }
+        { label: 'Kõik laod', value: 'Kõik laod' },
+        { label: 'pesumasinate varuosad', value: 'Ladu 1' },
+        { label: 'Ladu 2', value: 'Ladu 2' }
     ];
 
     const sortOptions = [
-        {
-            label: 'Sorteeri',
-            options: [
-                { label: 'Kood', value: 'Kood' },
-                { label: 'Müügihind', value: 'Müügihind' },
-                { label: 'Kogus', value: 'Kogus' },
-                { label: 'Nimetus', value: 'Nimetus' }
-            ]
-        }
+        { label: 'Kood', value: 'Kood' },
+        { label: 'Müügihind', value: 'Müügihind' },
+        { label: 'Kogus', value: 'Kogus' },
+        { label: 'Nimetus', value: 'Nimetus' }
     ];
 
     const handleSearch = query => {
@@ -74,13 +64,9 @@ const Products = observer(() => {
         <>
             <Header title="Kaubad" components={headerIcons} />
             <SortingContainer>
-                <MenuSelect
-                    isSearchable={false}
-                    isSortable={true}
-                    options={sortOptions}
-                    defaultValue={sortOptions[0].options[0]}
-                />
-                <MenuSelect options={warehouseOptions} defaultValue={warehouseOptions[0].options[0]} />
+                <Formik onSubmit={values => console.log(values)} initialValues={{}}>
+                    <SelectStyled name="warehouseOption" options={warehouseOptions} />
+                </Formik>
             </SortingContainer>
             <ContentContainer>{getProducts()}</ContentContainer>
         </>

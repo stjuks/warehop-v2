@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 import { FooterItemContainer, IconContainer, LabelContainer } from './styles';

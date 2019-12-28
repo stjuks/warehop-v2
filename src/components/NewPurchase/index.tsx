@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { observer } from 'mobx-react-lite';
 import moment from 'moment';
 import * as yup from 'yup';
 
 import routes from '../../common/routes';
+import history from '../../common/history';
 import { NewProductContainer, AddPurchaseItemBtn } from './styles';
 
 import Header from '../Header';
@@ -22,6 +23,7 @@ import { Row } from '../Layout/styles';
 import FileInput from '../Form/FileInput';
 import DateInput from '../Form/DateInput';
 import { FormTitle } from '../Form/styles';
+import { PurchaseStoreContext } from '../../stores/PurchaseStore';
 
 interface NewPurchaseFormValues {
     partner: Partner | undefined;
@@ -34,6 +36,8 @@ interface NewPurchaseFormValues {
 }
 
 const NewPurchase = observer(() => {
+    const purchaseStore = useContext(PurchaseStoreContext);
+
     const partners = sampleData.partners;
     const units = sampleData.units;
     const products = sampleData.products;
@@ -45,7 +49,7 @@ const NewPurchase = observer(() => {
         creationDate: moment(),
         dueDate: moment(),
         description: '',
-        items: [products[0], products[1]]
+        items: []
     };
 
     const validationSchema = yup.object({
@@ -65,11 +69,7 @@ const NewPurchase = observer(() => {
                     <Route
                         path={routes.newPurchaseItem}
                         render={() => (
-                            <NewPurchaseItem
-                                arrayHelpers={arrayHelpers}
-                                onSubmit={() => alert('item added')}
-                                index={formikProps.values.items.length}
-                            />
+                            <NewPurchaseItem arrayHelpers={arrayHelpers} />
                         )}
                     />
                     {formikProps.values.items.map((item, index) => (
@@ -77,13 +77,26 @@ const NewPurchase = observer(() => {
                             key={index}
                             item={item}
                             onDelete={() => arrayHelpers.remove(index)}
-                            onEdit={() => alert('Muuda')}
+                            onEdit={() =>
+                                history.push({
+                                    pathname: routes.newPurchaseItem,
+                                    state: {
+                                        index,
+                                        item
+                                    }
+                                })
+                            }
                         />
                     ))}
                 </>
             )}
         </FieldArray>
     );
+
+    const handleSubmit = purchase => {
+        purchaseStore.addPurchase(purchase);
+        history.push(routes.purchases);
+    }
 
     return (
         <>
@@ -92,7 +105,7 @@ const NewPurchase = observer(() => {
                 <Form
                     validationSchema={validationSchema}
                     initialValues={initialValues}
-                    onSubmit={values => console.log(values)}
+                    onSubmit={handleSubmit}
                     id="new-purchase-form"
                 >
                     {formikProps => (
