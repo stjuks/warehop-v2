@@ -1,10 +1,20 @@
 {
     "compilerOptions": {
+        "module": "ES6",
+        "moduleResolution": "node",
         "outDir": "./build/",
-        "noImplicitAny": true,
-        "target": "es5",
+        "noImplicitAny": false,
+        "target": "ES6",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "baseUrl": ".",
         "sourceMap": true,
         "allowJs": true,
-        "lib": ["es2015", "dom"]
+        "lib": ["es2015", "dom"],
+        "paths": {
+            "*": ["node_modules/*"]
+        }
     }
 }

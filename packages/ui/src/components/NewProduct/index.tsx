@@ -11,7 +11,7 @@ import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
 import Button from '../Button';
 import sampleData from '../../common/sampleData';
-import { Warehouse, ProductQuantityByWarehouse, Unit, Partner } from '../../common/types';
+import { Warehouse, ProductQuantityByWarehouse, Unit, Partner } from 'shared/types';
 import Form from '../Form';
 import { FormTitle } from '../Form/styles';
 import TextInput from '../Form/TextInput';

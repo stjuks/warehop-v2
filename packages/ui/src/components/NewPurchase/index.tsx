@@ -11,7 +11,7 @@ import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
 import Button from '../Button';
 import sampleData from '../../common/sampleData';
-import { Partner, InvoiceItem } from '../../common/types';
+import { Partner, InvoiceItem } from 'shared/types';
 import Form from '../Form';
 import FieldArray from '../Form/util/FieldArray';
 import PurchaseItem from './PurchaseItem';

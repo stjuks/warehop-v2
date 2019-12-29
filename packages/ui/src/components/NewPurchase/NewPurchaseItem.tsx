@@ -13,7 +13,7 @@ import TextInput from '../Form/TextInput';
 import { Row } from '../Layout/styles';
 import AutosuggestInput from '../Form/AutosuggestInput';
 import api from '../../api';
-import { ArticleType } from '../../common/types';
+import { ArticleType } from 'shared/types';
 import Header from '../Header';
 import { ContentContainer } from '../App/styles';
 import { FooterContainer } from '../Footer/styles';

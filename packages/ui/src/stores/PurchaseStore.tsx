@@ -1,6 +1,6 @@
 import { observable, action, flow } from 'mobx';
 import { createContext } from 'react';
-import { Invoice } from '../common/types';
+import { Invoice } from 'shared/types';
 import api from '../api';
 
 class PurchaseStore {

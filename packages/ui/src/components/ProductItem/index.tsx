@@ -2,7 +2,7 @@ import React from 'react';
 
 import { FiChevronRight } from 'react-icons/fi';
 import { ProductItemContainer } from './styles';
-import { Product } from '../../common/types';
+import { Product } from 'shared/types';
 import routes from '../../common/routes';
 
 function ProductItem(product: Product) {

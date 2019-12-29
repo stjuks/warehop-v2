@@ -5,7 +5,7 @@ import { createContext } from 'react';
 import api from '../api';
 
 import { ProductSortOption } from '../api/products';
-import { SortDirection, Product } from '../common/types';
+import { SortDirection, Product } from 'shared/types';
 
 class ProductStore {
     @observable products: Product[] = [];

@@ -1,4 +1,4 @@
-import { Warehouse, Partner, Unit, Product, Invoice, ArticleType } from './types';
+import { Warehouse, Partner, Unit, Product, Invoice, ArticleType } from 'shared/types';
 
 const warehouses: Warehouse[] = [
     {

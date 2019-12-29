@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import productApi from './products';
 import authApi from './auth';
 import warehouseApi from './warehouses';

@@ -1,7 +1,7 @@
 import { observable, action, flow } from 'mobx';
 import { createContext } from 'react';
 
-import { Warehouse } from '../common/types';
+import { Warehouse } from 'shared/types';
 import sampleData from '../common/sampleData';
 
 class WarehouseStore  {

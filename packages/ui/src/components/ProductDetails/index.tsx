@@ -7,7 +7,7 @@ import theme from '../../util/theme';
 
 import Header from '../Header';
 import { MenuPopover } from '../Popover';
-import { Product } from '../../common/types';
+import { Product } from 'shared/types';
 import { stall } from '../../util/helpers';
 import routes from '../../common/routes';
 import sampleData from '../../common/sampleData';

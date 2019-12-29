@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import routes from '../../common/routes';
 import { PurchaseItemContainer, DaysLeftStyled } from './styles';
-import { Invoice } from '../../common/types';
+import { Invoice } from 'shared/types';
 import { FiChevronRight } from 'react-icons/fi';
 
 const PurchaseItem: React.FC<Invoice> = ({ number, sum, partner, id, dueDate, creationDate, isPaid }) => {
