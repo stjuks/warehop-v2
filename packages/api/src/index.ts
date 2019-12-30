@@ -9,7 +9,7 @@ const app = express();
 app.use(cors());
 
 apollo.initialize({ app, path: '/graphql' });
-db.initialize({ force: true });
+db.initialize();
 
 const PORT = process.env.PORT || 5000;
 

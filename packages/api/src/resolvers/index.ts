@@ -1,5 +1,10 @@
-import userResolvers from './user';
 import { Model, ModelCtor } from 'sequelize-typescript';
+
+import userResolvers from './user';
+import warehouseResolvers from './warehouse';
+import commonResolvers from './common';
+import partnerResolvers from './partner';
+import itemResolvers from './item';
 
 export interface Resolver {
     [key: string]: {
@@ -11,4 +16,4 @@ export interface Resolver {
     };
 }
 
-export default [userResolvers];
+export default [userResolvers, warehouseResolvers, commonResolvers, partnerResolvers, itemResolvers];

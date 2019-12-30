@@ -62,4 +62,6 @@ const createStaticData = async () => {
 export default async () => {
     await createForeignKeys();
     await createStaticData();
+
+    await models.User.create({ name: 'Test User' });
 };

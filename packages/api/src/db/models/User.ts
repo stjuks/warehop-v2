@@ -1,4 +1,4 @@
-import { Model, Table, Column, CreatedAt, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
+import { Model, Table, Column, CreatedAt, PrimaryKey, AutoIncrement, Unique } from 'sequelize-typescript';
 
 @Table
 export default class User extends Model<User> {
@@ -6,6 +6,10 @@ export default class User extends Model<User> {
     @AutoIncrement
     @Column
     id: number;
+
+    @Unique
+    @Column
+    facebookId: string;
 
     @Column
     name: string;

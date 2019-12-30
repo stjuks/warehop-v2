@@ -4,7 +4,9 @@ import initQueries from './initQueries';
 const initialize = async (args?: { force: boolean }) => {
     await sequelize.sync(args);
 
-    await initQueries();
+    if (args && args.force) {
+        await initQueries();
+    }
 };
 
 export default { sequelize, initialize };

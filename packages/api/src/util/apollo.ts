@@ -9,7 +9,7 @@ const apollo = new ApolloServer({
     playground: true,
     typeDefs: schema,
     resolvers,
-    context: () => {
+    context: ({ req, connection }) => {
         return { models };
     }
 });

@@ -14,12 +14,12 @@ export default gql`
         postalCode: String
     }
 
-    type Query {
+    extend type Query {
         users: [User!]
         user(id: ID!): User
     }
 
-    type Mutation {
+    extend type Mutation {
         signUp(name: String!): User!
     }
 `;
