@@ -1,16 +1,38 @@
-import { Model, Table, Column, CreatedAt } from 'sequelize-typescript';
+import { Model, Table, Column, CreatedAt, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
 
 @Table
-export class User extends Model<User> {
+export default class User extends Model<User> {
+
+    @PrimaryKey
+    @AutoIncrement
+    @Column
+    id: number;
     
     @Column
-    fullName?: string;
+    name: string;
 
     @Column
-    email!: string;
+    regNr: string;
 
-    @CreatedAt
     @Column
-    createdAt!: Date;
+    email: string;
+
+    @Column
+    phoneNr: string;
+
+    @Column
+    country: string;
+
+    @Column
+    county: string;
+
+    @Column
+    city: string;
+
+    @Column
+    street: string;
+
+    @Column
+    postalCode: string;
 
 }
