@@ -1,27 +1,14 @@
 import express from 'express';
 import cors from 'cors';
-import { ApolloServer } from 'apollo-server-express';
 
 import db from './db';
-import schema from './schema';
-import resolvers from './resolvers';
-import models from './db/models';
+import apollo from './util/apollo';
 
 const app = express();
 
 app.use(cors());
 
-const apollo = new ApolloServer({
-    playground: true,
-    typeDefs: schema,
-    resolvers,
-    context: () => {
-        return { models }
-    }
-});
-
-apollo.applyMiddleware({ app, path: '/graphql' });
-
+apollo.initialize({ app, path: '/graphql' });
 db.initialize({ force: true });
 
 const PORT = process.env.PORT || 5000;

@@ -1,32 +1,43 @@
-import { Model, Table, Column, PrimaryKey, AutoIncrement, AllowNull, ForeignKey, BelongsTo, Sequelize, DataType } from 'sequelize-typescript';
+import {
+    Model,
+    Table,
+    Column,
+    PrimaryKey,
+    AutoIncrement,
+    AllowNull,
+    ForeignKey,
+    BelongsTo,
+    DataType,
+    Unique,
+    BelongsToMany
+} from 'sequelize-typescript';
 
 import User from './User';
 import Partner from './Partner';
 import InvoiceType from './InvoiceType';
+import Item from './Item';
+import InvoiceItem from './InvoiceItem';
 
 @Table
 export default class Invoice extends Model<Invoice> {
-
     @PrimaryKey
     @AutoIncrement
+    @Unique
     @Column
     id: number;
 
     @PrimaryKey
-    @ForeignKey(() => User)
     @Column
     userId: number;
 
     @AllowNull(false)
-    @ForeignKey(() => Partner)
     @Column
     partnerId: number;
 
     @AllowNull(false)
-    @ForeignKey(() => InvoiceType)
     @Column
     invoiceTypeId: number;
-    
+
     @AllowNull(false)
     @Column
     number: string;
@@ -53,13 +64,16 @@ export default class Invoice extends Model<Invoice> {
     @Column
     filePath: string;
 
-    @BelongsTo(() => User)
+    @BelongsTo(() => User, { foreignKey: 'userId', onDelete: 'RESTRICT' })
     user: User;
 
-    @BelongsTo(() => Partner)
+    @BelongsTo(() => Partner, { foreignKey: 'partnerId', onDelete: 'RESTRICT' })
     partner: Partner;
 
-    @BelongsTo(() => InvoiceType)
+    @BelongsTo(() => InvoiceType, { foreignKey: 'invoiceTypeId', onDelete: 'RESTRICT' })
     invoiceType: InvoiceType;
-    
+
+    @BelongsToMany(() => Item, { through: () => InvoiceItem, foreignKey: 'itemId', onDelete: 'CASCADE' })
+    items: Item[];
+
 }

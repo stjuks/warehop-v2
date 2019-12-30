@@ -6,7 +6,7 @@ export interface Resolver {
         [key: string]: (
             parent: any,
             args: any,
-            { models }: { models: { [key: string]: ModelCtor<Model<any, any>> } }
+            context: { models: { [key: string]: ModelCtor<Model<any, any>> } }
         ) => any;
     };
 }

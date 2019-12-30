@@ -2,19 +2,17 @@ import {
     Model,
     Table,
     Column,
-    CreatedAt,
     PrimaryKey,
     AutoIncrement,
+    AllowNull,
     ForeignKey,
     BelongsTo,
-    AllowNull,
     Unique
 } from 'sequelize-typescript';
-
 import User from './User';
 
 @Table
-export default class Warehouse extends Model<Warehouse> {
+export default class Unit extends Model<Unit> {
     @PrimaryKey
     @AutoIncrement
     @Column
@@ -27,6 +25,10 @@ export default class Warehouse extends Model<Warehouse> {
     @AllowNull(false)
     @Column
     name: string;
+
+    @AllowNull(false)
+    @Column
+    abbreviation: string;
 
     @BelongsTo(() => User, { foreignKey: 'userId', onDelete: 'RESTRICT' })
     user: User;

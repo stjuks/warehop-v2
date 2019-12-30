@@ -2,12 +2,11 @@ import { Model, Table, Column, CreatedAt, PrimaryKey, AutoIncrement } from 'sequ
 
 @Table
 export default class User extends Model<User> {
-
     @PrimaryKey
     @AutoIncrement
     @Column
     id: number;
-    
+
     @Column
     name: string;
 
@@ -34,5 +33,4 @@ export default class User extends Model<User> {
 
     @Column
     postalCode: string;
-
 }
