@@ -8,15 +8,19 @@ import {
     ForeignKey,
     BelongsTo,
     AllowNull,
-    Unique
+    Unique,
+    BelongsToMany
 } from 'sequelize-typescript';
 
 import User from './User';
+import Item from './Item';
+import WarehouseItem from './WarehouseItem';
 
 @Table
 export default class Warehouse extends Model<Warehouse> {
     @PrimaryKey
     @AutoIncrement
+    @Unique
     @Column
     id: number;
 
@@ -30,4 +34,7 @@ export default class Warehouse extends Model<Warehouse> {
 
     @BelongsTo(() => User, { foreignKey: 'userId', onDelete: 'RESTRICT' })
     user: User;
+
+    @BelongsToMany(() => Item, { through: () => WarehouseItem, foreignKey: 'warehouseId', onDelete: 'RESTRICT' })
+    items: Item[]
 }

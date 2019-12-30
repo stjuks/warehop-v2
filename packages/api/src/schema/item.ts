@@ -6,6 +6,18 @@ export default gql`
         slug: String!
         name: String!
     }
+
+    type WarehouseQuantity {
+        id: ID!
+        name: String!
+        quantity: Float!
+    }
+
+    input WarehouseQuantityInput {
+        id: ID!
+        name: String!
+        quantity: Float!
+    }
     
     input ItemInput {
         itemTypeId: Int!
@@ -16,6 +28,7 @@ export default gql`
         purchasePrice: String
         retailPrice: String
         description: String
+        warehouseQuantity: [WarehouseQuantityInput!]!
     }
 
     type Item {
@@ -28,6 +41,7 @@ export default gql`
         purchasePrice: String
         retailPrice: String
         description: String
+        warehouseQuantity: [WarehouseQuantity!]!
     }
 
     extend type Query {
@@ -35,7 +49,7 @@ export default gql`
     }
 
     extend type Mutation {
-        addItem(item: ItemInput!): Item!
+        addItem(item: ItemInput!): ID!
         deleteItem(id: ID!): Boolean!
         editItem(id: ID!, item: ItemInput): Item
     }

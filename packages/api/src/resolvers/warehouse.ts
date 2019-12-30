@@ -8,7 +8,8 @@ const resolver: Resolver = {
     },
     Mutation: {
         addWarehouse: async (parent, { name }, { models }) => {
-            return await models.Warehouse.create({ name, userId: 1 });
+            const warehouse = await models.Warehouse.create({ name, userId: 1 });
+            return warehouse.id;
         },
         deleteWarehouse: async (parent, { id }, { models }) => {
             return await models.Warehouse.destroy({ where: { userId: 1, id } });

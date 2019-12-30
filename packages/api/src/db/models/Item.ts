@@ -16,6 +16,8 @@ import Unit from './Unit';
 import ItemType from './ItemType';
 import Invoice from './Invoice';
 import InvoiceItem from './InvoiceItem';
+import Warehouse from './Warehouse';
+import WarehouseItem from './WarehouseItem';
 
 @Table
 export default class Item extends Model<Item> {
@@ -68,7 +70,9 @@ export default class Item extends Model<Item> {
     @BelongsTo(() => ItemType, { foreignKey: 'itemTypeId', onDelete: 'RESTRICT' })
     itemType: ItemType;
 
-    @BelongsToMany(() => Invoice, { through: () => InvoiceItem, foreignKey: 'invoiceId', onDelete: 'RESTRICT' })
+    @BelongsToMany(() => Invoice, { through: () => InvoiceItem, foreignKey: 'itemId', onDelete: 'RESTRICT' })
     invoices: Invoice[];
 
+    @BelongsToMany(() => Warehouse, { through: () => WarehouseItem, foreignKey: 'itemId', onDelete: 'RESTRICT', as: 'warehouseQuantity' })
+    warehouses: Warehouse[];
 }

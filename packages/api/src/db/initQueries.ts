@@ -34,6 +34,22 @@ const createForeignKeys = async () => {
             ref: { table: models.Invoice, cols: ['id', 'userId'] }
         })
     );
+
+    await sequelize.query(
+        createCompositeForeignKey({
+            table: models.WarehouseItem,
+            cols: ['warehouseId', 'userId'],
+            ref: { table: models.Warehouse, cols: ['id', 'userId'] }
+        })
+    );
+
+    await sequelize.query(
+        createCompositeForeignKey({
+            table: models.WarehouseItem,
+            cols: ['itemId', 'userId'],
+            ref: { table: models.Item, cols: ['id', 'userId'] }
+        })
+    );
 };
 
 const createStaticData = async () => {

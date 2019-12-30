@@ -1,4 +1,5 @@
-import { Model, ModelCtor } from 'sequelize-typescript';
+import { Model, ModelCtor, Sequelize } from 'sequelize-typescript';
+import { GraphQLDate } from 'graphql-iso-date';
 
 import userResolvers from './user';
 import warehouseResolvers from './warehouse';
@@ -11,9 +12,20 @@ export interface Resolver {
         [key: string]: (
             parent: any,
             args: any,
-            context: { models: { [key: string]: ModelCtor<Model<any, any>> } }
+            context: { models: { [key: string]: ModelCtor<Model<any, any>> }, sequelize: Sequelize }
         ) => any;
     };
 }
 
-export default [userResolvers, warehouseResolvers, commonResolvers, partnerResolvers, itemResolvers];
+const customScalarResolver = {
+    Date: GraphQLDate
+};
+
+export default [
+    customScalarResolver,
+    userResolvers,
+    warehouseResolvers,
+    commonResolvers,
+    partnerResolvers,
+    itemResolvers
+];

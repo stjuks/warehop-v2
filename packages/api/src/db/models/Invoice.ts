@@ -9,7 +9,8 @@ import {
     BelongsTo,
     DataType,
     Unique,
-    BelongsToMany
+    BelongsToMany,
+    Default
 } from 'sequelize-typescript';
 
 import User from './User';
@@ -51,6 +52,7 @@ export default class Invoice extends Model<Invoice> {
     issueDate: Date;
 
     @AllowNull(false)
+    @Default(false)
     @Column
     isPaid: boolean;
 

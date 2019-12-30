@@ -7,6 +7,8 @@ import partnerSchema from './partner';
 import itemSchema from './item';
 
 const baseSchema = gql`
+    scalar Date
+    
     type Query {
         _: Boolean
     }

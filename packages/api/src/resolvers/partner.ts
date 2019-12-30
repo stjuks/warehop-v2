@@ -8,7 +8,8 @@ const resolver: Resolver = {
     },
     Mutation: {
         addPartner: async (parent, { partner }, { models }) => {
-            return await models.Partner.create({ ...partner, userId: 1 });
+            const addedPartner = await models.Partner.create({ ...partner, userId: 1 });
+            return addedPartner.id;
         },
         deletePartner: async (parent, { id }, { models }) => {
             return await models.Partner.destroy({ where: { id, userId: 1 } });
