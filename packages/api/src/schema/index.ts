@@ -5,10 +5,23 @@ import warehouseSchema from './warehouse';
 import commonSchema from './common';
 import partnerSchema from './partner';
 import itemSchema from './item';
+import invoiceSchema from './invoice';
 
 const baseSchema = gql`
     scalar Date
-    
+
+    input EntityTypeInput {
+        id: ID!
+        slug: String!
+        name: String!
+    }
+
+    type EntityType {
+        id: ID!
+        slug: String!
+        name: String!
+    }
+
     type Query {
         _: Boolean
     }
@@ -18,4 +31,4 @@ const baseSchema = gql`
     }
 `;
 
-export default [baseSchema, userSchema, warehouseSchema, commonSchema, partnerSchema, itemSchema];
+export default [baseSchema, userSchema, warehouseSchema, commonSchema, partnerSchema, itemSchema, invoiceSchema];

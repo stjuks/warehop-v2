@@ -14,7 +14,7 @@
         "allowJs": true,
         "lib": ["es2015", "dom"],
         "paths": {
-            "*": ["node_modules/*"]
+            "shared/*": ["../shared/*"]
         }
     }
 }

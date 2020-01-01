@@ -1,37 +1,76 @@
 import { gql } from 'apollo-server';
 
 export default gql`
-    type InvoiceType {
+    interface InvoiceItem {
         id: ID!
-        slug: String!
+        itemType: EntityType!
         name: String!
+        quantity: Float!
+        price: String!
+        unit: Unit
     }
 
-    type InvoiceItem {
+    type ExpenseInvoiceItem implements InvoiceItem {
         id: ID!
+        itemType: EntityType!
+        name: String!
         quantity: Float!
+        price: String!
+        unit: Unit
+    }
+
+    type ProductInvoiceItem implements InvoiceItem {
+        id: ID!
+        itemType: EntityType!
+        name: String!
+        quantity: Float!
+        price: String!
+        code: String!
+        warehouse: Warehouse!
+        unit: Unit!
     }
 
     type Invoice {
         id: ID!
         partner: Partner!
-        invoiceType: InvoiceType!
+        invoiceType: EntityType!
         number: String!
         dueDate: Date!
         issueDate: Date!
         isPaid: Boolean!
         sum: String!
+        items: [InvoiceItem!]!
         description: String
         filePath: String
     }
 
+    input InvoiceItemInput {
+        itemType: EntityTypeInput!
+        quantity: Float!
+        price: String!
+        name: String!
+        id: ID
+        warehouseId: ID
+        unitId: ID
+        code: String
+    }
+
+    input InvoiceInput {
+        partnerId: ID!
+        invoiceType: EntityTypeInput!
+        number: String!
+        items: [InvoiceItemInput!]!
+        dueDate: Date!
+        issueDate: Date!
+        description: String
+    }
+
     extend type Query {
-        invoices: [Invoice!]!
+        purchases: [Invoice!]!
+        sales: [Invoice!]!
     }
 
     extend type Mutation {
-        addItem(item: ItemInput!): Item!
-        deleteItem(id: ID!): Boolean!
-        editItem(id: ID!, item: ItemInput): Item
+        addInvoice(invoice: InvoiceInput!): ID!
     }
 `;

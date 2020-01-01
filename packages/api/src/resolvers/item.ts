@@ -3,7 +3,7 @@ import { Resolver } from '.';
 const resolver: Resolver = {
     Query: {
         items: async (parent, args, { models }) => {
-            const result = await models.Item.findAll({
+            const result: any = await models.Item.findAll({
                 where: { userId: 1 },
                 include: [
                     models.Partner,

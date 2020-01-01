@@ -6,13 +6,19 @@ import warehouseResolvers from './warehouse';
 import commonResolvers from './common';
 import partnerResolvers from './partner';
 import itemResolvers from './item';
+import invoiceResolvers from './invoice';
+
+import models from '../db/models';
 
 export interface Resolver {
     [key: string]: {
         [key: string]: (
             parent: any,
             args: any,
-            context: { models: { [key: string]: ModelCtor<Model<any, any>> }, sequelize: Sequelize }
+            context: {
+                models: { [K in keyof typeof models]: ModelCtor<Model<any, any>> };
+                sequelize: Sequelize;
+            }
         ) => any;
     };
 }
@@ -27,5 +33,6 @@ export default [
     warehouseResolvers,
     commonResolvers,
     partnerResolvers,
-    itemResolvers
+    itemResolvers,
+    invoiceResolvers
 ];

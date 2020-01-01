@@ -31,7 +31,6 @@ export default class Item extends Model<Item> {
     @Column
     userId: number;
 
-    @AllowNull(false)
     @Column
     partnerId: number;
 

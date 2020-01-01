@@ -35,7 +35,7 @@
     "react-tiny-popover": "^3.4.5",
     "react-use": "^13.12.2",
     "react-use-previous": "^1.0.0",
-    "shared": "1.0.0",
+    "shared": "file:../shared",
     "styled-components": "^4.4.0",
     "typescript": "^3.6.4",
     "yup": "^0.27.0"

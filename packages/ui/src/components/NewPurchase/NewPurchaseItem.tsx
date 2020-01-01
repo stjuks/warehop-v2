@@ -13,7 +13,7 @@ import TextInput from '../Form/TextInput';
 import { Row } from '../Layout/styles';
 import AutosuggestInput from '../Form/AutosuggestInput';
 import api from '../../api';
-import { ArticleType } from 'shared/types';
+import { ItemType } from 'shared/types';
 import Header from '../Header';
 import { ContentContainer } from '../App/styles';
 import { FooterContainer } from '../Footer/styles';
@@ -72,7 +72,7 @@ const forms = {
     EXPENSE: serviceAndExpenseForm
 };
 
-const ItemForm = ({ type }: { type: ArticleType }) => {
+const ItemForm = ({ type }: { type: ItemType }) => {
     // autofill fields on select
     const handleAutosuggestSelect = ({ suggestion, formik }) => {
         const values = {};
@@ -130,7 +130,7 @@ const NewPurchaseItem = props => {
         arrayHelpers
     } = props;
 
-    const [activeItemType, setActiveItemType] = useState<ArticleType>((state && state.item.type) || DEFAULT_ITEM_TYPE);
+    const [activeItemType, setActiveItemType] = useState<ItemType>((state && state.item.type) || DEFAULT_ITEM_TYPE);
 
     const initialValues = (state && state.item) || {
         type: DEFAULT_ITEM_TYPE,

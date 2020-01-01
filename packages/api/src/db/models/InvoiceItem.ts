@@ -12,6 +12,7 @@ import {
 import Invoice from './Invoice';
 import Warehouse from './Warehouse';
 import Item from './Item';
+import Unit from './Unit';
 
 @Table
 export default class InvoiceItem extends Model<InvoiceItem> {
@@ -28,16 +29,29 @@ export default class InvoiceItem extends Model<InvoiceItem> {
     @Column
     warehouseId: number;
 
-    @Column(DataType.DECIMAL(12, 4))
-    purchasePrice: object;
+    @Column
+    unitId: number;
+
+    @AllowNull(false)
+    @Column
+    name: string;
 
     @AllowNull(false)
     @Column
     quantity: number;
+
+    @Column(DataType.DECIMAL(12, 4))
+    purchasePrice: object;
+
+    @Column(DataType.DECIMAL(12, 4))
+    retailPrice: object;
 
     @HasOne(() => Invoice, { foreignKey: 'id' })
     invoice: Invoice;
 
     @BelongsTo(() => Warehouse, { foreignKey: 'warehouseId' })
     warehouse: Warehouse;
+
+    @BelongsTo(() => Unit, { foreignKey: 'unitId', onDelete: 'RESTRICT' })
+    unit: Unit;
 }
