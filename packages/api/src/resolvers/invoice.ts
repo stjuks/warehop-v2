@@ -43,48 +43,47 @@ const resolver: Resolver = {
 
             const transaction = await sequelize.transaction();
 
-            try {
-                const addedInvoice = await models.Invoice.create(
+            const addInvoice = async () => {
+                return await models.Invoice.create(
                     { ...restInvoice, invoiceTypeId: invoice.invoiceType.id, userId: 1 },
                     { transaction }
                 );
+            };
 
-                for (const item of items) {
-                    const [dbItem] = await models.Item.findOrCreate({
-                        where: invoiceItemWhere(item, 1),
-                        defaults: {
-                            ...item,
-                            userId: 1,
-                            partnerId: item.itemType.slug === 'PRODUCT' ? invoice.partnerId : undefined,
-                            itemTypeId: item.itemType.id,
-                            [invoice.invoiceType.slug === 'PURCHASE' ? 'purchasePrice' : 'retailPrice']: item.price
+            const findOrCreateNewItem = async item => {
+                return await models.Item.findOrCreate({
+                    where: invoiceItemWhere(item, 1),
+                    defaults: {
+                        ...item,
+                        userId: 1,
+                        partnerId: item.itemType.slug === 'PRODUCT' ? invoice.partnerId : undefined,
+                        itemTypeId: item.itemType.id,
+                        [invoice.invoiceType.slug === 'PURCHASE' ? 'purchasePrice' : 'retailPrice']: item.price
+                    },
+                    transaction
+                });
+            };
+
+            const upsertProduct = async item => {
+                const [, isNewItem] = await models.WarehouseItem.findOrCreate({
+                    defaults: { ...item, itemId: item.id, userId: 1 },
+                    where: { userId: 1, itemId: item.id },
+                    transaction
+                });
+
+                if (!isNewItem) {
+                    const operator = invoice.invoiceType.slug === 'SALE' ? '-' : '+';
+
+                    await models.WarehouseItem.update(
+                        {
+                            quantity: Sequelize.literal(`quantity ${operator} ${item.quantity}`)
                         },
-                        transaction
-                    });
-
-                    if (dbItem) item.id = dbItem.id;
-                    else throw Error('Error adding invoice item.');
-
-                    if (item.itemType.slug === 'PRODUCT') {
-                        const [, isNewItem] = await models.WarehouseItem.findOrCreate({
-                            defaults: { ...item, itemId: item.id, userId: 1 },
-                            where: { userId: 1, itemId: item.id },
-                            transaction
-                        });
-
-                        if (!isNewItem) {
-                            const operator = invoice.invoiceType.slug === 'SALE' ? '-' : '+';
-
-                            await models.WarehouseItem.update(
-                                {
-                                    quantity: Sequelize.literal(`quantity ${operator} ${item.quantity}`)
-                                },
-                                { where: { userId: 1, itemId: item.id, warehouseId: item.warehouseId }, transaction }
-                            );
-                        }
-                    }
+                        { where: { userId: 1, itemId: item.id, warehouseId: item.warehouseId }, transaction }
+                    );
                 }
+            };
 
+            const createInvoiceItems = async (items, addedInvoice) => {
                 const invoiceItems = items.map(item => ({
                     ...item,
                     itemId: item.id,
@@ -92,19 +91,38 @@ const resolver: Resolver = {
                     [invoice.invoiceType.slug === 'PURCHASE' ? 'purchasePrice' : 'retailPrice']: item.price
                 }));
 
-                await models.InvoiceItem.bulkCreate(invoiceItems, { transaction });
+                return await models.InvoiceItem.bulkCreate(invoiceItems, { transaction });
+            }
+
+            // business logic
+            try {
+                const addedInvoice = await addInvoice();
+
+                for (const item of items) {
+                    const [dbItem] = await findOrCreateNewItem(item);
+
+                    if (dbItem) item.id = dbItem.id;
+                    else throw Error('Error adding invoice item.');
+
+                    if (item.itemType.slug === 'PRODUCT') {
+                        await upsertProduct(item);
+                    }
+                }
+
+                await createInvoiceItems(items, addedInvoice);
+                
                 await transaction.commit();
 
                 return addedInvoice.id;
             } catch (err) {
-                transaction.rollback();
+                await transaction.rollback();
                 throw err;
             }
         }
     },
     InvoiceItem: {
         __resolveType: invoiceItem => {
-            return invoiceItem.code ? 'ProductInvoiceItem' : 'ExpenseInvoiceItem';
+            return invoiceItem.itemType.slug === 'PRODUCT' ? 'ProductInvoiceItem' : 'ExpenseInvoiceItem';
         }
     }
 };
