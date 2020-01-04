@@ -1,4 +1,4 @@
-import { ModelCtor, Model } from "sequelize-typescript";
+import { ModelCtor, Model } from 'sequelize-typescript';
 
 export const createCompositeForeignKey = (config: {
     table: ModelCtor<Model<any, any>>;

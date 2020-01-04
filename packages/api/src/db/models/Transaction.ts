@@ -1,13 +1,4 @@
-import {
-    Model,
-    Table,
-    Column,
-    PrimaryKey,
-    AutoIncrement,
-    AllowNull,
-    BelongsTo,
-    DataType
-} from 'sequelize-typescript';
+import { Model, Table, Column, PrimaryKey, AutoIncrement, AllowNull, BelongsTo, DataType } from 'sequelize-typescript';
 
 import User from './User';
 import Invoice from './Invoice';

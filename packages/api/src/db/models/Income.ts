@@ -1,22 +1,10 @@
-import {
-    Model,
-    Table,
-    Column,
-    PrimaryKey,
-    AutoIncrement,
-    AllowNull,
-    ForeignKey,
-    BelongsTo,
-    Sequelize,
-    DataType,
-    Unique
-} from 'sequelize-typescript';
+import { Model, Table, Column, PrimaryKey, AutoIncrement, AllowNull, BelongsTo, Unique } from 'sequelize-typescript';
 
 import User from './User';
 import PartnerType from './PartnerType';
 
 @Table
-export default class Partner extends Model<Partner> {
+export default class Income extends Model<Income> {
     @PrimaryKey
     @AutoIncrement
     @Unique

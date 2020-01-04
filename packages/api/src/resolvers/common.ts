@@ -1,6 +1,4 @@
-import { Model, Table } from 'sequelize-typescript';
 import { Resolver, authResolver } from '.';
-import User from '../db/models/User';
 
 const resolver: Resolver = {
     Query: {

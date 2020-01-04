@@ -10,6 +10,7 @@ import {
     BelongsToMany,
     Unique
 } from 'sequelize-typescript';
+
 import User from './User';
 import Partner from './Partner';
 import Unit from './Unit';

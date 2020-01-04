@@ -4,7 +4,6 @@ import { Strategy as GoogleTokenStrategy } from 'passport-google-token';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 
 import models from '../db/models';
-import { AuthenticationError } from 'apollo-server';
 
 passport.use(
     new GoogleTokenStrategy(

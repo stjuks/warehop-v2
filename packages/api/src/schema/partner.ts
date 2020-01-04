@@ -9,7 +9,7 @@ export default gql`
 
     input PartnerInput {
         name: String!
-        partnerTypeId: Int!
+        partnerTypeId: ID!
         regNr: String
         VATnr: String
         email: String

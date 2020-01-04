@@ -1,14 +1,4 @@
-import {
-    Model,
-    Table,
-    Column,
-    PrimaryKey,
-    AutoIncrement,
-    BelongsTo,
-    AllowNull,
-    ForeignKey,
-    DataType
-} from 'sequelize-typescript';
+import { Model, Table, Column, BelongsTo, AllowNull, ForeignKey, DataType } from 'sequelize-typescript';
 
 import Item from './Item';
 import Warehouse from './Warehouse';

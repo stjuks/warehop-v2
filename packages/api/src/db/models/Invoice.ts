@@ -5,7 +5,6 @@ import {
     PrimaryKey,
     AutoIncrement,
     AllowNull,
-    ForeignKey,
     BelongsTo,
     DataType,
     Unique,
@@ -77,5 +76,4 @@ export default class Invoice extends Model<Invoice> {
 
     @BelongsToMany(() => Item, { through: () => InvoiceItem, foreignKey: 'invoiceId', onDelete: 'CASCADE' })
     items: Item[];
-
 }

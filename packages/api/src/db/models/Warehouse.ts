@@ -2,10 +2,8 @@ import {
     Model,
     Table,
     Column,
-    CreatedAt,
     PrimaryKey,
     AutoIncrement,
-    ForeignKey,
     BelongsTo,
     AllowNull,
     Unique,
@@ -36,5 +34,5 @@ export default class Warehouse extends Model<Warehouse> {
     user: User;
 
     @BelongsToMany(() => Item, { through: () => WarehouseItem, foreignKey: 'warehouseId', onDelete: 'RESTRICT' })
-    items: Item[]
+    items: Item[];
 }

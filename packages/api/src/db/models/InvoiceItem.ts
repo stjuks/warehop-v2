@@ -9,6 +9,7 @@ import {
     ForeignKey,
     AllowNull
 } from 'sequelize-typescript';
+
 import Invoice from './Invoice';
 import Warehouse from './Warehouse';
 import Item from './Item';

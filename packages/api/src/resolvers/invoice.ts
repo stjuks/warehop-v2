@@ -1,4 +1,4 @@
-import { Model, Table, Sequelize } from 'sequelize-typescript';
+import { Sequelize } from 'sequelize-typescript';
 import currency from 'currency.js';
 
 import { Resolver, authResolver } from '.';
