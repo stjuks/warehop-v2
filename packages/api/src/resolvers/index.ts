@@ -38,13 +38,13 @@ export interface Resolver {
 }
 
 export function resolver(cb: ResolverCallback): ResolverFunction {
-    return function(parent, args, context) {
+    return function(_parent, args, context) {
         return cb(args, context);
     };
 }
 
 export function authResolver(cb: ResolverCallback): ResolverFunction {
-    return async function(parent, args, context) {
+    return async function(_parent, args, context) {
         const user: any = await authenticateJWT(context.req, context.res);
 
         if (user) {

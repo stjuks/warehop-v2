@@ -32,24 +32,10 @@ interface AddInvoiceInput {
 const resolver: Resolver = {
     Query: {
         purchases: authResolver(async (_args, { models, user }) => {
-            const purchases = await models.Invoice.findAll({
-                where: {
-                    userId: user.id
-                },
-                include: [{ model: models.InvoiceType, where: { id: 'PURCHASE' } }, models.Partner]
-            });
-
-            return purchases;
+            return await findInvoices('PURCHASE', { models, user });
         }),
         sales: authResolver(async (_args, { models, user }) => {
-            const sales = await models.Invoice.findAll({
-                where: {
-                    userId: user.id
-                },
-                include: [{ model: models.InvoiceType, where: { id: 'SALE' } }, models.Partner]
-            });
-
-            return sales;
+            return await findInvoices('SALE', { models, user });
         }),
         invoiceItems: authResolver(async ({ invoiceId }, { models, user }) => {
             const invoiceItems = await models.InvoiceItem.findAll({
@@ -58,7 +44,7 @@ const resolver: Resolver = {
                     invoiceId
                 },
                 include: [
-                    { model: models.Item, include: [models.ItemType], attributes: ['id', 'code'] },
+                    { model: models.Item, attributes: ['id', 'code', 'itemTypeId'] },
                     models.Unit,
                     models.Warehouse
                 ],
@@ -173,7 +159,7 @@ const resolver: Resolver = {
     }
 };
 
-export const invoiceItemWhere = (item: InvoiceItemInput, userId) => {
+const invoiceItemWhere = (item: InvoiceItemInput, userId) => {
     if (item.itemTypeId === 'PRODUCT') {
         return {
             code: Sequelize.where(Sequelize.fn('lower', Sequelize.col('code')), item.code.toLowerCase()),
@@ -185,6 +171,18 @@ export const invoiceItemWhere = (item: InvoiceItemInput, userId) => {
         name: Sequelize.where(Sequelize.fn('lower', Sequelize.col('name')), item.name.toLowerCase()),
         userId
     };
+};
+
+const findInvoices = async (invoiceTypeId: InvoiceType, { models, user }) => {
+    const invoices = await models.Invoice.findAll({
+        where: {
+            userId: user.id,
+            invoiceTypeId
+        },
+        include: [models.Partner]
+    });
+
+    return invoices;
 };
 
 export default resolver;
