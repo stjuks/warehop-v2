@@ -13,7 +13,7 @@ import models from '../db/models';
 import { User } from 'shared/types';
 import { authenticateJWT } from '../util/passport';
 
-interface ApolloContext {
+export interface ApolloContext {
     models: { [K in keyof typeof models]: ModelCtor<Model<any, any>> };
     sequelize: Sequelize;
     req: express.Request;

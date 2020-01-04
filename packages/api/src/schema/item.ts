@@ -14,10 +14,10 @@ export default gql`
     }
 
     input ItemInput {
-        itemTypeId: ItemType!
+        type: ItemType!
         name: String!
-        partnerId: Int
-        unitId: Int
+        partnerId: ID
+        unitId: ID
         code: String
         purchasePrice: String
         retailPrice: String
@@ -29,7 +29,7 @@ export default gql`
         id: ID!
         partner: Partner
         unit: Unit
-        itemTypeId: ItemType!
+        type: ItemType!
         name: String!
         code: String
         purchasePrice: String

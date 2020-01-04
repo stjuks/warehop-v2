@@ -1,12 +1,12 @@
 import { Sequelize } from 'sequelize-typescript';
 import currency from 'currency.js';
 
-import { Resolver, authResolver } from '.';
+import { Resolver, authResolver, ApolloContext } from '.';
 
 import { ItemType, InvoiceType } from 'shared/types';
 
 interface InvoiceItemInput {
-    itemTypeId: ItemType;
+    type: ItemType;
     quantity: number;
     price: string;
     name: string;
@@ -19,7 +19,7 @@ interface InvoiceItemInput {
 interface AddInvoiceInput {
     invoice: {
         partnerId: number;
-        invoiceTypeId: InvoiceType;
+        type: InvoiceType;
         number: string;
         sum: string;
         items: InvoiceItemInput[];
@@ -31,11 +31,11 @@ interface AddInvoiceInput {
 
 const resolver: Resolver = {
     Query: {
-        purchases: authResolver(async (_args, { models, user }) => {
-            return await findInvoices('PURCHASE', { models, user });
+        purchases: authResolver(async (_args, context) => {
+            return await findInvoices('PURCHASE', context);
         }),
-        sales: authResolver(async (_args, { models, user }) => {
-            return await findInvoices('SALE', { models, user });
+        sales: authResolver(async (_args, context) => {
+            return await findInvoices('SALE', context);
         }),
         invoiceItems: authResolver(async ({ invoiceId }, { models, user }) => {
             const invoiceItems = await models.InvoiceItem.findAll({
@@ -43,11 +43,7 @@ const resolver: Resolver = {
                     userId: user.id,
                     invoiceId
                 },
-                include: [
-                    { model: models.Item, attributes: ['id', 'code', 'itemTypeId'] },
-                    models.Unit,
-                    models.Warehouse
-                ],
+                include: [{ model: models.Item, attributes: ['id', 'code', 'type'] }, models.Unit, models.Warehouse],
                 attributes: ['name', 'quantity', 'price']
             });
 
@@ -77,10 +73,7 @@ const resolver: Resolver = {
             const transaction = await sequelize.transaction();
 
             const addInvoice = async () => {
-                return await models.Invoice.create(
-                    { ...restInvoice, invoiceTypeId: invoice.invoiceTypeId, userId: user.id },
-                    { transaction }
-                );
+                return await models.Invoice.create({ ...restInvoice, userId: user.id }, { transaction });
             };
 
             const findOrCreateNewItem = async item => {
@@ -89,8 +82,8 @@ const resolver: Resolver = {
                     defaults: {
                         ...item,
                         userId: user.id,
-                        partnerId: item.itemTypeId === 'PRODUCT' ? invoice.partnerId : undefined,
-                        [invoice.invoiceTypeId === 'PURCHASE' ? 'purchasePrice' : 'retailPrice']: item.price
+                        partnerId: item.type === 'PRODUCT' ? invoice.partnerId : undefined,
+                        [invoice.type === 'PURCHASE' ? 'purchasePrice' : 'retailPrice']: item.price
                     },
                     transaction
                 });
@@ -104,7 +97,7 @@ const resolver: Resolver = {
                 });
 
                 if (!isNewItem) {
-                    const operator = invoice.invoiceTypeId === 'SALE' ? '-' : '+';
+                    const operator = invoice.type === 'SALE' ? '-' : '+';
 
                     await models.WarehouseItem.update(
                         {
@@ -136,7 +129,7 @@ const resolver: Resolver = {
                     if (dbItem) item.id = dbItem.id;
                     else throw Error('Error adding invoice item.');
 
-                    if (item.itemTypeId === 'PRODUCT') {
+                    if (item.type === 'PRODUCT') {
                         await upsertProduct(item);
                     }
                 }
@@ -160,7 +153,7 @@ const resolver: Resolver = {
 };
 
 const invoiceItemWhere = (item: InvoiceItemInput, userId) => {
-    if (item.itemTypeId === 'PRODUCT') {
+    if (item.type === 'PRODUCT') {
         return {
             code: Sequelize.where(Sequelize.fn('lower', Sequelize.col('code')), item.code.toLowerCase()),
             userId
@@ -173,16 +166,33 @@ const invoiceItemWhere = (item: InvoiceItemInput, userId) => {
     };
 };
 
-const findInvoices = async (invoiceTypeId: InvoiceType, { models, user }) => {
+const findInvoices = async (type: InvoiceType, { models, user }: ApolloContext) => {
     const invoices = await models.Invoice.findAll({
         where: {
             userId: user.id,
-            invoiceTypeId
+            type
         },
-        include: [models.Partner]
+        include: [
+            models.Partner,
+            { model: models.InvoiceItem, as: 'items', include: [models.Warehouse, models.Unit, models.Item] }
+        ]
     });
 
-    return invoices;
+    const parsedInvoices = invoices.map(invoice => {
+        const plainInvoice: any = invoice.get({ plain: true });
+
+        plainInvoice.items = plainInvoice.items.map(item => {
+            return {
+                ...item.item,
+                ...item,
+                id: item.itemId
+            };
+        });
+
+        return plainInvoice;
+    });
+
+    return parsedInvoices;
 };
 
 export default resolver;

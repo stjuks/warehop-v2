@@ -17,7 +17,7 @@ export default class Partner extends Model<Partner> {
 
     @AllowNull(false)
     @Column
-    partnerTypeId: string;
+    type: string;
 
     @AllowNull(false)
     @Column
@@ -53,6 +53,6 @@ export default class Partner extends Model<Partner> {
     @BelongsTo(() => User, { foreignKey: 'userId', onDelete: 'RESTRICT' })
     user: User;
 
-    @BelongsTo(() => PartnerType, { foreignKey: 'partnerTypeId', onDelete: 'RESTRICT' })
+    @BelongsTo(() => PartnerType, { foreignKey: 'type', onDelete: 'RESTRICT' })
     partnerType: PartnerType;
 }

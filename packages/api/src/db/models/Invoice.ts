@@ -9,7 +9,8 @@ import {
     DataType,
     Unique,
     BelongsToMany,
-    Default
+    Default,
+    HasMany
 } from 'sequelize-typescript';
 
 import User from './User';
@@ -36,7 +37,7 @@ export default class Invoice extends Model<Invoice> {
 
     @AllowNull(false)
     @Column
-    invoiceTypeId: string;
+    type: string;
 
     @AllowNull(false)
     @Column
@@ -71,9 +72,9 @@ export default class Invoice extends Model<Invoice> {
     @BelongsTo(() => Partner, { foreignKey: 'partnerId', onDelete: 'RESTRICT' })
     partner: Partner;
 
-    @BelongsTo(() => InvoiceType, { foreignKey: 'invoiceTypeId', onDelete: 'RESTRICT' })
+    @BelongsTo(() => InvoiceType, { foreignKey: 'type', onDelete: 'RESTRICT' })
     invoiceType: InvoiceType;
 
-    @BelongsToMany(() => Item, { through: () => InvoiceItem, foreignKey: 'invoiceId', onDelete: 'CASCADE' })
+    @HasMany(() => InvoiceItem, { foreignKey: 'invoiceId', onDelete: 'RESTRICT', as: 'items' })
     items: Item[];
 }

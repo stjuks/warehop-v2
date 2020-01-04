@@ -40,7 +40,7 @@ export default class Item extends Model<Item> {
 
     @AllowNull(false)
     @Column
-    itemTypeId: string;
+    type: string;
 
     @AllowNull(false)
     @Column
@@ -67,7 +67,7 @@ export default class Item extends Model<Item> {
     @BelongsTo(() => Unit, { foreignKey: 'unitId', onDelete: 'RESTRICT' })
     unit: Unit;
 
-    @BelongsTo(() => ItemType, { foreignKey: 'itemTypeId', onDelete: 'RESTRICT' })
+    @BelongsTo(() => ItemType, { foreignKey: 'type', onDelete: 'RESTRICT' })
     itemType: ItemType;
 
     @BelongsToMany(() => Invoice, {

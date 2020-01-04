@@ -21,7 +21,7 @@ export default class Transaction extends Model<Transaction> {
 
     @AllowNull(false)
     @Column
-    transactionTypeId: string;
+    type: string;
 
     @AllowNull(false)
     @Column(DataType.DECIMAL(12, 4))
@@ -40,6 +40,6 @@ export default class Transaction extends Model<Transaction> {
     @BelongsTo(() => Invoice, { foreignKey: 'invoiceId', onDelete: 'CASCADE' })
     invoice: Invoice;
 
-    @BelongsTo(() => TransactionType, { foreignKey: 'transactionTypeId', onDelete: 'RESTRICT' })
+    @BelongsTo(() => TransactionType, { foreignKey: 'type', onDelete: 'RESTRICT' })
     transactionType: TransactionType;
 }

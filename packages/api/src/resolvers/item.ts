@@ -8,7 +8,6 @@ const resolver: Resolver = {
                 include: [
                     models.Partner,
                     models.Unit,
-                    models.ItemType,
                     { model: models.Warehouse, through: {}, as: 'warehouseQuantity' }
                 ]
             });

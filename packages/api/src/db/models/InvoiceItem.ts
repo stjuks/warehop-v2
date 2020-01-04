@@ -49,7 +49,7 @@ export default class InvoiceItem extends Model<InvoiceItem> {
     @Column(DataType.DECIMAL(12, 4))
     price: object;
 
-    @HasOne(() => Invoice, { foreignKey: 'id' })
+    @BelongsTo(() => Invoice, { foreignKey: 'invoiceId' })
     invoice: Invoice;
 
     @BelongsTo(() => Warehouse, { foreignKey: 'warehouseId' })
