@@ -1,4 +1,4 @@
-import { gql } from 'apollo-server';
+import gql from 'graphql-tag';
 
 export default gql`
     type ItemType {
@@ -18,7 +18,7 @@ export default gql`
         name: String!
         quantity: Float!
     }
-    
+
     input ItemInput {
         itemTypeId: Int!
         name: String!

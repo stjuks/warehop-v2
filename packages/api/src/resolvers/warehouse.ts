@@ -1,25 +1,28 @@
-import { Resolver } from '.';
+import { Resolver, authResolver } from '.';
 
-const resolver: Resolver = {
+const warehouseResolver: Resolver = {
     Query: {
-        warehouses: async (parent, args, { models }) => {
-            return await models.Warehouse.findAll({ where: { userId: 1 } });
-        }
+        warehouses: authResolver(async (args, { models, user }) => {
+            return await models.Warehouse.findAll({ where: { userId: user.id } });
+        })
     },
     Mutation: {
-        addWarehouse: async (parent, { name }, { models }) => {
-            const warehouse = await models.Warehouse.create({ name, userId: 1 });
+        addWarehouse: authResolver(async ({ name }, { models, user }) => {
+            const warehouse = await models.Warehouse.create({ name, userId: user.id });
             return warehouse.id;
-        },
-        deleteWarehouse: async (parent, { id }, { models }) => {
-            return await models.Warehouse.destroy({ where: { userId: 1, id } });
-        },
-        editWarehouse: async (parent, { id, ...rest }, { models }) => {
-            const [, [warehouse]] = await models.Warehouse.update(rest, { where: { userId: 1, id }, returning: true });
+        }),
+        deleteWarehouse: authResolver(async ({ id }, { models, user }) => {
+            return await models.Warehouse.destroy({ where: { userId: user.id, id } });
+        }),
+        editWarehouse: authResolver(async ({ id, ...rest }, { models, user }) => {
+            const [, [warehouse]] = await models.Warehouse.update(rest, {
+                where: { userId: user.id, id },
+                returning: true
+            });
 
             return warehouse;
-        }
+        })
     }
 };
 
-export default resolver;
+export default warehouseResolver;

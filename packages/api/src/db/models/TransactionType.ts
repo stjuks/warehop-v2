@@ -10,8 +10,4 @@ export default class TransactionType extends Model<TransactionType> {
     @AllowNull(false)
     @Column
     slug: string;
-
-    @AllowNull(false)
-    @Column
-    name: string;
 }

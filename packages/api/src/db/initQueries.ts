@@ -53,26 +53,13 @@ const createForeignKeys = async () => {
 };
 
 const createStaticData = async () => {
-    await models.InvoiceType.bulkCreate([
-        { slug: 'SALE', name: 'Müügiarve' },
-        { slug: 'PURCHASE', name: 'Ostuarve' }
-    ]);
+    await models.InvoiceType.bulkCreate([{ slug: 'SALE' }, { slug: 'PURCHASE' }]);
 
-    await models.PartnerType.bulkCreate([
-        { slug: 'VENDOR', name: 'Tarnija' },
-        { slug: 'CLIENT', name: 'Klient' }
-    ]);
+    await models.PartnerType.bulkCreate([{ slug: 'VENDOR' }, { slug: 'CLIENT' }]);
 
-    await models.ItemType.bulkCreate([
-        { slug: 'PRODUCT', name: 'Laoartikkel' },
-        { slug: 'SERVICE', name: 'Teenus' },
-        { slug: 'EXPENSE', name: 'Kuluartikkel' }
-    ]);
+    await models.ItemType.bulkCreate([{ slug: 'PRODUCT' }, { slug: 'SERVICE' }, { slug: 'EXPENSE' }]);
 
-    await models.TransactionType.bulkCreate([
-        { slug: 'INCOME', name: 'Tulu' },
-        { slug: 'EXPENSE', name: 'Kulu' }
-    ]);
+    await models.TransactionType.bulkCreate([{ slug: 'INCOME' }, { slug: 'EXPENSE' }]);
 };
 
 export default async () => {

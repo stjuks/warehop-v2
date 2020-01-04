@@ -75,7 +75,7 @@ export default class Invoice extends Model<Invoice> {
     @BelongsTo(() => InvoiceType, { foreignKey: 'invoiceTypeId', onDelete: 'RESTRICT' })
     invoiceType: InvoiceType;
 
-    @BelongsToMany(() => Item, { through: () => InvoiceItem, foreignKey: 'itemId', onDelete: 'CASCADE' })
+    @BelongsToMany(() => Item, { through: () => InvoiceItem, foreignKey: 'invoiceId', onDelete: 'CASCADE' })
     items: Item[];
 
 }

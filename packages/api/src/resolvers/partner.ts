@@ -1,28 +1,28 @@
-import { Resolver } from '.';
+import { Resolver, authResolver } from '.';
 
-const resolver: Resolver = {
+const partnerResolver: Resolver = {
     Query: {
-        partners: async (parent, args, { models }) => {
-            return await models.Partner.findAll({ where: { userId: 1 }, include: [models.PartnerType] });
-        }
+        partners: authResolver(async (args, { models, user }) => {
+            return await models.Partner.findAll({ where: { userId: user.id }, include: [models.PartnerType] });
+        })
     },
     Mutation: {
-        addPartner: async (parent, { partner }, { models }) => {
-            const addedPartner = await models.Partner.create({ ...partner, userId: 1 });
+        addPartner: authResolver(async ({ partner }, { models, user }) => {
+            const addedPartner = await models.Partner.create({ ...partner, userId: user.id });
             return addedPartner.id;
-        },
-        deletePartner: async (parent, { id }, { models }) => {
-            return await models.Partner.destroy({ where: { id, userId: 1 } });
-        },
-        editPartner: async (parent, { id, partner }, { models }) => {
+        }),
+        deletePartner: authResolver(async ({ id }, { models, user }) => {
+            return await models.Partner.destroy({ where: { id, userId: user.id } });
+        }),
+        editPartner: authResolver(async ({ id, partner }, { models, user }) => {
             const [, [editedPartner]] = await models.Partner.update(partner, {
-                where: { id, userId: 1 },
+                where: { id, userId: user.id },
                 returning: true
             });
 
             return editedPartner;
-        }
+        })
     }
 };
 
-export default resolver;
+export default partnerResolver;

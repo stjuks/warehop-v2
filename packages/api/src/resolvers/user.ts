@@ -1,23 +1,36 @@
-import { Model, Table } from 'sequelize-typescript';
-import { Resolver } from '.';
-import User from '../db/models/User';
+import { Resolver, authResolver, resolver } from '.';
+import { authenticateGoogle } from '../util/passport';
 
-const resolver: Resolver = {
+const userResolver: Resolver = {
     Query: {
-        users: async (parent, args, { models }) => {
+        users: authResolver(async (_args, { models }) => {
             return await models.User.findAll();
-        },
-        user: async (parent, { id }, { models }) => {
+        }),
+        user: authResolver(async ({ id }, { models }) => {
             return await models.User.findOne({ where: { id } });
-        }
+        })
     },
     Mutation: {
-        signUp: async (parent, { name }, { models }) => {
+        signUp: resolver(async ({ name }, { models }) => {
             const createdUser = await models.User.create({ name });
 
             return createdUser;
-        }
+        }),
+        googleLogin: resolver(async ({ accessToken }, { req, res, models }) => {
+            req.body = {
+                ...req.body,
+                access_token: accessToken
+            };
+
+            const { user }: any = await authenticateGoogle(req, res);
+
+            if (user) return user;
+            throw new Error('User not found.');
+        }),
+        verify: authResolver(async (_args, { user }) => {
+            return user;
+        })
     }
 };
 
-export default resolver;
+export default userResolver;

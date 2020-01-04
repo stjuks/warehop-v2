@@ -10,8 +10,4 @@ export default class PartnerType extends Model<PartnerType> {
     @AllowNull(false)
     @Column
     slug: string;
-
-    @AllowNull(false)
-    @Column
-    name: string;
 }

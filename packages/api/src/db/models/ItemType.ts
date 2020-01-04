@@ -10,8 +10,4 @@ export default class ItemType extends Model<ItemType> {
     @AllowNull(false)
     @Column
     slug: string;
-
-    @AllowNull(false)
-    @Column
-    name: string;
 }

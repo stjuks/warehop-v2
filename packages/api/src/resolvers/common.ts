@@ -1,25 +1,25 @@
 import { Model, Table } from 'sequelize-typescript';
-import { Resolver } from '.';
+import { Resolver, authResolver } from '.';
 import User from '../db/models/User';
 
 const resolver: Resolver = {
     Query: {
-        units: async (parent, args, { models }) => {
-            return await models.Unit.findAll({ where: { userId: 1 } });
-        }
+        units: authResolver(async (_args, { models, user }) => {
+            return await models.Unit.findAll({ where: { userId: user.id } });
+        })
     },
     Mutation: {
-        addUnit: async (parent, { name, abbreviation }, { models }) => {
-            return await models.Unit.create({ name, abbreviation, userId: 1 });
-        },
-        deleteUnit: async (parent, { id }, { models }) => {
-            return await models.Unit.destroy({ where: { id, userId: 1 } });
-        },
-        editUnit: async (parent, { id, ...rest }, { models }) => {
-            const [, [unit]] = await models.Unit.update(rest, { where: { id, userId: 1 }, returning: true });
+        addUnit: authResolver(async ({ name, abbreviation }, { models, user }) => {
+            return await models.Unit.create({ name, abbreviation, userId: user.id });
+        }),
+        deleteUnit: authResolver(async ({ id }, { models, user }) => {
+            return await models.Unit.destroy({ where: { id, userId: user.id } });
+        }),
+        editUnit: authResolver(async ({ id, ...rest }, { models, user }) => {
+            const [, [unit]] = await models.Unit.update(rest, { where: { id, userId: user.id }, returning: true });
 
             return unit;
-        }
+        })
     }
 };
 

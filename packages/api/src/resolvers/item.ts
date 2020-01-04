@@ -1,10 +1,10 @@
-import { Resolver } from '.';
+import { Resolver, authResolver } from '.';
 
 const resolver: Resolver = {
     Query: {
-        items: async (parent, args, { models }) => {
+        items: authResolver(async (_args, { models, user }) => {
             const result: any = await models.Item.findAll({
-                where: { userId: 1 },
+                where: { userId: user.id },
                 include: [
                     models.Partner,
                     models.Unit,
@@ -27,21 +27,21 @@ const resolver: Resolver = {
             });
 
             return parsedResult;
-        }
+        })
     },
     Mutation: {
-        addItem: async (parent, { item }, { models, sequelize }) => {
+        addItem: authResolver(async ({ item }, { models, sequelize, user }) => {
             const { warehouseQuantity, ...restItem } = item;
             const transaction = await sequelize.transaction();
 
             try {
-                const addedItem = await models.Item.create({ ...restItem, userId: 1 }, { transaction });
+                const addedItem = await models.Item.create({ ...restItem, userId: user.id }, { transaction });
 
                 const warehouseItems = warehouseQuantity.map(wh => ({
                     ...wh,
                     warehouseId: wh.id,
                     itemId: addedItem.id,
-                    userId: 1
+                    userId: user.id
                 }));
 
                 await models.WarehouseItem.bulkCreate(warehouseItems, { transaction });
@@ -52,18 +52,18 @@ const resolver: Resolver = {
                 await transaction.rollback();
                 throw err;
             }
-        },
-        deleteItem: async (parent, { id }, { models }) => {
-            return await models.Item.destroy({ where: { id, userId: 1 } });
-        },
-        editItem: async (parent, { id, item }, { models }) => {
+        }),
+        deleteItem: authResolver(async ({ id }, { models, user }) => {
+            return await models.Item.destroy({ where: { id, userId: user.id } });
+        }),
+        editItem: authResolver(async ({ id, item }, { models, user }) => {
             const [, [editedItem]] = await models.Item.update(item, {
-                where: { id, userId: 1 },
+                where: { id, userId: user.id },
                 returning: true
             });
 
             return editedItem;
-        }
+        })
     }
 };
 

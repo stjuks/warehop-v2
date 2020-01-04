@@ -1,4 +1,4 @@
-import { gql } from 'apollo-server';
+import gql from 'graphql-tag';
 
 import userSchema from './user';
 import warehouseSchema from './warehouse';
@@ -13,13 +13,11 @@ const baseSchema = gql`
     input EntityTypeInput {
         id: ID!
         slug: String!
-        name: String!
     }
 
     type EntityType {
         id: ID!
         slug: String!
-        name: String!
     }
 
     type Query {

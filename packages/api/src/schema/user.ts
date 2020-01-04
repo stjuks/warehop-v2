@@ -1,9 +1,9 @@
-import { gql } from 'apollo-server';
+import gql from 'graphql-tag';
 
 export default gql`
     type User {
         id: ID!
-        name: String!
+        name: String
         regNr: String
         email: String
         phoneNr: String
@@ -12,6 +12,7 @@ export default gql`
         city: String
         street: String
         postalCode: String
+        token: String
     }
 
     extend type Query {
@@ -20,6 +21,8 @@ export default gql`
     }
 
     extend type Mutation {
+        googleLogin(accessToken: String!): User!
         signUp(name: String!): User!
+        verify: User!
     }
 `;

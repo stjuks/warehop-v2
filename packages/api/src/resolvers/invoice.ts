@@ -1,7 +1,7 @@
 import { Model, Table, Sequelize } from 'sequelize-typescript';
 import currency from 'currency.js';
 
-import { Resolver } from '.';
+import { Resolver, authResolver } from '.';
 
 import { ItemType, InvoiceType } from 'shared/types';
 
@@ -30,8 +30,55 @@ interface AddInvoiceInput {
 }
 
 const resolver: Resolver = {
+    Query: {
+        purchases: authResolver(async (_args, { models, user }) => {
+            const purchases = await models.Invoice.findAll({
+                where: {
+                    userId: user.id
+                },
+                include: [{ model: models.InvoiceType, where: { slug: 'PURCHASE' } }, models.Partner]
+            });
+
+            return purchases;
+        }),
+        sales: authResolver(async (_args, { models, user }) => {
+            const sales = await models.Invoice.findAll({
+                where: {
+                    userId: user.id
+                },
+                include: [{ model: models.InvoiceType, where: { slug: 'SALE' } }, models.Partner]
+            });
+
+            return sales;
+        }),
+        invoiceItems: authResolver(async ({ invoiceId }, { models, user }) => {
+            const invoiceItems = await models.InvoiceItem.findAll({
+                where: {
+                    userId: user.id,
+                    invoiceId
+                },
+                include: [
+                    { model: models.Item, include: [models.ItemType], attributes: ['id', 'code'] },
+                    models.Unit,
+                    models.Warehouse
+                ],
+                attributes: ['name', 'quantity', 'price']
+            });
+
+            const parsedItems = invoiceItems.map(item => {
+                const plainItem: any = item.get({ plain: true });
+
+                return {
+                    ...plainItem,
+                    ...plainItem.item
+                };
+            });
+
+            return parsedItems;
+        })
+    },
     Mutation: {
-        addInvoice: async (parent, { invoice }: AddInvoiceInput, { models, sequelize }) => {
+        addInvoice: authResolver(async ({ invoice }: AddInvoiceInput, { models, sequelize, user }) => {
             const { items, ...restInvoice } = invoice;
 
             restInvoice.sum = items
@@ -45,17 +92,17 @@ const resolver: Resolver = {
 
             const addInvoice = async () => {
                 return await models.Invoice.create(
-                    { ...restInvoice, invoiceTypeId: invoice.invoiceType.id, userId: 1 },
+                    { ...restInvoice, invoiceTypeId: invoice.invoiceType.id, userId: user.id },
                     { transaction }
                 );
             };
 
             const findOrCreateNewItem = async item => {
                 return await models.Item.findOrCreate({
-                    where: invoiceItemWhere(item, 1),
+                    where: invoiceItemWhere(item, user.id),
                     defaults: {
                         ...item,
-                        userId: 1,
+                        userId: user.id,
                         partnerId: item.itemType.slug === 'PRODUCT' ? invoice.partnerId : undefined,
                         itemTypeId: item.itemType.id,
                         [invoice.invoiceType.slug === 'PURCHASE' ? 'purchasePrice' : 'retailPrice']: item.price
@@ -66,8 +113,8 @@ const resolver: Resolver = {
 
             const upsertProduct = async item => {
                 const [, isNewItem] = await models.WarehouseItem.findOrCreate({
-                    defaults: { ...item, itemId: item.id, userId: 1 },
-                    where: { userId: 1, itemId: item.id },
+                    defaults: { ...item, itemId: item.id, userId: user.id },
+                    where: { userId: user.id, itemId: item.id },
                     transaction
                 });
 
@@ -78,7 +125,7 @@ const resolver: Resolver = {
                         {
                             quantity: Sequelize.literal(`quantity ${operator} ${item.quantity}`)
                         },
-                        { where: { userId: 1, itemId: item.id, warehouseId: item.warehouseId }, transaction }
+                        { where: { userId: user.id, itemId: item.id, warehouseId: item.warehouseId }, transaction }
                     );
                 }
             };
@@ -88,11 +135,11 @@ const resolver: Resolver = {
                     ...item,
                     itemId: item.id,
                     invoiceId: addedInvoice.id,
-                    [invoice.invoiceType.slug === 'PURCHASE' ? 'purchasePrice' : 'retailPrice']: item.price
+                    userId: user.id
                 }));
 
                 return await models.InvoiceItem.bulkCreate(invoiceItems, { transaction });
-            }
+            };
 
             // business logic
             try {
@@ -110,7 +157,7 @@ const resolver: Resolver = {
                 }
 
                 await createInvoiceItems(items, addedInvoice);
-                
+
                 await transaction.commit();
 
                 return addedInvoice.id;
@@ -118,11 +165,11 @@ const resolver: Resolver = {
                 await transaction.rollback();
                 throw err;
             }
-        }
+        })
     },
     InvoiceItem: {
         __resolveType: invoiceItem => {
-            return invoiceItem.itemType.slug === 'PRODUCT' ? 'ProductInvoiceItem' : 'ExpenseInvoiceItem';
+            return invoiceItem.code ? 'ProductInvoiceItem' : 'ExpenseInvoiceItem';
         }
     }
 };

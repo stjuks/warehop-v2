@@ -69,9 +69,19 @@ export default class Item extends Model<Item> {
     @BelongsTo(() => ItemType, { foreignKey: 'itemTypeId', onDelete: 'RESTRICT' })
     itemType: ItemType;
 
-    @BelongsToMany(() => Invoice, { through: () => InvoiceItem, foreignKey: 'itemId', onDelete: 'RESTRICT' })
+    @BelongsToMany(() => Invoice, {
+        through: () => InvoiceItem,
+        foreignKey: 'itemId',
+        onDelete: 'RESTRICT',
+        as: 'items'
+    })
     invoices: Invoice[];
 
-    @BelongsToMany(() => Warehouse, { through: () => WarehouseItem, foreignKey: 'itemId', onDelete: 'RESTRICT', as: 'warehouseQuantity' })
+    @BelongsToMany(() => Warehouse, {
+        through: () => WarehouseItem,
+        foreignKey: 'itemId',
+        onDelete: 'RESTRICT',
+        as: 'warehouseQuantity'
+    })
     warehouses: Warehouse[];
 }

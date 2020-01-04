@@ -1,4 +1,4 @@
-import { gql } from 'apollo-server';
+import gql from 'graphql-tag';
 
 export default gql`
     interface InvoiceItem {
@@ -39,7 +39,6 @@ export default gql`
         issueDate: Date!
         isPaid: Boolean!
         sum: String!
-        items: [InvoiceItem!]!
         description: String
         filePath: String
     }
@@ -68,6 +67,7 @@ export default gql`
     extend type Query {
         purchases: [Invoice!]!
         sales: [Invoice!]!
+        invoiceItems(invoiceId: ID!): [InvoiceItem!]!
     }
 
     extend type Mutation {

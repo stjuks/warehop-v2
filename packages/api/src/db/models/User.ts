@@ -9,7 +9,7 @@ export default class User extends Model<User> {
 
     @Unique
     @Column
-    facebookId: string;
+    googleId: string;
 
     @Column
     name: string;

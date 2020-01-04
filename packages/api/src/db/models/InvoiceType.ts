@@ -10,8 +10,4 @@ export default class InvoiceType extends Model<InvoiceType> {
     @AllowNull(false)
     @Column
     slug: string;
-
-    @AllowNull(false)
-    @Column
-    name: string;
 }
