@@ -1,12 +1,6 @@
 import gql from 'graphql-tag';
 
 export default gql`
-    type ItemType {
-        id: ID!
-        slug: String!
-        name: String!
-    }
-
     type WarehouseQuantity {
         id: ID!
         name: String!
@@ -20,7 +14,7 @@ export default gql`
     }
 
     input ItemInput {
-        itemTypeId: Int!
+        itemTypeId: ItemType!
         name: String!
         partnerId: Int
         unitId: Int
@@ -35,7 +29,7 @@ export default gql`
         id: ID!
         partner: Partner
         unit: Unit
-        itemType: ItemType
+        itemTypeId: ItemType!
         name: String!
         code: String
         purchasePrice: String

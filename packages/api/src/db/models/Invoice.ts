@@ -36,7 +36,7 @@ export default class Invoice extends Model<Invoice> {
 
     @AllowNull(false)
     @Column
-    invoiceTypeId: number;
+    invoiceTypeId: string;
 
     @AllowNull(false)
     @Column

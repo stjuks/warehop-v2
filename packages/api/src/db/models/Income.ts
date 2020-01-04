@@ -1,7 +1,7 @@
 import { Model, Table, Column, PrimaryKey, AutoIncrement, AllowNull, BelongsTo, Unique } from 'sequelize-typescript';
 
 import User from './User';
-import PartnerType from './PartnerType';
+import Partner from './Partner';
 
 @Table
 export default class Income extends Model<Income> {
@@ -17,7 +17,7 @@ export default class Income extends Model<Income> {
 
     @AllowNull(false)
     @Column
-    partnerTypeId: number;
+    partnerId: number;
 
     @AllowNull(false)
     @Column
@@ -53,6 +53,6 @@ export default class Income extends Model<Income> {
     @BelongsTo(() => User, { foreignKey: 'userId', onDelete: 'RESTRICT' })
     user: User;
 
-    @BelongsTo(() => PartnerType, { foreignKey: 'partnerTypeId', onDelete: 'RESTRICT' })
-    partnerType: PartnerType;
+    @BelongsTo(() => Partner, { foreignKey: 'partnerId', onDelete: 'RESTRICT' })
+    partner: Partner;
 }

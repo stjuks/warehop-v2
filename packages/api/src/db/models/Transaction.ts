@@ -21,7 +21,7 @@ export default class Transaction extends Model<Transaction> {
 
     @AllowNull(false)
     @Column
-    transactionTypeId: number;
+    transactionTypeId: string;
 
     @AllowNull(false)
     @Column(DataType.DECIMAL(12, 4))

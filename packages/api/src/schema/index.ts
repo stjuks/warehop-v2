@@ -10,14 +10,25 @@ import invoiceSchema from './invoice';
 const baseSchema = gql`
     scalar Date
 
-    input EntityTypeInput {
-        id: ID!
-        slug: String!
+    enum InvoiceType {
+        SALE
+        PURCHASE
     }
 
-    type EntityType {
-        id: ID!
-        slug: String!
+    enum PartnerType {
+        CLIENT
+        VENDOR
+    }
+
+    enum ItemType {
+        PRODUCT
+        SERVICE
+        EXPENSE
+    }
+
+    enum TransactionType {
+        INCOME
+        EXPENSE
     }
 
     type Query {

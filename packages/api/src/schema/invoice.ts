@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 export default gql`
     interface InvoiceItem {
         id: ID!
-        itemType: EntityType!
+        itemTypeId: ItemType!
         name: String!
         quantity: Float!
         price: String!
@@ -12,7 +12,7 @@ export default gql`
 
     type ExpenseInvoiceItem implements InvoiceItem {
         id: ID!
-        itemType: EntityType!
+        itemTypeId: ItemType!
         name: String!
         quantity: Float!
         price: String!
@@ -21,7 +21,7 @@ export default gql`
 
     type ProductInvoiceItem implements InvoiceItem {
         id: ID!
-        itemType: EntityType!
+        itemTypeId: ItemType!
         name: String!
         quantity: Float!
         price: String!
@@ -33,7 +33,7 @@ export default gql`
     type Invoice {
         id: ID!
         partner: Partner!
-        invoiceType: EntityType!
+        invoiceTypeId: InvoiceType!
         number: String!
         dueDate: Date!
         issueDate: Date!
@@ -44,7 +44,7 @@ export default gql`
     }
 
     input InvoiceItemInput {
-        itemType: EntityTypeInput!
+        itemTypeId: ItemType!
         quantity: Float!
         price: String!
         name: String!
@@ -56,7 +56,7 @@ export default gql`
 
     input InvoiceInput {
         partnerId: ID!
-        invoiceType: EntityTypeInput!
+        invoiceTypeId: InvoiceType!
         number: String!
         items: [InvoiceItemInput!]!
         dueDate: Date!

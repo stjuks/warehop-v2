@@ -3,11 +3,6 @@ import { Model, Table, Column, PrimaryKey, AutoIncrement, AllowNull } from 'sequ
 @Table
 export default class PartnerType extends Model<PartnerType> {
     @PrimaryKey
-    @AutoIncrement
     @Column
-    id: number;
-
-    @AllowNull(false)
-    @Column
-    slug: string;
+    id: string;
 }

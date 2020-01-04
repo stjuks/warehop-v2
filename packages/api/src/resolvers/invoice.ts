@@ -6,7 +6,7 @@ import { Resolver, authResolver } from '.';
 import { ItemType, InvoiceType } from 'shared/types';
 
 interface InvoiceItemInput {
-    itemType: ItemType;
+    itemTypeId: ItemType;
     quantity: number;
     price: string;
     name: string;
@@ -19,7 +19,7 @@ interface InvoiceItemInput {
 interface AddInvoiceInput {
     invoice: {
         partnerId: number;
-        invoiceType: InvoiceType;
+        invoiceTypeId: InvoiceType;
         number: string;
         sum: string;
         items: InvoiceItemInput[];
@@ -36,7 +36,7 @@ const resolver: Resolver = {
                 where: {
                     userId: user.id
                 },
-                include: [{ model: models.InvoiceType, where: { slug: 'PURCHASE' } }, models.Partner]
+                include: [{ model: models.InvoiceType, where: { id: 'PURCHASE' } }, models.Partner]
             });
 
             return purchases;
@@ -46,7 +46,7 @@ const resolver: Resolver = {
                 where: {
                     userId: user.id
                 },
-                include: [{ model: models.InvoiceType, where: { slug: 'SALE' } }, models.Partner]
+                include: [{ model: models.InvoiceType, where: { id: 'SALE' } }, models.Partner]
             });
 
             return sales;
@@ -92,7 +92,7 @@ const resolver: Resolver = {
 
             const addInvoice = async () => {
                 return await models.Invoice.create(
-                    { ...restInvoice, invoiceTypeId: invoice.invoiceType.id, userId: user.id },
+                    { ...restInvoice, invoiceTypeId: invoice.invoiceTypeId, userId: user.id },
                     { transaction }
                 );
             };
@@ -103,9 +103,8 @@ const resolver: Resolver = {
                     defaults: {
                         ...item,
                         userId: user.id,
-                        partnerId: item.itemType.slug === 'PRODUCT' ? invoice.partnerId : undefined,
-                        itemTypeId: item.itemType.id,
-                        [invoice.invoiceType.slug === 'PURCHASE' ? 'purchasePrice' : 'retailPrice']: item.price
+                        partnerId: item.itemTypeId === 'PRODUCT' ? invoice.partnerId : undefined,
+                        [invoice.invoiceTypeId === 'PURCHASE' ? 'purchasePrice' : 'retailPrice']: item.price
                     },
                     transaction
                 });
@@ -119,7 +118,7 @@ const resolver: Resolver = {
                 });
 
                 if (!isNewItem) {
-                    const operator = invoice.invoiceType.slug === 'SALE' ? '-' : '+';
+                    const operator = invoice.invoiceTypeId === 'SALE' ? '-' : '+';
 
                     await models.WarehouseItem.update(
                         {
@@ -151,7 +150,7 @@ const resolver: Resolver = {
                     if (dbItem) item.id = dbItem.id;
                     else throw Error('Error adding invoice item.');
 
-                    if (item.itemType.slug === 'PRODUCT') {
+                    if (item.itemTypeId === 'PRODUCT') {
                         await upsertProduct(item);
                     }
                 }
@@ -175,7 +174,7 @@ const resolver: Resolver = {
 };
 
 export const invoiceItemWhere = (item: InvoiceItemInput, userId) => {
-    if (item.itemType.slug === 'PRODUCT') {
+    if (item.itemTypeId === 'PRODUCT') {
         return {
             code: Sequelize.where(Sequelize.fn('lower', Sequelize.col('code')), item.code.toLowerCase()),
             userId

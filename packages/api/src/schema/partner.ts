@@ -1,15 +1,9 @@
 import gql from 'graphql-tag';
 
 export default gql`
-    type PartnerType {
-        id: ID!
-        slug: String!
-        name: String!
-    }
-
     input PartnerInput {
         name: String!
-        partnerTypeId: ID!
+        partnerTypeId: PartnerType!
         regNr: String
         VATnr: String
         email: String
@@ -24,7 +18,7 @@ export default gql`
     type Partner {
         id: ID!
         name: String!
-        partnerType: PartnerType!
+        partnerTypeId: PartnerType!
         regNr: String
         VATnr: String
         email: String

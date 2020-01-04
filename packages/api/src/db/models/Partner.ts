@@ -17,7 +17,7 @@ export default class Partner extends Model<Partner> {
 
     @AllowNull(false)
     @Column
-    partnerTypeId: number;
+    partnerTypeId: string;
 
     @AllowNull(false)
     @Column

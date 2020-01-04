@@ -40,7 +40,7 @@ export default class Item extends Model<Item> {
 
     @AllowNull(false)
     @Column
-    itemTypeId: number;
+    itemTypeId: string;
 
     @AllowNull(false)
     @Column
