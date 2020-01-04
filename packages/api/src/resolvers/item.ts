@@ -1,31 +1,16 @@
-import { Resolver, authResolver } from '.';
+import { Resolver, authResolver, ApolloContext } from '.';
+import { ItemType } from 'shared/types';
 
 const resolver: Resolver = {
     Query: {
-        items: authResolver(async (_args, { models, user }) => {
-            const result: any = await models.Item.findAll({
-                where: { userId: user.id },
-                include: [
-                    models.Partner,
-                    models.Unit,
-                    { model: models.Warehouse, through: {}, as: 'warehouseQuantity' }
-                ]
-            });
-
-            const parsedResult = result.map(i => {
-                const item: any = i.get({ plain: true });
-
-                item.warehouseQuantity = item.warehouseQuantity.map(wh => {
-                    return {
-                        ...wh,
-                        quantity: wh.WarehouseItem.quantity
-                    };
-                });
-
-                return item;
-            });
-
-            return parsedResult;
+        items: authResolver(async (_args, context) => {
+            return await findItems(context);
+        }),
+        products: authResolver(async (_args, context) => {
+            return await findItems(context, 'PRODUCT');
+        }),
+        services: authResolver(async (_args, context) => {
+            return await findItems(context, 'SERVICE');
         })
     },
     Mutation: {
@@ -63,7 +48,35 @@ const resolver: Resolver = {
 
             return editedItem;
         })
+    },
+    Item: {
+        __resolveType: item => (item.type === 'PRODUCT' ? 'ProductItem' : 'ExpenseItem')
     }
+};
+
+const findItems = async ({ models, user }: ApolloContext, type?: ItemType) => {
+    const where: any = { userId: user.id };
+    if (type) where.type = type;
+
+    const result: any = await models.Item.findAll({
+        where,
+        include: [models.Partner, models.Unit, { model: models.Warehouse, through: {}, as: 'warehouseQuantity' }]
+    });
+
+    const parsedResult = result.map(i => {
+        const item: any = i.get({ plain: true });
+
+        item.warehouseQuantity = item.warehouseQuantity.map(wh => {
+            return {
+                ...wh,
+                quantity: wh.WarehouseItem.quantity
+            };
+        });
+
+        return item;
+    });
+
+    return parsedResult;
 };
 
 export default resolver;

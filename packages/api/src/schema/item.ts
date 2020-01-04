@@ -25,21 +25,43 @@ export default gql`
         warehouseQuantity: [WarehouseQuantityInput!]!
     }
 
-    type Item {
+    interface Item {
         id: ID!
-        partner: Partner
-        unit: Unit
         type: ItemType!
         name: String!
-        code: String
         purchasePrice: String
         retailPrice: String
         description: String
+        unit: Unit
+    }
+
+    type ProductItem implements Item {
+        id: ID!
+        type: ItemType!
+        name: String!
+        purchasePrice: String
+        retailPrice: String
+        description: String
+        unit: Unit!
+        partner: Partner
+        code: String
         warehouseQuantity: [WarehouseQuantity!]!
+    }
+
+    type ExpenseItem implements Item {
+        id: ID!
+        type: ItemType!
+        name: String!
+        purchasePrice: String
+        retailPrice: String
+        description: String
+        unit: Unit
     }
 
     extend type Query {
         items: [Item!]!
+        products: [ProductItem!]!
+        services: [ExpenseItem!]!
     }
 
     extend type Mutation {
