@@ -1,5 +1,6 @@
 import { Sequelize } from 'sequelize-typescript';
 import currency from 'currency.js';
+import { Op } from 'sequelize';
 
 import { Resolver, authResolver, ApolloContext } from '.';
 
@@ -29,13 +30,40 @@ interface AddInvoiceInput {
     };
 }
 
+interface InvoiceSearchInput {
+    query: {
+        type: InvoiceType;
+        number?: string;
+        isPaid?: boolean;
+        description?: string;
+        partnerName?: string;
+    };
+}
+
 const resolver: Resolver = {
     Query: {
         purchases: authResolver(async (_args, context) => {
-            return await findInvoices('PURCHASE', context);
+            return await findInvoices(context, { type: 'PURCHASE' });
         }),
         sales: authResolver(async (_args, context) => {
-            return await findInvoices('SALE', context);
+            return await findInvoices(context, { type: 'SALE' });
+        }),
+        searchInvoices: authResolver(async ({ query }: InvoiceSearchInput, context) => {
+            const { user } = context;
+            const { type, number, description, partnerName, ...restQuery } = query;
+
+            const where: any = {
+                ...restQuery,
+                userId: user.id,
+                type,
+                partner: {}
+            };
+
+            if (number) where.number = { [Op.iLike]: `%${number}%` };
+            if (description) where.description = { [Op.iLike]: `%${description}%` };
+            if (partnerName) where.partner.name = { [Op.iLike]: `%${partnerName}%` };
+
+            return await findInvoices(context, { where });
         }),
         invoiceItems: authResolver(async ({ invoiceId }, { models, user }) => {
             const invoiceItems = await models.InvoiceItem.findAll({
@@ -166,14 +194,26 @@ const invoiceItemWhere = (item: InvoiceItemInput, userId) => {
     };
 };
 
-const findInvoices = async (type: InvoiceType, { models, user }: ApolloContext) => {
+const findInvoices = async (
+    { models, user }: ApolloContext,
+    opts: { type?: InvoiceType; where?: { [key: string]: any; partner: { [key: string]: any } } }
+) => {
+    const { type } = opts;
+
+    let where: any = { userId: user.id, type };
+
+    if (opts.where) {
+        const { partner, ...restWhere } = opts.where;
+        where = restWhere;
+    }
+
     const invoices = await models.Invoice.findAll({
-        where: {
-            userId: user.id,
-            type
-        },
+        where,
         include: [
-            models.Partner,
+            {
+                model: models.Partner,
+                where: opts.where && opts.where.partner
+            },
             {
                 model: models.InvoiceItem,
                 as: 'items',

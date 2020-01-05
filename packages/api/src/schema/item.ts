@@ -58,10 +58,17 @@ export default gql`
         unit: Unit
     }
 
+    input ItemSearchInput {
+        type: ItemType!
+        name: String
+        code: String
+        description: String
+    }
+
     extend type Query {
-        items: [Item!]!
         products: [ProductItem!]!
         services: [ExpenseItem!]!
+        searchItems(query: ItemSearchInput!): [Item!]!
     }
 
     extend type Mutation {

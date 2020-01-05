@@ -1,16 +1,37 @@
 import { Resolver, authResolver, ApolloContext } from '.';
 import { ItemType } from 'shared/types';
+import { Op } from 'sequelize';
+
+interface ItemSearchInput {
+    query: {
+        type: ItemType;
+        code?: string;
+        name?: string;
+        description?: string;
+    };
+}
 
 const resolver: Resolver = {
     Query: {
-        items: authResolver(async (_args, context) => {
-            return await findItems(context);
-        }),
         products: authResolver(async (_args, context) => {
-            return await findItems(context, 'PRODUCT');
+            return await findItems(context, { type: 'PRODUCT' });
         }),
         services: authResolver(async (_args, context) => {
-            return await findItems(context, 'SERVICE');
+            return await findItems(context, { type: 'SERVICE' });
+        }),
+        searchItems: authResolver(async ({ query: { type, name, description, code } }: ItemSearchInput, context) => {
+            const { user } = context;
+
+            const where: any = {
+                userId: user.id,
+                type
+            };
+
+            if (name) where.name = { [Op.iLike]: `%${name}%` };
+            if (description) where.description = { [Op.iLike]: `%${description}%` };
+            if (code) where.code = { [Op.iLike]: `%${code}%` };
+
+            return await findItems(context, { where });
         })
     },
     Mutation: {
@@ -54,8 +75,10 @@ const resolver: Resolver = {
     }
 };
 
-const findItems = async ({ models, user }: ApolloContext, type?: ItemType) => {
-    const where: any = { userId: user.id };
+const findItems = async ({ models, user }: ApolloContext, opts: { type?: ItemType; where?: any }) => {
+    const { type } = opts;
+    const where: any = opts.where || { userId: user.id };
+
     if (type) where.type = type;
 
     const result: any = await models.Item.findAll({

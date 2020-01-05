@@ -66,10 +66,19 @@ export default gql`
         description: String
     }
 
+    input InvoiceSearchInput {
+        type: InvoiceType!
+        number: String
+        isPaid: Boolean
+        description: String
+        partnerName: String
+    }
+
     extend type Query {
         purchases: [Invoice!]!
         sales: [Invoice!]!
         invoiceItems(invoiceId: ID!): [InvoiceItem!]!
+        searchInvoices(query: InvoiceSearchInput!): [Invoice!]!
     }
 
     extend type Mutation {
