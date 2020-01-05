@@ -8,6 +8,7 @@ import commonResolvers from './common';
 import partnerResolvers from './partner';
 import itemResolvers from './item';
 import invoiceResolvers from './invoice';
+import transactionResolver from './transaction';
 
 import models from '../db/models';
 import { User } from 'shared/types';
@@ -67,5 +68,6 @@ export default [
     commonResolvers,
     partnerResolvers,
     itemResolvers,
-    invoiceResolvers
+    invoiceResolvers,
+    transactionResolver
 ];

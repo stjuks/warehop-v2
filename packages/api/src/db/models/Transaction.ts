@@ -2,7 +2,6 @@ import { Model, Table, Column, PrimaryKey, AutoIncrement, AllowNull, BelongsTo, 
 
 import User from './User';
 import Invoice from './Invoice';
-import TransactionType from './TransactionType';
 
 @Table
 export default class Transaction extends Model<Transaction> {
@@ -20,10 +19,6 @@ export default class Transaction extends Model<Transaction> {
     invoiceId: number;
 
     @AllowNull(false)
-    @Column
-    type: string;
-
-    @AllowNull(false)
     @Column(DataType.DECIMAL(12, 4))
     sum: object;
 
@@ -39,7 +34,4 @@ export default class Transaction extends Model<Transaction> {
 
     @BelongsTo(() => Invoice, { foreignKey: 'invoiceId', onDelete: 'CASCADE' })
     invoice: Invoice;
-
-    @BelongsTo(() => TransactionType, { foreignKey: 'type', onDelete: 'RESTRICT' })
-    transactionType: TransactionType;
 }

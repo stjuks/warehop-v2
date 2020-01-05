@@ -6,6 +6,7 @@ import commonSchema from './common';
 import partnerSchema from './partner';
 import itemSchema from './item';
 import invoiceSchema from './invoice';
+import transactionSchema from './transaction';
 
 const baseSchema = gql`
     scalar Date
@@ -26,11 +27,6 @@ const baseSchema = gql`
         EXPENSE
     }
 
-    enum TransactionType {
-        INCOME
-        EXPENSE
-    }
-
     type Query {
         _: Boolean
     }
@@ -40,4 +36,13 @@ const baseSchema = gql`
     }
 `;
 
-export default [baseSchema, userSchema, warehouseSchema, commonSchema, partnerSchema, itemSchema, invoiceSchema];
+export default [
+    baseSchema,
+    userSchema,
+    warehouseSchema,
+    commonSchema,
+    partnerSchema,
+    itemSchema,
+    invoiceSchema,
+    transactionSchema
+];

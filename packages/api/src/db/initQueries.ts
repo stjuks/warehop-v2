@@ -59,12 +59,10 @@ const createStaticData = async () => {
 
     await models.ItemType.bulkCreate([{ id: 'PRODUCT' }, { id: 'SERVICE' }, { id: 'EXPENSE' }]);
 
-    await models.TransactionType.bulkCreate([{ id: 'INCOME' }, { id: 'EXPENSE' }]);
+    await models.User.create({ name: 'Test user' });
 };
 
 export default async () => {
     await createForeignKeys();
     await createStaticData();
-
-    await models.User.create({ name: 'Test User' });
 };

@@ -18,6 +18,7 @@ import Partner from './Partner';
 import InvoiceType from './InvoiceType';
 import Item from './Item';
 import InvoiceItem from './InvoiceItem';
+import Transaction from './Transaction';
 
 @Table
 export default class Invoice extends Model<Invoice> {
@@ -77,4 +78,7 @@ export default class Invoice extends Model<Invoice> {
 
     @HasMany(() => InvoiceItem, { foreignKey: 'invoiceId', onDelete: 'RESTRICT', as: 'items' })
     items: Item[];
+
+    @HasMany(() => Transaction, { foreignKey: 'invoiceId', onDelete: 'RESTRICT', as: 'transactions' })
+    transactions: Transaction[];
 }

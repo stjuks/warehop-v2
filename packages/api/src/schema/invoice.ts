@@ -38,6 +38,7 @@ export default gql`
         dueDate: Date!
         issueDate: Date!
         items: [InvoiceItem!]!
+        transactions: [Transaction!]!
         isPaid: Boolean!
         sum: String!
         description: String

@@ -174,7 +174,13 @@ const findInvoices = async (type: InvoiceType, { models, user }: ApolloContext) 
         },
         include: [
             models.Partner,
-            { model: models.InvoiceItem, as: 'items', include: [models.Warehouse, models.Unit, models.Item] }
+            {
+                model: models.InvoiceItem,
+                as: 'items',
+                include: [models.Warehouse, models.Unit, models.Item],
+                attributes: ['name', 'quantity', 'price']
+            },
+            { model: models.Transaction, as: 'transactions', attributes: ['id', 'sum', 'date', 'description'] }
         ]
     });
 
