@@ -43,8 +43,8 @@ export default gql`
         retailPrice: String
         description: String
         unit: Unit!
+        code: String!
         partner: Partner
-        code: String
         warehouseQuantity: [WarehouseQuantity!]!
     }
 
