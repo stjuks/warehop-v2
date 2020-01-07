@@ -1,4 +1,4 @@
-import { Model, Table, Column, BelongsTo, AllowNull, ForeignKey, DataType } from 'sequelize-typescript';
+import { Model, Table, Column, BelongsTo, AllowNull, ForeignKey, DataType, PrimaryKey } from 'sequelize-typescript';
 
 import Item from './Item';
 import Warehouse from './Warehouse';
@@ -6,10 +6,12 @@ import User from './User';
 
 @Table
 export default class WarehouseItem extends Model<WarehouseItem> {
+    @PrimaryKey
     @ForeignKey(() => Item)
     @Column
     itemId: number;
 
+    @PrimaryKey
     @ForeignKey(() => Warehouse)
     @Column
     warehouseId: number;

@@ -1,13 +1,13 @@
 import { ModelCtor, Model } from 'sequelize-typescript';
 
-export const createCompositeForeignKey = (config: {
+export const createCompositeForeignKey = (opts: {
     table: ModelCtor<Model<any, any>>;
     cols: string[];
     ref: { table: ModelCtor<Model<any, any>>; cols: string[] };
     onDelete?: string;
     onUpdate?: string;
 }) => {
-    const { table, cols, ref, onDelete, onUpdate } = config;
+    const { table, cols, ref, onDelete, onUpdate } = opts;
 
     return `
         ALTER TABLE "${table.tableName}" 
@@ -16,5 +16,16 @@ export const createCompositeForeignKey = (config: {
         REFERENCES "${ref.table.tableName}"("${ref.cols.join('","')}")
         ON DELETE ${onDelete || 'NO ACTION'}
         ON UPDATE ${onUpdate || 'NO ACTION'};
+    `;
+};
+
+export const createCheckConstraint = (opts: { table: ModelCtor<Model<any, any>>; query: string; name: string }) => {
+    const { table, query, name } = opts;
+
+    return `
+        ALTER TABLE "${table.tableName}"
+        ADD CONSTRAINT ${table.tableName}_${name} CHECK (
+            ${query}
+        );
     `;
 };

@@ -2,11 +2,11 @@ import gql from 'graphql-tag';
 
 export default gql`
     interface InvoiceItem {
-        id: ID!
-        type: ItemType!
-        name: String!
-        quantity: Float!
-        price: String!
+        id: ID
+        type: ItemType
+        name: String
+        quantity: Float
+        price: String
         unit: Unit
     }
 
@@ -40,6 +40,7 @@ export default gql`
         items: [InvoiceItem!]!
         transactions: [Transaction!]!
         isPaid: Boolean!
+        paidSum: String!
         sum: String!
         description: String
         filePath: String

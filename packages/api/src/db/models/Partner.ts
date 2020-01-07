@@ -1,4 +1,4 @@
-import { Model, Table, Column, PrimaryKey, AutoIncrement, AllowNull, BelongsTo, Unique } from 'sequelize-typescript';
+import { Model, Table, Column, PrimaryKey, AutoIncrement, AllowNull, BelongsTo, Unique, Index } from 'sequelize-typescript';
 
 import User from './User';
 import PartnerType from './PartnerType';
@@ -16,6 +16,7 @@ export default class Partner extends Model<Partner> {
     userId: number;
 
     @AllowNull(false)
+    @Index
     @Column
     type: string;
 

@@ -8,9 +8,9 @@ import {
     BelongsTo,
     DataType,
     Unique,
-    BelongsToMany,
     Default,
-    HasMany
+    HasMany,
+    Index,
 } from 'sequelize-typescript';
 
 import User from './User';
@@ -20,7 +20,9 @@ import Item from './Item';
 import InvoiceItem from './InvoiceItem';
 import Transaction from './Transaction';
 
-@Table
+@Table({
+    indexes: [{ name: 'IDX_UQ_Invoices_userId_type_number', unique: true, fields: ['userId', 'type', 'number'] }]
+})
 export default class Invoice extends Model<Invoice> {
     @PrimaryKey
     @AutoIncrement
@@ -33,10 +35,12 @@ export default class Invoice extends Model<Invoice> {
     userId: number;
 
     @AllowNull(false)
+    @Index
     @Column
     partnerId: number;
 
     @AllowNull(false)
+    @Index
     @Column
     type: string;
 

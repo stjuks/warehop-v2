@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize-typescript';
 import currency from 'currency.js';
 import { Op } from 'sequelize';
+import Joi from '@hapi/joi';
 
 import { Resolver, authResolver, ApolloContext } from '.';
 
@@ -39,6 +40,30 @@ interface InvoiceSearchInput {
         partnerName?: string;
     };
 }
+
+const validateAddInvoice = Joi.object({
+    invoice: Joi.object({
+        items: Joi.array()
+            .items(
+                Joi.object({
+                    type: Joi.string()
+                        .valid('PRODUCT', 'SERVICE', 'EXPENSE')
+                        .required(),
+                    quantity: Joi.number().required(),
+                    price: Joi.string().required(),
+                    name: Joi.string().required(),
+                    warehouseId: Joi.when('type', {
+                        is: 'PRODUCT',
+                        then: Joi.number().required(),
+                        otherwise: Joi.forbidden()
+                    }),
+                    unitId: Joi.number().when('type', { is: 'PRODUCT', then: Joi.required() }),
+                    code: Joi.when('type', { is: 'PRODUCT', then: Joi.string().required(), otherwise: Joi.forbidden() })
+                })
+            )
+            .required()
+    }).unknown()
+}).required();
 
 const resolver: Resolver = {
     Query: {
@@ -124,6 +149,10 @@ const resolver: Resolver = {
                     transaction
                 });
 
+                if (isNewItem && invoice.type === 'SALE') {
+                    throw Error(`Item "${item.name}" does not exist in specified warehouse.`);
+                }
+
                 if (!isNewItem) {
                     const operator = invoice.type === 'SALE' ? '-' : '+';
 
@@ -171,7 +200,7 @@ const resolver: Resolver = {
                 await transaction.rollback();
                 throw err;
             }
-        })
+        }, validateAddInvoice)
     },
     InvoiceItem: {
         __resolveType: invoiceItem => {
@@ -218,7 +247,7 @@ const findInvoices = async (
                 model: models.InvoiceItem,
                 as: 'items',
                 include: [models.Warehouse, models.Unit, models.Item],
-                attributes: ['name', 'quantity', 'price']
+                attributes: ['itemId', 'name', 'quantity', 'price']
             },
             { model: models.Transaction, as: 'transactions', attributes: ['id', 'sum', 'date', 'description'] }
         ]
@@ -234,6 +263,10 @@ const findInvoices = async (
                 id: item.itemId
             };
         });
+
+        plainInvoice.paidSum = plainInvoice.transactions
+            .reduce((acc, transaction) => currency(acc).add(currency(transaction.sum)), currency(0))
+            .toString();
 
         return plainInvoice;
     });

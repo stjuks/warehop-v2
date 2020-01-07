@@ -8,7 +8,8 @@ import {
     BelongsTo,
     DataType,
     BelongsToMany,
-    Unique
+    Unique,
+    Index
 } from 'sequelize-typescript';
 
 import User from './User';
@@ -32,13 +33,16 @@ export default class Item extends Model<Item> {
     @Column
     userId: number;
 
+    @Index
     @Column
     partnerId: number;
 
+    @Index
     @Column
     unitId: number;
 
     @AllowNull(false)
+    @Index
     @Column
     type: string;
 

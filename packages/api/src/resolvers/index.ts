@@ -13,6 +13,8 @@ import transactionResolver from './transaction';
 import models from '../db/models';
 import { User } from 'shared/types';
 import { authenticateJWT } from '../util/passport';
+import Joi, { Schema } from '@hapi/joi';
+import { JoiObject } from 'joi';
 
 export interface ApolloContext {
     models: { [K in keyof typeof models]: ModelCtor<Model<any, any>> };
@@ -30,6 +32,8 @@ type ResolverFunction = (
 
 type ResolverCallback = (args: any, context: ApolloContext) => any;
 
+type ValidationCallback = (args: any) => any;
+
 export interface Resolver {
     [key: string]:
         | {
@@ -38,15 +42,27 @@ export interface Resolver {
         | { [key: string]: ResolverFunction };
 }
 
-export function resolver(cb: ResolverCallback): ResolverFunction {
+const validateSchema = (args: any, validationSchema?: Schema) => {
+    if (validationSchema) {
+        const result = validationSchema.validate(args);
+
+        if (result.error) throw result.error;
+    }
+};
+
+export function resolver(cb: ResolverCallback, validationSchema?: Schema): ResolverFunction {
     return function(_parent, args, context) {
+        validateSchema(args, validationSchema);
+
         return cb(args, context);
     };
 }
 
-export function authResolver(cb: ResolverCallback): ResolverFunction {
+export function authResolver(cb: ResolverCallback, validationSchema?: Schema): ResolverFunction {
     return async function(_parent, args, context) {
         const user: any = await authenticateJWT(context.req, context.res);
+
+        validateSchema(args, validationSchema);
 
         if (user) {
             context.user = user;

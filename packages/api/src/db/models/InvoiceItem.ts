@@ -5,9 +5,9 @@ import {
     PrimaryKey,
     BelongsTo,
     DataType,
-    HasOne,
     ForeignKey,
-    AllowNull
+    AllowNull,
+    Index
 } from 'sequelize-typescript';
 
 import Invoice from './Invoice';
@@ -28,9 +28,11 @@ export default class InvoiceItem extends Model<InvoiceItem> {
     @Column
     itemId: number;
 
+    @Index
     @Column
     warehouseId: number;
 
+    @Index
     @Column
     unitId: number;
 

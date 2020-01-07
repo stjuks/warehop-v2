@@ -1,4 +1,4 @@
-import { Model, Table, Column, PrimaryKey, AutoIncrement, AllowNull, BelongsTo, DataType } from 'sequelize-typescript';
+import { Model, Table, Column, PrimaryKey, AutoIncrement, AllowNull, BelongsTo, DataType, Index, BeforeUpdate, BeforeCreate } from 'sequelize-typescript';
 
 import User from './User';
 import Invoice from './Invoice';
@@ -15,6 +15,7 @@ export default class Transaction extends Model<Transaction> {
     userId: number;
 
     @AllowNull(false)
+    @Index
     @Column
     invoiceId: number;
 
