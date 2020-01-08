@@ -107,9 +107,31 @@ const createTestData = async () => {
     await models.Partner.create({ name: 'CIRCLE K', type: 'VENDOR', userId: 1 });
 };
 
+export const createProcedures = async () => {
+    await sequelize.query(`
+        CREATE OR REPLACE FUNCTION add_invoice_paid_sum() RETURNS trigger AS $update_invoice_paid_sum$
+            BEGIN
+                IF (TG_OP = 'DELETE') THEN
+                    UPDATE "Invoices" SET "paidSum"="paidSum" - OLD.sum;
+                ELSIF (TG_OP = 'INSERT') THEN
+                    UPDATE "Invoices" SET "paidSum"="paidSum" + NEW.sum;
+                ELSIF (TG_OP = 'UPDATE') THEN
+                    UPDATE "Invoices" SET "paidSum"="paidSum" + (NEW.sum - OLD.sum);
+                END IF;
+                RETURN NULL;
+            END;
+        $update_invoice_paid_sum$ LANGUAGE plpgsql;
+
+        CREATE TRIGGER update_invoice_paid_sum 
+        AFTER INSERT OR UPDATE OR DELETE ON "Transactions"
+        FOR EACH ROW EXECUTE PROCEDURE add_invoice_paid_sum();
+    `);
+};
+
 export default async () => {
     await createForeignKeys();
     await createStaticData();
     await createCheckConstraints();
     await createTestData();
+    await createProcedures();
 };

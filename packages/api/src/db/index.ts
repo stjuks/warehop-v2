@@ -1,5 +1,5 @@
 import sequelize from './sequelize';
-import initQueries from './initQueries';
+import initQueries, { createProcedures } from './initQueries';
 
 const initialize = async (args?: { force: boolean }) => {
     await sequelize.sync(args);

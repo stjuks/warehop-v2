@@ -249,8 +249,13 @@ const findInvoices = async (
                 include: [models.Warehouse, models.Unit, models.Item],
                 attributes: ['itemId', 'name', 'quantity', 'price']
             },
-            { model: models.Transaction, as: 'transactions', attributes: ['id', 'sum', 'date', 'description'] }
-        ]
+            {
+                model: models.Transaction,
+                as: 'transactions',
+                attributes: ['id', 'sum', 'date', 'description']
+            }
+        ],
+        attributes: ['id', 'type', 'number', 'dueDate', 'issueDate', 'sum', 'description', 'filePath', 'paidSum']
     });
 
     const parsedInvoices = invoices.map(invoice => {
@@ -264,9 +269,7 @@ const findInvoices = async (
             };
         });
 
-        plainInvoice.paidSum = plainInvoice.transactions
-            .reduce((acc, transaction) => currency(acc).add(currency(transaction.sum)), currency(0))
-            .toString();
+        plainInvoice.isPaid = Number(plainInvoice.paidSum) >= Number(plainInvoice.sum);
 
         return plainInvoice;
     });

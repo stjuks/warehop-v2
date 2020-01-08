@@ -57,11 +57,6 @@ export default class Invoice extends Model<Invoice> {
     issueDate: Date;
 
     @AllowNull(false)
-    @Default(false)
-    @Column
-    isPaid: boolean;
-
-    @AllowNull(false)
     @Column(DataType.DECIMAL(12, 4))
     sum: object;
 
@@ -70,6 +65,11 @@ export default class Invoice extends Model<Invoice> {
 
     @Column
     filePath: string;
+
+    @AllowNull(false)
+    @Default(0)
+    @Column(DataType.DECIMAL(12, 4))
+    paidSum: object;
 
     @BelongsTo(() => User, { foreignKey: 'userId', onDelete: 'RESTRICT' })
     user: User;
