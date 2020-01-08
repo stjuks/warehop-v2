@@ -75,10 +75,9 @@ const resolver: Resolver = {
         }),
         searchInvoices: authResolver(async ({ query }: InvoiceSearchInput, context) => {
             const { user } = context;
-            const { type, number, description, partnerName, ...restQuery } = query;
+            const { type, number, description, partnerName, isPaid } = query;
 
             const where: any = {
-                ...restQuery,
                 userId: user.id,
                 type,
                 partner: {}
@@ -87,6 +86,8 @@ const resolver: Resolver = {
             if (number) where.number = { [Op.iLike]: `%${number}%` };
             if (description) where.description = { [Op.iLike]: `%${description}%` };
             if (partnerName) where.partner.name = { [Op.iLike]: `%${partnerName}%` };
+            if (isPaid === true) where.sum = { [Op.lte]: Sequelize.col('paidSum') };
+            if (isPaid === false) where.sum = { [Op.gt]: Sequelize.col('paidSum') };
 
             return await findInvoices(context, { where });
         }),
