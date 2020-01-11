@@ -73,6 +73,7 @@ export default gql`
         isPaid: Boolean
         description: String
         partnerName: String
+        generalQuery: String
     }
 
     extend type Query {

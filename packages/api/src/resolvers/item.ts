@@ -8,6 +8,7 @@ interface ItemSearchInput {
         code?: string;
         name?: string;
         description?: string;
+        generalQuery?: string;
     };
 }
 
@@ -19,20 +20,27 @@ const resolver: Resolver = {
         services: authResolver(async (_args, context) => {
             return await findItems(context, { type: 'SERVICE' });
         }),
-        searchItems: authResolver(async ({ query: { type, name, description, code } }: ItemSearchInput, context) => {
-            const { user } = context;
+        searchItems: authResolver(
+            async ({ query: { type, name, description, code, generalQuery } }: ItemSearchInput, context) => {
+                const { user } = context;
 
-            const where: any = {
-                userId: user.id,
-                type
-            };
+                const where: any = {
+                    userId: user.id,
+                    type
+                };
 
-            if (name) where.name = { [Op.iLike]: `%${name}%` };
-            if (description) where.description = { [Op.iLike]: `%${description}%` };
-            if (code) where.code = { [Op.iLike]: `%${code}%` };
+                if (generalQuery) {
+                    const generalLike = { [Op.iLike]: `%${generalQuery}%` };
+                    where[Op.or] = [{ name: generalLike }, { code: generalLike }, { description: generalLike }];
+                } else {
+                    if (name) where.name = { [Op.iLike]: `%${name}%` };
+                    if (description) where.description = { [Op.iLike]: `%${description}%` };
+                    if (code) where.code = { [Op.iLike]: `%${code}%` };
+                }
 
-            return await findItems(context, { where });
-        })
+                return await findItems(context, { where });
+            }
+        )
     },
     Mutation: {
         addItem: authResolver(async ({ item }, { models, sequelize, user }) => {

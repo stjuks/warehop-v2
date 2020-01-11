@@ -63,12 +63,13 @@ export default gql`
         name: String
         code: String
         description: String
+        generalQuery: String
     }
 
     extend type Query {
         products: [ProductItem!]!
         services: [ExpenseItem!]!
-        searchItems(query: ItemSearchInput!): [Item!]!
+        searchItems(query: ItemSearchInput!, general: Boolean): [Item!]!
     }
 
     extend type Mutation {

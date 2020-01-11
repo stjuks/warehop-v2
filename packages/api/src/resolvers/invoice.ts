@@ -38,6 +38,7 @@ interface InvoiceSearchInput {
         isPaid?: boolean;
         description?: string;
         partnerName?: string;
+        generalQuery?: string;
     };
 }
 
@@ -75,7 +76,7 @@ const resolver: Resolver = {
         }),
         searchInvoices: authResolver(async ({ query }: InvoiceSearchInput, context) => {
             const { user } = context;
-            const { type, number, description, partnerName, isPaid } = query;
+            const { type, number, description, partnerName, isPaid, generalQuery } = query;
 
             const where: any = {
                 userId: user.id,
@@ -83,8 +84,14 @@ const resolver: Resolver = {
                 partner: {}
             };
 
-            if (number) where.number = { [Op.iLike]: `%${number}%` };
-            if (description) where.description = { [Op.iLike]: `%${description}%` };
+            if (generalQuery) {
+                const generalLike = { [Op.iLike]: `%${generalQuery}%` };
+                where[Op.or] = [{ number: generalLike }, { description: generalLike }];
+            } else {
+                if (number) where.number = { [Op.iLike]: `%${number}%` };
+                if (description) where.description = { [Op.iLike]: `%${description}%` };
+            }
+
             if (partnerName) where.partner.name = { [Op.iLike]: `%${partnerName}%` };
             if (isPaid === true) where.sum = { [Op.lte]: Sequelize.col('paidSum') };
             if (isPaid === false) where.sum = { [Op.gt]: Sequelize.col('paidSum') };
