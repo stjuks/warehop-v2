@@ -1,6 +1,7 @@
-import { Resolver, authResolver, ApolloContext } from '.';
+import { Resolver, authResolver, ApolloContext, PaginatedQueryInput, paginate } from '.';
 import { ItemType } from 'shared/types';
 import { Op } from 'sequelize';
+import { number } from 'joi';
 
 interface ItemSearchInput {
     query: {
@@ -14,11 +15,11 @@ interface ItemSearchInput {
 
 const resolver: Resolver = {
     Query: {
-        products: authResolver(async (_args, context) => {
-            return await findItems(context, { type: 'PRODUCT' });
+        products: authResolver(async ({ pagination: { cursor, limit } }: PaginatedQueryInput, context) => {
+            return await findItems(context, { type: 'PRODUCT', limit, cursor });
         }),
-        services: authResolver(async (_args, context) => {
-            return await findItems(context, { type: 'SERVICE' });
+        services: authResolver(async ({ pagination: { cursor, limit } }: PaginatedQueryInput, context) => {
+            return await findItems(context, { type: 'SERVICE', limit, cursor });
         }),
         searchItems: authResolver(
             async ({ query: { type, name, description, code, generalQuery } }: ItemSearchInput, context) => {
@@ -83,18 +84,24 @@ const resolver: Resolver = {
     }
 };
 
-const findItems = async ({ models, user }: ApolloContext, opts: { type?: ItemType; where?: any }) => {
-    const { type } = opts;
+const findItems = async (
+    { models, user }: ApolloContext,
+    opts: { type?: ItemType; where?: any; limit?: number; cursor?: string }
+) => {
+    const { type, cursor, limit } = opts;
     const where: any = opts.where || { userId: user.id };
 
     if (type) where.type = type;
 
-    const result: any = await models.Item.findAll({
+    const result = await paginate(models.Item, {
+        order: [['id', 'ASC']],
+        cursor,
+        limit,
         where,
         include: [models.Partner, models.Unit, { model: models.Warehouse, through: {}, as: 'warehouseQuantity' }]
     });
 
-    const parsedResult = result.map(i => {
+    result.data = result.data.map(i => {
         const item: any = i.get({ plain: true });
 
         item.warehouseQuantity = item.warehouseQuantity.map(wh => {
@@ -107,7 +114,7 @@ const findItems = async ({ models, user }: ApolloContext, opts: { type?: ItemTyp
         return item;
     });
 
-    return parsedResult;
+    return result;
 };
 
 export default resolver;

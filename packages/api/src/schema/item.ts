@@ -66,9 +66,24 @@ export default gql`
         generalQuery: String
     }
 
+    input PaginatedQueryInput {
+        cursor: String
+        limit: Int
+    }
+
+    type PaginatedProductItem {
+        pageInfo: PageInfo!
+        data: [ProductItem!]!
+    }
+
+    type PaginatedExpenseItem {
+        pageInfo: PageInfo!
+        data: [ExpenseItem!]!
+    }
+
     extend type Query {
-        products: [ProductItem!]!
-        services: [ExpenseItem!]!
+        products(pagination: PaginatedQueryInput): PaginatedProductItem!
+        services(pagination: PaginatedQueryInput): PaginatedExpenseItem!
         searchItems(query: ItemSearchInput!, general: Boolean): [Item!]!
     }
 

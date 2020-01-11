@@ -29,3 +29,6 @@ export const createCheckConstraint = (opts: { table: ModelCtor<Model<any, any>>;
         );
     `;
 };
+
+export const toCursorHash = string => string ? Buffer.from(string.toString()).toString('base64') : null;
+export const fromCursorHash = string => string ? Buffer.from(string.toString(), 'base64').toString('ascii') : null;

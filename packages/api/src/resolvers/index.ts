@@ -1,6 +1,8 @@
 import { Model, ModelCtor, Sequelize } from 'sequelize-typescript';
+import { Op } from 'sequelize';
 import { GraphQLDate } from 'graphql-iso-date';
 import express from 'express';
+import util from 'util';
 
 import userResolvers from './user';
 import warehouseResolvers from './warehouse';
@@ -13,8 +15,9 @@ import transactionResolver from './transaction';
 import models from '../db/models';
 import { User } from 'shared/types';
 import { authenticateJWT } from '../util/passport';
-import Joi, { Schema } from '@hapi/joi';
-import { JoiObject } from 'joi';
+import { Schema } from '@hapi/joi';
+import { toCursorHash, fromCursorHash } from '../util/helpers';
+import { FindOptions } from 'sequelize/types';
 
 export interface ApolloContext {
     models: { [K in keyof typeof models]: ModelCtor<Model<any, any>> };
@@ -31,8 +34,6 @@ type ResolverFunction = (
 ) => ResolverCallback | Promise<ResolverCallback>;
 
 type ResolverCallback = (args: any, context: ApolloContext) => any;
-
-type ValidationCallback = (args: any) => any;
 
 export interface Resolver {
     [key: string]:
@@ -72,6 +73,65 @@ export function authResolver(cb: ResolverCallback, validationSchema?: Schema): R
         throw Error('Unauthorized.');
     };
 }
+
+export interface PaginatedQueryInput {
+    pagination: {
+        cursor?: string;
+        limit: number;
+    };
+}
+
+interface PaginatedData<T> {
+    pageInfo: {
+        hasNextPage: boolean;
+        cursor?: string;
+    };
+    data: T[];
+}
+
+interface PaginationCursor {}
+
+interface PaginateOptions extends FindOptions {
+    cursor: string;
+    limit: number;
+}
+
+export const paginate = async (model: ModelCtor, opts: PaginateOptions) => {
+    const { cursor, limit, ...restOpts } = opts;
+    const where: any = opts.where || {};
+
+    if (cursor) {
+        const decryptedHash: any = fromCursorHash(cursor);
+        where.id = {
+            [Op.gte]: isNaN(decryptedHash) ? decryptedHash : Number(decryptedHash)
+        };
+    }
+
+    const data = await model.findAll({
+        limit: limit ? limit + 1 : null,
+        where,
+        ...restOpts
+    });
+
+    const result: PaginatedData<Model> = {
+        pageInfo: {
+            hasNextPage: data.length > limit,
+            cursor: null
+        },
+        data
+    };
+
+    if (data.length > 0) {
+        const { hasNextPage } = result.pageInfo;
+        const lastDataObject = data[data.length - 1];
+
+        if (hasNextPage) result.data.pop();
+
+        result.pageInfo.cursor = toCursorHash(lastDataObject.id);
+    }
+
+    return result;
+};
 
 const customScalarResolver = {
     Date: GraphQLDate

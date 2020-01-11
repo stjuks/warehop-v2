@@ -27,6 +27,11 @@ const baseSchema = gql`
         EXPENSE
     }
 
+    type PageInfo {
+        hasNextPage: Boolean!
+        cursor: String
+    }
+
     type Query {
         _: Boolean
     }
