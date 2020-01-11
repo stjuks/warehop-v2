@@ -16,9 +16,14 @@ export default gql`
         description: String
     }
 
+    type PaginatedTransaction {
+        pageInfo: PageInfo!
+        data: [Transaction!]!
+    }
+    
     extend type Query {
-        incomes: [Transaction!]!
-        expenses: [Transaction!]!
+        incomes(pagination: PaginatedQueryInput): PaginatedTransaction!
+        expenses(pagination: PaginatedQueryInput): PaginatedTransaction!
     }
 
     extend type Mutation {

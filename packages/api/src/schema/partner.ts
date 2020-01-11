@@ -30,8 +30,13 @@ export default gql`
         postalCode: String
     }
 
+    type PaginatedPartner {
+        pageInfo: PageInfo!
+        data: [Partner!]!
+    }
+
     extend type Query {
-        partners: [Partner!]!
+        partners(pagination: PaginatedQueryInput): PaginatedPartner!
     }
 
     extend type Mutation {

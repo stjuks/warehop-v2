@@ -66,11 +66,6 @@ export default gql`
         generalQuery: String
     }
 
-    input PaginatedQueryInput {
-        cursor: String
-        limit: Int
-    }
-
     type PaginatedProductItem {
         pageInfo: PageInfo!
         data: [ProductItem!]!

@@ -94,7 +94,6 @@ const findItems = async (
     if (type) where.type = type;
 
     const result = await paginate(models.Item, {
-        order: [['id', 'ASC']],
         cursor,
         limit,
         where,

@@ -3,7 +3,7 @@ import currency from 'currency.js';
 import { Op } from 'sequelize';
 import Joi from '@hapi/joi';
 
-import { Resolver, authResolver, ApolloContext } from '.';
+import { Resolver, authResolver, ApolloContext, PaginatedQueryInput, paginate } from '.';
 
 import { ItemType, InvoiceType } from 'shared/types';
 
@@ -68,11 +68,11 @@ const validateAddInvoice = Joi.object({
 
 const resolver: Resolver = {
     Query: {
-        purchases: authResolver(async (_args, context) => {
-            return await findInvoices(context, { type: 'PURCHASE' });
+        purchases: authResolver(async ({ pagination: { cursor, limit } }: PaginatedQueryInput, context) => {
+            return await findInvoices(context, { type: 'PURCHASE', cursor, limit });
         }),
-        sales: authResolver(async (_args, context) => {
-            return await findInvoices(context, { type: 'SALE' });
+        sales: authResolver(async ({ pagination: { cursor, limit } }: PaginatedQueryInput, context) => {
+            return await findInvoices(context, { type: 'SALE', cursor, limit });
         }),
         searchInvoices: authResolver(async ({ query }: InvoiceSearchInput, context) => {
             const { user } = context;
@@ -233,9 +233,14 @@ const invoiceItemWhere = (item: InvoiceItemInput, userId) => {
 
 const findInvoices = async (
     { models, user }: ApolloContext,
-    opts: { type?: InvoiceType; where?: { [key: string]: any; partner: { [key: string]: any } } }
+    opts: {
+        type?: InvoiceType;
+        where?: { [key: string]: any; partner: { [key: string]: any } };
+        limit?: number;
+        cursor?: string;
+    }
 ) => {
-    const { type } = opts;
+    const { type, cursor, limit } = opts;
 
     let where: any = { userId: user.id, type };
 
@@ -244,7 +249,9 @@ const findInvoices = async (
         where = restWhere;
     }
 
-    const invoices = await models.Invoice.findAll({
+    const invoices = await paginate(models.Invoice, {
+        cursor,
+        limit,
         where,
         include: [
             {
@@ -266,7 +273,7 @@ const findInvoices = async (
         attributes: ['id', 'type', 'number', 'dueDate', 'issueDate', 'sum', 'description', 'filePath', 'paidSum']
     });
 
-    const parsedInvoices = invoices.map(invoice => {
+    invoices.data = invoices.data.map(invoice => {
         const plainInvoice: any = invoice.get({ plain: true });
 
         plainInvoice.items = plainInvoice.items.map(item => {
@@ -282,7 +289,7 @@ const findInvoices = async (
         return plainInvoice;
     });
 
-    return parsedInvoices;
+    return invoices;
 };
 
 export default resolver;

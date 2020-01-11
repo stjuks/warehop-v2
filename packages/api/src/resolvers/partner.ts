@@ -1,9 +1,14 @@
-import { Resolver, authResolver } from '.';
+import { Resolver, authResolver, PaginatedQueryInput, paginate } from '.';
 
 const partnerResolver: Resolver = {
     Query: {
-        partners: authResolver(async (args, { models, user }) => {
-            return await models.Partner.findAll({ where: { userId: user.id }, include: [models.PartnerType] });
+        partners: authResolver(async ({ pagination: { cursor, limit } }: PaginatedQueryInput, { models, user }) => {
+            return await paginate(models.Partner, {
+                cursor,
+                limit,
+                where: { userId: user.id },
+                include: [models.PartnerType]
+            });
         })
     },
     Mutation: {

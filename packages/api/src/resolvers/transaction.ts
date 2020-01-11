@@ -1,4 +1,4 @@
-import { Resolver, authResolver, ApolloContext } from '.';
+import { Resolver, authResolver, ApolloContext, PaginatedQueryInput, paginate } from '.';
 import { TransactionType, InvoiceType } from 'shared/types';
 
 interface TransactionInput {
@@ -13,11 +13,11 @@ interface TransactionInput {
 
 const resolver: Resolver = {
     Query: {
-        incomes: authResolver(async (_args, context) => {
-            return await findTransactions('INCOME', context);
+        incomes: authResolver(async ({ pagination }: PaginatedQueryInput, context) => {
+            return await findTransactions(context, { type: 'INCOME', ...pagination });
         }),
-        expenses: authResolver(async (_args, context) => {
-            return await findTransactions('EXPENSE', context);
+        expenses: authResolver(async ({ pagination }: PaginatedQueryInput, context) => {
+            return await findTransactions(context, { type: 'EXPENSE', ...pagination });
         })
     },
     Mutation: {
@@ -43,10 +43,18 @@ const resolver: Resolver = {
     }
 };
 
-const findTransactions = async (type: TransactionType, { models, user }: ApolloContext) => {
+const findTransactions = async (
+    context: ApolloContext,
+    opts: { type: TransactionType; cursor?: string; limit?: number }
+) => {
+    const { type, cursor, limit } = opts;
+    const { models, user } = context;
+
     const invoiceType: InvoiceType = type === 'EXPENSE' ? 'PURCHASE' : 'SALE';
 
-    const transactions = await models.Transaction.findAll({
+    const transactions = await paginate(models.Transaction, {
+        cursor,
+        limit,
         where: { userId: user.id },
         include: [{ model: models.Invoice, where: { type: invoiceType }, include: [models.Partner] }]
     });

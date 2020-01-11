@@ -32,6 +32,11 @@ const baseSchema = gql`
         cursor: String
     }
 
+    input PaginatedQueryInput {
+        cursor: String
+        limit: Int
+    }
+
     type Query {
         _: Boolean
     }

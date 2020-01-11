@@ -76,9 +76,14 @@ export default gql`
         generalQuery: String
     }
 
+    type PaginatedInvoice {
+        pageInfo: PageInfo!
+        data: [Invoice!]!
+    }
+
     extend type Query {
-        purchases: [Invoice!]!
-        sales: [Invoice!]!
+        purchases(pagination: PaginatedQueryInput): PaginatedInvoice!
+        sales(pagination: PaginatedQueryInput): PaginatedInvoice!
         invoiceItems(invoiceId: ID!): [InvoiceItem!]!
         searchInvoices(query: InvoiceSearchInput!): [Invoice!]!
     }

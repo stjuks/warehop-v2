@@ -108,6 +108,7 @@ export const paginate = async (model: ModelCtor, opts: PaginateOptions) => {
     }
 
     const data = await model.findAll({
+        order: [['id', 'ASC']],
         limit: limit ? limit + 1 : null,
         where,
         ...restOpts
@@ -125,9 +126,10 @@ export const paginate = async (model: ModelCtor, opts: PaginateOptions) => {
         const { hasNextPage } = result.pageInfo;
         const lastDataObject = data[data.length - 1];
 
-        if (hasNextPage) result.data.pop();
-
-        result.pageInfo.cursor = toCursorHash(lastDataObject.id);
+        if (hasNextPage) {
+            result.data.pop();
+            result.pageInfo.cursor = toCursorHash(lastDataObject.id);
+        }
     }
 
     return result;
