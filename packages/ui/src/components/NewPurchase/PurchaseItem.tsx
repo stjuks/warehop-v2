@@ -12,8 +12,8 @@ interface PurchaseItemProps {
 }
 
 const PurchaseItem: React.FC<PurchaseItemProps> = ({ item, onDelete, onEdit }) => {
-    const summedPrice = multiply($(item.quantity), $(item.purchasePrice)).toString();
-    const formattedPrice = $(item.purchasePrice).toString();
+    const summedPrice = multiply($(item.quantity), $(item.price)).toString();
+    const formattedPrice = $(item.price).toString();
 
     return (
         <PurchaseItemContainer>
@@ -38,7 +38,7 @@ const PurchaseItem: React.FC<PurchaseItemProps> = ({ item, onDelete, onEdit }) =
             </div>
             <div className="row row-3">
                 <span className="attr-5">{item.warehouse && item.warehouse.name}</span>
-                <span className="attr-6">{item.type.name}</span>
+                <span className="attr-6">{item.type}</span>
             </div>
         </PurchaseItemContainer>
     );

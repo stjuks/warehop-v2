@@ -27,7 +27,7 @@ const Sales = observer(() => {
     ];
 
     useEffect(() => {
-        purchaseStore.fetchPurchases();
+        // purchaseStore.fetchPurchases();
     }, []);
 
     const paidOptions = [

@@ -13,6 +13,6 @@ export default gql`
     extend type Mutation {
         addWarehouse(name: String!): ID!
         deleteWarehouse(id: ID!): Boolean!
-        editWarehouse(id: ID!, name: String!): Warehouse
+        editWarehouse(id: ID!, name: String!): Boolean!
     }
 `;

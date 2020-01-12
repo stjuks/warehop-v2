@@ -79,7 +79,7 @@ export interface Partner {
 }
 
 export interface Unit {
-    id: number;
+    id?: number;
     name: string;
     abbreviation: string;
 }
@@ -111,4 +111,31 @@ export interface BankAccount {
     id: number;
     bankName: string;
     accountNr: string;
+}
+
+export interface PaginatedQueryInput {
+    pagination: {
+        cursor?: string;
+        limit: number;
+    };
+}
+
+export interface PaginatedData<T> {
+    pageInfo: {
+        hasNextPage: boolean;
+        cursor?: string;
+    };
+    data: T[];
+}
+
+export interface ItemInput {
+    type: ItemType;
+    name: string;
+    partnerId?: number;
+    unitId?: number;
+    code?: string;
+    purchasePrice?: string;
+    retailPrice?: string;
+    description?: string;
+    warehouseQuantity: WarehouseQuantity[];
 }

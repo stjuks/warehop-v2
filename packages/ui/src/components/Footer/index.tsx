@@ -7,7 +7,7 @@ import { RouteProps, matchPath } from 'react-router';
 
 import FooterItem, { IFooterItemProps } from './FooterItem';
 
-import routes from '../../common/routes';
+import routes from '../../util/routes';
 import { FooterContainer } from './styles';
 import { UIStoreContext } from '../../stores/UIStore';
 

@@ -3,15 +3,14 @@ import { observer } from 'mobx-react-lite';
 import * as yup from 'yup';
 import { FiTrash2, FiPlusCircle } from 'react-icons/fi';
 
-import routes from '../../common/routes';
+import routes from '../../util/routes';
 import WarehouseStoreContext from '../../stores/WarehouseStore';
 import { NewProductContainer, FormRowContainer, AddWarehouseButton, TrashButtonContainer } from './styles';
 
 import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
 import Button from '../Button';
-import sampleData from '../../common/sampleData';
-import { Warehouse, ProductQuantityByWarehouse, Unit, Partner } from 'shared/types';
+import { Warehouse, WarehouseQuantity, Unit, Partner } from 'shared/types';
 import Form from '../Form';
 import { FormTitle } from '../Form/styles';
 import TextInput from '../Form/TextInput';
@@ -27,14 +26,14 @@ interface INewProductFormValues {
     purchasePrice: string;
     retailPrice: string;
     description: string;
-    warehouses: ProductQuantityByWarehouse[];
+    warehouses: WarehouseQuantity[];
 }
 
 const NewProduct = observer(() => {
     const warehouseStore = useContext(WarehouseStoreContext);
 
-    const partners = sampleData.partners;
-    const units = sampleData.units;
+    const units = [];
+    const partners = [];
 
     const initialValues: INewProductFormValues = {
         code: '',
@@ -55,11 +54,11 @@ const NewProduct = observer(() => {
         description: yup.string()
     });
 
-    const filterChosenWarehouseOptions = (formValues: ProductQuantityByWarehouse[], warehouses: Warehouse[]) => {
+    const filterChosenWarehouseOptions = (formValues: WarehouseQuantity[], warehouses: Warehouse[]) => {
         return warehouses.filter(wh => formValues.map(whVal => whVal.id).indexOf(wh.id) === -1);
     };
 
-    const findFirstNonChosenWarehouse = (formValues: ProductQuantityByWarehouse[], warehouses: Warehouse[]) => {
+    const findFirstNonChosenWarehouse = (formValues: WarehouseQuantity[], warehouses: Warehouse[]) => {
         return warehouses.find(wh => formValues.map(whVal => whVal.id).indexOf(wh.id) === -1);
     };
 

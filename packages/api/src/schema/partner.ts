@@ -42,6 +42,6 @@ export default gql`
     extend type Mutation {
         addPartner(partner: PartnerInput!): ID!
         deletePartner(id: ID!): Boolean!
-        editPartner(id: ID!, partner: PartnerInput!): Partner
+        editPartner(id: ID!, partner: PartnerInput!): Boolean!
     }
 `;

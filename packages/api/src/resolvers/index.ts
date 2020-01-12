@@ -13,7 +13,7 @@ import invoiceResolvers from './invoice';
 import transactionResolver from './transaction';
 
 import models from '../db/models';
-import { User } from 'shared/types';
+import { User, PaginatedData } from 'shared/types';
 import { authenticateJWT } from '../util/passport';
 import { Schema } from '@hapi/joi';
 import { toCursorHash, fromCursorHash } from '../util/helpers';
@@ -73,23 +73,6 @@ export function authResolver(cb: ResolverCallback, validationSchema?: Schema): R
         throw Error('Unauthorized.');
     };
 }
-
-export interface PaginatedQueryInput {
-    pagination: {
-        cursor?: string;
-        limit: number;
-    };
-}
-
-interface PaginatedData<T> {
-    pageInfo: {
-        hasNextPage: boolean;
-        cursor?: string;
-    };
-    data: T[];
-}
-
-interface PaginationCursor {}
 
 interface PaginateOptions extends FindOptions {
     cursor: string;

@@ -1,16 +1,13 @@
 const path = require('path');
 const fs = require('fs');
+const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 
-const rewireBabelLoader = require('react-app-rewire-babel-loader');
-
-const appDirectory = fs.realpathSync(process.cwd());
-const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
-
-module.exports = function override(config, env) {    
-    config = rewireBabelLoader.include(
-        config,
-        resolveApp('../shared')
-    );
+module.exports = function override(config) {
+    config.resolve = {
+        ...config.resolve,
+        alias: { shared: path.resolve(__dirname, '../shared') },
+        plugins: config.resolve.plugins.filter(plugin => !(plugin instanceof ModuleScopePlugin))
+    };
 
     return config;
 };

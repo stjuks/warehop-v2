@@ -5,7 +5,6 @@ import { Estonian } from 'flatpickr/dist/l10n/et';
 import { FiCalendar } from 'react-icons/fi';
 import moment from 'moment';
 
-import { InputContainer } from '../styles';
 import { TextInputBase } from '../TextInput';
 
 interface DateInputProps {

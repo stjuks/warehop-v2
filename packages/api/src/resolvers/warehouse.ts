@@ -15,12 +15,12 @@ const warehouseResolver: Resolver = {
             return await models.Warehouse.destroy({ where: { userId: user.id, id } });
         }),
         editWarehouse: authResolver(async ({ id, ...rest }, { models, user }) => {
-            const [, [warehouse]] = await models.Warehouse.update(rest, {
+            const [editedRows] = await models.Warehouse.update(rest, {
                 where: { userId: user.id, id },
                 returning: true
             });
 
-            return warehouse;
+            return editedRows;
         })
     }
 };

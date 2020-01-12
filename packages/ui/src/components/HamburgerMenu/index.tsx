@@ -13,7 +13,7 @@ import {
 } from 'react-icons/fa';
 
 import { MenuContainer, BackgroundContainer } from './styles';
-import routes from '../../common/routes';
+import routes from '../../util/routes';
 import MenuItem, { IMenuItemProps } from './MenuItem';
 import { UIStoreContext } from '../../stores/UIStore';
 

@@ -1,12 +1,12 @@
 import React from 'react';
 import moment from 'moment';
 
-import routes from '../../common/routes';
+import routes from '../../util/routes';
 import { PurchaseItemContainer, DaysLeftStyled } from './styles';
 import { Invoice } from 'shared/types';
 import { FiChevronRight } from 'react-icons/fi';
 
-const PurchaseItem: React.FC<Invoice> = ({ number, sum, partner, id, dueDate, creationDate, isPaid }) => {
+const PurchaseItem: React.FC<Invoice> = ({ number, sum, partner, id, dueDate, isPaid }) => {
     const getDaysUntilDueDate = () => {
         let text = '';
         let diff: number | undefined = undefined;

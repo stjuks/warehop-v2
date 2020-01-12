@@ -3,9 +3,9 @@ import currency from 'currency.js';
 import { Op } from 'sequelize';
 import Joi from '@hapi/joi';
 
-import { Resolver, authResolver, ApolloContext, PaginatedQueryInput, paginate } from '.';
+import { Resolver, authResolver, ApolloContext, paginate } from '.';
 
-import { ItemType, InvoiceType } from 'shared/types';
+import { ItemType, InvoiceType, PaginatedQueryInput } from 'shared/types';
 
 interface InvoiceItemInput {
     type: ItemType;

@@ -1,38 +1,26 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { FiMoreHorizontal, FiEdit, FiTrash2 } from 'react-icons/fi';
-import { observer } from 'mobx-react-lite';
+import { observer } from 'mobx-react-lite';
 
 import { TitleContainer, DetailCardContainer, DetailLabel, WarehouseRowContainer } from './styles';
 import theme from '../../util/theme';
 
 import Header from '../Header';
 import { MenuPopover } from '../Popover';
-import { Product } from 'shared/types';
+import { ProductItem } from 'shared/types';
 import { stall } from '../../util/helpers';
-import routes from '../../common/routes';
-import sampleData from '../../common/sampleData';
+import routes from '../../util/routes';
 import { ContentContainer } from '../App/styles';
 import Footer from '../Footer';
 import { ProductStoreContext } from '../../stores/ProductStore';
 
 const ProductDetails = props => {
     const productStore = useContext(ProductStoreContext);
-    const [product, setProduct] = useState<Product>();
+    const [product, setProduct] = useState<ProductItem>();
 
     useEffect(() => {
         const { id } = props.match.params;
-
-        const fetchDetails = async () => {
-            await stall(500);
-
-            const sampleProduct = sampleData.products.find(p => p.id === Number(id));
-
-            if (sampleProduct) setProduct(sampleProduct);
-        };
-
-        fetchDetails();
     }, [product, props.match.params]);
-
 
     const headerIcons = [
         <MenuPopover
@@ -88,7 +76,7 @@ const ProductDetails = props => {
                             <div className="row">
                                 <div className="detail">
                                     <div className="detail-label">Tarnija</div>
-                                    <div className="detail-value">{product.vendor && product.vendor.name}</div>
+                                    <div className="detail-value">{product.partner && product.partner.name}</div>
                                 </div>
                             </div>
                             <div className="row">
@@ -116,19 +104,20 @@ const ProductDetails = props => {
                         </DetailCardContainer>
                         <DetailLabel>Laoseis</DetailLabel>
                         <DetailCardContainer>
-                            {product.quantityByWarehouse && product.quantityByWarehouse.map((wh, i) => (
-                                <WarehouseRowContainer key={i}>
-                                    <span className="warehouse-name">{wh.name}</span>
-                                    <span className="warehouse-quantity">
-                                        {wh.quantity}
-                                        {product.unit.abbreviation}
-                                    </span>
-                                </WarehouseRowContainer>
-                            ))}
+                            {product.warehouseQuantity &&
+                                product.warehouseQuantity.map((wh, i) => (
+                                    <WarehouseRowContainer key={i}>
+                                        <span className="warehouse-name">{wh.name}</span>
+                                        <span className="warehouse-quantity">
+                                            {wh.quantity}
+                                            {product.unit.abbreviation}
+                                        </span>
+                                    </WarehouseRowContainer>
+                                ))}
                             <WarehouseRowContainer>
                                 <span className="warehouse-name">KOKKU</span>
                                 <span className="warehouse-quantity">
-                                    {product.quantity}
+                                    {product.warehouseQuantity.reduce((acc, wh) => acc + wh.quantity, 0)}
                                     {product.unit.abbreviation}
                                 </span>
                             </WarehouseRowContainer>
@@ -138,6 +127,6 @@ const ProductDetails = props => {
             </ContentContainer>
         </>
     );
-}
+};
 
 export default ProductDetails;

@@ -4,8 +4,8 @@ import { observer } from 'mobx-react-lite';
 
 import { ContentContainer } from '../App/styles';
 import { SortingContainer, NewItemButtonContainer } from '../Products/styles';
-import history from '../../common/history';
-import routes from '../../common/routes';
+import history from '../../util/history';
+import routes from '../../util/routes';
 
 import Header from '../Header';
 import HeaderSearch from '../HeaderSearch';
@@ -41,7 +41,7 @@ const Purchases = observer(() => {
     ];
 
     useEffect(() => {
-        purchaseStore.fetchPurchases();
+        // purchaseStore.fetchPurchases();
     }, []);
 
     const paidOptions = [

@@ -1,5 +1,5 @@
-import { Resolver, authResolver, ApolloContext, PaginatedQueryInput, paginate } from '.';
-import { ItemType } from 'shared/types';
+import { Resolver, authResolver, ApolloContext, paginate } from '.';
+import { ItemType, PaginatedQueryInput, ItemInput } from 'shared/types';
 import { Op } from 'sequelize';
 import { number } from 'joi';
 
@@ -44,7 +44,7 @@ const resolver: Resolver = {
         )
     },
     Mutation: {
-        addItem: authResolver(async ({ item }, { models, sequelize, user }) => {
+        addItem: authResolver(async ({ item }: { item: ItemInput }, { models, sequelize, user }) => {
             const { warehouseQuantity, ...restItem } = item;
             const transaction = await sequelize.transaction();
 

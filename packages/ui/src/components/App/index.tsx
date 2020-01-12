@@ -1,15 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Router, Switch, Route } from 'react-router-dom';
 import { IconContext } from 'react-icons';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
-import 'flatpickr/dist/themes/material_green.css'
+import 'flatpickr/dist/themes/material_green.css';
+import { PartnerStoreContext } from '../../stores/PartnerStore';
+import { CommonStoreContext } from '../../stores/CommonStore';
 
-import history from '../../common/history';
+import history from '../../util/history';
 import { AppContainer } from './styles';
 import theme from '../../util/theme';
-import routes from '../../common/routes';
+import routes from '../../util/routes';
 import Products from '../Products';
 import ProductDetails from '../ProductDetails';
 import NewProduct from '../NewProduct';
@@ -19,6 +21,9 @@ import Footer from '../Footer';
 import HamburgerMenu from '../HamburgerMenu';
 
 const App = () => {
+    const partnerStore = useContext(PartnerStoreContext);
+    const commonStore = useContext(CommonStoreContext);
+
     const clearSavedForms = () => {
         Object.keys(localStorage).forEach(key => {
             if (key.includes('form')) localStorage.removeItem(key);
@@ -29,7 +34,11 @@ const App = () => {
         window.addEventListener('beforeunload', e => {
             clearSavedForms();
         });
-    });
+
+        const testQuery = async () => {};
+
+        testQuery();
+    }, []);
 
     return (
         <ThemeProvider theme={theme}>
@@ -50,6 +59,6 @@ const App = () => {
             </Router>
         </ThemeProvider>
     );
-}
+};
 
 export default App;

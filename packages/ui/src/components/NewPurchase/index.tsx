@@ -1,16 +1,15 @@
-import React, { useContext } from 'react';
+import React, { useContext } from 'react';
 import { observer } from 'mobx-react-lite';
 import moment from 'moment';
 import * as yup from 'yup';
 
-import routes from '../../common/routes';
-import history from '../../common/history';
+import routes from '../../util/routes';
+import history from '../../util/history';
 import { NewProductContainer, AddPurchaseItemBtn } from './styles';
 
 import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
 import Button from '../Button';
-import sampleData from '../../common/sampleData';
 import { Partner, InvoiceItem } from 'shared/types';
 import Form from '../Form';
 import FieldArray from '../Form/util/FieldArray';
@@ -38,9 +37,9 @@ interface NewPurchaseFormValues {
 const NewPurchase = observer(() => {
     const purchaseStore = useContext(PurchaseStoreContext);
 
-    const partners = sampleData.partners;
-    const units = sampleData.units;
-    const products = sampleData.products;
+    const partners = [];
+    const units = [];
+    const products = [];
 
     const initialValues: NewPurchaseFormValues = {
         partner: undefined,
@@ -68,9 +67,7 @@ const NewPurchase = observer(() => {
                     </FormTitle>
                     <Route
                         path={routes.newPurchaseItem}
-                        render={() => (
-                            <NewPurchaseItem arrayHelpers={arrayHelpers} />
-                        )}
+                        render={() => <NewPurchaseItem arrayHelpers={arrayHelpers} />}
                     />
                     {formikProps.values.items.map((item, index) => (
                         <PurchaseItem
@@ -94,9 +91,9 @@ const NewPurchase = observer(() => {
     );
 
     const handleSubmit = purchase => {
-        purchaseStore.addPurchase(purchase);
+        // purchaseStore.addPurchase(purchase);
         history.push(routes.purchases);
-    }
+    };
 
     return (
         <>

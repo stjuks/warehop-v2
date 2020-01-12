@@ -2,9 +2,8 @@ import React, { useState, PropsWithChildren } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Formik, FormikProps } from 'formik';
 import Modal from '../Modal';
-import routes from '../../common/routes';
-import history from '../../common/history';
-import sampleData from '../../common/sampleData';
+import routes from '../../util/routes';
+import history from '../../util/history';
 import Form from '../Form';
 import * as yup from 'yup';
 
@@ -12,7 +11,6 @@ import AriaSelect from '../Form/AriaSelect';
 import TextInput from '../Form/TextInput';
 import { Row } from '../Layout/styles';
 import AutosuggestInput from '../Form/AutosuggestInput';
-import api from '../../api';
 import { ItemType } from 'shared/types';
 import Header from '../Header';
 import { ContentContainer } from '../App/styles';
@@ -25,9 +23,9 @@ interface NewPurchaseItemProps {
     arrayHelpers: any;
 }
 
-const itemTypes = sampleData.itemTypes;
-const units = sampleData.units;
-const warehouses = sampleData.warehouses;
+const itemTypes = [];
+const units = [];
+const warehouses = [];
 
 const DEFAULT_ITEM_TYPE = itemTypes[0];
 
@@ -77,27 +75,27 @@ const ItemForm = ({ type }: { type: ItemType }) => {
     const handleAutosuggestSelect = ({ suggestion, formik }) => {
         const values = {};
 
-        forms[type.id].fields.forEach(field => {
+        forms[type].fields.forEach(field => {
             if (suggestion.value[field]) values[field] = suggestion.value[field];
         });
 
         formik.setValues({ ...formik.values, ...values });
     };
 
-    if (type.id === 'PRODUCT') {
+    if (type === 'PRODUCT') {
         return (
             <>
                 <AutosuggestInput
                     name="code"
                     label="Kood"
-                    getSuggestions={query => api.getProducts({ limit: 10, offset: 10 })}
+                    getSuggestions={query => []}
                     suggestionMap={{ label: 'code' }}
                     onSelect={handleAutosuggestSelect}
                 />
                 <AutosuggestInput
                     name="name"
                     label="Nimetus"
-                    getSuggestions={query => api.getProducts({ limit: 10, offset: 10 })}
+                    getSuggestions={query => []}
                     suggestionMap={{ label: 'name' }}
                     onSelect={handleAutosuggestSelect}
                 />
@@ -134,7 +132,7 @@ const NewPurchaseItem = props => {
 
     const initialValues = (state && state.item) || {
         type: DEFAULT_ITEM_TYPE,
-        ...forms[activeItemType.id].initialValues
+        ...forms[activeItemType].initialValues
     };
 
     const handleSubmit = values => {
@@ -157,7 +155,7 @@ const NewPurchaseItem = props => {
         }
     };
 
-    const validationSchema = forms[activeItemType.id].validationSchema;
+    const validationSchema = forms[activeItemType].validationSchema;
     const headerTitle = state && state.index !== undefined ? 'Muuda arvekaupa' : 'Lisa arvekaup';
     const submitBtnTitle = state && state.index !== undefined ? 'Muuda kaupa' : 'Lisa kaup';
 
@@ -179,11 +177,7 @@ const NewPurchaseItem = props => {
                 </Form>
             </ContentContainer>
             <FooterContainer style={{ padding: '0.25rem 1rem' }}>
-                <Button
-                    title={submitBtnTitle}
-                    form="new-purchase-item-form"
-                    type="submit"
-                />
+                <Button title={submitBtnTitle} form="new-purchase-item-form" type="submit" />
             </FooterContainer>
         </Modal>
     );

@@ -1,4 +1,5 @@
-import { Resolver, authResolver, PaginatedQueryInput, paginate } from '.';
+import { Resolver, authResolver, paginate } from '.';
+import { PaginatedQueryInput } from 'shared/types';
 
 const partnerResolver: Resolver = {
     Query: {
@@ -20,12 +21,12 @@ const partnerResolver: Resolver = {
             return await models.Partner.destroy({ where: { id, userId: user.id } });
         }),
         editPartner: authResolver(async ({ id, partner }, { models, user }) => {
-            const [, [editedPartner]] = await models.Partner.update(partner, {
+            const [editedRows] = await models.Partner.update(partner, {
                 where: { id, userId: user.id },
                 returning: true
             });
 
-            return editedPartner;
+            return editedRows;
         })
     }
 };
