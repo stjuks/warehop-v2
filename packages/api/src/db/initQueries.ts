@@ -1,54 +1,41 @@
 import models from './models';
 import sequelize from './sequelize';
-import { createCompositeForeignKey, createCheckConstraint } from '../util/helpers';
+import { createCompositeForeignKeys, createCheckConstraint } from '../util/helpers';
 
 const createForeignKeys = async () => {
     await sequelize.query(
-        createCompositeForeignKey({
-            table: models.Invoice,
-            cols: ['partnerId', 'userId'],
-            ref: { table: models.Partner, cols: ['id', 'userId'] }
-        })
-    );
-
-    await sequelize.query(
-        createCompositeForeignKey({
-            table: models.Item,
-            cols: ['unitId', 'userId'],
-            ref: { table: models.Unit, cols: ['id', 'userId'] }
-        })
-    );
-
-    await sequelize.query(
-        createCompositeForeignKey({
-            table: models.Item,
-            cols: ['partnerId', 'userId'],
-            ref: { table: models.Partner, cols: ['id', 'userId'] }
-        })
-    );
-
-    await sequelize.query(
-        createCompositeForeignKey({
-            table: models.Transaction,
-            cols: ['invoiceId', 'userId'],
-            ref: { table: models.Invoice, cols: ['id', 'userId'] }
-        })
-    );
-
-    await sequelize.query(
-        createCompositeForeignKey({
-            table: models.WarehouseItem,
-            cols: ['warehouseId', 'userId'],
-            ref: { table: models.Warehouse, cols: ['id', 'userId'] }
-        })
-    );
-
-    await sequelize.query(
-        createCompositeForeignKey({
-            table: models.WarehouseItem,
-            cols: ['itemId', 'userId'],
-            ref: { table: models.Item, cols: ['id', 'userId'] }
-        })
+        createCompositeForeignKeys([
+            {
+                table: models.Invoice,
+                cols: ['partnerId', 'userId'],
+                ref: { table: models.Partner, cols: ['id', 'userId'] }
+            },
+            {
+                table: models.Item,
+                cols: ['unitId', 'userId'],
+                ref: { table: models.Unit, cols: ['id', 'userId'] }
+            },
+            {
+                table: models.Item,
+                cols: ['partnerId', 'userId'],
+                ref: { table: models.Partner, cols: ['id', 'userId'] }
+            },
+            {
+                table: models.Transaction,
+                cols: ['invoiceId', 'userId'],
+                ref: { table: models.Invoice, cols: ['id', 'userId'] }
+            },
+            {
+                table: models.WarehouseItem,
+                cols: ['warehouseId', 'userId'],
+                ref: { table: models.Warehouse, cols: ['id', 'userId'] }
+            },
+            {
+                table: models.WarehouseItem,
+                cols: ['itemId', 'userId'],
+                ref: { table: models.Item, cols: ['id', 'userId'] }
+            }
+        ])
     );
 };
 
@@ -128,10 +115,23 @@ export const createProcedures = async () => {
     `);
 };
 
+const createIndexes = async () => {
+    await sequelize.query(`
+        START TRANSACTION;
+        CREATE INDEX "Invoices_number_trgm_idx" ON "Invoices" USING GIN(number gin_trgm_ops);
+        CREATE INDEX "Invoices_description_trgm_idx" ON "Invoices" USING GIN(description gin_trgm_ops);
+        CREATE INDEX "Items_name_trgm_idx" ON "Items" USING GIN(name gin_trgm_ops);
+        CREATE INDEX "Items_code_trgm_idx" ON "Items" USING GIN(code gin_trgm_ops);
+        CREATE INDEX "Partners_name_trgm_idx" ON "Partners" USING GIN(name gin_trgm_ops);
+        COMMIT;
+    `);
+};
+
 export default async () => {
     await createForeignKeys();
     await createStaticData();
     await createCheckConstraints();
     await createTestData();
     await createProcedures();
+    await createIndexes();
 };

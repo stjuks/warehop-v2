@@ -1,9 +1,28 @@
-import { Model, Table, Column, PrimaryKey, AutoIncrement, AllowNull, BelongsTo, Unique, Index } from 'sequelize-typescript';
+import {
+    Model,
+    Table,
+    Column,
+    PrimaryKey,
+    AutoIncrement,
+    AllowNull,
+    BelongsTo,
+    Unique,
+    Index,
+    DataType
+} from 'sequelize-typescript';
 
 import User from './User';
 import PartnerType from './PartnerType';
 
-@Table
+@Table({
+    indexes: [
+        {
+            name: 'IDX_UQ_Partners_userId_type_name',
+            unique: true,
+            fields: ['userId', 'type', 'name']
+        }
+    ]
+})
 export default class Partner extends Model<Partner> {
     @PrimaryKey
     @AutoIncrement
@@ -21,7 +40,7 @@ export default class Partner extends Model<Partner> {
     type: string;
 
     @AllowNull(false)
-    @Column
+    @Column(DataType.CITEXT)
     name: string;
 
     @Column

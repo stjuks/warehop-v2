@@ -5,6 +5,7 @@ import commonApi from './common';
 import partnerApi from './partner';
 import warehouseApi from './warehouse';
 import itemApi from './item';
+import invoiceApi from './invoice';
 
 export const query = async <T>(opts: QueryBaseOptions) => {
     const { data } = await apollo.query(opts);
@@ -38,5 +39,6 @@ export default {
     ...commonApi,
     ...partnerApi,
     ...warehouseApi,
-    ...itemApi
+    ...itemApi,
+    ...invoiceApi
 };

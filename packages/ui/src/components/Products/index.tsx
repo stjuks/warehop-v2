@@ -13,7 +13,7 @@ import HeaderSearch from '../HeaderSearch';
 import Loader from '../Loader';
 import { Formik } from 'formik';
 import { SelectStyled } from '../Purchases/styles';
-import { ItemStoreContext } from '../../stores/ItemStore';
+import ItemStoreContext from '../../stores/ItemStore';
 
 const Products = observer(() => {
     const itemStore = useContext(ItemStoreContext);
@@ -71,7 +71,7 @@ const Products = observer(() => {
             <ContentContainer>
                 {getProducts()}
                 {itemStore.paginatedProducts.pageInfo.hasNextPage && (
-                    <button onClick={() => itemStore.fetchProducts({ loadMore: true })}>Lae rohkem</button>
+                    <button onClick={() => null}>Lae rohkem</button>
                 )}
             </ContentContainer>
         </>

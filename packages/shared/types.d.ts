@@ -1,5 +1,5 @@
 interface Item {
-    id: number;
+    id?: number;
     type: ItemType;
     name: string;
     purchasePrice: string;
@@ -111,13 +111,6 @@ export interface BankAccount {
     id: number;
     bankName: string;
     accountNr: string;
-}
-
-export interface PaginatedQueryInput {
-    pagination: {
-        cursor?: string;
-        limit: number;
-    };
 }
 
 export interface PaginatedData<T> {

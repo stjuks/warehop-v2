@@ -1,9 +1,9 @@
 import { Resolver, authResolver, paginate } from '.';
-import { PaginatedQueryInput } from 'shared/types';
+import { PaginatedQueryInput } from 'shared/inputTypes';
 
 const partnerResolver: Resolver = {
     Query: {
-        partners: authResolver(async ({ pagination: { cursor, limit } }: PaginatedQueryInput, { models, user }) => {
+        partners: authResolver(async ({ pagination: { cursor, limit } }: { pagination: PaginatedQueryInput }, { models, user }) => {
             return await paginate(models.Partner, {
                 cursor,
                 limit,

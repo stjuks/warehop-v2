@@ -16,7 +16,15 @@ import Item from './Item';
 import Unit from './Unit';
 import User from './User';
 
-@Table
+@Table({
+    indexes: [
+        {
+            name: 'IDX_UQ_InvoiceItems_userId_invoiceId_name',
+            unique: true,
+            fields: ['userId', 'invoiceId', 'name']
+        }
+    ]
+})
 export default class InvoiceItem extends Model<InvoiceItem> {
     @PrimaryKey
     @ForeignKey(() => Invoice)
@@ -41,13 +49,14 @@ export default class InvoiceItem extends Model<InvoiceItem> {
     userId: number;
 
     @AllowNull(false)
-    @Column
+    @Column(DataType.CITEXT)
     name: string;
 
     @AllowNull(false)
     @Column
     quantity: number;
 
+    @AllowNull(false)
     @Column(DataType.DECIMAL(12, 4))
     price: object;
 

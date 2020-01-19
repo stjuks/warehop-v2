@@ -1,29 +1,32 @@
 import { observable, computed } from 'mobx';
 import { task } from 'mobx-task';
 import { createContext } from 'react';
-import { Partner, PaginatedData } from 'shared/types';
+import { Partner } from 'shared/types';
 import api from '../api';
+import { paginatedData } from '../util/helpers';
 
 class PartnerStore {
-    @observable paginatedPartners: PaginatedData<Partner> = {
-        pageInfo: {
-            hasNextPage: false,
-            cursor: undefined
-        },
-        data: []
-    };
+    private PARTNER_LIMIT = 20;
 
-    @task fetchPartners = async (opts: { loadMore?: boolean } = {}) => {
-        const { loadMore } = opts;
-        const { data } = this.paginatedPartners;
+    @observable paginatedPartners = paginatedData<Partner>();
 
+    @task
+    fetchPartners = async () => {
         const partners = await api.fetchPartners({
-            limit: 5,
-            cursor: loadMore ? this.paginatedPartners.pageInfo.cursor : undefined
+            limit: this.PARTNER_LIMIT
         });
 
-        if (!loadMore) this.paginatedPartners = partners;
-        else this.paginatedPartners = { ...partners, data: [...data, ...partners.data] };
+        this.paginatedPartners = partners;
+    };
+
+    @task
+    fetchMorePartners = async () => {
+        const partners = await api.fetchPartners({
+            limit: this.PARTNER_LIMIT,
+            cursor: this.paginatedPartners.pageInfo.cursor
+        });
+
+        this.paginatedPartners = { ...partners, data: [...this.paginatedPartners.data, ...partners.data] };
     };
 
     @computed
@@ -32,4 +35,6 @@ class PartnerStore {
     }
 }
 
-export const PartnerStoreContext: React.Context<PartnerStore> = createContext(new PartnerStore());
+const PartnerStoreContext: React.Context<PartnerStore> = createContext(new PartnerStore());
+
+export default PartnerStoreContext;

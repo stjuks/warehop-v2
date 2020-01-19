@@ -21,7 +21,20 @@ import InvoiceItem from './InvoiceItem';
 import Warehouse from './Warehouse';
 import WarehouseItem from './WarehouseItem';
 
-@Table
+@Table({
+    indexes: [
+        {
+            name: 'IDX_UQ_Items_userId_code',
+            unique: true,
+            fields: ['userId', 'code']
+        },
+        {
+            name: 'IDX_UQ_Items_userId_name_type',
+            unique: true,
+            fields: ['userId', 'name', 'type']
+        }
+    ]
+})
 export default class Item extends Model<Item> {
     @PrimaryKey
     @AutoIncrement
@@ -47,10 +60,10 @@ export default class Item extends Model<Item> {
     type: string;
 
     @AllowNull(false)
-    @Column
+    @Column(DataType.CITEXT)
     name: string;
 
-    @Column
+    @Column(DataType.CITEXT)
     code: string;
 
     @Column(DataType.DECIMAL(12, 4))
@@ -59,7 +72,7 @@ export default class Item extends Model<Item> {
     @Column(DataType.DECIMAL(12, 4))
     retailPrice: object;
 
-    @Column
+    @Column(DataType.CITEXT)
     description: string;
 
     @BelongsTo(() => User, { foreignKey: 'userId', onDelete: 'CASCADE' })

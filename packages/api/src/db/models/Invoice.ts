@@ -10,8 +10,10 @@ import {
     Unique,
     Default,
     HasMany,
-    Index,
+    Index
 } from 'sequelize-typescript';
+
+import sequelize from 'sequelize';
 
 import User from './User';
 import Partner from './Partner';
@@ -21,7 +23,13 @@ import InvoiceItem from './InvoiceItem';
 import Transaction from './Transaction';
 
 @Table({
-    indexes: [{ name: 'IDX_UQ_Invoices_userId_type_number', unique: true, fields: ['userId', 'type', 'number'] }]
+    indexes: [
+        {
+            name: 'IDX_UQ_Invoices_userId_type_number',
+            unique: true,
+            fields: ['userId', 'type', 'number']
+        }
+    ]
 })
 export default class Invoice extends Model<Invoice> {
     @PrimaryKey
@@ -45,7 +53,7 @@ export default class Invoice extends Model<Invoice> {
     type: string;
 
     @AllowNull(false)
-    @Column
+    @Column(DataType.CITEXT)
     number: string;
 
     @AllowNull(false)

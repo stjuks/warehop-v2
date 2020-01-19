@@ -5,42 +5,8 @@ import Joi from '@hapi/joi';
 
 import { Resolver, authResolver, ApolloContext, paginate } from '.';
 
-import { ItemType, InvoiceType, PaginatedQueryInput } from 'shared/types';
-
-interface InvoiceItemInput {
-    type: ItemType;
-    quantity: number;
-    price: string;
-    name: string;
-    id?: number;
-    warehouseId?: number;
-    unitId?: number;
-    code?: string;
-}
-
-interface AddInvoiceInput {
-    invoice: {
-        partnerId: number;
-        type: InvoiceType;
-        number: string;
-        sum: string;
-        items: InvoiceItemInput[];
-        dueDate: Date;
-        issueDate: Date;
-        description: string;
-    };
-}
-
-interface InvoiceSearchInput {
-    query: {
-        type: InvoiceType;
-        number?: string;
-        isPaid?: boolean;
-        description?: string;
-        partnerName?: string;
-        generalQuery?: string;
-    };
-}
+import { InvoiceType } from 'shared/types';
+import { InvoiceSearchInput, AddInvoiceInput, InvoiceItemInput, PaginatedQueryInput } from 'shared/inputTypes';
 
 const validateAddInvoice = Joi.object({
     invoice: Joi.object({
@@ -68,13 +34,15 @@ const validateAddInvoice = Joi.object({
 
 const resolver: Resolver = {
     Query: {
-        purchases: authResolver(async ({ pagination: { cursor, limit } }: PaginatedQueryInput, context) => {
-            return await findInvoices(context, { type: 'PURCHASE', cursor, limit });
-        }),
-        sales: authResolver(async ({ pagination: { cursor, limit } }: PaginatedQueryInput, context) => {
+        purchases: authResolver(
+            async ({ pagination: { cursor, limit } }: { pagination: PaginatedQueryInput }, context) => {
+                return await findInvoices(context, { type: 'PURCHASE', cursor, limit });
+            }
+        ),
+        sales: authResolver(async ({ pagination: { cursor, limit } }: { pagination: PaginatedQueryInput }, context) => {
             return await findInvoices(context, { type: 'SALE', cursor, limit });
         }),
-        searchInvoices: authResolver(async ({ query }: InvoiceSearchInput, context) => {
+        searchInvoices: authResolver(async ({ query }: { query: InvoiceSearchInput }, context) => {
             const { user } = context;
             const { type, number, description, partnerName, isPaid, generalQuery } = query;
 
@@ -85,14 +53,14 @@ const resolver: Resolver = {
             };
 
             if (generalQuery) {
-                const generalLike = { [Op.iLike]: `%${generalQuery}%` };
+                const generalLike = { [Op.like]: `%${generalQuery}%` };
                 where[Op.or] = [{ number: generalLike }, { description: generalLike }];
             } else {
-                if (number) where.number = { [Op.iLike]: `%${number}%` };
-                if (description) where.description = { [Op.iLike]: `%${description}%` };
+                if (number) where.number = { [Op.like]: `%${number}%` };
+                if (description) where.description = { [Op.like]: `%${description}%` };
             }
 
-            if (partnerName) where.partner.name = { [Op.iLike]: `%${partnerName}%` };
+            if (partnerName) where.partner.name = { [Op.like]: `%${partnerName}%` };
             if (isPaid === true) where.sum = { [Op.lte]: Sequelize.col('paidSum') };
             if (isPaid === false) where.sum = { [Op.gt]: Sequelize.col('paidSum') };
 
@@ -121,7 +89,7 @@ const resolver: Resolver = {
         })
     },
     Mutation: {
-        addInvoice: authResolver(async ({ invoice }: AddInvoiceInput, { models, sequelize, user }) => {
+        addInvoice: authResolver(async ({ invoice }: { invoice: AddInvoiceInput }, { models, sequelize, user }) => {
             const { items, ...restInvoice } = invoice;
 
             restInvoice.sum = items
@@ -218,17 +186,15 @@ const resolver: Resolver = {
 };
 
 const invoiceItemWhere = (item: InvoiceItemInput, userId) => {
-    if (item.type === 'PRODUCT') {
-        return {
-            code: Sequelize.where(Sequelize.fn('lower', Sequelize.col('code')), item.code.toLowerCase()),
-            userId
-        };
-    }
-
-    return {
-        name: Sequelize.where(Sequelize.fn('lower', Sequelize.col('name')), item.name.toLowerCase()),
-        userId
-    };
+    return item.type === 'PRODUCT'
+        ? {
+              code: item.code,
+              userId
+          }
+        : {
+              name: item.name,
+              userId
+          };
 };
 
 const findInvoices = async (

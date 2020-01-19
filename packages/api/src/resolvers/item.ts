@@ -1,7 +1,8 @@
 import { Resolver, authResolver, ApolloContext, paginate } from '.';
-import { ItemType, PaginatedQueryInput, ItemInput } from 'shared/types';
+import { ItemType, ItemInput } from 'shared/types';
 import { Op } from 'sequelize';
 import { number } from 'joi';
+import { PaginatedQueryInput } from 'shared/inputTypes';
 
 interface ItemSearchInput {
     query: {
@@ -15,12 +16,16 @@ interface ItemSearchInput {
 
 const resolver: Resolver = {
     Query: {
-        products: authResolver(async ({ pagination: { cursor, limit } }: PaginatedQueryInput, context) => {
-            return await findItems(context, { type: 'PRODUCT', limit, cursor });
-        }),
-        services: authResolver(async ({ pagination: { cursor, limit } }: PaginatedQueryInput, context) => {
-            return await findItems(context, { type: 'SERVICE', limit, cursor });
-        }),
+        products: authResolver(
+            async ({ pagination: { cursor, limit } }: { pagination: PaginatedQueryInput }, context) => {
+                return await findItems(context, { type: 'PRODUCT', limit, cursor });
+            }
+        ),
+        services: authResolver(
+            async ({ pagination: { cursor, limit } }: { pagination: PaginatedQueryInput }, context) => {
+                return await findItems(context, { type: 'SERVICE', limit, cursor });
+            }
+        ),
         searchItems: authResolver(
             async ({ query: { type, name, description, code, generalQuery } }: ItemSearchInput, context) => {
                 const { user } = context;
@@ -31,12 +36,12 @@ const resolver: Resolver = {
                 };
 
                 if (generalQuery) {
-                    const generalLike = { [Op.iLike]: `%${generalQuery}%` };
+                    const generalLike = { [Op.like]: `%${generalQuery}%` };
                     where[Op.or] = [{ name: generalLike }, { code: generalLike }, { description: generalLike }];
                 } else {
-                    if (name) where.name = { [Op.iLike]: `%${name}%` };
-                    if (description) where.description = { [Op.iLike]: `%${description}%` };
-                    if (code) where.code = { [Op.iLike]: `%${code}%` };
+                    if (name) where.name = { [Op.like]: `%${name}%` };
+                    if (description) where.description = { [Op.like]: `%${description}%` };
+                    if (code) where.code = { [Op.like]: `%${code}%` };
                 }
 
                 return await findItems(context, { where });

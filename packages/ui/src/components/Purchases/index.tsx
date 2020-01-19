@@ -10,14 +10,11 @@ import routes from '../../util/routes';
 import Header from '../Header';
 import HeaderSearch from '../HeaderSearch';
 import Radio from '../Radio';
-import { PurchaseStoreContext } from '../../stores/PurchaseStore';
 import PurchaseItem from './PurchaseItem';
 import { Formik } from 'formik';
 import { SelectStyled } from './styles';
 
 const Purchases = observer(() => {
-    const purchaseStore = useContext(PurchaseStoreContext);
-
     const headerIcons = [
         <HeaderSearch onChange={value => null} placeholder="Otsi arvet" />,
         <button style={{ display: 'flex' }}>
@@ -81,9 +78,9 @@ const Purchases = observer(() => {
                 />
             </SortingContainer>
             <ContentContainer>
-                {purchaseStore.purchases.map(purchase => (
+                {/* purchaseStore.purchases.map(purchase => (
                     <PurchaseItem {...purchase} key={purchase.id} />
-                ))}
+                )) */}
             </ContentContainer>
         </>
     );

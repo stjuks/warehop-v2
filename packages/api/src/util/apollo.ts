@@ -1,4 +1,4 @@
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer, UserInputError, ValidationError } from 'apollo-server-express';
 
 import schema from '../schema';
 import sequelize from '../db/sequelize';
@@ -12,6 +12,12 @@ const apollo = new ApolloServer({
     resolvers,
     context: async ({ req, res }) => {
         return { models, sequelize, req, res };
+    },
+    formatError: err => {
+        if (err instanceof ValidationError) {
+            console.error(err);
+        }
+        return err;
     }
 });
 

@@ -5,8 +5,9 @@ import { IconContext } from 'react-icons';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import 'flatpickr/dist/themes/material_green.css';
-import { PartnerStoreContext } from '../../stores/PartnerStore';
-import { CommonStoreContext } from '../../stores/CommonStore';
+import PartnerStoreContext from '../../stores/PartnerStore';
+import CommonStoreContext from '../../stores/CommonStore';
+import WarehouseStoreContext from '../../stores/WarehouseStore';
 
 import history from '../../util/history';
 import { AppContainer } from './styles';
@@ -21,6 +22,7 @@ import Footer from '../Footer';
 import HamburgerMenu from '../HamburgerMenu';
 
 const App = () => {
+    const warehouseStore = useContext(WarehouseStoreContext);
     const partnerStore = useContext(PartnerStoreContext);
     const commonStore = useContext(CommonStoreContext);
 
@@ -35,9 +37,8 @@ const App = () => {
             clearSavedForms();
         });
 
-        const testQuery = async () => {};
-
-        testQuery();
+        warehouseStore.fetchWarehouses();
+        commonStore.fetchUnits();
     }, []);
 
     return (

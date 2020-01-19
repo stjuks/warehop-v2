@@ -3,34 +3,80 @@ import { task } from 'mobx-task';
 import { createContext } from 'react';
 import { ProductItem, ExpenseItem, PaginatedData } from 'shared/types';
 import api from '../api';
+import { paginatedData } from '../util/helpers';
+import { AddItemInput } from 'shared/inputTypes';
 
 class ItemStore {
-    @observable paginatedProducts: PaginatedData<ProductItem> = {
-        pageInfo: {
-            hasNextPage: false,
-            cursor: undefined
-        },
-        data: []
+    private ITEM_LIMIT = 10;
+
+    @observable paginatedProducts = paginatedData<ProductItem>();
+    @observable paginatedServices = paginatedData<ExpenseItem>();
+
+    @task
+    fetchProducts = async () => {
+        const products = await api.fetchProducts({
+            limit: this.ITEM_LIMIT
+        });
+
+        this.paginatedProducts = products;
     };
 
     @task
-    fetchProducts = async (opts: { loadMore?: boolean } = {}) => {
-        const { loadMore } = opts;
-        const { data, pageInfo } = this.paginatedProducts;
-
+    fetchMoreProducts = async () => {
         const products = await api.fetchProducts({
-            limit: 1,
-            cursor: loadMore ? this.paginatedProducts.pageInfo.cursor : undefined
+            limit: this.ITEM_LIMIT,
+            cursor: this.paginatedProducts.pageInfo.cursor
         });
 
-        if (!loadMore) this.paginatedProducts = products;
-        else this.paginatedProducts = { ...products, data: [...data, ...products.data] };
+        this.paginatedProducts.pageInfo = products.pageInfo;
+        this.paginatedProducts.data.push(...products.data);
+    };
+
+    @task
+    fetchServices = async () => {
+        const services = await api.fetchServices({
+            limit: this.ITEM_LIMIT
+        });
+
+        this.paginatedServices = services;
+    };
+
+    @task
+    fetchMoreServices = async () => {
+        const services = await api.fetchServices({
+            limit: this.ITEM_LIMIT,
+            cursor: this.paginatedServices.pageInfo.cursor
+        });
+
+        this.paginatedServices.pageInfo = services.pageInfo;
+        this.paginatedServices.data.push(...services.data);
+    };
+
+    @task
+    addProduct = async (product: ProductItem) => {
+        const itemInput: AddItemInput = {
+            ...product,
+            partnerId: product.partner && product.partner.id,
+            unitId: product.unit.id
+        };
+
+        const id = await api.addItem(itemInput);
+        product.id = id;
+
+        this.paginatedProducts.data.push(product);
     };
 
     @computed
     get products() {
         return this.paginatedProducts.data;
     }
+
+    @computed
+    get services() {
+        return this.paginatedServices.data;
+    }
 }
 
-export const ItemStoreContext: React.Context<ItemStore> = createContext(new ItemStore());
+const ItemStoreContext: React.Context<ItemStore> = createContext(new ItemStore());
+
+export default ItemStoreContext;

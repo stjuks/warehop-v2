@@ -23,4 +23,6 @@ class CommonStore {
     };
 }
 
-export const CommonStoreContext: React.Context<CommonStore> = createContext(new CommonStore());
+const CommonStoreContext: React.Context<CommonStore> = createContext(new CommonStore());
+
+export default CommonStoreContext;

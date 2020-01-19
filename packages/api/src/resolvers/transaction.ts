@@ -1,5 +1,6 @@
 import { Resolver, authResolver, ApolloContext, paginate } from '.';
-import { TransactionType, InvoiceType, PaginatedQueryInput } from 'shared/types';
+import { TransactionType, InvoiceType } from 'shared/types';
+import { PaginatedQueryInput } from 'shared/inputTypes';
 
 interface TransactionInput {
     id: number;
@@ -13,10 +14,10 @@ interface TransactionInput {
 
 const resolver: Resolver = {
     Query: {
-        incomes: authResolver(async ({ pagination }: PaginatedQueryInput, context) => {
+        incomes: authResolver(async ({ pagination }: { pagination: PaginatedQueryInput }, context) => {
             return await findTransactions(context, { type: 'INCOME', ...pagination });
         }),
-        expenses: authResolver(async ({ pagination }: PaginatedQueryInput, context) => {
+        expenses: authResolver(async ({ pagination }: { pagination: PaginatedQueryInput }, context) => {
             return await findTransactions(context, { type: 'EXPENSE', ...pagination });
         })
     },

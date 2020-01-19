@@ -22,7 +22,6 @@ import { Row } from '../Layout/styles';
 import FileInput from '../Form/FileInput';
 import DateInput from '../Form/DateInput';
 import { FormTitle } from '../Form/styles';
-import { PurchaseStoreContext } from '../../stores/PurchaseStore';
 
 interface NewPurchaseFormValues {
     partner: Partner | undefined;
@@ -35,8 +34,6 @@ interface NewPurchaseFormValues {
 }
 
 const NewPurchase = observer(() => {
-    const purchaseStore = useContext(PurchaseStoreContext);
-
     const partners = [];
     const units = [];
     const products = [];

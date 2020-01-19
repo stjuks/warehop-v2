@@ -6,11 +6,9 @@ import { SortingContainer } from '../Products/styles';
 
 import Header from '../Header';
 import HeaderSearch from '../HeaderSearch';
-import { PurchaseStoreContext } from '../../stores/PurchaseStore';
 import PurchaseItem from './PurchaseItem';
 
 const Sales = observer(() => {
-    const purchaseStore = useContext(PurchaseStoreContext);
 
     const headerIcons = [<HeaderSearch onChange={value => null} placeholder="Otsi arvet" />];
 
@@ -52,9 +50,9 @@ const Sales = observer(() => {
                 
             </SortingContainer>
             <ContentContainer>
-                {purchaseStore.purchases.map(purchase => (
+                {/* purchaseStore.purchases.map(purchase => (
                     <PurchaseItem {...purchase} key={purchase.id} />
-                ))}
+                )) */}
             </ContentContainer>
         </>
     );

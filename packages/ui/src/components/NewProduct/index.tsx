@@ -5,12 +5,13 @@ import { FiTrash2, FiPlusCircle } from 'react-icons/fi';
 
 import routes from '../../util/routes';
 import WarehouseStoreContext from '../../stores/WarehouseStore';
+import ItemStoreContext from '../../stores/ItemStore';
 import { NewProductContainer, FormRowContainer, AddWarehouseButton, TrashButtonContainer } from './styles';
 
 import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
 import Button from '../Button';
-import { Warehouse, WarehouseQuantity, Unit, Partner } from 'shared/types';
+import { Warehouse, WarehouseQuantity, Unit, Partner, ProductItem } from 'shared/types';
 import Form from '../Form';
 import { FormTitle } from '../Form/styles';
 import TextInput from '../Form/TextInput';
@@ -18,32 +19,27 @@ import AriaSelect from '../Form/AriaSelect';
 import { Row } from '../Layout/styles';
 import FieldArray from '../Form/util/FieldArray';
 
-interface INewProductFormValues {
-    code: string;
-    name: string;
-    partner: Partner | null;
-    unit: Unit;
-    purchasePrice: string;
-    retailPrice: string;
-    description: string;
-    warehouses: WarehouseQuantity[];
-}
-
 const NewProduct = observer(() => {
     const warehouseStore = useContext(WarehouseStoreContext);
+    const itemStore = useContext(ItemStoreContext);
 
     const units = [];
-    const partners = [];
+    const partners = [];
 
-    const initialValues: INewProductFormValues = {
+    const initialValues: ProductItem = {
+        type: 'PRODUCT',
         code: '',
         name: '',
-        partner: null,
-        unit: units[0],
+        partner: undefined,
+        unit: {
+            id: 1,
+            name: 'Tükk',
+            abbreviation: 'tk'
+        },
         purchasePrice: '',
         retailPrice: '',
         description: '',
-        warehouses: []
+        warehouseQuantity: []
     };
 
     const validationSchema = yup.object({
@@ -55,11 +51,11 @@ const NewProduct = observer(() => {
     });
 
     const filterChosenWarehouseOptions = (formValues: WarehouseQuantity[], warehouses: Warehouse[]) => {
-        return warehouses.filter(wh => formValues.map(whVal => whVal.id).indexOf(wh.id) === -1);
+        return warehouses.filter(wh => formValues.map(whVal => whVal.id).indexOf(Number(wh.id)) == -1);
     };
 
     const findFirstNonChosenWarehouse = (formValues: WarehouseQuantity[], warehouses: Warehouse[]) => {
-        return warehouses.find(wh => formValues.map(whVal => whVal.id).indexOf(wh.id) === -1);
+        return warehouses.find(wh => formValues.map(whVal => whVal.id).indexOf(Number(wh.id)) === -1);
     };
 
     return (
@@ -70,7 +66,7 @@ const NewProduct = observer(() => {
                     id="new-product-form"
                     initialValues={initialValues}
                     validationSchema={validationSchema}
-                    onSubmit={values => console.log(values)}
+                    onSubmit={(values: ProductItem) => itemStore.addProduct(values)}
                 >
                     {formikProps => (
                         <>
@@ -91,23 +87,24 @@ const NewProduct = observer(() => {
                             </Row>
                             <TextInput name="description" label="Märkused" isTextarea />
                             <FormTitle>Laoseis</FormTitle>
-                            <FieldArray name="warehouses">
+                            <FieldArray name="warehouseQuantity">
                                 {arrayHelpers => (
                                     <>
-                                        {formikProps.values.warehouses.map((wh, i) => (
+                                        {formikProps.values.warehouseQuantity.map((wh, i) => (
                                             <Row key={i} flex={[1, 0, 0]}>
                                                 <AriaSelect
-                                                    name={`warehouses[${i}]`}
+                                                    name={`warehouseQuantity[${i}]`}
                                                     label={i === 0 ? 'Ladu' : undefined}
                                                     options={filterChosenWarehouseOptions(
-                                                        formikProps.values.warehouses,
+                                                        formikProps.values.warehouseQuantity,
                                                         warehouseStore.warehouses
                                                     )}
                                                     optionMap={{ label: 'name' }}
                                                 />
                                                 <TextInput
-                                                    name={`warehouses[${i}].quantity`}
+                                                    name={`warehouseQuantity[${i}].quantity`}
                                                     label={i === 0 ? 'Kogus' : undefined}
+                                                    type="number"
                                                 />
                                                 <TrashButtonContainer>
                                                     <button type="button" onClick={() => arrayHelpers.remove(i)}>
@@ -116,13 +113,14 @@ const NewProduct = observer(() => {
                                                 </TrashButtonContainer>
                                             </Row>
                                         ))}
-                                        {formikProps.values.warehouses.length < warehouseStore.warehouses.length && (
+                                        {formikProps.values.warehouseQuantity.length <
+                                            warehouseStore.warehouses.length && (
                                             <AddWarehouseButton
                                                 type="button"
                                                 onClick={() =>
                                                     arrayHelpers.push(
                                                         findFirstNonChosenWarehouse(
-                                                            formikProps.values.warehouses,
+                                                            formikProps.values.warehouseQuantity,
                                                             warehouseStore.warehouses
                                                         )
                                                     )

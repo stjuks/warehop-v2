@@ -1,4 +1,5 @@
 import React from 'react';
+import currency from 'currency.js';
 
 import { FiChevronRight } from 'react-icons/fi';
 import { ProductItemContainer } from './styles';
@@ -15,7 +16,7 @@ function ProductItem(product: ProductItemType) {
             <div className="col-1">
                 <div className="row-1">
                     <div className="product-name">{name}</div>
-                    <div className="product-price">{retailPrice ? `${retailPrice}€` : '-'}</div>
+                    <div className="product-price">{retailPrice ? `${currency(retailPrice)}€` : '-'}</div>
                 </div>
                 <div className="row-2">
                     <div className="product-code">{code}</div>
