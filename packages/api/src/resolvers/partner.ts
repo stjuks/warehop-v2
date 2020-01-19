@@ -1,15 +1,37 @@
+import { Op } from 'sequelize';
 import { Resolver, authResolver, paginate } from '.';
-import { PaginatedQueryInput } from 'shared/inputTypes';
+import { PaginatedQueryInput, SearchPartnerInput } from 'shared/inputTypes';
 
 const partnerResolver: Resolver = {
     Query: {
-        partners: authResolver(async ({ pagination: { cursor, limit } }: { pagination: PaginatedQueryInput }, { models, user }) => {
-            return await paginate(models.Partner, {
-                cursor,
-                limit,
-                where: { userId: user.id },
-                include: [models.PartnerType]
-            });
+        partners: authResolver(
+            async ({ pagination: { cursor, limit } }: { pagination: PaginatedQueryInput }, { models, user }) => {
+                return await paginate(models.Partner, {
+                    cursor,
+                    limit,
+                    where: { userId: user.id },
+                    include: [models.PartnerType]
+                });
+            }
+        ),
+        searchPartners: authResolver(async ({ query }: { query: SearchPartnerInput }, { models, user }) => {
+            const { type, name, phoneNr, email, generalQuery } = query;
+
+            const where: any = { type, userId: user.id };
+
+            const like = (arg: string) => ({ [Op.like]: `%${arg}%` });
+
+            if (generalQuery) {
+                const generalLike = like(generalQuery);
+
+                where[Op.or] = [{ name: generalLike }, { phoneNr: generalLike }, { email: generalLike }];
+            } else {
+                if (name) where.name = like(name);
+                if (phoneNr) where.phoneNr = like(phoneNr);
+                if (email) where.email = like(email);
+            }
+
+            return await models.Partner.findAll({ where });
         })
     },
     Mutation: {

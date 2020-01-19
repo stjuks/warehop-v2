@@ -2,8 +2,8 @@ import gql from 'graphql-tag';
 
 export default gql`
     input PartnerInput {
-        name: String!
-        type: PartnerType!
+        name: String
+        type: PartnerType
         regNr: String
         VATnr: String
         email: String
@@ -13,6 +13,14 @@ export default gql`
         city: String
         street: String
         postalCode: String
+    }
+
+    input SearchPartnerInput {
+        type: PartnerType!
+        name: String
+        phoneNr: String
+        email: String
+        generalQuery: String
     }
 
     type Partner {
@@ -37,6 +45,7 @@ export default gql`
 
     extend type Query {
         partners(pagination: PaginatedQueryInput): PaginatedPartner!
+        searchPartners(query: SearchPartnerInput): [Partner!]!
     }
 
     extend type Mutation {

@@ -82,3 +82,11 @@ export interface AddTransactionInput {
     date: Date;
     description?: string;
 }
+
+export interface SearchPartnerInput {
+    type: PartnerType;
+    name?: string;
+    phoneNr?: string;
+    email?: string;
+    generalQuery?: string;
+}
