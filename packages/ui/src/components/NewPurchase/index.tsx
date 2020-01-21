@@ -1,11 +1,12 @@
-import React, { useContext } from 'react';
-import { observer } from 'mobx-react-lite';
+import React, { useContext, useEffect } from 'react';
+import { observer, useObservable } from 'mobx-react-lite';
 import moment from 'moment';
 import * as yup from 'yup';
 
 import routes from '../../util/routes';
 import history from '../../util/history';
 import { NewProductContainer, AddPurchaseItemBtn } from './styles';
+import PartnerStoreContext from '../../stores/PartnerStore';
 
 import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
@@ -34,9 +35,7 @@ interface NewPurchaseFormValues {
 }
 
 const NewPurchase = observer(() => {
-    const partners = [];
-    const units = [];
-    const products = [];
+    const partnerStore = useContext(PartnerStoreContext);
 
     const initialValues: NewPurchaseFormValues = {
         partner: undefined,
@@ -87,10 +86,16 @@ const NewPurchase = observer(() => {
         </FieldArray>
     );
 
+    console.log(partnerStore.partners);
+
     const handleSubmit = purchase => {
         // purchaseStore.addPurchase(purchase);
         history.push(routes.purchases);
     };
+
+    useEffect(() => {
+        partnerStore.fetchPartners();
+    }, []);
 
     return (
         <>
@@ -108,7 +113,7 @@ const NewPurchase = observer(() => {
                             <AriaSelect
                                 name="partner"
                                 label="Tarnija"
-                                options={partners}
+                                options={partnerStore.partners}
                                 optionMap={{ label: 'name' }}
                             />
                             <TextInput name="invoiceNr" label="Arve nr" />

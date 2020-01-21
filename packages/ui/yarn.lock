@@ -1363,6 +1363,13 @@
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.3.tgz#bdfd69d61e464dcc81b25159c270d75a73c1a636"
   integrity sha512-Il2DtDVRGDcqjDtE+rF8iqg1CArehSK84HZJCT7AMITlyXRBpuPhqGLDQMowraqqu1coEaimg4ZOqggt6L6L+A==
 
+"@types/mobx-task@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@types/mobx-task/-/mobx-task-2.0.1.tgz#e0d6471e6aa43caaaef5cc0d6e3969cb5aab054f"
+  integrity sha512-I1PFhmmOXiqIGlWanitCcPiOzG6DgVcSENj2T+V070FhpeWaB2EXXewB6yvSaypubOQWgIjkI199MpnlkXdwhQ==
+  dependencies:
+    mobx-task "*"
+
 "@types/node@>=6":
   version "13.1.6"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-13.1.6.tgz#076028d0b0400be8105b89a0a55550c86684ffec"
@@ -7087,7 +7094,7 @@ mobx-react-lite@^1.5.0:
   resolved "https://registry.yarnpkg.com/mobx-react-lite/-/mobx-react-lite-1.5.0.tgz#a5867fa1114b19056cf8159e8d64766596ae85a0"
   integrity sha512-Ss8RLKKGn+QhKbfCHvQ4+RPEVKR8AnPW1wNyWzZAS3wYw7UP4FX6GdRn64sdOhrP646o/JtXbLuDuc4RH3Bqyg==
 
-mobx-task@^2.0.0:
+mobx-task@*, mobx-task@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/mobx-task/-/mobx-task-2.0.0.tgz#e97e94db5c291d735988f9c7f80324013be1f501"
   integrity sha512-g1f2tPlEnjc3mspPiqTEUSmphdR6a05Y7fgW9rjmOOS2gLRebli7b7ri5+JCorDwGWHMOlB02woIfSANv46l6A==

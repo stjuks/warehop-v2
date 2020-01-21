@@ -1,8 +1,16 @@
-import { Model, Table, Column, PrimaryKey, AutoIncrement, AllowNull, BelongsTo } from 'sequelize-typescript';
+import { Model, Table, Column, PrimaryKey, AutoIncrement, AllowNull, BelongsTo, DataType } from 'sequelize-typescript';
 
 import User from './User';
 
-@Table
+@Table({
+    indexes: [
+        {
+            name: 'IDX_UQ_Units_userId_name',
+            unique: true,
+            fields: ['userId', 'name']
+        }
+    ]
+})
 export default class Unit extends Model<Unit> {
     @PrimaryKey
     @AutoIncrement
@@ -14,7 +22,7 @@ export default class Unit extends Model<Unit> {
     userId: number;
 
     @AllowNull(false)
-    @Column
+    @Column(DataType.CITEXT)
     name: string;
 
     @AllowNull(false)

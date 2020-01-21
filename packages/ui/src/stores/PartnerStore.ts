@@ -10,14 +10,15 @@ class PartnerStore {
 
     @observable paginatedPartners = paginatedData<Partner>();
 
-    @task
-    fetchPartners = async () => {
+    fetchPartners = task(async () => {
         const partners = await api.fetchPartners({
             limit: this.PARTNER_LIMIT
         });
 
         this.paginatedPartners = partners;
-    };
+
+        return partners.data;
+    });
 
     @task
     fetchMorePartners = async () => {

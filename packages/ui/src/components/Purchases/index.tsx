@@ -6,6 +6,7 @@ import { ContentContainer } from '../App/styles';
 import { SortingContainer, NewItemButtonContainer } from '../Products/styles';
 import history from '../../util/history';
 import routes from '../../util/routes';
+import InvoiceStoreContext from '../../stores/InvoiceStore';
 
 import Header from '../Header';
 import HeaderSearch from '../HeaderSearch';
@@ -15,6 +16,8 @@ import { Formik } from 'formik';
 import { SelectStyled } from './styles';
 
 const Purchases = observer(() => {
+    const invoiceStore = useContext(InvoiceStoreContext);
+
     const headerIcons = [
         <HeaderSearch onChange={value => null} placeholder="Otsi arvet" />,
         <button style={{ display: 'flex' }}>
@@ -38,7 +41,7 @@ const Purchases = observer(() => {
     ];
 
     useEffect(() => {
-        // purchaseStore.fetchPurchases();
+        invoiceStore.fetchPurchases();
     }, []);
 
     const paidOptions = [
@@ -78,9 +81,9 @@ const Purchases = observer(() => {
                 />
             </SortingContainer>
             <ContentContainer>
-                {/* purchaseStore.purchases.map(purchase => (
+                {invoiceStore.purchases.map(purchase => (
                     <PurchaseItem {...purchase} key={purchase.id} />
-                )) */}
+                ))}
             </ContentContainer>
         </>
     );
