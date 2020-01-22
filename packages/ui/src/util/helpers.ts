@@ -1,5 +1,6 @@
 import objectMapper from 'object-mapper';
 import { PaginatedData } from 'shared/types';
+import { Option } from '../components/Form/AriaSelect';
 
 export const stall = async (delay: number) => {
     await new Promise(resolve => setTimeout(resolve, delay));
@@ -34,7 +35,8 @@ export const mapSelectOption = (args: { attrs?: MapSelectOptionAttributes; value
 
 export const mapSelectOptions = (args: { attrs?: MapSelectOptionAttributes; values: any[] }) => {
     const { values, attrs } = args;
-    return values.map(value => mapSelectOption({ attrs, value }));
+    const result: Option[] = values.map(value => mapSelectOption({ attrs, value }));
+    return result;
 };
 
 export const filterObjectProperties = (obj: Object, keys: string[]) => {

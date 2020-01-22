@@ -14,7 +14,8 @@ const theme = {
         lightColor1: '#F1F3F4',
         text: '#062047',
         lightText: '#6D7878',
-        midGrey: '#F0F0F0'
+        midGrey: '#F0F0F0',
+        darkGrey: '#D0D0D0'
     }
 };
 

@@ -23,6 +23,7 @@ import { Row } from '../Layout/styles';
 import FileInput from '../Form/FileInput';
 import DateInput from '../Form/DateInput';
 import { FormTitle } from '../Form/styles';
+import { mapSelectOptions } from '../../util/helpers';
 
 interface NewPurchaseFormValues {
     partner: Partner | undefined;
@@ -113,9 +114,11 @@ const NewPurchase = observer(() => {
                             <AriaSelect
                                 name="partner"
                                 label="Tarnija"
-                                onSearch={(options, query) =>
-                                    options.filter(opt => opt.value.name.toLowerCase().indexOf(query) !== -1)
-                                }
+                                onSearch={async query => {
+                                    const partners = await partnerStore.searchPartners('VENDOR', query);
+                                    return mapSelectOptions({ values: partners, attrs: { label: 'name' } });
+                                }}
+                                searchPlaceholder="Otsi tarnijat"
                                 options={partnerStore.partners}
                                 optionMap={{ label: 'name' }}
                             />

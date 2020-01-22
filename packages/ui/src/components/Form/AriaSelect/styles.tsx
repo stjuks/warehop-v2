@@ -83,6 +83,7 @@ export const MenuItemContainer = styled(MenuItem).attrs({
 
 export const SearchInput = styled.input`
     ${({ theme }) => `
+        cursor: text;
         outline: none;
         background: ${theme.colors.lightColor1};
         border: 1px solid ${theme.colors.midGrey};
@@ -92,5 +93,9 @@ export const SearchInput = styled.input`
         border-radius: 0.25rem;
         font-weight: 500;
         margin-bottom: 0.25rem;
+
+        :focus {
+            border: 1px solid ${theme.colors.darkGrey};
+        }
     `}
 `;
