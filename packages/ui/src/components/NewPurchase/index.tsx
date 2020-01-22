@@ -113,6 +113,9 @@ const NewPurchase = observer(() => {
                             <AriaSelect
                                 name="partner"
                                 label="Tarnija"
+                                onSearch={(options, query) =>
+                                    options.filter(opt => opt.value.name.toLowerCase().indexOf(query) !== -1)
+                                }
                                 options={partnerStore.partners}
                                 optionMap={{ label: 'name' }}
                             />

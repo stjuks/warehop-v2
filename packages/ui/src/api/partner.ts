@@ -1,6 +1,22 @@
 import { gql } from 'apollo-boost';
 import { query, mutate } from '.';
 import { Partner, PaginatedData } from 'shared/types';
+import { SearchPartnerInput } from 'shared/inputTypes';
+
+const partnerSchema = `
+    id
+    name
+    type
+    regNr
+    VATnr
+    email
+    phoneNr
+    country
+    county
+    city
+    street
+    postalCode
+`;
 
 export const FETCH_PARTNERS = gql`
     query partners($cursor: String, $limit: Int!) {
@@ -10,18 +26,7 @@ export const FETCH_PARTNERS = gql`
                 cursor
             }
             data {
-                id
-                name
-                type
-                regNr
-                VATnr
-                email
-                phoneNr
-                country
-                county
-                city
-                street
-                postalCode
+                ${partnerSchema}
             }
         }
     }
@@ -65,6 +70,20 @@ export const DELETE_PARTNER = gql`
     }
 `;
 
+export const SEARCH_PARTNERS = gql`
+    query searchPartners($type: PartnerType!, $name: String, $phoneNr: String, $email: String, $generalQuery: String) {
+        searchPartners(query: {
+            type: $type
+            name: $name
+            phoneNr: $phoneNr
+            email: $email
+            generalQuery: $generalQuery
+        }) {
+            ${partnerSchema}
+        }
+    }
+`;
+
 export const EDIT_PARTNER = gql`
     mutation editPartner(
         $id: ID!
@@ -100,8 +119,10 @@ export const EDIT_PARTNER = gql`
 `;
 
 export default {
-    fetchPartners: async ({ cursor, limit }: { cursor?: string; limit: number }) =>
-        await query<PaginatedData<Partner>>({ query: FETCH_PARTNERS, variables: { cursor, limit } }),
+    fetchPartners: async (args: { cursor?: string; limit: number }) =>
+        await query<PaginatedData<Partner>>({ query: FETCH_PARTNERS, variables: args }),
+    searchPartners: async (args: SearchPartnerInput) =>
+        await query<Partner[]>({ query: SEARCH_PARTNERS, variables: args }),
     addPartner: async (partner: Partner) => await mutate<number>({ mutation: ADD_PARTNER, variables: partner }),
     deletePartner: async (id: number) => await mutate<boolean>({ mutation: DELETE_PARTNER, variables: { id } }),
     editPartner: async (id: number, editedPartner: Partner) =>

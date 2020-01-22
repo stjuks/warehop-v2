@@ -1,7 +1,7 @@
 import { observable, computed } from 'mobx';
 import { task } from 'mobx-task';
 import { createContext } from 'react';
-import { Partner } from 'shared/types';
+import { Partner, PartnerType } from 'shared/types';
 import api from '../api';
 import { paginatedData } from '../util/helpers';
 
@@ -10,7 +10,8 @@ class PartnerStore {
 
     @observable paginatedPartners = paginatedData<Partner>();
 
-    fetchPartners = task(async () => {
+    @task
+    fetchPartners = async () => {
         const partners = await api.fetchPartners({
             limit: this.PARTNER_LIMIT
         });
@@ -18,7 +19,7 @@ class PartnerStore {
         this.paginatedPartners = partners;
 
         return partners.data;
-    });
+    };
 
     @task
     fetchMorePartners = async () => {
@@ -29,6 +30,16 @@ class PartnerStore {
 
         this.paginatedPartners = { ...partners, data: [...this.paginatedPartners.data, ...partners.data] };
     };
+
+    @task
+    searchPartners = async (type: PartnerType, query: string) => {
+        const partners = await api.searchPartners({
+            type,
+            generalQuery: query
+        });
+
+        return partners;
+    }
 
     @computed
     get partners() {
