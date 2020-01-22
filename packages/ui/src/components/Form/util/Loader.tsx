@@ -7,7 +7,7 @@ const spin = keyframes`
     100% { transform: rotate(360deg); }
 `;
 
-const Loader = styled(FiLoader)`
+const Loader = styled(FiLoader).attrs({ className: 'loader' })`
     animation: 1s ${spin} infinite;
 `;
 

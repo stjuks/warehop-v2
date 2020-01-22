@@ -8,6 +8,7 @@ import { TextInputBase, InputActionButtons } from '../TextInput';
 import { mapSelectOptions, mapSelectOption } from '../../../util/helpers';
 import { DropdownMenu } from '../util/DropdownMenu';
 import { observer } from 'mobx-react-lite';
+import Loader from '../util/Loader';
 
 export interface Option {
     label: string;
@@ -48,8 +49,10 @@ const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = observer(
         const [mappedOptions, setMappedOptions] = useState<Option[]>([]);
         const [searchOptions, setSearchOptions] = useState<Option[]>([]);
         const [searchQuery, setSearchQuery] = useState('');
-        const [isLoadingOptions, setLoadingOptions] = useState(false);
         const [displayValue, setDisplayValue] = useState('');
+
+        const [isLoadingOptions, setLoadingOptions] = useState(false);
+        const [isLoadingSearch, setLoadingSearch] = useState(false);
 
         useEffect(() => {
             const loadOptions = async () => {
@@ -89,8 +92,10 @@ const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = observer(
         useDebounce(
             async () => {
                 if (onSearch) {
+                    setLoadingSearch(true);
                     const searchedOptions = await onSearch(searchQuery, mappedOptions);
                     setSearchOptions(searchedOptions);
+                    setLoadingSearch(false);
                 }
             },
             300,
@@ -119,6 +124,8 @@ const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = observer(
                             handleClear={handleClear}
                             searchQuery={searchQuery}
                             searchPlaceholder={searchPlaceholder}
+                            isSearchable={onSearch != undefined}
+                            isLoadingSearch={isLoadingSearch}
                         />
                     }
                     value={displayValue}
@@ -137,7 +144,9 @@ const InputComponent = ({
     handleSearch,
     handleClear,
     searchQuery,
-    searchPlaceholder
+    searchPlaceholder,
+    isSearchable,
+    isLoadingSearch
 }) => (
     <>
         <ButtonContainer>
@@ -152,7 +161,16 @@ const InputComponent = ({
             </div>
         </ButtonContainer>
         <MenuContainer>
-            <SearchInput placeholder={searchPlaceholder || 'Otsi'} onChange={handleSearch} value={searchQuery} />
+            {isSearchable && (
+                <div className="search-container">
+                    <SearchInput
+                        placeholder={searchPlaceholder || 'Otsi'}
+                        onChange={handleSearch}
+                        value={searchQuery}
+                    />
+                    {isLoadingSearch && <Loader />}
+                </div>
+            )}
             <ul className="item-list">
                 {options.map((item, i) => {
                     return (

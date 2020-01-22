@@ -36,6 +36,18 @@ export const MenuContainer = styled(Menu).attrs({ className: 'select-menu' })`
         border-radius: 0.25rem;
         z-index: 99;
 
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.25rem;
+
+            .loader {
+                position: absolute;
+                right: 0.5rem;
+            }
+        }
+
         .item-list {
             margin: 0;
             list-style-type: none;
@@ -87,12 +99,12 @@ export const SearchInput = styled.input`
         outline: none;
         background: ${theme.colors.lightColor1};
         border: 1px solid ${theme.colors.midGrey};
-        padding: 0.5rem 1rem;
+        padding: 0.5rem 2rem 0.5rem 1rem;
         color: currentColor;
         font-size: 0.875rem;
         border-radius: 0.25rem;
         font-weight: 500;
-        margin-bottom: 0.25rem;
+        flex: 1;
 
         :focus {
             border: 1px solid ${theme.colors.darkGrey};
