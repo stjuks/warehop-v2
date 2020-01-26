@@ -2,5 +2,8 @@
     "name": "shared",
     "version": "1.0.0",
     "main": "index.ts",
-    "license": "MIT"
+    "license": "MIT",
+    "dependencies": {
+        "apollo-server-express": "^2.9.16"
+    }
 }

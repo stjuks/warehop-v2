@@ -7,8 +7,15 @@ export default gql`
         abbreviation: String!
     }
 
+    type Types {
+        itemTypes: [ItemType!]!
+        partnerTypes: [PartnerType!]!
+        invoiceTypes: [InvoiceType!]!
+    }
+
     extend type Query {
         units: [Unit!]
+        types: Types!
     }
 
     extend type Mutation {

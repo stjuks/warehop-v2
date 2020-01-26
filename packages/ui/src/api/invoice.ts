@@ -68,7 +68,7 @@ const FETCH_SALES = gql`
 `;
 
 const ADD_INVOICE = gql`
-    query addInvoice(
+    mutation addInvoice(
         $partnerId: ID!
         $type: InvoiceType!
         $number: String!
@@ -92,8 +92,9 @@ const ADD_INVOICE = gql`
 `;
 
 export default {
-    fetchPurchases: async (variables: { limit: number; cursor?: string }) =>
-        await query<PaginatedData<Invoice>>({ query: FETCH_PURCHASES, variables }),
+    fetchPurchases: async (variables: { limit: number; cursor?: string }) => {
+        return await query<PaginatedData<Invoice>>({ query: FETCH_PURCHASES, variables })
+    },
     fetchSales: async (variables: { limit: number; cursor?: string }) =>
         await query<PaginatedData<Invoice>>({ query: FETCH_SALES, variables }),
     addInvoice: async (invoice: AddInvoiceInput) => await mutate<number>({ mutation: ADD_INVOICE, variables: invoice })

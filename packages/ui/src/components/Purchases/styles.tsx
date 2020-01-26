@@ -32,13 +32,15 @@ export const DaysLeftStyled = styled.div<DaysLeftStyledProps>`
         opacity: 0.075;
         padding: 0.15rem 0.5rem;
         border-radius: 2rem;
+        background: currentColor;
     }
 
     ${({ theme, isPaid, diff }) => {
-        if (isPaid) return `color: ${theme.colors.success}; :before { background: ${theme.colors.success}; }`;
+        if (isPaid) return `color: ${theme.colors.success};`;
         if (diff !== undefined) {
-            if (diff <= 1) return `color: ${theme.colors.danger}; :before { background: ${theme.colors.danger}; }`;
-            if (diff <= 3) return `color: ${theme.colors.warning}; :before { background: ${theme.colors.warning}; }`;
+            if (diff <= 1) return `color: ${theme.colors.danger};`;
+            if (diff <= 3) return `color: ${theme.colors.warning};}`;
+            return `color: ${theme.colors.lightText};`;
         }
     }}
 `;
@@ -108,5 +110,4 @@ export const SelectStyled = styled(AriaSelect)`
             font-weight: 400;
         }
     `}
-    
-`
+`;

@@ -3,7 +3,7 @@ import { Field, FieldProps } from 'formik';
 import ReactAutosuggest from 'react-autosuggest';
 
 import { useDebounce } from '../../../util/hooks';
-import { mapSelectOptions } from '../../../util/helpers';
+import { mapSelectOptions, MapSelectOptionAttributes } from '../../../util/helpers';
 import { MenuItemContainer, MenuContainer } from '../util/DropdownMenu';
 import { TextInputBase, InputActionButtons } from '../TextInput';
 import { FiX } from 'react-icons/fi';
@@ -12,10 +12,7 @@ import Loader from '../util/Loader';
 interface AutosuggestInputProps {
     name: string;
     label: string;
-    suggestionMap: {
-        label: string;
-        value?: string;
-    };
+    suggestionMap: MapSelectOptionAttributes;
     getSuggestions: (query: string) => Promise<any[]> | any[];
     onSelect?: (...args: any) => any;
 }
@@ -39,7 +36,7 @@ const AutosuggestInputBase: React.FC<AutosuggestInputProps & FieldProps> = ({
         try {
             setLoadingSuggestions(true);
             const loadedSuggestions = await getSuggestions(query);
-            const mappedSuggestions = mapSelectOptions({ attrs: suggestionMap, values: loadedSuggestions });
+            const mappedSuggestions = mapSelectOptions(loadedSuggestions, suggestionMap);
             setSuggestions(mappedSuggestions);
             setLoadingSuggestions(false);
         } catch (err) {

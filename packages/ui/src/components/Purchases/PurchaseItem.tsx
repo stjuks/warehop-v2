@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import currency from 'currency.js';
 
 import routes from '../../util/routes';
 import { PurchaseItemContainer, DaysLeftStyled } from './styles';
@@ -24,12 +25,14 @@ const PurchaseItem: React.FC<Invoice> = ({ number, sum, partner, id, dueDate, is
         );
     };
 
+    const formattedSum = currency(sum).toString();
+
     return (
         <PurchaseItemContainer to={`${routes.purchases}/${id}`}>
             <div className="col-1">
                 <div className="row-1">
                     <div className="partner-name">{partner.name}</div>
-                    <div className="sum">{sum}€</div>
+                    <div className="sum">{formattedSum}€</div>
                 </div>
                 <div className="row-2">
                     <div className="invoice-nr">#{number}</div>

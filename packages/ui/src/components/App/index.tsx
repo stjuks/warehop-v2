@@ -38,7 +38,7 @@ const App = () => {
         });
 
         warehouseStore.fetchWarehouses();
-        commonStore.fetchUnits();
+        commonStore.initialize();
     }, []);
 
     return (

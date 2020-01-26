@@ -59,12 +59,12 @@ const Purchases = observer(() => {
             <Header title="Ostuarved" components={headerIcons} />
             <SortingContainer>
                 <Formik initialValues={initialFilterValues} onSubmit={values => console.log(values)}>
-                    <SelectStyled
+                    {/* <SelectStyled
                         name="sortOptions"
                         options={sortOptions[0].options}
                         optionMap={{ label: 'label' }}
                         placeholder="Sorteeri"
-                    />
+                    /> */}
                 </Formik>
 
                 {/* <MenuSelect

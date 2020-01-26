@@ -73,12 +73,12 @@ const NewProduct = observer(() => {
                             <FormTitle>Põhiandmed</FormTitle>
                             <TextInput name="code" label="Kood" />
                             <TextInput name="name" label="Nimetus" />
-                            <AriaSelect name="unit" label="Ühik" optionMap={{ label: 'name' }} options={units} />
+                            <AriaSelect name="unit" label="Ühik" optionMap={{ label: unit => unit.name }} options={units} />
                             <FormTitle>Lisainfo</FormTitle>
                             <AriaSelect
                                 name="partner"
                                 label="Tarnija"
-                                optionMap={{ label: 'name' }}
+                                optionMap={{ label: partner => partner.name }}
                                 options={partners}
                             />
                             <Row flex={[1, 1]}>
@@ -99,7 +99,7 @@ const NewProduct = observer(() => {
                                                         formikProps.values.warehouseQuantity,
                                                         warehouseStore.warehouses
                                                     )}
-                                                    optionMap={{ label: 'name' }}
+                                                    optionMap={{ label: warehouse => warehouse.name }}
                                                 />
                                                 <TextInput
                                                     name={`warehouseQuantity[${i}].quantity`}

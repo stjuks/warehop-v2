@@ -1,6 +1,6 @@
 import { gql } from 'apollo-boost';
 import { query, mutate } from '.';
-import { Unit } from 'shared/types';
+import { Unit, ItemType, PartnerType, InvoiceType } from 'shared/types';
 
 export const FETCH_UNITS = gql`
     query units {
@@ -34,10 +34,24 @@ export const EDIT_UNIT = gql`
     }
 `;
 
+export const FETCH_TYPES = gql`
+    query types {
+        types {
+            itemTypes
+            partnerTypes
+            invoiceTypes
+        }
+    }
+`;
+
 export default {
     fetchUnits: async () => await query<Unit[]>({ query: FETCH_UNITS }),
     addUnit: async (unit: Unit) => await mutate<number>({ mutation: ADD_UNIT, variables: unit }),
     deleteUnit: async (id: number) => await mutate<boolean>({ mutation: DELETE_UNIT, variables: { id } }),
     editUnit: async (id: number, editedUnit: Unit) =>
         await mutate<boolean>({ mutation: EDIT_UNIT, variables: { id, ...editedUnit } }),
-}
+    fetchTypes: async () =>
+        await query<{ itemTypes: ItemType[]; partnerTypes: PartnerType[]; invoiceTypes: InvoiceType[] }>({
+            query: FETCH_TYPES
+        })
+};

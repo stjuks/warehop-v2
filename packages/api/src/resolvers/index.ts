@@ -1,6 +1,6 @@
 import { Model, ModelCtor, Sequelize } from 'sequelize-typescript';
 import { Op } from 'sequelize';
-import { GraphQLDate } from 'graphql-iso-date';
+import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
 import express from 'express';
 import util from 'util';
 
@@ -119,7 +119,7 @@ export const paginate = async (model: ModelCtor, opts: PaginateOptions) => {
 };
 
 const customScalarResolver = {
-    Date: GraphQLDate
+    Date: GraphQLDateTime
 };
 
 export default [

@@ -52,19 +52,36 @@ class InvoiceStore {
         this.paginatedSales.data.push(...services.data);
     };
 
-    @task 
+    @task
     addInvoice = async (invoice: Invoice) => {
         const invoiceInput: AddInvoiceInput = {
             ...invoice,
             partnerId: invoice.partner.id
+        };
+
+        invoiceInput.items = invoice.items.map(item => {
+            const result = {
+                ...item,
+                unitId: item.unit ? item.unit.id : undefined,
+                warehouseId: item.warehouse ? item.warehouse.id : undefined
+            };
+
+            delete result.unit;
+            delete result.warehouse;
+
+            return result;
+        });
+
+        try {
+            const id = await api.addInvoice(invoiceInput);
+
+            invoice.id = id;
+
+            if (invoice.type === 'PURCHASE') this.paginatedPurchases.data.push(invoice);
+            if (invoice.type === 'SALE') this.paginatedSales.data.push(invoice);
+        } catch (err) {
+            console.error(err);
         }
-
-        const id = await api.addInvoice(invoiceInput);
-
-        invoice.id = id;
-
-        if (invoice.type === 'PURCHASE') this.paginatedPurchases.data.push(invoice);
-        if (invoice.type === 'SALE') this.paginatedSales.data.push(invoice);
     };
 
     @computed

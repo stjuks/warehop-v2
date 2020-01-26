@@ -9,7 +9,6 @@ import DataObject from './DataObject';
 class PartnerStore {
     private PARTNER_LIMIT = 20;
 
-    // @observable paginatedPartners = new DataObject<Partner[]>([]);
     @observable paginatedPartners = paginatedData<Partner>();
 
     @task

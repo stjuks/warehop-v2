@@ -1,41 +1,19 @@
 import objectMapper from 'object-mapper';
 import { PaginatedData } from 'shared/types';
 import { Option } from '../components/Form/AriaSelect';
+import { itemTypeTranslations } from './translations';
 
 export const stall = async (delay: number) => {
     await new Promise(resolve => setTimeout(resolve, delay));
 };
 
 export interface MapSelectOptionAttributes {
-    label: string;
-    value?: string;
+    label?: (value: any) => string;
+    value?: (value: any) => any;
 }
 
-export const mapSelectOption = (args: { attrs?: MapSelectOptionAttributes; value: any }) => {
-    const { attrs, value } = args;
-
-    if (typeof value === 'object') {
-        if (value.value && value.label) return value;
-
-        if (attrs) {
-            let result = { value };
-
-            const map = {
-                [attrs.label]: 'label'
-            };
-
-            if (attrs.value) map[attrs.value] = 'value';
-
-            return { ...result, ...objectMapper(value, map) };
-        }
-    }
-
-    return { value, label: value };
-};
-
-export const mapSelectOptions = (args: { attrs?: MapSelectOptionAttributes; values: any[] }) => {
-    const { values, attrs } = args;
-    const result: Option[] = values.map(value => mapSelectOption({ attrs, value }));
+export const mapSelectOptions = (values: any[], optionMap?: MapSelectOptionAttributes) => {
+    const result: Option[] = values.map(value => mapSelectOption(value, optionMap));
     return result;
 };
 
@@ -58,6 +36,19 @@ export const paginatedData = <T>() => {
         },
         data: []
     };
+
+    return result;
+};
+
+export const mapSelectOption = (value: any, optionMap?: MapSelectOptionAttributes) => {
+    let label = value;
+
+    if (optionMap) {
+        label = optionMap.label ? optionMap.label(value) : value;
+        value = optionMap.value ? optionMap.value(value) : value;
+    }
+
+    const result: Option = { label, value };
 
     return result;
 };

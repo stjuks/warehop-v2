@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 
 export default gql`
     interface InvoiceItem {
-        id: ID
+        id: ID!
         type: ItemType
         name: String
         quantity: Float

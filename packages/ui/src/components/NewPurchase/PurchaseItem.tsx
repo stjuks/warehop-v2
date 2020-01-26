@@ -1,9 +1,11 @@
 import React from 'react';
 import { $, multiply } from 'moneysafe';
+import currency from 'currency.js';
 
 import { PurchaseItemContainer } from './styles';
 import { InvoiceItem } from 'shared/types';
 import { FiDelete, FiEdit, FiTrash2 } from 'react-icons/fi';
+import { itemTypeTranslations } from '../../util/translations';
 
 interface PurchaseItemProps {
     item: InvoiceItem;
@@ -12,8 +14,10 @@ interface PurchaseItemProps {
 }
 
 const PurchaseItem: React.FC<PurchaseItemProps> = ({ item, onDelete, onEdit }) => {
-    const summedPrice = multiply($(item.quantity), $(item.price)).toString();
-    const formattedPrice = $(item.price).toString();
+    const summedPrice = currency(item.price)
+        .multiply(item.quantity)
+        .toString();
+    const formattedPrice = currency(item.price).toString();
 
     return (
         <PurchaseItemContainer>
@@ -38,7 +42,7 @@ const PurchaseItem: React.FC<PurchaseItemProps> = ({ item, onDelete, onEdit }) =
             </div>
             <div className="row row-3">
                 <span className="attr-5">{item.warehouse && item.warehouse.name}</span>
-                <span className="attr-6">{item.type}</span>
+                <span className="attr-6">{itemTypeTranslations[item.type]}</span>
             </div>
         </PurchaseItemContainer>
     );

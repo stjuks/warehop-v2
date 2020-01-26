@@ -1,6 +1,6 @@
-import React, { useState, PropsWithChildren } from 'react';
+import React, { useState, useContext } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Formik, FormikProps } from 'formik';
+import { observer } from 'mobx-react-lite';
 import Modal from '../Modal';
 import routes from '../../util/routes';
 import history from '../../util/history';
@@ -16,18 +16,17 @@ import Header from '../Header';
 import { ContentContainer } from '../App/styles';
 import { FooterContainer } from '../Footer/styles';
 import Button from '../Button';
-import { RouteComponentProps } from 'react-router';
 import { filterObjectProperties } from '../../util/helpers';
+import { itemTypeTranslations } from '../../util/translations';
+import CommonStoreContext from '../../stores/CommonStore';
+import { RouteChildrenProps } from 'react-router';
+import WarehouseStoreContext from '../../stores/WarehouseStore';
 
 interface NewPurchaseItemProps {
     arrayHelpers: any;
 }
 
-const itemTypes = [];
-const units = [];
-const warehouses = [];
-
-const DEFAULT_ITEM_TYPE = itemTypes[0];
+const DEFAULT_ITEM_TYPE: ItemType = 'PRODUCT';
 
 const serviceAndExpenseForm = {
     initialValues: {
@@ -36,11 +35,11 @@ const serviceAndExpenseForm = {
         unit: undefined,
         purchasePrice: ''
     },
-    fields: ['type', 'name', 'quantity', 'unit', 'purchasePrice'],
+    fields: ['type', 'name', 'quantity', 'unit', 'price'],
     validationSchema: yup.object({
         name: yup.string().required('Palun sisesta artikli nimetus.'),
         quantity: yup.number('Kogus peab olema number.').required('Palun sisesta artikli kogus.'),
-        purchasePrice: yup.number('Hind peab olema number.').required('Palun sisesta kauba ostuhind.')
+        price: yup.number('Hind peab olema number.').required('Palun sisesta kauba ostuhind.')
     })
 };
 
@@ -50,20 +49,19 @@ const forms = {
             name: '',
             code: '',
             quantity: '',
-            unit: units[0],
-            warehouse: warehouses[0],
+            unit: undefined,
+            warehouse: undefined,
             purchasePrice: '',
             retailPrice: ''
         },
-        fields: ['type', 'name', 'code', 'quantity', 'unit', 'warehouse', 'purchasePrice', 'retailPrice'],
+        fields: ['type', 'name', 'code', 'quantity', 'unit', 'warehouse', 'price'],
         validationSchema: yup.object({
             name: yup.string().required('Palun sisesta kauba nimetus.'),
             code: yup.string().required('Palun sisesta kauba kood.'),
             quantity: yup.number('Kogus peab olema number.').required('Palun sisesta kauba kogus.'),
             unit: yup.object().required('Palun vali kauba ühik.'),
             warehouse: yup.object().required('Palun vali kauba sihtladu.'),
-            purchasePrice: yup.number().required('Palun sisesta kauba ostuhind.'),
-            retailPrice: yup.number('Hind peab olema number.')
+            price: yup.number().required('Palun sisesta kauba ostuhind.')
         })
     },
     SERVICE: serviceAndExpenseForm,
@@ -71,6 +69,9 @@ const forms = {
 };
 
 const ItemForm = ({ type }: { type: ItemType }) => {
+    const commonStore = useContext(CommonStoreContext);
+    const warehouseStore = useContext(WarehouseStoreContext);
+
     // autofill fields on select
     const handleAutosuggestSelect = ({ suggestion, formik }) => {
         const values = {};
@@ -89,23 +90,32 @@ const ItemForm = ({ type }: { type: ItemType }) => {
                     name="code"
                     label="Kood"
                     getSuggestions={query => []}
-                    suggestionMap={{ label: 'code' }}
+                    suggestionMap={{ label: item => item.code }}
                     onSelect={handleAutosuggestSelect}
                 />
                 <AutosuggestInput
                     name="name"
                     label="Nimetus"
                     getSuggestions={query => []}
-                    suggestionMap={{ label: 'name' }}
+                    suggestionMap={{ label: item => item.name }}
                     onSelect={handleAutosuggestSelect}
                 />
                 <Row flex={[1, 1]}>
                     <TextInput name="quantity" label="Kogus" type="number" />
-                    <AriaSelect name="unit" label="Ühik" options={units} optionMap={{ label: 'name' }} />
+                    <AriaSelect
+                        name="unit"
+                        label="Ühik"
+                        options={commonStore.units}
+                        optionMap={{ label: unit => unit.name }}
+                    />
                 </Row>
-                <AriaSelect name="warehouse" label="Ladu" options={warehouses} optionMap={{ label: 'name' }} />
-                <TextInput name="purchasePrice" label="Ostuhind" type="number" indicator={'€'} />
-                <TextInput name="retailPrice" label="Müügihind" type="number" indicator={'€'} />
+                <AriaSelect
+                    name="warehouse"
+                    label="Ladu"
+                    options={warehouseStore.warehouses}
+                    optionMap={{ label: warehouse => warehouse.name }}
+                />
+                <TextInput name="price" label="Ostuhind" indicator={'€'} />
             </>
         );
     }
@@ -115,14 +125,21 @@ const ItemForm = ({ type }: { type: ItemType }) => {
             <TextInput name="name" label="Nimetus" />
             <Row flex={[1, 1]}>
                 <TextInput name="quantity" label="Kogus" type="number" />
-                <AriaSelect name="unit" label="Ühik" options={units} optionMap={{ label: 'name' }} />
+                <AriaSelect
+                    name="unit"
+                    label="Ühik"
+                    options={commonStore.units}
+                    optionMap={{ label: unit => unit.name }}
+                />
             </Row>
-            <TextInput name="purchasePrice" label="Ostuhind" type="number" indicator={'€'} />
+            <TextInput name="price" label="Ostuhind" indicator={'€'} />
         </>
     );
 };
 
-const NewPurchaseItem = props => {
+const NewPurchaseItem: React.FC<NewPurchaseItemProps & RouteChildrenProps> = observer(props => {
+    const commonStore = useContext(CommonStoreContext);
+
     const {
         location: { state },
         arrayHelpers
@@ -136,7 +153,7 @@ const NewPurchaseItem = props => {
     };
 
     const handleSubmit = values => {
-        const filteredValues = filterObjectProperties(values, forms[values.type.id].fields);
+        const filteredValues = filterObjectProperties(values, forms[values.type].fields);
 
         if (state && state.index !== undefined) {
             arrayHelpers.replace(state.index, filteredValues);
@@ -171,7 +188,12 @@ const NewPurchaseItem = props => {
                     onChange={handleTypeSelect}
                 >
                     <>
-                        <AriaSelect name="type" label="Kauba tüüp" options={itemTypes} optionMap={{ label: 'name' }} />
+                        <AriaSelect
+                            name="type"
+                            label="Kauba tüüp"
+                            options={commonStore.itemTypes}
+                            optionMap={{ label: type => itemTypeTranslations[type] }}
+                        />
                         <ItemForm type={activeItemType} />
                     </>
                 </Form>
@@ -181,6 +203,6 @@ const NewPurchaseItem = props => {
             </FooterContainer>
         </Modal>
     );
-};
+});
 
 export default withRouter(NewPurchaseItem);

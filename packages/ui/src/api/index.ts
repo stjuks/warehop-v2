@@ -1,26 +1,43 @@
 import apollo from '../util/apollo';
-import { QueryBaseOptions, MutationOptions } from 'apollo-boost';
+import { QueryBaseOptions, MutationOptions, ApolloError } from 'apollo-boost';
 
 import commonApi from './common';
 import partnerApi from './partner';
 import warehouseApi from './warehouse';
 import itemApi from './item';
 import invoiceApi from './invoice';
+import { GraphQLError } from 'graphql';
 
 export const query = async <T>(opts: QueryBaseOptions) => {
-    const { data } = await apollo.query(opts);
+    try {
+        const { data } = await apollo.query({ ...opts, fetchPolicy: 'no-cache' });
 
-    const result: T = getResult(data, opts);
+        const result: T = getResult(data, opts);
 
-    return result;
+        return result;
+    } catch (err) {
+        handleError(err);
+        throw err;
+    }
 };
 
 export const mutate = async <T>(opts: MutationOptions) => {
-    const { data } = await apollo.mutate(opts);
+    try {
+        const { data } = await apollo.mutate(opts);
 
-    const result: T = getResult(data, opts);
+        const result: T = getResult(data, opts);
 
-    return result;
+        return result;
+    } catch (err) {
+        handleError(err);
+        throw err;
+    }
+};
+
+const handleError = error => {
+    if (error instanceof ApolloError) {
+        throw error.graphQLErrors[0];
+    }
 };
 
 const getResult = (data, opts) => {
@@ -30,7 +47,6 @@ const getResult = (data, opts) => {
     if (queryDefinition && queryDefinition.name) queryName = queryDefinition.name.value;
 
     const result = queryName ? data[queryName] : data;
-    console.log(queryName, result);
 
     return result;
 };

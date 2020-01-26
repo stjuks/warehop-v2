@@ -4,6 +4,17 @@ const resolver: Resolver = {
     Query: {
         units: authResolver(async (_args, { models, user }) => {
             return await models.Unit.findAll({ where: { userId: user.id } });
+        }),
+        types: authResolver(async (_args, { models, user }) => {
+            const itemTypes = await models.ItemType.findAll();
+            const partnerTypes = await models.PartnerType.findAll();
+            const invoiceTypes = await models.InvoiceType.findAll();
+
+            return {
+                itemTypes: itemTypes.map(type => type.id),
+                partnerTypes: partnerTypes.map(type => type.id),
+                invoiceTypes: invoiceTypes.map(type => type.id)
+            };
         })
     },
     Mutation: {

@@ -7,11 +7,12 @@ import routes from '../../util/routes';
 import history from '../../util/history';
 import { NewProductContainer, AddPurchaseItemBtn } from './styles';
 import PartnerStoreContext from '../../stores/PartnerStore';
+import InvoiceStoreContext from '../../stores/InvoiceStore';
 
 import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
 import Button from '../Button';
-import { Partner, InvoiceItem } from 'shared/types';
+import { Partner, InvoiceItem, InvoiceType } from 'shared/types';
 import Form from '../Form';
 import FieldArray from '../Form/util/FieldArray';
 import PurchaseItem from './PurchaseItem';
@@ -26,33 +27,37 @@ import { FormTitle } from '../Form/styles';
 import { mapSelectOptions } from '../../util/helpers';
 
 interface NewPurchaseFormValues {
+    type: InvoiceType;
     partner: Partner | undefined;
-    invoiceNr: string;
+    number: string;
     invoiceFile?: File;
-    creationDate: moment.Moment;
-    dueDate: moment.Moment;
+    issueDate: Date;
+    dueDate: Date;
     description?: string;
     items: InvoiceItem[];
 }
 
 const NewPurchase = observer(() => {
     const partnerStore = useContext(PartnerStoreContext);
+    const invoiceStore = useContext(InvoiceStoreContext);
 
     const initialValues: NewPurchaseFormValues = {
+        type: 'PURCHASE',
         partner: undefined,
-        invoiceNr: '',
+        number: '',
         invoiceFile: undefined,
-        creationDate: moment(),
-        dueDate: moment(),
+        issueDate: moment().toDate(),
+        dueDate: moment().toDate(),
         description: '',
         items: []
     };
 
     const validationSchema = yup.object({
         partner: yup.object().required('Palun vali tarnija.'),
-        invoiceNr: yup.string().required('Palun sisesta arve number.'),
-        creationDate: yup.mixed().required('Palun sisesta ostukuupäev.'),
-        dueDate: yup.mixed().required('Palun sisesta maksetähtaeg.')
+        number: yup.string().required('Palun sisesta arve number.'),
+        issueDate: yup.mixed().required('Palun sisesta ostukuupäev.'),
+        dueDate: yup.mixed().required('Palun sisesta maksetähtaeg.'),
+        items: yup.array().required()
     });
 
     const ProductList = ({ formikProps }) => (
@@ -87,11 +92,13 @@ const NewPurchase = observer(() => {
         </FieldArray>
     );
 
-    console.log(partnerStore.partners);
-
-    const handleSubmit = purchase => {
-        // purchaseStore.addPurchase(purchase);
-        history.push(routes.purchases);
+    const handleSubmit = async purchase => {
+        try {
+            await invoiceStore.addInvoice(purchase);
+            history.push(routes.purchases);
+        } catch (err) {
+            throw err;
+        }
     };
 
     useEffect(() => {
@@ -116,15 +123,15 @@ const NewPurchase = observer(() => {
                                 label="Tarnija"
                                 onSearch={async query => {
                                     const partners = await partnerStore.searchPartners('VENDOR', query);
-                                    return mapSelectOptions({ values: partners, attrs: { label: 'name' } });
+                                    return mapSelectOptions(partners, { label: partner => partner.name });
                                 }}
                                 searchPlaceholder="Otsi tarnijat"
                                 options={partnerStore.partners}
-                                optionMap={{ label: 'name' }}
+                                optionMap={{ label: partner => partner.name }}
                             />
-                            <TextInput name="invoiceNr" label="Arve nr" />
+                            <TextInput name="number" label="Arve nr" />
                             <Row flex={[1, 1]}>
-                                <DateInput name="creationDate" label="Ostukuupäev" />
+                                <DateInput name="issueDate" label="Ostukuupäev" />
                                 <DateInput name="dueDate" label="Maksetähtaeg" />
                             </Row>
                             <FormTitle>Lisaandmed</FormTitle>

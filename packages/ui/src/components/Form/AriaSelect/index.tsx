@@ -5,7 +5,7 @@ import { useDebounce } from 'react-use';
 
 import { ButtonContainer, WrapperContainer, MenuItemContainer, MenuContainer, SearchInput } from './styles';
 import { TextInputBase, InputActionButtons } from '../TextInput';
-import { mapSelectOptions, mapSelectOption } from '../../../util/helpers';
+import { mapSelectOptions, mapSelectOption, MapSelectOptionAttributes } from '../../../util/helpers';
 import { DropdownMenu } from '../util/DropdownMenu';
 import { observer } from 'mobx-react-lite';
 import Loader from '../util/Loader';
@@ -18,10 +18,7 @@ export interface Option {
 interface AriaSelectProps {
     name: string;
     options: any[];
-    optionMap?: {
-        value?: string;
-        label: string;
-    };
+    optionMap?: MapSelectOptionAttributes;
     searchPlaceholder?: string;
     placeholder?: string;
     className?: string;
@@ -59,13 +56,10 @@ const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = observer(
                 setLoadingOptions(true);
 
                 const loadedOptions = await options;
-                const _mappedOptions = mapSelectOptions({
-                    attrs: optionMap,
-                    values: loadedOptions
-                });
+                const _mappedOptions = mapSelectOptions(loadedOptions, optionMap);
 
                 if (field.value) {
-                    setDisplayValue(mapSelectOption({ attrs: optionMap, value: field.value }).label);
+                    setDisplayValue(mapSelectOption(field.value, optionMap).label);
                 }
 
                 setMappedOptions(_mappedOptions);
@@ -91,7 +85,7 @@ const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = observer(
 
         useDebounce(
             async () => {
-                if (onSearch) {
+                if (onSearch && searchQuery) {
                     setLoadingSearch(true);
                     const searchedOptions = await onSearch(searchQuery, mappedOptions);
                     setSearchOptions(searchedOptions);
