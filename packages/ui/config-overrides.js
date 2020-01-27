@@ -1,5 +1,4 @@
 const path = require('path');
-const fs = require('fs');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 
 module.exports = function override(config) {

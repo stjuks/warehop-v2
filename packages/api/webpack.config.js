@@ -13,7 +13,7 @@ module.exports = {
     resolve: {
         extensions: ['.ts', '.js', '.node'] //resolve all the modules other than index.ts
     },
-    plugins: [ new Dotenv() ],
+    plugins: [new Dotenv()],
     module: {
         rules: [
             {
@@ -22,5 +22,5 @@ module.exports = {
             }
         ]
     },
-    externals: [nodeExternals()]
+    externals: [nodeExternals({ modulesDir: path.resolve(__dirname, '../../node_modules') })]
 };

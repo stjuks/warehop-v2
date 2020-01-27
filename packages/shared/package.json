@@ -1,9 +1,20 @@
 {
     "name": "shared",
-    "version": "1.0.0",
-    "main": "index.ts",
+    "version": "0.1.0",
+    "main": "./dist/index.js",
+    "typings": "./dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
     "license": "MIT",
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "watch": "tsc -p tsconfig.json --watch"
+    },
     "dependencies": {
         "apollo-server-express": "^2.9.16"
+    },
+    "devDependencies": {
+        "typescript": "^3.7.5"
     }
 }

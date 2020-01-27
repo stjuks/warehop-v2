@@ -1,0 +1,25 @@
+{
+    "name": "warehop-ts",
+    "version": "1.0.0",
+    "description": "",
+    "private": true,
+    "workspaces": [
+        "packages/*"
+    ],
+    "scripts": {
+        "watch": "lerna run --parallel watch"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/stjuks/warehop-frontend-ts.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/stjuks/warehop-frontend-ts/issues"
+    },
+    "homepage": "https://github.com/stjuks/warehop-frontend-ts#readme",
+    "devDependencies": {
+        "lerna": "^3.20.2"
+    }
+}

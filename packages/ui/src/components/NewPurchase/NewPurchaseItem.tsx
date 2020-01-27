@@ -143,7 +143,7 @@ const NewPurchaseItem: React.FC<NewPurchaseItemProps & RouteChildrenProps> = obs
     const {
         location: { state },
         arrayHelpers
-    } = props;
+    }: { [key: string]: any } = props;
 
     const [activeItemType, setActiveItemType] = useState<ItemType>((state && state.item.type) || DEFAULT_ITEM_TYPE);
 

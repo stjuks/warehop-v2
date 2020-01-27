@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import lol from 'shared';
 
 import db from './db';
 import apollo from './util/apollo';

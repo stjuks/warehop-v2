@@ -5,6 +5,8 @@
     "main": "index.ts",
     "scripts": {
         "start": "npm-run-all --parallel watch:server watch:build",
+        "watch": "npm-run-all --parallel watch:server watch:build",
+        "test-cmd": "ts-node-dev --project tsconfig.json ./src/index.ts",
         "watch:server": "nodemon \"./build/bundle.js\" --watch \"./build\" ",
         "watch:build": "webpack --watch",
         "build": "webpack",
@@ -16,6 +18,7 @@
         "nodemon": "^1.12.1",
         "npm-run-all": "^4.1.1",
         "ts-loader": "^3.0.5",
+        "ts-node-dev": "^1.0.0-pre.44",
         "typescript": "^2.5.3",
         "webpack": "^3.8.1",
         "webpack-node-externals": "^1.7.2"
@@ -51,6 +54,7 @@
         "reflect-metadata": "^0.1.13",
         "sequelize": "^5.21.3",
         "sequelize-cli": "^5.5.1",
-        "sequelize-typescript": "^1.1.0"
+        "sequelize-typescript": "^1.1.0",
+        "shared": "0.1.0"
     }
 }
