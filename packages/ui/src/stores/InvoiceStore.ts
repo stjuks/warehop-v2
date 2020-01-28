@@ -80,7 +80,7 @@ class InvoiceStore {
             if (invoice.type === 'PURCHASE') this.paginatedPurchases.data.push(invoice);
             if (invoice.type === 'SALE') this.paginatedSales.data.push(invoice);
         } catch (err) {
-            console.error(err);
+            throw err;
         }
     };
 

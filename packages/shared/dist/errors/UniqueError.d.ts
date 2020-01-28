@@ -1,4 +1,5 @@
 import { ApolloError } from 'apollo-server-express';
-export default class UniqueError extends ApolloError {
-    constructor(message: any, code: any, extensions: any);
+declare class UniqueError extends ApolloError {
+    constructor(message: string, code?: string, extensions?: any);
 }
+export default UniqueError;

@@ -1,3 +1,5 @@
-const shared: string = 'mkks';
+import errors from './errors';
 
-export default shared;
+export default {
+    ...errors
+};
