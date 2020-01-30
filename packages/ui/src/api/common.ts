@@ -1,6 +1,6 @@
 import { gql } from 'apollo-boost';
 import { query, mutate } from '.';
-import { Unit, ItemType, PartnerType, InvoiceType } from 'shared/types';
+import { Unit, ItemType, PartnerType, InvoiceType } from '@shared/types';
 
 export const FETCH_UNITS = gql`
     query units {

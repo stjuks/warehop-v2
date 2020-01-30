@@ -1,6 +1,7 @@
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const Dotenv = require('dotenv-webpack');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = {
     entry: './src/index.ts',
@@ -11,7 +12,8 @@ module.exports = {
         filename: 'bundle.js'
     },
     resolve: {
-        extensions: ['.ts', '.js', '.node'] //resolve all the modules other than index.ts
+        extensions: ['.ts', '.js', '.node'], //resolve all the modules other than index.ts
+        plugins: [new TsconfigPathsPlugin()]
     },
     plugins: [new Dotenv()],
     module: {

@@ -1,7 +1,7 @@
 import { observable, action, flow } from 'mobx';
 import { task } from 'mobx-task';
 import { createContext } from 'react';
-import { Unit, ItemType, PartnerType, InvoiceType } from 'shared/types';
+import { Unit, ItemType, PartnerType, InvoiceType } from '@shared/types';
 import api from '../api';
 
 class CommonStore {

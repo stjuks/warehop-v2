@@ -1,7 +1,5 @@
-import objectMapper from 'object-mapper';
-import { PaginatedData } from 'shared/types';
+import { PaginatedData } from '@shared/types';
 import { Option } from '../components/Form/AriaSelect';
-import { itemTypeTranslations } from './translations';
 
 export const stall = async (delay: number) => {
     await new Promise(resolve => setTimeout(resolve, delay));

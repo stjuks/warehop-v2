@@ -1,6 +1,12 @@
 import express from 'express';
 import cors from 'cors';
 
+import { UniqueError } from '@shared/errors';
+import xd from '@shared/src';
+
+console.log(xd);
+console.log(UniqueError);
+
 import db from './db';
 import apollo from './util/apollo';
 import passport from './util/passport';

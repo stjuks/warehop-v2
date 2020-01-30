@@ -1,7 +1,7 @@
-import { observable, action, flow } from 'mobx';
+import { observable } from 'mobx';
 import { createContext } from 'react';
 
-import { Warehouse } from 'shared/types';
+import { Warehouse } from '@shared/types';
 import { task } from 'mobx-task';
 import api from '../api';
 

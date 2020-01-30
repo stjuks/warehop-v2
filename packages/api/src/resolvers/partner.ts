@@ -1,6 +1,6 @@
 import { Op } from 'sequelize';
 import { Resolver, authResolver, paginate } from '.';
-import { PaginatedQueryInput, SearchPartnerInput } from 'shared/inputTypes';
+import { PaginatedQueryInput, SearchPartnerInput } from '@shared/types';
 
 const partnerResolver: Resolver = {
     Query: {

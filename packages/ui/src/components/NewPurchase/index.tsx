@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { observer, useObservable } from 'mobx-react-lite';
+import { observer } from 'mobx-react-lite';
 import moment from 'moment';
 import * as yup from 'yup';
 
@@ -12,7 +12,7 @@ import InvoiceStoreContext from '../../stores/InvoiceStore';
 import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
 import Button from '../Button';
-import { Partner, InvoiceItem, InvoiceType } from 'shared/types';
+import { Partner, InvoiceItem, InvoiceType } from '@shared/types';
 import Form from '../Form';
 import FieldArray from '../Form/util/FieldArray';
 import PurchaseItem from './PurchaseItem';

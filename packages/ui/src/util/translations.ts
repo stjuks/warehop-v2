@@ -1,4 +1,4 @@
-import { ItemType } from 'shared/types';
+import { ItemType } from '@shared/types';
 
 type ItemTypeTranslation = { [key in ItemType]: string };
 

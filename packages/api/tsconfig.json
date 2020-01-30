@@ -1,20 +1,7 @@
 {
+    "extends": "../tsconfig.json",
     "compilerOptions": {
-        "module": "ES6",
-        "moduleResolution": "node",
         "outDir": "./build/",
-        "noImplicitAny": false,
-        "target": "ES2017",
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "skipLibCheck": true,
-        "allowSyntheticDefaultImports": true,
-        "baseUrl": ".",
-        "sourceMap": true,
-        "allowJs": true,
-        "lib": ["es2015", "dom"],
-        "paths": {
-            "shared/*": ["../shared/*"]
-        }
+        "sourceMap": true
     }
 }

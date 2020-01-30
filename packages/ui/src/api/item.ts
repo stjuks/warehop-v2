@@ -1,6 +1,6 @@
 import { gql } from 'apollo-boost';
 import { query, mutate } from '.';
-import { Unit, ItemInput, ProductItem, ExpenseItem, PaginatedData } from 'shared/types';
+import { ItemInput, ProductItem, ExpenseItem, PaginatedData } from '@shared/types';
 
 export const FETCH_PRODUCTS = gql`
     query products($cursor: String, $limit: Int!) {

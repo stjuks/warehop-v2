@@ -1,5 +1,4 @@
-import UniqueError from './UniqueError';
-declare const _default: {
-    UniqueError: typeof UniqueError;
-};
-export default _default;
+import { ApolloError } from 'apollo-server-express';
+export declare class UniqueError extends ApolloError {
+    constructor(message: string, code?: string, extensions?: any);
+}

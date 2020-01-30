@@ -6,16 +6,14 @@ import theme from '../../util/theme';
 
 import Header from '../Header';
 import { MenuPopover } from '../Popover';
-import { ProductItem } from 'shared/types';
+import { ProductItem } from '@shared/types';
 import routes from '../../util/routes';
 import { ContentContainer } from '../App/styles';
 
 const ProductDetails = props => {
-    const [product, setProduct] = useState<ProductItem>();
+    const [product] = useState<ProductItem>();
 
-    useEffect(() => {
-        const { id } = props.match.params;
-    }, [product, props.match.params]);
+    useEffect(() => {}, [product, props.match.params]);
 
     const headerIcons = [
         <MenuPopover

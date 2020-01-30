@@ -3,7 +3,7 @@ import currency from 'currency.js';
 
 import { FiChevronRight } from 'react-icons/fi';
 import { ProductItemContainer } from './styles';
-import { ProductItem as ProductItemType} from 'shared/types';
+import { ProductItem as ProductItemType } from '@shared/types';
 import routes from '../../util/routes';
 
 function ProductItem(product: ProductItemType) {

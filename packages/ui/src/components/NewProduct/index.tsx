@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { observer } from 'mobx-react-lite';
 import * as yup from 'yup';
 import { FiTrash2, FiPlusCircle } from 'react-icons/fi';
@@ -6,12 +6,12 @@ import { FiTrash2, FiPlusCircle } from 'react-icons/fi';
 import routes from '../../util/routes';
 import WarehouseStoreContext from '../../stores/WarehouseStore';
 import ItemStoreContext from '../../stores/ItemStore';
-import { NewProductContainer, FormRowContainer, AddWarehouseButton, TrashButtonContainer } from './styles';
+import { NewProductContainer, AddWarehouseButton, TrashButtonContainer } from './styles';
 
 import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
 import Button from '../Button';
-import { Warehouse, WarehouseQuantity, Unit, Partner, ProductItem } from 'shared/types';
+import { Warehouse, WarehouseQuantity, ProductItem } from '@shared/types';
 import Form from '../Form';
 import { FormTitle } from '../Form/styles';
 import TextInput from '../Form/TextInput';
@@ -51,7 +51,7 @@ const NewProduct = observer(() => {
     });
 
     const filterChosenWarehouseOptions = (formValues: WarehouseQuantity[], warehouses: Warehouse[]) => {
-        return warehouses.filter(wh => formValues.map(whVal => whVal.id).indexOf(Number(wh.id)) == -1);
+        return warehouses.filter(wh => formValues.map(whVal => whVal.id).indexOf(Number(wh.id)) === -1);
     };
 
     const findFirstNonChosenWarehouse = (formValues: WarehouseQuantity[], warehouses: Warehouse[]) => {
@@ -73,7 +73,12 @@ const NewProduct = observer(() => {
                             <FormTitle>Põhiandmed</FormTitle>
                             <TextInput name="code" label="Kood" />
                             <TextInput name="name" label="Nimetus" />
-                            <AriaSelect name="unit" label="Ühik" optionMap={{ label: unit => unit.name }} options={units} />
+                            <AriaSelect
+                                name="unit"
+                                label="Ühik"
+                                optionMap={{ label: unit => unit.name }}
+                                options={units}
+                            />
                             <FormTitle>Lisainfo</FormTitle>
                             <AriaSelect
                                 name="partner"

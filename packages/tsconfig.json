@@ -1,0 +1,11 @@
+{
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@shared/src": ["shared/src/index.ts"],
+            "@shared/errors": ["shared/src/errors/index.ts"],
+            "@shared/types": ["shared/src/types/index.d.ts"]
+        }
+    }
+}

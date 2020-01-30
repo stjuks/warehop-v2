@@ -1,6 +1,5 @@
 import { Resolver, authResolver, ApolloContext, paginate } from '.';
-import { TransactionType, InvoiceType } from 'shared/types';
-import { PaginatedQueryInput } from 'shared/inputTypes';
+import { TransactionType, InvoiceType, PaginatedQueryInput } from '@shared/types';
 
 interface TransactionInput {
     id: number;

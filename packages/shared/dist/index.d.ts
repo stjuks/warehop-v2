@@ -1,4 +1,2 @@
-declare const _default: {
-    UniqueError: typeof import("./errors/UniqueError").default;
-};
+declare const _default: "lo";
 export default _default;

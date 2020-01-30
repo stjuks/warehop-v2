@@ -1,7 +1,6 @@
 import { gql } from 'apollo-boost';
 import { query, mutate } from '.';
-import { Partner, PaginatedData } from 'shared/types';
-import { SearchPartnerInput } from 'shared/inputTypes';
+import { Partner, PaginatedData, SearchPartnerInput } from '@shared/types';
 
 const partnerSchema = `
     id

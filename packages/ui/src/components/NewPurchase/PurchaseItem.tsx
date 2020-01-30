@@ -1,10 +1,9 @@
 import React from 'react';
-import { $, multiply } from 'moneysafe';
 import currency from 'currency.js';
 
 import { PurchaseItemContainer } from './styles';
-import { InvoiceItem } from 'shared/types';
-import { FiDelete, FiEdit, FiTrash2 } from 'react-icons/fi';
+import { InvoiceItem } from '@shared/types';
+import { FiEdit, FiTrash2 } from 'react-icons/fi';
 import { itemTypeTranslations } from '../../util/translations';
 
 interface PurchaseItemProps {

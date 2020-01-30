@@ -1,4 +1,4 @@
-import { Model, Table, Column, PrimaryKey, AutoIncrement, AllowNull } from 'sequelize-typescript';
+import { Model, Table, Column, PrimaryKey } from 'sequelize-typescript';
 
 @Table
 export default class ItemType extends Model<ItemType> {

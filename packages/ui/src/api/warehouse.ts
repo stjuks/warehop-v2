@@ -1,6 +1,6 @@
 import { gql } from 'apollo-boost';
 import { query, mutate } from '.';
-import { Warehouse } from 'shared/types';
+import { Warehouse } from '@shared/types';
 
 export const FETCH_WAREHOUSES = gql`
     query warehouses {

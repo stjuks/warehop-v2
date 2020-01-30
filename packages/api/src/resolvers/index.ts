@@ -13,7 +13,7 @@ import invoiceResolvers from './invoice';
 import transactionResolver from './transaction';
 
 import models from '../db/models';
-import { User, PaginatedData } from 'shared/types';
+import { User, PaginatedData } from '@shared/types';
 import { authenticateJWT } from '../util/passport';
 import { Schema } from '@hapi/joi';
 import { toCursorHash, fromCursorHash } from '../util/helpers';

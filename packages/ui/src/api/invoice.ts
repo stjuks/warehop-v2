@@ -1,7 +1,6 @@
 import { gql } from 'apollo-boost';
 import { query, mutate } from '.';
-import { Unit, Invoice, PaginatedData } from 'shared/types';
-import { AddInvoiceInput } from 'shared/inputTypes';
+import { Invoice, PaginatedData, AddInvoiceInput } from '@shared/types';
 
 const invoiceSchema = `
     pageInfo {
@@ -93,7 +92,7 @@ const ADD_INVOICE = gql`
 
 export default {
     fetchPurchases: async (variables: { limit: number; cursor?: string }) => {
-        return await query<PaginatedData<Invoice>>({ query: FETCH_PURCHASES, variables })
+        return await query<PaginatedData<Invoice>>({ query: FETCH_PURCHASES, variables });
     },
     fetchSales: async (variables: { limit: number; cursor?: string }) =>
         await query<PaginatedData<Invoice>>({ query: FETCH_SALES, variables }),

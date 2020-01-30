@@ -5,8 +5,7 @@ import Joi from '@hapi/joi';
 
 import { Resolver, authResolver, ApolloContext, paginate } from '.';
 
-import { InvoiceType } from 'shared/types';
-import { InvoiceSearchInput, AddInvoiceInput, InvoiceItemInput, PaginatedQueryInput } from 'shared/inputTypes';
+import { InvoiceType, InvoiceSearchInput, AddInvoiceInput, InvoiceItemInput, PaginatedQueryInput } from '@shared/types';
 
 const validateAddInvoice = Joi.object({
     invoice: Joi.object({

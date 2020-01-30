@@ -13,8 +13,6 @@ import {
     Index
 } from 'sequelize-typescript';
 
-import sequelize from 'sequelize';
-
 import User from './User';
 import Partner from './Partner';
 import InvoiceType from './InvoiceType';

@@ -4,7 +4,7 @@ import currency from 'currency.js';
 
 import routes from '../../util/routes';
 import { PurchaseItemContainer, DaysLeftStyled } from './styles';
-import { Invoice } from 'shared/types';
+import { Invoice } from '@shared/types';
 import { FiChevronRight } from 'react-icons/fi';
 
 const PurchaseItem: React.FC<Invoice> = ({ number, sum, partner, id, dueDate, isPaid }) => {

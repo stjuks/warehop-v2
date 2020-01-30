@@ -1,8 +1,6 @@
 import { Resolver, authResolver, ApolloContext, paginate } from '.';
-import { ItemType, ItemInput } from 'shared/types';
+import { ItemType, ItemInput, PaginatedQueryInput } from '@shared/types';
 import { Op } from 'sequelize';
-import { number } from 'joi';
-import { PaginatedQueryInput } from 'shared/inputTypes';
 
 interface ItemSearchInput {
     query: {

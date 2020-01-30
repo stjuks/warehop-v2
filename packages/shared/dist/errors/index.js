@@ -1,10 +1,10 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const UniqueError_1 = __importDefault(require("./UniqueError"));
-exports.default = {
-    UniqueError: UniqueError_1.default
-};
+const apollo_server_express_1 = require("apollo-server-express");
+class UniqueError extends apollo_server_express_1.ApolloError {
+    constructor(message, code, extensions) {
+        super(message, code, extensions);
+    }
+}
+exports.UniqueError = UniqueError;
 //# sourceMappingURL=index.js.map

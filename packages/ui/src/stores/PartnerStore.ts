@@ -1,10 +1,9 @@
 import { observable, computed } from 'mobx';
 import { task } from 'mobx-task';
 import { createContext } from 'react';
-import { Partner, PartnerType } from 'shared/types';
+import { Partner, PartnerType } from '@shared/types';
 import api from '../api';
 import { paginatedData } from '../util/helpers';
-import DataObject from './DataObject';
 
 class PartnerStore {
     private PARTNER_LIMIT = 20;
@@ -40,7 +39,7 @@ class PartnerStore {
         });
 
         return partners;
-    }
+    };
 
     @computed
     get partners() {
