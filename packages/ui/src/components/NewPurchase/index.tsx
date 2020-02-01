@@ -60,7 +60,7 @@ const NewPurchase = observer(() => {
         number: yup.string().required('Palun sisesta arve number.'),
         issueDate: yup.mixed().required('Palun sisesta ostukuupäev.'),
         dueDate: yup.mixed().required('Palun sisesta maksetähtaeg.'),
-        items: yup.array().required()
+        items: yup.array().required('Palun lisa arvele kaubad.')
     });
 
     const ProductList = ({ formikProps }) => (
@@ -124,6 +124,7 @@ const NewPurchase = observer(() => {
                                 messages={{
                                     EntityAlreadyExistsError: { number: 'Sellise numbriga arve juba eksisteerib.' }
                                 }}
+                                fields={['items']}
                             />
                             <FormTitle>Põhiandmed</FormTitle>
                             <AriaSelect

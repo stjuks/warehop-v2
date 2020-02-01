@@ -10,44 +10,61 @@ interface FormErrorProps {
             [key: string]: string;
         };
     };
+    fields?: string[];
 }
 
-const FormError: React.FC<FormErrorProps> = ({ messages }) => {
-    const [message, setMessage] = useState('');
+const FormError: React.FC<FormErrorProps> = ({ messages, fields }) => {
+    const [errors, setErrors] = useState<string[]>([]);
     const formikContext = useFormikContext();
 
-    const errors: any = formikContext.errors;
-    const error = errors.__thrownError;
+    const formikErrors: any = formikContext.errors;
 
-    const handleMessage = errorMessage => {
-        if (errorMessage) setMessage(errorMessage);
-        else setMessage('Viga.');
-    };
+    const handleErrors = useCallback(() => {
+        const errorMessages: string[] = [];
 
-    const handleError = useCallback(() => {
-        if (messages && error) {
-            if (error.code) {
-                const code: ErrorCode = error.code;
-                const errorMessages = messages[code];
+        if (fields) {
+            fields.forEach(field => {
+                if (formikErrors[field]) errorMessages.push(formikErrors[field]);
+            });
+        }
 
-                if (code === 'EntityAlreadyExistsError' && errorMessages) {
-                    if (error.fields) {
-                        error.fields.forEach(field => {
-                            const errorMessage = errorMessages[field];
+        const thrownError = formikErrors.__thrownError;
 
-                            if (errorMessage) handleMessage(errorMessage);
+        if (messages && thrownError) {
+            if (thrownError.code) {
+                const code: ErrorCode = thrownError.code;
+                const codeMessages = messages[code];
+
+                if (code === 'EntityAlreadyExistsError' && codeMessages) {
+                    if (thrownError.fields) {
+                        thrownError.fields.forEach(field => {
+                            const errorMessage: any = codeMessages[field];
+
+                            if (errorMessage) errorMessages.push(errorMessage);
                         });
                     }
+                } else {
+                    errorMessages.push('Viga.');
                 }
             }
         }
-    }, [messages, error]);
+
+        setErrors(errorMessages);
+    }, [messages, formikErrors, fields]);
 
     useEffect(() => {
-        handleError();
-    }, [handleError]);
+        handleErrors();
+    }, [handleErrors]);
 
-    return error ? <FormErrorContainer>{message}</FormErrorContainer> : null;
+    return errors.length > 0 ? (
+        <FormErrorContainer>
+            <ul>
+                {errors.map(msg => (
+                    <li key={msg}>{msg}</li>
+                ))}
+            </ul>
+        </FormErrorContainer>
+    ) : null;
 };
 
 export default FormError;

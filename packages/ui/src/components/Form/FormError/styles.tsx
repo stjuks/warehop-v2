@@ -10,5 +10,10 @@ export const FormErrorContainer = styled.div`
         background: ${theme.colors.danger.opacity(0.025)};
         color: ${theme.colors.danger};
         font-size: 0.875rem;
+
+        ul {
+            padding-left: 1rem;
+            margin: 0;
+        }
     `}
 `;
