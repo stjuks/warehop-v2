@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from '../../../util/styled';
 import { Wrapper, Button, Menu, MenuItem } from 'react-aria-menubutton';
 
 export const WrapperContainer = styled(Wrapper).attrs({ className: 'select-wrapper' })`

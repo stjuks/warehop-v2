@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from '../../util/styled';
 import { ProductItemContainer } from '../ProductItem/styles';
 
 interface DaysLeftStyledProps {

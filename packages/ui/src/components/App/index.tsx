@@ -11,7 +11,7 @@ import WarehouseStoreContext from '../../stores/WarehouseStore';
 
 import history from '../../util/history';
 import { AppContainer } from './styles';
-import theme from '../../util/theme';
+import { theme } from '../../util/styled';
 import routes from '../../util/routes';
 import Products from '../Products';
 import ProductDetails from '../ProductDetails';

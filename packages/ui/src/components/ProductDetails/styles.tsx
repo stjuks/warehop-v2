@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from '../../util/styled';
 
 const detailLabel = theme => `
     margin-bottom: 0.25rem;

@@ -16,8 +16,7 @@ export const query = async <T>(opts: QueryBaseOptions) => {
 
         return result;
     } catch (err) {
-        handleError(err);
-        throw err;
+        throw handleError(err);
     }
 };
 
@@ -29,14 +28,18 @@ export const mutate = async <T>(opts: MutationOptions) => {
 
         return result;
     } catch (err) {
-        handleError(err);
-        throw err;
+        throw handleError(err);
     }
 };
 
 const handleError = error => {
     if (error instanceof ApolloError) {
-        throw error.graphQLErrors[0];
+        const err: GraphQLError = error.graphQLErrors[0];
+
+        return {
+            message: err.message,
+            ...err.extensions
+        };
     }
 };
 

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from '../../../util/styled';
 
 export const FileInputStyled = styled.input`
     position: absolute;

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from '../../util/styled';
 
 export const RadioContainer = styled.div`
     ${({ theme }) => `

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Formik } from 'formik';
+import { Formik, FormikBag } from 'formik';
 
 import { FormContainer } from './styles';
 
@@ -26,10 +26,20 @@ const Form: React.FC<React.PropsWithChildren<FormProps>> = ({
         else return children;
     };
 
+    const handleSubmit = async (values, formikBag) => {
+        const { setErrors, errors } = formikBag;
+
+        try {
+            await onSubmit(values);
+        } catch (err) {
+            setErrors({ ...errors, __thrownError: err });
+        }
+    };
+
     return (
         <Formik
             initialValues={initialValues}
-            onSubmit={onSubmit}
+            onSubmit={async (values, formikBag) => await handleSubmit(values, formikBag)}
             validationSchema={validationSchema}
             validateOnChange={false}
             validateOnBlur={false}

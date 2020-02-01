@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from '../../util/styled';
 import { Link } from 'react-router-dom';
 
 interface TransitionProps {

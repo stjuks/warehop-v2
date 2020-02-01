@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from '../../util/styled';
 
 interface IIconContainerProps {
     size?: string;
@@ -9,7 +9,7 @@ export const HeaderContainer = styled.div`
     ${({ theme }) => `
         background: ${theme.colors.white};
         color: ${theme.colors.text};
-        box-shadow: ${theme.colors.lightShadow};
+        box-shadow: ${theme.lightShadow};
         
         font-family: 'Red Hat Display', sans-serif;
         padding: 0 1rem;

@@ -19,9 +19,6 @@ const apollo = new ApolloClient({
                 Authorization: `Bearer ${token}`
             }
         });
-    },
-    onError: ({ graphQLErrors, networkError, operation, forward }) => {
-        console.log(graphQLErrors);
     }
 });
 

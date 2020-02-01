@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FiMoreHorizontal, FiEdit, FiTrash2 } from 'react-icons/fi';
 
 import { TitleContainer, DetailCardContainer, DetailLabel, WarehouseRowContainer } from './styles';
-import theme from '../../util/theme';
+import { theme } from '../../util/styled';
 
 import Header from '../Header';
 import { MenuPopover } from '../Popover';
@@ -36,7 +36,7 @@ const ProductDetails = props => {
                     label: (
                         <div
                             style={{
-                                color: theme.colors.danger,
+                                color: theme.colors.danger.toString(),
                                 display: 'flex',
                                 alignItems: 'center'
                             }}

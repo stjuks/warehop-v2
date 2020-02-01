@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import moment from 'moment';
 import * as yup from 'yup';
@@ -25,6 +25,9 @@ import FileInput from '../Form/FileInput';
 import DateInput from '../Form/DateInput';
 import { FormTitle } from '../Form/styles';
 import { mapSelectOptions } from '../../util/helpers';
+import FormError from '../Form/FormError';
+import { ApolloError } from 'apollo-boost';
+import { GraphQLError } from 'graphql';
 
 interface NewPurchaseFormValues {
     type: InvoiceType;
@@ -103,7 +106,7 @@ const NewPurchase = observer(() => {
 
     useEffect(() => {
         partnerStore.fetchPartners();
-    }, []);
+    }, [partnerStore]);
 
     return (
         <>
@@ -117,6 +120,11 @@ const NewPurchase = observer(() => {
                 >
                     {formikProps => (
                         <>
+                            <FormError
+                                messages={{
+                                    EntityAlreadyExistsError: { number: 'Sellise numbriga arve juba eksisteerib.' }
+                                }}
+                            />
                             <FormTitle>Põhiandmed</FormTitle>
                             <AriaSelect
                                 name="partner"

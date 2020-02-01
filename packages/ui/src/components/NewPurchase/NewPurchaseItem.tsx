@@ -58,10 +58,16 @@ const forms = {
         validationSchema: yup.object({
             name: yup.string().required('Palun sisesta kauba nimetus.'),
             code: yup.string().required('Palun sisesta kauba kood.'),
-            quantity: yup.number('Kogus peab olema number.').required('Palun sisesta kauba kogus.'),
+            quantity: yup
+                .number()
+                .typeError('Kogus peab olema number.')
+                .required('Palun sisesta kauba kogus.'),
             unit: yup.object().required('Palun vali kauba ühik.'),
             warehouse: yup.object().required('Palun vali kauba sihtladu.'),
-            price: yup.number().required('Palun sisesta kauba ostuhind.')
+            price: yup
+                .number()
+                .typeError('Hind peab olema number.')
+                .required('Palun sisesta kauba ostuhind.')
         })
     },
     SERVICE: serviceAndExpenseForm,
