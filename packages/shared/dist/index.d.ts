@@ -1,2 +1,2 @@
-declare const _default: "lo";
-export default _default;
+declare const str: string;
+export default str;

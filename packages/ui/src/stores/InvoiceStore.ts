@@ -4,6 +4,7 @@ import { createContext } from 'react';
 import { Invoice, AddInvoiceInput } from '@shared/types';
 import api from '../api';
 import { paginatedData } from '../util/helpers';
+import { UniqueError } from '@shared/errors';
 
 class InvoiceStore {
     private INVOICE_LIMIT = 10;
@@ -79,6 +80,7 @@ class InvoiceStore {
             if (invoice.type === 'PURCHASE') this.paginatedPurchases.data.push(invoice);
             if (invoice.type === 'SALE') this.paginatedSales.data.push(invoice);
         } catch (err) {
+            console.log(err.toString());
             throw err;
         }
     };

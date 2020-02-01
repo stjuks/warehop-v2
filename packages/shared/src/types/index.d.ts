@@ -225,3 +225,6 @@ export interface ItemInput {
     description?: string;
     warehouseQuantity: WarehouseQuantity[];
 }
+
+// errors
+export type ErrorCode = 'EntityAlreadyExistsError' | 'AuthenticationError' | 'GeneralError';

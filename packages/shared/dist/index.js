@@ -1,4 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = 'lo';
+const str = 'lol';
+exports.default = str;
 //# sourceMappingURL=index.js.map

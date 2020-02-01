@@ -1,4 +1,8 @@
 import { ModelCtor, Model } from 'sequelize-typescript';
+import { ApolloError } from 'apollo-server-express';
+import { ErrorCode } from '@shared/types';
+import { GraphQLError } from 'graphql';
+import { ValidationError as SequelizeValidationError, ValidationErrorItem } from 'sequelize';
 
 interface ForeignKeyOpts {
     table: ModelCtor<Model<any, any>>;
@@ -42,3 +46,25 @@ export const createCheckConstraint = (opts: { table: ModelCtor<Model<any, any>>;
 
 export const toCursorHash = string => (string ? Buffer.from(string.toString()).toString('base64') : null);
 export const fromCursorHash = string => (string ? Buffer.from(string.toString(), 'base64').toString('ascii') : null);
+
+export const createError = (message: string, code: ErrorCode, extensions?: any) => {
+    return new ApolloError(message, code, extensions);
+};
+
+export const formatError = (err: GraphQLError) => {
+    const exception = err.extensions.exception;
+
+    console.error(err);
+
+    if (exception && exception.name) {
+        if (exception.name === 'SequelizeUniqueConstraintError') {
+            const validationError: SequelizeValidationError = exception;
+
+            return createError('Entity with these fields already exists.', 'EntityAlreadyExistsError', {
+                fields: validationError.errors.map((error: ValidationErrorItem) => error.path)
+            });
+        }
+    }
+
+    return createError('Error executing request.', 'GeneralError');
+};

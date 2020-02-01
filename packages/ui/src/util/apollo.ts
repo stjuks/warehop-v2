@@ -20,7 +20,9 @@ const apollo = new ApolloClient({
             }
         });
     },
-    onError: ({ graphQLErrors, networkError, operation, forward }) => {}
+    onError: ({ graphQLErrors, networkError, operation, forward }) => {
+        console.log(graphQLErrors);
+    }
 });
 
 export default apollo;

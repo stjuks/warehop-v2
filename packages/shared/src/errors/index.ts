@@ -1,7 +1,6 @@
-import { ApolloError } from 'apollo-server-express';
+export type ErrorCode = 'EntityAlreadyExistsError' | 'AuthenticationError';
 
-export class UniqueError extends ApolloError {
-    constructor(message: string, code?: string, extensions?: any) {
-        super(message, code, extensions);
-    }
-}
+export default {
+    EntityAlreadyExistsError: 'EntityAlreadyExistsError',
+    AuthenticationError: 'AuthenticationError'
+};
