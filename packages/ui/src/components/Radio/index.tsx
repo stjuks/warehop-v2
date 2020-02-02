@@ -13,7 +13,7 @@ export interface RadioProps {
 }
 
 const Radio: React.FC<RadioProps> = ({ options, name, onSelect, defaultValue }) => {
-    const [value, setValue] = useState(null);
+    const [value, setValue] = useState(undefined);
 
     const handleSelect = selectedValue => {
         setValue(selectedValue);
