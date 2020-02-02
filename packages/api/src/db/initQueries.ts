@@ -92,6 +92,16 @@ const createTestData = async () => {
     await models.Unit.create({ name: 'Tükk', abbreviation: 'tk', userId: 1 });
     await models.Warehouse.create({ name: 'Ladu 1', userId: 1 });
     await models.Partner.create({ name: 'CIRCLE K', type: 'VENDOR', userId: 1 });
+    await models.Partner.create({ name: 'Olerex AS', type: 'VENDOR', userId: 1 });
+    await models.Partner.create({ name: 'Pipedrive OÜ', type: 'VENDOR', userId: 1 });
+    await models.Partner.create({ name: 'Kuehne-Nagel Eesti AS', type: 'VENDOR', userId: 1 });
+    await models.Partner.create({ name: 'Telia AS', type: 'VENDOR', userId: 1 });
+    await models.Partner.create({ name: 'Tele2 AS', type: 'VENDOR', userId: 1 });
+    await models.Partner.create({ name: 'Elisa AS', type: 'VENDOR', userId: 1 });
+    await models.Partner.create({ name: 'Philips Eesti AS', type: 'VENDOR', userId: 1 });
+    await models.Partner.create({ name: 'Euronics AS', type: 'VENDOR', userId: 1 });
+    await models.Partner.create({ name: 'ON/OFF AS', type: 'VENDOR', userId: 1 });
+
 };
 
 export const createProcedures = async () => {
@@ -99,11 +109,11 @@ export const createProcedures = async () => {
         CREATE OR REPLACE FUNCTION add_invoice_paid_sum() RETURNS trigger AS $update_invoice_paid_sum$
             BEGIN
                 IF (TG_OP = 'DELETE') THEN
-                    UPDATE "Invoices" SET "paidSum"="paidSum" - OLD.sum;
+                    UPDATE "Invoices" SET "paidSum"=("paidSum" - OLD.sum) WHERE id=OLD."invoiceId";
                 ELSIF (TG_OP = 'INSERT') THEN
-                    UPDATE "Invoices" SET "paidSum"="paidSum" + NEW.sum;
+                    UPDATE "Invoices" SET "paidSum"=("paidSum" + NEW.sum) WHERE id=NEW."invoiceId";
                 ELSIF (TG_OP = 'UPDATE') THEN
-                    UPDATE "Invoices" SET "paidSum"="paidSum" + (NEW.sum - OLD.sum);
+                    UPDATE "Invoices" SET "paidSum"=("paidSum" + (NEW.sum - OLD.sum)) WHERE id=OLD."invoiceId";
                 END IF;
                 RETURN NULL;
             END;

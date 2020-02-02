@@ -68,7 +68,8 @@ export default gql`
     }
 
     input InvoiceSearchInput {
-        type: InvoiceType!
+        type: InvoiceType
+        pagination: PaginatedQueryInput
         number: String
         isPaid: Boolean
         description: String
@@ -82,10 +83,9 @@ export default gql`
     }
 
     extend type Query {
-        purchases(pagination: PaginatedQueryInput): PaginatedInvoice!
-        sales(pagination: PaginatedQueryInput): PaginatedInvoice!
+        purchases(filter: InvoiceSearchInput): PaginatedInvoice!
+        sales(filter: InvoiceSearchInput): PaginatedInvoice!
         invoiceItems(invoiceId: ID!): [InvoiceItem!]!
-        searchInvoices(query: InvoiceSearchInput!): [Invoice!]!
         invoice(id: ID!): Invoice
     }
 

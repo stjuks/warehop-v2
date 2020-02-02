@@ -22,7 +22,8 @@ export interface AddInvoiceInput {
 }
 
 export interface InvoiceSearchInput {
-    type: InvoiceType;
+    type?: InvoiceType;
+    pagination?: PaginatedQueryInput;
     number?: string;
     isPaid?: boolean;
     description?: string;

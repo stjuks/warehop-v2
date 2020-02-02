@@ -37,14 +37,13 @@ const resolver: Resolver = {
         invoice: authResolver(async ({ id }, context) => {
             return await findInvoice(context, id);
         }),
-        purchases: authResolver(
-            async ({ pagination: { cursor, limit } }: { pagination: PaginatedQueryInput }, context) => {
-                return await findInvoices(context, { type: 'PURCHASE', cursor, limit });
-            }
-        ),
-        sales: authResolver(async ({ pagination: { cursor, limit } }: { pagination: PaginatedQueryInput }, context) => {
-            return await findInvoices(context, { type: 'SALE', cursor, limit });
+        purchases: authResolver(async ({ filter }: { filter: InvoiceSearchInput }, context) => {
+            console.log(filter);
+            return await findInvoices(context, { ...filter, type: 'PURCHASE' });
         }),
+        sales: authResolver(async ({ filter }: { filter: InvoiceSearchInput }, context) => {
+            return await findInvoices(context, { ...filter, type: 'SALE' });
+        }) /* ,
         searchInvoices: authResolver(async ({ query }: { query: InvoiceSearchInput }, context) => {
             const { user } = context;
             const { type, number, description, partnerName, isPaid, generalQuery } = query;
@@ -68,7 +67,7 @@ const resolver: Resolver = {
             if (isPaid === false) where.sum = { [Op.gt]: Sequelize.col('paidSum') };
 
             return await findInvoices(context, { where });
-        }),
+        }) */,
         invoiceItems: authResolver(async ({ invoiceId }, { models, user }) => {
             const invoiceItems = await models.InvoiceItem.findAll({
                 where: {
@@ -200,33 +199,45 @@ const invoiceItemWhere = (item: InvoiceItemInput, userId) => {
           };
 };
 
-const findInvoices = async (
-    { models, user }: ApolloContext,
-    opts: {
-        type?: InvoiceType;
-        where?: { [key: string]: any; partner: { [key: string]: any } };
-        limit?: number;
-        cursor?: string;
-    }
-) => {
-    const { type, cursor, limit } = opts;
+const findInvoices = async ({ models, user }: ApolloContext, filter: InvoiceSearchInput) => {
+    const { type, pagination, number, isPaid, description, partnerName, generalQuery } = filter;
 
-    let where: any = { userId: user.id, type };
+    const where: any = {
+        userId: user.id,
+        type,
+        partner: {}
+    };
 
-    if (opts.where) {
-        const { partner, ...restWhere } = opts.where;
-        where = restWhere;
+    const cursor = pagination && pagination.cursor;
+    const limit = pagination && pagination.limit;
+
+    console.log(pagination);
+
+    if (generalQuery) {
+        const generalLike = { [Op.like]: `%${generalQuery}%` };
+        where[Op.or] = [{ number: generalLike }, { description: generalLike }, { '$partner.name$': generalLike }];
+    } else {
+        if (number) where.number = { [Op.like]: `%${number}%` };
+        if (description) where.description = { [Op.like]: `%${description}%` };
     }
+
+    if (partnerName) where.partner.name = { [Op.like]: `%${partnerName}%` };
+    if (isPaid === true) where.sum = { [Op.lte]: Sequelize.col('paidSum') };
+    if (isPaid === false) where.sum = { [Op.gt]: Sequelize.col('paidSum') };
+
+    const { partner, ...restWhere } = where;
+
+    console.log(where);
 
     const invoices = await paginate(models.Invoice, {
         cursor,
         limit,
         paginateBy: 'dueDate',
-        where,
+        where: restWhere,
         include: [
             {
                 model: models.Partner,
-                where: opts.where && opts.where.partner
+                where: where.partner
             },
             {
                 model: models.InvoiceItem,

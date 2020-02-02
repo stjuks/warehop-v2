@@ -1,35 +1,44 @@
 import { observable, computed } from 'mobx';
 import { task } from 'mobx-task';
 import { createContext } from 'react';
-import { Invoice, AddInvoiceInput } from '@shared/types';
+import { Invoice, AddInvoiceInput, InvoiceSearchInput } from '@shared/types';
 import api from '../api';
 import { paginatedData } from '../util/helpers';
 import { uiStore } from './UIStore';
 
 class InvoiceStore {
-    private INVOICE_LIMIT = 5;
+    private INVOICE_LIMIT = 1;
 
     @observable paginatedPurchases = paginatedData<Invoice>();
     @observable paginatedSales = paginatedData<Invoice>();
 
     @task
-    fetchPurchases = async () => {
+    fetchPurchases = async (filter?: InvoiceSearchInput) => {
         uiStore.setLoading(true);
+
+        const safeFilter = filter || {};
+
         const purchases = await api.fetchPurchases({
-            limit: this.INVOICE_LIMIT
+            ...safeFilter,
+            pagination: { limit: this.INVOICE_LIMIT }
         });
+
         uiStore.setLoading(false);
 
         this.paginatedPurchases = purchases;
     };
 
     @task
-    fetchMorePurchases = async () => {
+    fetchMorePurchases = async (filter?: InvoiceSearchInput) => {
         uiStore.setLoading(true);
+
+        const safeFilter = filter || {};
+
         const purchases = await api.fetchPurchases({
-            limit: this.INVOICE_LIMIT,
-            cursor: this.paginatedPurchases.pageInfo.cursor
+            ...safeFilter,
+            pagination: { cursor: this.paginatedPurchases.pageInfo.cursor, limit: this.INVOICE_LIMIT }
         });
+
         uiStore.setLoading(false);
 
         this.paginatedPurchases.pageInfo = purchases.pageInfo;
@@ -37,19 +46,20 @@ class InvoiceStore {
     };
 
     @task
-    fetchSales = async () => {
+    fetchSales = async (filter: InvoiceSearchInput) => {
         const sales = await api.fetchSales({
-            limit: this.INVOICE_LIMIT
+            ...filter,
+            pagination: { limit: this.INVOICE_LIMIT }
         });
 
         this.paginatedSales = sales;
     };
 
     @task
-    fetchMoreSales = async () => {
+    fetchMoreSales = async (filter: InvoiceSearchInput) => {
         const services = await api.fetchSales({
-            limit: this.INVOICE_LIMIT,
-            cursor: this.paginatedSales.pageInfo.cursor
+            ...filter,
+            pagination: { cursor: this.paginatedSales.pageInfo.cursor, limit: this.INVOICE_LIMIT }
         });
 
         this.paginatedSales.pageInfo = services.pageInfo;

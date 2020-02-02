@@ -30,7 +30,7 @@ const Purchases = observer(() => {
     ];
 
     useEffect(() => {
-        invoiceStore.fetchPurchases();
+        invoiceStore.fetchPurchases({ isPaid: paidFilter });
     }, [paidFilter]);
 
     const paidOptions = [
@@ -55,7 +55,7 @@ const Purchases = observer(() => {
                     <PurchaseItem {...purchase} key={purchase.id} />
                 ))}
                 {invoiceStore.paginatedPurchases.pageInfo.hasNextPage && (
-                    <LoadMoreButton onClick={() => invoiceStore.fetchMorePurchases()}>
+                    <LoadMoreButton onClick={() => invoiceStore.fetchMorePurchases({ isPaid: paidFilter })}>
                         <FiRefreshCw />
                         Lae juurde
                     </LoadMoreButton>

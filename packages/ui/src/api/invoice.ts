@@ -1,6 +1,6 @@
 import { gql } from 'apollo-boost';
 import { query, mutate } from '.';
-import { Invoice, PaginatedData, AddInvoiceInput } from '@shared/types';
+import { Invoice, PaginatedData, AddInvoiceInput, InvoiceSearchInput } from '@shared/types';
 
 const invoiceSchema = `
     id
@@ -54,17 +54,35 @@ const invoiceListSchema = `
     }
 `;
 
+const searchInputArgTypes = `
+    $pagination: PaginatedQueryInput, 
+    $number: String, 
+    $isPaid: Boolean, 
+    $description: String, 
+    $partnerName: String, 
+    $generalQuery: String
+`;
+
+const searchInputArgs = `
+    pagination: $pagination, 
+    number: $number, 
+    isPaid: $isPaid, 
+    description: $description, 
+    partnerName: $partnerName, 
+    generalQuery: $generalQuery
+`;
+
 const FETCH_PURCHASES = gql`
-    query purchases($limit: Int!, $cursor: String) {
-        purchases(pagination: { limit: $limit, cursor: $cursor }) {
+    query purchases(${searchInputArgTypes}) {
+        purchases(filter: { ${searchInputArgs} }) {
             ${invoiceListSchema}
         }
     }
 `;
 
 const FETCH_SALES = gql`
-    query sales($limit: Int!, $cursor: String) {
-        sales(pagination: { limit: $limit, cursor: $cursor }) {
+    query sales(${searchInputArgTypes}) {
+        sales(filter: { ${searchInputArgs} }) {
             ${invoiceListSchema}
         }
     }
@@ -103,11 +121,10 @@ const ADD_INVOICE = gql`
 `;
 
 export default {
-    fetchPurchases: async (variables: { limit: number; cursor?: string }) => {
-        return await query<PaginatedData<Invoice>>({ query: FETCH_PURCHASES, variables });
-    },
-    fetchSales: async (variables: { limit: number; cursor?: string }) =>
+    fetchPurchases: async (variables: InvoiceSearchInput) =>
+        await query<PaginatedData<Invoice>>({ query: FETCH_PURCHASES, variables }),
+    fetchSales: async (variables: InvoiceSearchInput) =>
         await query<PaginatedData<Invoice>>({ query: FETCH_SALES, variables }),
-    fetchInvoice: async (id: number) => await query<Invoice>({ query: FETCH_INVOICE, variables: { id }}),
+    fetchInvoice: async (id: number) => await query<Invoice>({ query: FETCH_INVOICE, variables: { id } }),
     addInvoice: async (invoice: AddInvoiceInput) => await mutate<number>({ mutation: ADD_INVOICE, variables: invoice })
 };
