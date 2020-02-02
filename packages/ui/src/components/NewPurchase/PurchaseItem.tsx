@@ -10,16 +10,17 @@ interface PurchaseItemProps {
     item: InvoiceItem;
     onDelete?: () => any;
     onEdit?: () => any;
+    style?: any;
 }
 
-const PurchaseItem: React.FC<PurchaseItemProps> = ({ item, onDelete, onEdit }) => {
+const PurchaseItem: React.FC<PurchaseItemProps> = ({ item, onDelete, onEdit, style }) => {
     const summedPrice = currency(item.price)
         .multiply(item.quantity)
         .toString();
     const formattedPrice = currency(item.price).toString();
 
     return (
-        <PurchaseItemContainer>
+        <PurchaseItemContainer style={style}>
             <div className="action-items">
                 {onEdit && (
                     <button className="btn btn__delete" onClick={onEdit} type="button">

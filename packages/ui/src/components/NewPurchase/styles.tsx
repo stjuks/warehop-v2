@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from '@ui/util/styled';
 import { Link } from 'react-router-dom';
 
 import { ContentContainer } from '../App/styles';
@@ -22,13 +22,12 @@ export const AddPurchaseItemBtn = styled(Link)`
 export const PurchaseItemContainer = styled.div`
     ${({ theme }) => `
         padding: 1rem;
-        margin: 0 0.25rem;
         background: ${theme.colors.white};
         box-shadow: ${theme.lightShadow};
         position: relative;
         border-radius: 0.25rem;
 
-        :not(:last-child) { margin-bottom: 1.5rem; }
+        :not(:last-child) { margin-bottom: 1.5rem !important; }
 
         .action-items {
             position: absolute;

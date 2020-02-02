@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from '../../../util/styled';
+import styled from '@ui/util/styled';
 
 interface DropdownMenuProps {
     items: {

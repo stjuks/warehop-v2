@@ -1,4 +1,5 @@
-import styled, { css } from 'styled-components';
+import styled from '@ui/util/styled';
+import { css } from 'styled-components';
 
 interface RowProps {
     flex?: number[];

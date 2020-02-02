@@ -1,4 +1,4 @@
-import styled from '../../util/styled';
+import styled from '@ui/util/styled';
 import { ProductItemContainer } from '../ProductItem/styles';
 
 interface DaysLeftStyledProps {

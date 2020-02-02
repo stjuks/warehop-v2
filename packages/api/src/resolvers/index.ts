@@ -77,17 +77,24 @@ export function authResolver(cb: ResolverCallback, validationSchema?: Schema): R
 interface PaginateOptions extends FindOptions {
     cursor: string;
     limit: number;
+    paginateBy?: string;
 }
 
 export const paginate = async (model: ModelCtor, opts: PaginateOptions) => {
-    const { cursor, limit, ...restOpts } = opts;
+    const { cursor, limit, paginateBy, ...restOpts } = opts;
     const where: any = opts.where || {};
 
     if (cursor) {
         const decryptedHash: any = fromCursorHash(cursor);
-        where.id = {
-            [Op.gte]: isNaN(decryptedHash) ? decryptedHash : Number(decryptedHash)
-        };
+        if (paginateBy) {
+            where[paginateBy] = {
+                [Op.gte]: decryptedHash
+            };
+        } else {
+            where.id = {
+                [Op.gte]: isNaN(decryptedHash) ? decryptedHash : Number(decryptedHash)
+            };
+        }
     }
 
     const data = await model.findAll({
@@ -111,7 +118,7 @@ export const paginate = async (model: ModelCtor, opts: PaginateOptions) => {
 
         if (hasNextPage) {
             result.data.pop();
-            result.pageInfo.cursor = toCursorHash(lastDataObject.id);
+            result.pageInfo.cursor = toCursorHash(lastDataObject[paginateBy || 'id']);
         }
     }
 

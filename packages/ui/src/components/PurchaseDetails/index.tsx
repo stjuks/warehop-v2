@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { Invoice } from '@shared/types';
 import routes from '@ui/util/routes';
+import InvoiceStoreContext from '@ui/stores/InvoiceStore';
 import currency from 'currency.js';
 
 import { InvoiceHero, IsPaidStyled, PurchaseDetailsContainer } from './styles';
@@ -15,8 +16,28 @@ interface PurchaseDetailsProps {
 }
 
 const PurchaseDetails: React.FC<PurchaseDetailsProps & RouteComponentProps> = props => {
-    const location: any = props.location;
-    const purchase: Invoice = location.purchase;
+    const invoiceStore = useContext(InvoiceStoreContext);
+    const [purchase, setPurchase] = useState<Invoice | undefined>(undefined);
+
+    useEffect(() => {
+        const handlePurchase = async () => {
+            const location: any = props.location;
+
+            if (location.purchase) {
+                setPurchase(location.purchase);
+            } else {
+                const match: any = props.match;
+                const { id } = match.params;
+
+                if (id !== undefined) {
+                    const purchase = await invoiceStore.fetchInvoice(id);
+                    setPurchase(purchase);
+                }
+            }
+        };
+
+        handlePurchase();
+    }, []);
 
     const sum = purchase ? currency(purchase.sum).toString() : null;
     const issueDate = purchase ? moment(purchase.issueDate).format('DD.MM.YYYY') : null;

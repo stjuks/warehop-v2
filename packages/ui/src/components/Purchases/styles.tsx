@@ -1,4 +1,4 @@
-import styled from '../../util/styled';
+import styled, { Color } from '@ui/util/styled';
 import { ProductItemContainer } from '../ProductItem/styles';
 import AriaSelect from '../Form/AriaSelect';
 
@@ -19,29 +19,22 @@ export const PurchaseItemContainer = styled(ProductItemContainer)`
 export const DaysLeftStyled = styled.div<DaysLeftStyledProps>`
     margin-left: auto;
     position: relative;
-
-    :before {
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        content: '';
-        background: red;
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        opacity: 0.075;
-        padding: 0.15rem 0.5rem;
-        border-radius: 2rem;
-        background: currentColor;
-    }
+    padding: 0.25rem 0.5rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
 
     ${({ theme, isPaid, diff }) => {
-        if (isPaid) return `color: ${theme.colors.success};`;
+        let color: Color = theme.colors.lightText;
+        if (isPaid) color = theme.colors.success;
         if (diff !== undefined) {
-            if (diff <= 1) return `color: ${theme.colors.danger};`;
-            if (diff <= 3) return `color: ${theme.colors.warning};}`;
-            return `color: ${theme.colors.lightText};`;
+            if (diff <= 3) color = theme.colors.warning;
+            if (diff <= 1) color = theme.colors.danger;
         }
+
+        return `
+            color: ${color};
+            background: ${color.opacity(0.075)};
+        `;
     }}
 `;
 
@@ -108,6 +101,34 @@ export const SelectStyled = styled(AriaSelect)`
         .placeholder {
             color: ${theme.colors.lightText};
             font-weight: 400;
+        }
+    `}
+`;
+
+export const LoadMoreButton = styled.button`
+    padding: 1rem;
+    width: 100%;
+    outline: none;
+    font-family: 'Roboto';
+    display: flex;
+    font-weight: 500;
+    align-items: center;
+    justify-content: center;
+
+    .react-icon {
+        margin-right: 0.5rem;
+        stroke-width: 3;
+    }
+
+    ${({ theme }) => `
+        background: ${theme.colors.lightGrey};
+        color: ${theme.colors.lightText};
+        border: solid ${theme.colors.midGrey};
+        border-width: 1px 0 0 0;
+
+        :hover,
+        :focus {
+            color: ${theme.colors.primary};
         }
     `}
 `;

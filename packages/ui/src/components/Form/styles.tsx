@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from '@ui/util/styled';
 
 interface InputFieldProps {
     isFocused?: boolean;

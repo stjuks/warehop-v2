@@ -1,7 +1,7 @@
 import baseStyled, { ThemedStyledInterface } from 'styled-components';
 import QixColor from 'color';
 
-class Color {
+export class Color {
     private color: QixColor;
 
     constructor(colorValue: string) {

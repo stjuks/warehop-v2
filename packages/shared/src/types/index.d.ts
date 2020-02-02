@@ -212,6 +212,8 @@ export interface PaginatedData<T> {
         cursor?: string;
     };
     data: T[];
+    isLoaded?: boolean;
+    isLoading?: boolean;
 }
 
 export interface ItemInput {

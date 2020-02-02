@@ -1,4 +1,4 @@
-import styled, { createGlobalStyle } from 'styled-components';
+import styled from '@ui/util/styled';
 import ReactModal from 'react-modal';
 
 ReactModal.setAppElement('#root');

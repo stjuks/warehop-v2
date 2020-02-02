@@ -1,4 +1,4 @@
-import styled from '../../util/styled';
+import styled from '@ui/util/styled';
 import { Link } from 'react-router-dom';
 
 export const ProductItemContainer = styled(Link)`
@@ -44,6 +44,7 @@ export const ProductItemContainer = styled(Link)`
         .row-1,
         .row-2 {
             display: flex;
+            align-items: center;
             padding: 0.25rem 0;
         }
 

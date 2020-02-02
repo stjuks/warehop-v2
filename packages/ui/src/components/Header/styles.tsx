@@ -1,4 +1,4 @@
-import styled from '../../util/styled';
+import styled from '@ui/util/styled';
 
 interface IIconContainerProps {
     size?: string;

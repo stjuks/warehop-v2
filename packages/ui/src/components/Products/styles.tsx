@@ -1,4 +1,4 @@
-import styled from '../../util/styled';
+import styled from '@ui/util/styled';
 import { ContentContainer } from '../App/styles';
 
 export const ProductsContainer = styled(ContentContainer)``;

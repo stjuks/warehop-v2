@@ -1,4 +1,4 @@
-import styled from '../../util/styled';
+import styled from '@ui/util/styled';
 
 const detailLabel = theme => `
     margin-bottom: 0.375rem;
@@ -42,7 +42,7 @@ export const DetailCardContainer = styled.div`
         margin-top: 1rem;
         background: ${theme.colors.white};
         box-shadow: ${theme.lightShadow};
-        border-radius: 0.5rem;
+        border-radius: 0.25rem;
         border: 1px solid ${theme.colors.lightColor1};
 
         .row {

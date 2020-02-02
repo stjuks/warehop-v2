@@ -1,11 +1,12 @@
 import { Sequelize } from 'sequelize-typescript';
 import currency from 'currency.js';
-import { Op } from 'sequelize';
+import { Op, Model } from 'sequelize';
 import Joi from '@hapi/joi';
 
 import { Resolver, authResolver, ApolloContext, paginate } from '.';
 
 import { InvoiceType, InvoiceSearchInput, AddInvoiceInput, InvoiceItemInput, PaginatedQueryInput } from '@shared/types';
+import Invoice from '../db/models/Invoice';
 
 const validateAddInvoice = Joi.object({
     invoice: Joi.object({
@@ -33,6 +34,9 @@ const validateAddInvoice = Joi.object({
 
 const resolver: Resolver = {
     Query: {
+        invoice: authResolver(async ({ id }, context) => {
+            return await findInvoice(context, id);
+        }),
         purchases: authResolver(
             async ({ pagination: { cursor, limit } }: { pagination: PaginatedQueryInput }, context) => {
                 return await findInvoices(context, { type: 'PURCHASE', cursor, limit });
@@ -217,6 +221,7 @@ const findInvoices = async (
     const invoices = await paginate(models.Invoice, {
         cursor,
         limit,
+        paginateBy: 'dueDate',
         where,
         include: [
             {
@@ -235,11 +240,18 @@ const findInvoices = async (
                 attributes: ['id', 'sum', 'date', 'description']
             }
         ],
+        order: [['dueDate', 'ASC']],
         attributes: ['id', 'type', 'number', 'dueDate', 'issueDate', 'sum', 'description', 'filePath', 'paidSum']
     });
 
-    invoices.data = invoices.data.map(invoice => {
-        const plainInvoice: any = invoice.get({ plain: true });
+    invoices.data = invoices.data.map(parseInvoice);
+
+    return invoices;
+};
+
+const parseInvoice = (dbInvoice: Model<Invoice>) => {
+    if (dbInvoice) {
+        const plainInvoice: any = dbInvoice.get({ plain: true });
 
         plainInvoice.items = plainInvoice.items.map(item => {
             return {
@@ -252,9 +264,37 @@ const findInvoices = async (
         plainInvoice.isPaid = Number(plainInvoice.paidSum) >= Number(plainInvoice.sum);
 
         return plainInvoice;
+    }
+
+    return null;
+};
+
+const findInvoice = async ({ models, user }: ApolloContext, id: number) => {
+    const invoice = await models.Invoice.findOne({
+        where: {
+            id,
+            userId: user.id
+        },
+        include: [
+            {
+                model: models.Partner
+            },
+            {
+                model: models.InvoiceItem,
+                as: 'items',
+                include: [models.Warehouse, models.Unit, models.Item],
+                attributes: ['itemId', 'name', 'quantity', 'price']
+            },
+            {
+                model: models.Transaction,
+                as: 'transactions',
+                attributes: ['id', 'sum', 'date', 'description']
+            }
+        ],
+        attributes: ['id', 'type', 'number', 'dueDate', 'issueDate', 'sum', 'description', 'filePath', 'paidSum']
     });
 
-    return invoices;
+    return parseInvoice(invoice);
 };
 
 export default resolver;

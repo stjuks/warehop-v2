@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { FiPlusCircle, FiSliders } from 'react-icons/fi';
+import { FiPlusCircle, FiSliders, FiRefreshCw } from 'react-icons/fi';
 import { observer } from 'mobx-react-lite';
 
-import { ContentContainer } from '../App/styles';
+import ContentContainer from '@ui/components/util/ContentContainer';
 import { SortingContainer, NewItemButtonContainer } from '../Products/styles';
 import history from '../../util/history';
 import routes from '../../util/routes';
@@ -13,7 +13,7 @@ import HeaderSearch from '../HeaderSearch';
 import Radio from '../Radio';
 import PurchaseItem from './PurchaseItem';
 import { Formik } from 'formik';
-import { SelectStyled } from './styles';
+import { LoadMoreButton } from './styles';
 
 const Purchases = observer(() => {
     const invoiceStore = useContext(InvoiceStoreContext);
@@ -84,6 +84,9 @@ const Purchases = observer(() => {
                 {invoiceStore.purchases.map(purchase => (
                     <PurchaseItem {...purchase} key={purchase.id} />
                 ))}
+                {invoiceStore.paginatedPurchases.pageInfo.hasNextPage && (
+                    <LoadMoreButton onClick={() => invoiceStore.fetchMorePurchases()}><FiRefreshCw />Lae juurde</LoadMoreButton>
+                )}
             </ContentContainer>
         </>
     );

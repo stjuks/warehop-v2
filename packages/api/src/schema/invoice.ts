@@ -86,6 +86,7 @@ export default gql`
         sales(pagination: PaginatedQueryInput): PaginatedInvoice!
         invoiceItems(invoiceId: ID!): [InvoiceItem!]!
         searchInvoices(query: InvoiceSearchInput!): [Invoice!]!
+        invoice(id: ID!): Invoice
     }
 
     extend type Mutation {

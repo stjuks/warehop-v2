@@ -4,28 +4,33 @@ import { createContext } from 'react';
 import { Invoice, AddInvoiceInput } from '@shared/types';
 import api from '../api';
 import { paginatedData } from '../util/helpers';
+import { uiStore } from './UIStore';
 
 class InvoiceStore {
-    private INVOICE_LIMIT = 10;
+    private INVOICE_LIMIT = 5;
 
     @observable paginatedPurchases = paginatedData<Invoice>();
     @observable paginatedSales = paginatedData<Invoice>();
 
     @task
     fetchPurchases = async () => {
+        uiStore.setLoading(true);
         const purchases = await api.fetchPurchases({
             limit: this.INVOICE_LIMIT
         });
+        uiStore.setLoading(false);
 
         this.paginatedPurchases = purchases;
     };
 
     @task
     fetchMorePurchases = async () => {
+        uiStore.setLoading(true);
         const purchases = await api.fetchPurchases({
             limit: this.INVOICE_LIMIT,
             cursor: this.paginatedPurchases.pageInfo.cursor
         });
+        uiStore.setLoading(false);
 
         this.paginatedPurchases.pageInfo = purchases.pageInfo;
         this.paginatedPurchases.data.push(...purchases.data);
@@ -72,12 +77,18 @@ class InvoiceStore {
         });
 
         try {
-            const id = await api.addInvoice(invoiceInput);
+            await api.addInvoice(invoiceInput);
+        } catch (err) {
+            throw err;
+        }
+    };
 
-            invoice.id = id;
+    @task
+    fetchInvoice = async (id: number) => {
+        try {
+            const invoice: Invoice = await api.fetchInvoice(id);
 
-            if (invoice.type === 'PURCHASE') this.paginatedPurchases.data.push(invoice);
-            if (invoice.type === 'SALE') this.paginatedSales.data.push(invoice);
+            return invoice;
         } catch (err) {
             throw err;
         }

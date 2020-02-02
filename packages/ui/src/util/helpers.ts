@@ -32,7 +32,8 @@ export const paginatedData = <T>() => {
             hasNextPage: false,
             cursor: undefined
         },
-        data: []
+        data: [],
+        isLoaded: false
     };
 
     return result;

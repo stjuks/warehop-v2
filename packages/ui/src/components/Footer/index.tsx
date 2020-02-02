@@ -7,9 +7,9 @@ import { RouteProps, matchPath } from 'react-router';
 
 import FooterItem, { IFooterItemProps } from './FooterItem';
 
-import routes from '../../util/routes';
+import routes from '@ui/util/routes';
 import { FooterContainer } from './styles';
-import { UIStoreContext } from '../../stores/UIStore';
+import UIStoreContext from '@ui/stores/UIStore';
 
 export const Footer = withRouter(
     observer((props: React.PropsWithChildren<any> & RouteProps) => {

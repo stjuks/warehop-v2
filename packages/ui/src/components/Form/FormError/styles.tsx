@@ -1,4 +1,4 @@
-import styled from '../../../util/styled';
+import styled from '@ui/util/styled';
 
 export const FormErrorContainer = styled.div`
     font-size: 0.875rem;

@@ -139,6 +139,7 @@ const FormFields: React.FC<any> = observer(({ formikProps }) => {
                             <PurchaseItem
                                 key={index}
                                 item={item}
+                                style={{ margin: '0 0.25rem' }}
                                 onDelete={() => arrayHelpers.remove(index)}
                                 onEdit={() =>
                                     history.push({

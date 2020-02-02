@@ -13,9 +13,9 @@ import {
 } from 'react-icons/fa';
 
 import { MenuContainer, BackgroundContainer } from './styles';
-import routes from '../../util/routes';
+import routes from '@ui/util/routes';
 import MenuItem, { IMenuItemProps } from './MenuItem';
-import { UIStoreContext } from '../../stores/UIStore';
+import UIStoreContext from '@ui/stores/UIStore';
 
 const HamburgerMenu = observer(() => {
     const uiStore = useContext(UIStoreContext);

@@ -11,7 +11,7 @@ import WarehouseStoreContext from '../../stores/WarehouseStore';
 
 import history from '../../util/history';
 import { AppContainer } from './styles';
-import { theme } from '../../util/styled';
+import { theme } from '@ui/util/styled';
 import routes from '../../util/routes';
 import Products from '../Products';
 import ProductDetails from '../ProductDetails';
@@ -27,17 +27,7 @@ const App = () => {
     const partnerStore = useContext(PartnerStoreContext);
     const commonStore = useContext(CommonStoreContext);
 
-    const clearSavedForms = () => {
-        Object.keys(localStorage).forEach(key => {
-            if (key.includes('form')) localStorage.removeItem(key);
-        });
-    };
-
     useEffect(() => {
-        window.addEventListener('beforeunload', e => {
-            clearSavedForms();
-        });
-
         warehouseStore.fetchWarehouses();
         commonStore.initialize();
     }, []);

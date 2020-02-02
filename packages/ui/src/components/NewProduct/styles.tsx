@@ -1,4 +1,5 @@
-import styled, { css } from 'styled-components';
+import { css } from 'styled-components';
+import styled from '@ui/util/styled';
 import { ContentContainer } from '../App/styles';
 
 interface IFormRowContainerProps {
@@ -60,7 +61,7 @@ export const FormRowContainer = styled.div<IFormRowContainerProps>`
 export const AddWarehouseButton = styled.button`
     ${({ theme }) => `
         padding: 0.5rem;
-        border-radius: 0.5rem;
+        border-radius: 0.25rem;
         font-weight: 500;
         border: 1px dashed ${theme.colors.text};
         width: 100%;

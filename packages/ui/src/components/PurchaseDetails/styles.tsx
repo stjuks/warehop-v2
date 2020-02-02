@@ -1,4 +1,4 @@
-import styled from '../../util/styled';
+import styled from '@ui/util/styled';
 import { ContentContainer } from '../App/styles';
 
 export const PurchaseDetailsContainer = styled(ContentContainer)`
@@ -6,7 +6,7 @@ export const PurchaseDetailsContainer = styled(ContentContainer)`
 `
 
 export const InvoiceHero = styled.div`
-    padding: 0.5rem 0 0.5rem 1.5rem;
+    padding: 0.5rem 0 0.5rem 1.25rem;
     position: relative;
 
     .row-1 {
@@ -56,7 +56,7 @@ export const IsPaidStyled = styled.div<IsPaidStyledProps>`
     font-size: 0.875rem;
 
     ${({ isPaid, theme }) => `
-        background: ${isPaid ? theme.colors.success.opacity(0.1) : theme.colors.danger.opacity(0.1)};
+        background: ${isPaid ? theme.colors.success.opacity(0.075) : theme.colors.danger.opacity(0.075)};
         color: ${isPaid ? theme.colors.success : theme.colors.danger};
     `}
 `;

@@ -1,4 +1,4 @@
-import styled from '../../util/styled';
+import styled from '@ui/util/styled';
 
 interface IInputContainerProps {
     value?: any;
@@ -7,8 +7,6 @@ interface IInputContainerProps {
 
 export const LoaderContainer = styled.div`
     ${({ theme }) => `
-        height: 100%;
-        width: 100%;
         display: flex;
         align-items: center;
         flex-direction: column;
