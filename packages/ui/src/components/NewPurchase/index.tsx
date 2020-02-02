@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { observer } from 'mobx-react-lite';
+import { observer, useObserver } from 'mobx-react-lite';
 import moment from 'moment';
 import * as yup from 'yup';
 
@@ -26,8 +26,6 @@ import DateInput from '../Form/DateInput';
 import { FormTitle } from '../Form/styles';
 import { mapSelectOptions } from '../../util/helpers';
 import FormError from '../Form/FormError';
-import { ApolloError } from 'apollo-boost';
-import { GraphQLError } from 'graphql';
 
 interface NewPurchaseFormValues {
     type: InvoiceType;
@@ -41,7 +39,6 @@ interface NewPurchaseFormValues {
 }
 
 const NewPurchase = observer(() => {
-    const partnerStore = useContext(PartnerStoreContext);
     const invoiceStore = useContext(InvoiceStoreContext);
 
     const initialValues: NewPurchaseFormValues = {
@@ -63,38 +60,6 @@ const NewPurchase = observer(() => {
         items: yup.array().required('Palun lisa arvele kaubad.')
     });
 
-    const ProductList = ({ formikProps }) => (
-        <FieldArray name="items">
-            {arrayHelpers => (
-                <>
-                    <FormTitle>
-                        Kaubad <AddPurchaseItemBtn to={routes.newPurchaseItem}>+ Lisa kaup</AddPurchaseItemBtn>
-                    </FormTitle>
-                    <Route
-                        path={routes.newPurchaseItem}
-                        render={() => <NewPurchaseItem arrayHelpers={arrayHelpers} />}
-                    />
-                    {formikProps.values.items.map((item, index) => (
-                        <PurchaseItem
-                            key={index}
-                            item={item}
-                            onDelete={() => arrayHelpers.remove(index)}
-                            onEdit={() =>
-                                history.push({
-                                    pathname: routes.newPurchaseItem,
-                                    state: {
-                                        index,
-                                        item
-                                    }
-                                })
-                            }
-                        />
-                    ))}
-                </>
-            )}
-        </FieldArray>
-    );
-
     const handleSubmit = async purchase => {
         try {
             await invoiceStore.addInvoice(purchase);
@@ -103,10 +68,6 @@ const NewPurchase = observer(() => {
             throw err;
         }
     };
-
-    useEffect(() => {
-        partnerStore.fetchPartners();
-    }, [partnerStore]);
 
     return (
         <>
@@ -118,42 +79,81 @@ const NewPurchase = observer(() => {
                     onSubmit={handleSubmit}
                     id="new-purchase-form"
                 >
-                    {formikProps => (
-                        <>
-                            <FormError
-                                messages={{
-                                    EntityAlreadyExistsError: { number: 'Sellise numbriga arve juba eksisteerib.' }
-                                }}
-                                fields={['items']}
-                            />
-                            <FormTitle>Põhiandmed</FormTitle>
-                            <AriaSelect
-                                name="partner"
-                                label="Tarnija"
-                                onSearch={async query => {
-                                    const partners = await partnerStore.searchPartners('VENDOR', query);
-                                    return mapSelectOptions(partners, { label: partner => partner.name });
-                                }}
-                                searchPlaceholder="Otsi tarnijat"
-                                options={partnerStore.partners}
-                                optionMap={{ label: partner => partner.name }}
-                            />
-                            <TextInput name="number" label="Arve nr" />
-                            <Row flex={[1, 1]}>
-                                <DateInput name="issueDate" label="Ostukuupäev" />
-                                <DateInput name="dueDate" label="Maksetähtaeg" />
-                            </Row>
-                            <FormTitle>Lisaandmed</FormTitle>
-                            <FileInput name="invoiceFile" label="Arve fail (PDF)" />
-                            <TextInput name="description" label="Märkused" isTextarea />
-                            <ProductList formikProps={formikProps} />
-                        </>
-                    )}
+                    {formikProps => <FormFields formikProps={formikProps} />}
                 </Form>
             </NewProductContainer>
             <FooterContainer style={{ padding: '0.25rem 1rem' }}>
                 <Button title="Loo arve" form="new-purchase-form" type="submit" />
             </FooterContainer>
+        </>
+    );
+});
+
+const FormFields: React.FC<any> = observer(({ formikProps }) => {
+    const partnerStore = useContext(PartnerStoreContext);
+
+    useEffect(() => {
+        console.log('fetchPartners');
+        partnerStore.fetchPartners();
+    }, [partnerStore]);
+
+    return (
+        <>
+            <FormError
+                messages={{
+                    EntityAlreadyExistsError: { number: 'Sellise numbriga arve juba eksisteerib.' }
+                }}
+                fields={['items']}
+            />
+            <FormTitle>Põhiandmed</FormTitle>
+            <AriaSelect
+                name="partner"
+                label="Tarnija"
+                onSearch={async query => {
+                    const partners = await partnerStore.searchPartners('VENDOR', query);
+                    return mapSelectOptions(partners, { label: partner => partner.name });
+                }}
+                searchPlaceholder="Otsi tarnijat"
+                options={partnerStore.partners}
+                optionMap={{ label: partner => partner.name }}
+            />
+            <TextInput name="number" label="Arve nr" />
+            <Row flex={[1, 1]}>
+                <DateInput name="issueDate" label="Ostukuupäev" />
+                <DateInput name="dueDate" label="Maksetähtaeg" />
+            </Row>
+            <FormTitle>Lisaandmed</FormTitle>
+            <FileInput name="invoiceFile" label="Arve fail (PDF)" />
+            <TextInput name="description" label="Märkused" isTextarea />
+            <FieldArray name="items">
+                {arrayHelpers => (
+                    <>
+                        <FormTitle>
+                            Kaubad <AddPurchaseItemBtn to={routes.newPurchaseItem}>+ Lisa kaup</AddPurchaseItemBtn>
+                        </FormTitle>
+                        <Route
+                            path={routes.newPurchaseItem}
+                            render={() => <NewPurchaseItem arrayHelpers={arrayHelpers} />}
+                        />
+                        {formikProps.values.items.map((item, index) => (
+                            <PurchaseItem
+                                key={index}
+                                item={item}
+                                onDelete={() => arrayHelpers.remove(index)}
+                                onEdit={() =>
+                                    history.push({
+                                        pathname: routes.newPurchaseItem,
+                                        state: {
+                                            index,
+                                            item
+                                        }
+                                    })
+                                }
+                            />
+                        ))}
+                    </>
+                )}
+            </FieldArray>
         </>
     );
 });

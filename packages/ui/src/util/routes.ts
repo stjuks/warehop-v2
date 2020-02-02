@@ -3,6 +3,7 @@ export default {
     productDetails: '/products/:id',
     newProduct: '/products/new',
     purchases: '/purchases',
+    purchaseDetails: '/purchases/:id',
     newPurchase: '/purchases/new',
     newPurchaseItem: '/purchases/new/item',
     sales: '/sales',

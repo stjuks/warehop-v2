@@ -7,7 +7,9 @@ import { PurchaseItemContainer, DaysLeftStyled } from './styles';
 import { Invoice } from '@shared/types';
 import { FiChevronRight } from 'react-icons/fi';
 
-const PurchaseItem: React.FC<Invoice> = ({ number, sum, partner, id, dueDate, isPaid }) => {
+const PurchaseItem: React.FC<Invoice> = props => {
+    const { number, sum, partner, id, dueDate, isPaid } = props;
+
     const getDaysUntilDueDate = () => {
         let text = '';
         let diff: number | undefined = undefined;
@@ -28,7 +30,7 @@ const PurchaseItem: React.FC<Invoice> = ({ number, sum, partner, id, dueDate, is
     const formattedSum = currency(sum).toString();
 
     return (
-        <PurchaseItemContainer to={`${routes.purchases}/${id}`}>
+        <PurchaseItemContainer to={{ pathname: `${routes.purchases}/${id}`, purchase: props }}>
             <div className="col-1">
                 <div className="row-1">
                     <div className="partner-name">{partner.name}</div>

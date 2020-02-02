@@ -18,6 +18,6 @@ export const ContentContainer = styled.div<IContentContainerProps>`
         background: ${theme.colors.lightGrey};
         flex: 1;
         overflow: auto;
-        ${padded && 'padding: 1rem;'}
+        ${padded ? 'padding: 1rem;' : ''}
     `}
 `;

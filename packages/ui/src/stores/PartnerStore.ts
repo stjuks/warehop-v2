@@ -1,4 +1,4 @@
-import { observable, computed } from 'mobx';
+import { observable, computed, flow, action } from 'mobx';
 import { task } from 'mobx-task';
 import { createContext } from 'react';
 import { Partner, PartnerType } from '@shared/types';
@@ -10,7 +10,7 @@ class PartnerStore {
 
     @observable paginatedPartners = paginatedData<Partner>();
 
-    @task
+    /* @task
     fetchPartners = async () => {
         const partners = await api.fetchPartners({
             limit: this.PARTNER_LIMIT
@@ -19,7 +19,17 @@ class PartnerStore {
         this.paginatedPartners = partners;
 
         return partners.data;
-    };
+    }; */
+
+    fetchPartners = flow(function*(this: PartnerStore) {
+        const partners = yield api.fetchPartners({
+            limit: this.PARTNER_LIMIT
+        });
+
+        this.paginatedPartners = partners;
+
+        return partners.data;
+    });
 
     @task
     fetchMorePartners = async () => {

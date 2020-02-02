@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useFormikContext } from 'formik';
 
 import { FormErrorContainer } from './styles';
@@ -16,6 +16,7 @@ interface FormErrorProps {
 const FormError: React.FC<FormErrorProps> = ({ messages, fields }) => {
     const [errors, setErrors] = useState<string[]>([]);
     const formikContext = useFormikContext();
+    const containerRef = useRef<HTMLDivElement>(null);
 
     const formikErrors: any = formikContext.errors;
 
@@ -57,7 +58,7 @@ const FormError: React.FC<FormErrorProps> = ({ messages, fields }) => {
     }, [handleErrors]);
 
     return errors.length > 0 ? (
-        <FormErrorContainer>
+        <FormErrorContainer ref={containerRef}>
             <ul>
                 {errors.map(msg => (
                     <li key={msg}>{msg}</li>

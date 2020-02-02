@@ -11,7 +11,7 @@ import WarehouseStoreContext from '../../stores/WarehouseStore';
 
 import history from '../../util/history';
 import { AppContainer } from './styles';
-import { theme } from '../../util/styled';
+import { theme } from '../../util/styled';
 import routes from '../../util/routes';
 import Products from '../Products';
 import ProductDetails from '../ProductDetails';
@@ -20,6 +20,7 @@ import NewPurchase from '../NewPurchase';
 import Purchases from '../Purchases';
 import Footer from '../Footer';
 import HamburgerMenu from '../HamburgerMenu';
+import PurchaseDetails from '../PurchaseDetails';
 
 const App = () => {
     const warehouseStore = useContext(WarehouseStoreContext);
@@ -51,6 +52,7 @@ const App = () => {
                             <Route path={routes.productDetails} component={ProductDetails} />
                             <Route path={routes.products} component={Products} />
                             <Route path={routes.newPurchase} component={NewPurchase} />
+                            <Route path={routes.purchaseDetails} component={PurchaseDetails} />
                             <Route path={routes.purchases} component={Purchases} />
                         </Switch>
                         <Footer />

@@ -8,8 +8,8 @@ import { itemTypeTranslations } from '../../util/translations';
 
 interface PurchaseItemProps {
     item: InvoiceItem;
-    onDelete: () => any;
-    onEdit: () => any;
+    onDelete?: () => any;
+    onEdit?: () => any;
 }
 
 const PurchaseItem: React.FC<PurchaseItemProps> = ({ item, onDelete, onEdit }) => {
@@ -21,12 +21,16 @@ const PurchaseItem: React.FC<PurchaseItemProps> = ({ item, onDelete, onEdit }) =
     return (
         <PurchaseItemContainer>
             <div className="action-items">
-                <button className="btn btn__delete" onClick={onEdit} type="button">
-                    <FiEdit />
-                </button>
-                <button className="btn btn__edit" onClick={onDelete} type="button">
-                    <FiTrash2 />
-                </button>
+                {onEdit && (
+                    <button className="btn btn__delete" onClick={onEdit} type="button">
+                        <FiEdit />
+                    </button>
+                )}
+                {onDelete && (
+                    <button className="btn btn__edit" onClick={onDelete} type="button">
+                        <FiTrash2 />
+                    </button>
+                )}
             </div>
             <div className="row row-1">
                 <span className="attr-1">{item.name}</span>

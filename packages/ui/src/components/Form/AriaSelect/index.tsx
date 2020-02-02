@@ -56,17 +56,17 @@ const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = observer(
                 setLoadingOptions(true);
 
                 const loadedOptions = await options;
-                const _mappedOptions = mapSelectOptions(loadedOptions, optionMap);
 
                 if (field.value) {
                     setDisplayValue(mapSelectOption(field.value, optionMap).label);
                 }
 
-                setMappedOptions(_mappedOptions);
+                setMappedOptions(mapSelectOptions(loadedOptions, optionMap));
                 setLoadingOptions(false);
             };
 
             loadOptions();
+            console.log('aria select effect');
         }, [options]);
 
         const handleSelect = ({ value, label }) => {
@@ -130,54 +130,62 @@ const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = observer(
     }
 );
 
-const InputComponent = ({
-    displayValue,
-    placeholder,
-    isClearable,
-    options,
-    handleSearch,
-    handleClear,
-    searchQuery,
-    searchPlaceholder,
-    isSearchable,
-    isLoadingSearch
-}) => (
-    <>
-        <ButtonContainer>
-            <div className="inner-btn-container">
-                <span className={`value-container ${!displayValue && `placeholder`}`}>
-                    {displayValue || placeholder}
-                </span>
-                <InputActionButtons
-                    indicator={<FiChevronDown />}
-                    action={isClearable && displayValue ? { icon: <FiX />, onClick: e => handleClear(e) } : undefined}
-                />
-            </div>
-        </ButtonContainer>
-        <MenuContainer>
-            {isSearchable && (
-                <div className="search-container">
-                    <SearchInput
-                        placeholder={searchPlaceholder || 'Otsi'}
-                        onChange={handleSearch}
-                        value={searchQuery}
+const InputComponent: React.FC<any> = observer(
+    ({
+        displayValue,
+        placeholder,
+        isClearable,
+        options,
+        handleSearch,
+        handleClear,
+        searchQuery,
+        searchPlaceholder,
+        isSearchable,
+        isLoadingSearch
+    }) => (
+        <>
+            <ButtonContainer>
+                <div className="inner-btn-container">
+                    <span className={`value-container ${!displayValue && `placeholder`}`}>
+                        {displayValue || placeholder}
+                    </span>
+                    <InputActionButtons
+                        indicator={<FiChevronDown />}
+                        action={
+                            isClearable && displayValue ? { icon: <FiX />, onClick: e => handleClear(e) } : undefined
+                        }
                     />
-                    {isLoadingSearch && <Loader />}
                 </div>
-            )}
-            <ul className="item-list">
-                {options.map((item, i) => {
-                    return (
-                        <li key={i}>
-                            <MenuItemContainer value={item} text={item.label} data-active={displayValue === item.label}>
-                                {item.label}
-                            </MenuItemContainer>
-                        </li>
-                    );
-                })}
-            </ul>
-        </MenuContainer>
-    </>
+            </ButtonContainer>
+            <MenuContainer>
+                {isSearchable && (
+                    <div className="search-container">
+                        <SearchInput
+                            placeholder={searchPlaceholder || 'Otsi'}
+                            onChange={handleSearch}
+                            value={searchQuery}
+                        />
+                        {isLoadingSearch && <Loader />}
+                    </div>
+                )}
+                <ul className="item-list">
+                    {options.map((item, i) => {
+                        return (
+                            <li key={i}>
+                                <MenuItemContainer
+                                    value={item}
+                                    text={item.label}
+                                    data-active={displayValue === item.label}
+                                >
+                                    {item.label}
+                                </MenuItemContainer>
+                            </li>
+                        );
+                    })}
+                </ul>
+            </MenuContainer>
+        </>
+    )
 );
 
 const AriaSelect: React.FC<AriaSelectProps> = props => <Field {...props} component={AriaSelectBase} />;

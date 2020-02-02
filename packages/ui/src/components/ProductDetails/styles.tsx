@@ -1,7 +1,7 @@
 import styled from '../../util/styled';
 
 const detailLabel = theme => `
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.375rem;
     font-family: 'Red Hat Display', sans-serif;
     color: ${theme.colors.lightText};
     font-size: 0.75rem;
