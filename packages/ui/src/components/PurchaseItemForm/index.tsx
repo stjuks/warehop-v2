@@ -22,7 +22,7 @@ import CommonStoreContext from '../../stores/CommonStore';
 import { RouteChildrenProps } from 'react-router';
 import WarehouseStoreContext from '../../stores/WarehouseStore';
 
-interface NewPurchaseItemProps {
+interface PurchaseItemFormProps {
     arrayHelpers: any;
 }
 
@@ -143,7 +143,7 @@ const ItemForm = ({ type }: { type: ItemType }) => {
     );
 };
 
-const NewPurchaseItem: React.FC<NewPurchaseItemProps & RouteChildrenProps> = observer(props => {
+const PurchaseItemForm: React.FC<PurchaseItemFormProps & RouteChildrenProps> = observer(props => {
     const commonStore = useContext(CommonStoreContext);
 
     const {
@@ -167,7 +167,7 @@ const NewPurchaseItem: React.FC<NewPurchaseItemProps & RouteChildrenProps> = obs
             arrayHelpers.push(filteredValues);
         }
 
-        history.push(routes.newPurchase);
+        history.push(routes.purchaseForm);
     };
 
     const handleTypeSelect = ({ changedField, formik }) => {
@@ -183,8 +183,8 @@ const NewPurchaseItem: React.FC<NewPurchaseItemProps & RouteChildrenProps> = obs
     const submitBtnTitle = state && state.index !== undefined ? 'Muuda kaupa' : 'Lisa kaup';
 
     return (
-        <Modal isOpen={true} title="Lisa kaup" backTo={routes.newPurchase}>
-            <Header title={headerTitle} backTo={routes.newPurchase} />
+        <Modal isOpen={true} title="Lisa kaup" backTo={routes.purchaseForm}>
+            <Header title={headerTitle} backTo={routes.purchaseForm} />
             <ContentContainer>
                 <Form
                     id="new-purchase-item-form"
@@ -211,4 +211,4 @@ const NewPurchaseItem: React.FC<NewPurchaseItemProps & RouteChildrenProps> = obs
     );
 });
 
-export default withRouter(NewPurchaseItem);
+export default withRouter(PurchaseItemForm);

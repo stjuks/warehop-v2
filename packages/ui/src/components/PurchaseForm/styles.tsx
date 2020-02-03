@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { ContentContainer } from '../App/styles';
 
-export const NewProductContainer = styled(ContentContainer)``;
+export const ProductFormContainer = styled(ContentContainer)``;
 
 export const AddPurchaseItemBtn = styled(Link)`
     ${({ theme }) => `

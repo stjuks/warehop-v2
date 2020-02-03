@@ -5,7 +5,7 @@ import * as yup from 'yup';
 
 import routes from '../../util/routes';
 import history from '../../util/history';
-import { NewProductContainer, AddPurchaseItemBtn } from './styles';
+import { ProductFormContainer, AddPurchaseItemBtn } from './styles';
 import PartnerStoreContext from '../../stores/PartnerStore';
 import InvoiceStoreContext from '../../stores/InvoiceStore';
 
@@ -17,7 +17,7 @@ import Form from '../Form';
 import FieldArray from '../Form/util/FieldArray';
 import InvoiceItemListItem from '../InvoiceItemListItem';
 import { Route } from 'react-router';
-import NewPurchaseItem from './NewPurchaseItem';
+import PurchaseItemForm from '../PurchaseItemForm';
 import AriaSelect from '../Form/AriaSelect';
 import TextInput from '../Form/TextInput';
 import { Row } from '../Layout/styles';
@@ -27,7 +27,7 @@ import { FormTitle } from '../Form/styles';
 import { mapSelectOptions } from '../../util/helpers';
 import FormError from '../Form/FormError';
 
-interface NewPurchaseFormValues {
+interface PurchaseFormFormValues {
     type: InvoiceType;
     partner: Partner | undefined;
     number: string;
@@ -38,10 +38,10 @@ interface NewPurchaseFormValues {
     items: InvoiceItem[];
 }
 
-const NewPurchase = observer(() => {
+const PurchaseForm = observer(() => {
     const invoiceStore = useContext(InvoiceStoreContext);
 
-    const initialValues: NewPurchaseFormValues = {
+    const initialValues: PurchaseFormFormValues = {
         type: 'PURCHASE',
         partner: undefined,
         number: '',
@@ -72,7 +72,7 @@ const NewPurchase = observer(() => {
     return (
         <>
             <Header title="Uus ostuarve" backTo={routes.purchases} />
-            <NewProductContainer>
+            <ProductFormContainer>
                 <Form
                     validationSchema={validationSchema}
                     initialValues={initialValues}
@@ -81,7 +81,7 @@ const NewPurchase = observer(() => {
                 >
                     {formikProps => <FormFields formikProps={formikProps} />}
                 </Form>
-            </NewProductContainer>
+            </ProductFormContainer>
             <FooterContainer style={{ padding: '0.25rem 1rem' }}>
                 <Button title="Loo arve" form="new-purchase-form" type="submit" />
             </FooterContainer>
@@ -129,11 +129,11 @@ const FormFields: React.FC<any> = observer(({ formikProps }) => {
                 {arrayHelpers => (
                     <>
                         <FormTitle>
-                            Kaubad <AddPurchaseItemBtn to={routes.newPurchaseItem}>+ Lisa kaup</AddPurchaseItemBtn>
+                            Kaubad <AddPurchaseItemBtn to={routes.purchaseFormItem}>+ Lisa kaup</AddPurchaseItemBtn>
                         </FormTitle>
                         <Route
-                            path={routes.newPurchaseItem}
-                            render={() => <NewPurchaseItem arrayHelpers={arrayHelpers} />}
+                            path={routes.purchaseFormItem}
+                            render={() => <PurchaseItemForm arrayHelpers={arrayHelpers} />}
                         />
                         {formikProps.values.items.map((item, index) => (
                             <InvoiceItemListItem
@@ -143,7 +143,7 @@ const FormFields: React.FC<any> = observer(({ formikProps }) => {
                                 onDelete={() => arrayHelpers.remove(index)}
                                 onEdit={() =>
                                     history.push({
-                                        pathname: routes.newPurchaseItem,
+                                        pathname: routes.purchaseFormItem,
                                         state: {
                                             index,
                                             item
@@ -159,4 +159,4 @@ const FormFields: React.FC<any> = observer(({ formikProps }) => {
     );
 });
 
-export default NewPurchase;
+export default PurchaseForm;

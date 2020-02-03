@@ -6,7 +6,7 @@ interface IFormRowContainerProps {
     flex?: number[];
 }
 
-export const NewProductContainer = styled(ContentContainer)`
+export const ProductFormContainer = styled(ContentContainer)`
     ${({ theme }) => `
         .form-subtitle {
             padding: 0.25rem 1rem;

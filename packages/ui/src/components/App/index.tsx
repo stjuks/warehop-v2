@@ -15,8 +15,8 @@ import { theme } from '@ui/util/styled';
 import routes from '../../util/routes';
 import Products from '../Products';
 import ProductDetails from '../ProductDetails';
-import NewProduct from '../NewProduct';
-import NewPurchase from '../NewPurchase';
+import ProductForm from '../ProductForm';
+import PurchaseForm from '../PurchaseForm';
 import Sales from '../Sales';
 import Purchases from '../Purchases';
 import Footer from '../Footer';
@@ -39,10 +39,10 @@ const App = () => {
                 <IconContext.Provider value={{ className: 'react-icon' }}>
                     <AppContainer>
                         <Switch>
-                            <Route path={routes.newProduct} component={NewProduct} />
+                            <Route path={routes.ProductForm} component={ProductForm} />
                             <Route path={routes.productDetails} component={ProductDetails} />
                             <Route path={routes.products} component={Products} />
-                            <Route path={routes.newPurchase} component={NewPurchase} />
+                            <Route path={routes.purchaseForm} component={PurchaseForm} />
                             <Route path={routes.purchaseDetails} component={InvoiceDetails} />
                             <Route path={routes.purchases} component={Purchases} />
                             <Route path={routes.saleDetails} component={InvoiceDetails} />

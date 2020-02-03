@@ -24,7 +24,7 @@ const Purchases = observer(() => {
         <button style={{ display: 'flex' }}>
             <FiSliders />
         </button>,
-        <NewItemButtonContainer onClick={() => history.push(routes.newPurchase)}>
+        <NewItemButtonContainer onClick={() => history.push(routes.purchaseForm)}>
             <FiPlusCircle />
         </NewItemButtonContainer>
     ];

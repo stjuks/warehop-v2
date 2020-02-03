@@ -6,7 +6,7 @@ import { FiTrash2, FiPlusCircle } from 'react-icons/fi';
 import routes from '../../util/routes';
 import WarehouseStoreContext from '../../stores/WarehouseStore';
 import ItemStoreContext from '../../stores/ItemStore';
-import { NewProductContainer, AddWarehouseButton, TrashButtonContainer } from './styles';
+import { ProductFormContainer, AddWarehouseButton, TrashButtonContainer } from './styles';
 
 import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
@@ -19,7 +19,7 @@ import AriaSelect from '../Form/AriaSelect';
 import { Row } from '../Layout/styles';
 import FieldArray from '../Form/util/FieldArray';
 
-const NewProduct = observer(() => {
+const ProductForm = observer(() => {
     const warehouseStore = useContext(WarehouseStoreContext);
     const itemStore = useContext(ItemStoreContext);
 
@@ -61,7 +61,7 @@ const NewProduct = observer(() => {
     return (
         <>
             <Header title="Uus kaup" backTo={routes.products} />
-            <NewProductContainer>
+            <ProductFormContainer>
                 <Form
                     id="new-product-form"
                     initialValues={initialValues}
@@ -141,7 +141,7 @@ const NewProduct = observer(() => {
                         </>
                     )}
                 </Form>
-            </NewProductContainer>
+            </ProductFormContainer>
             <FooterContainer style={{ padding: '0.5rem 1rem' }}>
                 <Button title="Lisa kaup" form="new-product-form" />
             </FooterContainer>
@@ -149,4 +149,4 @@ const NewProduct = observer(() => {
     );
 });
 
-export default NewProduct;
+export default ProductForm;
