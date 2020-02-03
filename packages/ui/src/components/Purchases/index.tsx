@@ -11,7 +11,7 @@ import InvoiceStoreContext from '../../stores/InvoiceStore';
 import Header from '../Header';
 import HeaderSearch from '../HeaderSearch';
 import Radio from '../Radio';
-import PurchaseItem from './PurchaseItem';
+import InvoiceItem from '../InvoiceItem';
 import { LoadMoreButton } from './styles';
 
 const Purchases = observer(() => {
@@ -52,7 +52,7 @@ const Purchases = observer(() => {
             </SortingContainer>
             <ContentContainer>
                 {invoiceStore.purchases.map(purchase => (
-                    <PurchaseItem {...purchase} key={purchase.id} />
+                    <InvoiceItem {...purchase} key={purchase.id} />
                 ))}
                 {invoiceStore.paginatedPurchases.pageInfo.hasNextPage && (
                     <LoadMoreButton onClick={() => invoiceStore.fetchMorePurchases({ isPaid: paidFilter })}>

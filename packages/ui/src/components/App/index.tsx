@@ -17,10 +17,11 @@ import Products from '../Products';
 import ProductDetails from '../ProductDetails';
 import NewProduct from '../NewProduct';
 import NewPurchase from '../NewPurchase';
+import Sales from '../Sales';
 import Purchases from '../Purchases';
 import Footer from '../Footer';
 import HamburgerMenu from '../HamburgerMenu';
-import PurchaseDetails from '../PurchaseDetails';
+import InvoiceDetails from '../InvoiceDetails';
 
 const App = () => {
     const warehouseStore = useContext(WarehouseStoreContext);
@@ -42,8 +43,10 @@ const App = () => {
                             <Route path={routes.productDetails} component={ProductDetails} />
                             <Route path={routes.products} component={Products} />
                             <Route path={routes.newPurchase} component={NewPurchase} />
-                            <Route path={routes.purchaseDetails} component={PurchaseDetails} />
+                            <Route path={routes.purchaseDetails} component={InvoiceDetails} />
                             <Route path={routes.purchases} component={Purchases} />
+                            <Route path={routes.saleDetails} component={InvoiceDetails} />
+                            <Route path={routes.sales} component={Sales} />
                         </Switch>
                         <Footer />
                         <HamburgerMenu />

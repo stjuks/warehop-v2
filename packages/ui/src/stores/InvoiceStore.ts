@@ -7,7 +7,7 @@ import { paginatedData } from '../util/helpers';
 import { uiStore } from './UIStore';
 
 class InvoiceStore {
-    private INVOICE_LIMIT = 1;
+    private INVOICE_LIMIT = 25;
 
     @observable paginatedPurchases = paginatedData<Invoice>();
     @observable paginatedSales = paginatedData<Invoice>();

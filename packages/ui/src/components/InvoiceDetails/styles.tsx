@@ -1,9 +1,9 @@
 import styled from '@ui/util/styled';
-import { ContentContainer } from '../App/styles';
+import ContentContainer from '../util/ContentContainer';
 
-export const PurchaseDetailsContainer = styled(ContentContainer)`
+export const InvoiceDetailsContainer = styled(ContentContainer)`
     padding: 1rem;
-`
+`;
 
 export const InvoiceHero = styled.div`
     padding: 0.5rem 0 0.5rem 1.25rem;

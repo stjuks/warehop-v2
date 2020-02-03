@@ -15,7 +15,7 @@ import Button from '../Button';
 import { Partner, InvoiceItem, InvoiceType } from '@shared/types';
 import Form from '../Form';
 import FieldArray from '../Form/util/FieldArray';
-import PurchaseItem from './PurchaseItem';
+import InvoiceItemListItem from '../InvoiceItemListItem';
 import { Route } from 'react-router';
 import NewPurchaseItem from './NewPurchaseItem';
 import AriaSelect from '../Form/AriaSelect';
@@ -136,7 +136,7 @@ const FormFields: React.FC<any> = observer(({ formikProps }) => {
                             render={() => <NewPurchaseItem arrayHelpers={arrayHelpers} />}
                         />
                         {formikProps.values.items.map((item, index) => (
-                            <PurchaseItem
+                            <InvoiceItemListItem
                                 key={index}
                                 item={item}
                                 style={{ margin: '0 0.25rem' }}

@@ -4,60 +4,64 @@ import routes from '@ui/util/routes';
 import InvoiceStoreContext from '@ui/stores/InvoiceStore';
 import currency from 'currency.js';
 
-import { InvoiceHero, IsPaidStyled, PurchaseDetailsContainer } from './styles';
+import { InvoiceHero, IsPaidStyled, InvoiceDetailsContainer } from './styles';
 import Header from '../Header';
 import { RouteComponentProps } from 'react-router';
 import { DetailCardContainer, DetailLabel } from '../ProductDetails/styles';
 import moment from 'moment';
-import PurchaseItem from '../NewPurchase/PurchaseItem';
+import InvoiceItemListItem from '../InvoiceItemListItem';
 
-interface PurchaseDetailsProps {
-    purchase: Invoice;
+interface InvoiceDetailsProps {
+    invoice?: Invoice;
 }
 
-const PurchaseDetails: React.FC<PurchaseDetailsProps & RouteComponentProps> = props => {
+const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = props => {
     const invoiceStore = useContext(InvoiceStoreContext);
-    const [purchase, setPurchase] = useState<Invoice | undefined>(undefined);
+    const [invoice, setInvoice] = useState<Invoice | undefined>(undefined);
 
     useEffect(() => {
-        const handlePurchase = async () => {
+        const handleInvoiceLoading = async () => {
             const location: any = props.location;
 
-            if (location.purchase) {
-                setPurchase(location.purchase);
+            if (location.invoice) {
+                setInvoice(location.invoice);
             } else {
                 const match: any = props.match;
                 const { id } = match.params;
 
                 if (id !== undefined) {
-                    const purchase = await invoiceStore.fetchInvoice(id);
-                    setPurchase(purchase);
+                    const invoice = await invoiceStore.fetchInvoice(id);
+                    setInvoice(invoice);
                 }
             }
         };
 
-        handlePurchase();
+        handleInvoiceLoading();
     }, []);
 
-    const sum = purchase ? currency(purchase.sum).toString() : null;
-    const issueDate = purchase ? moment(purchase.issueDate).format('DD.MM.YYYY') : null;
-    const dueDate = purchase ? moment(purchase.dueDate).format('DD.MM.YYYY') : null;
+    const sum = invoice ? currency(invoice.sum).toString() : null;
+    const issueDate = invoice ? moment(invoice.issueDate).format('DD.MM.YYYY') : null;
+    const dueDate = invoice ? moment(invoice.dueDate).format('DD.MM.YYYY') : null;
+
+    console.log(invoice);
+
+    const backRoute = invoice && invoice.type === 'PURCHASE' ? routes.purchases : routes.sales;
 
     return (
         <>
-            <Header title="Arve detailid" backTo={routes.purchases} />
-            <PurchaseDetailsContainer>
-                {purchase ? (
+            <Header title="Arve detailid" backTo={backRoute} />
+            <InvoiceDetailsContainer padded>
+                {invoice && (
                     <>
                         <InvoiceHero>
                             <div className="row-1">
-                                <span className="col-1">{purchase.partner.name}</span>
+                                <span className="col-1">{invoice.partner.name}</span>
                                 <span className="col-2">{sum}€</span>
                             </div>
                             <div className="row-2">
-                                <span className="col-1">#{purchase.number}</span>
-                                <IsPaidStyled isPaid={purchase.isPaid}>
-                                    {purchase.isPaid ? 'Makstud' : 'Maksmata'}
+                                <span className="col-1">#{invoice.number}</span>
+                                <IsPaidStyled isPaid={invoice.isPaid}>
+                                    {invoice.isPaid ? 'Makstud' : 'Maksmata'}
                                 </IsPaidStyled>
                             </div>
                         </InvoiceHero>
@@ -75,19 +79,19 @@ const PurchaseDetails: React.FC<PurchaseDetailsProps & RouteComponentProps> = pr
                             <div className="row">
                                 <div className="detail">
                                     <div className="detail-label">Märkused</div>
-                                    <div className="detail-value">{purchase.description || '-'}</div>
+                                    <div className="detail-value">{invoice.description || '-'}</div>
                                 </div>
                             </div>
                         </DetailCardContainer>
                         <DetailLabel>Kaubad</DetailLabel>
-                        {purchase.items.map(item => (
-                            <PurchaseItem item={item} key={item.id} />
+                        {invoice.items.map(item => (
+                            <InvoiceItemListItem item={item} key={item.id} />
                         ))}
                     </>
-                ) : null}
-            </PurchaseDetailsContainer>
+                )}
+            </InvoiceDetailsContainer>
         </>
     );
 };
 
-export default PurchaseDetails;
+export default InvoiceDetails;

@@ -1,61 +1,68 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { FiPlusCircle, FiSliders, FiRefreshCw } from 'react-icons/fi';
 import { observer } from 'mobx-react-lite';
 
-import { ContentContainer } from '../App/styles';
-import { SortingContainer } from '../Products/styles';
+import ContentContainer from '@ui/components/util/ContentContainer';
+import { SortingContainer, NewItemButtonContainer } from '../Products/styles';
+import history from '../../util/history';
+import routes from '../../util/routes';
+import InvoiceStoreContext from '../../stores/InvoiceStore';
 
 import Header from '../Header';
 import HeaderSearch from '../HeaderSearch';
-import PurchaseItem from './PurchaseItem';
+import Radio from '../Radio';
+import InvoiceItem from '../InvoiceItem';
+import { LoadMoreButton } from './styles';
 
-const Sales = observer(() => {
+const Purchases = observer(() => {
+    const [paidFilter, setPaidFilter] = useState<boolean | undefined>(undefined);
 
-    const headerIcons = [<HeaderSearch onChange={value => null} placeholder="Otsi arvet" />];
+    const invoiceStore = useContext(InvoiceStoreContext);
 
-    const sortOptions = [
-        {
-            label: 'Sorteeri',
-            options: [
-                { label: 'Kood', value: 'Kood' },
-                { label: 'Müügihind', value: 'Müügihind' },
-                { label: 'Kogus', value: 'Kogus' },
-                { label: 'Nimetus', value: 'Nimetus' }
-            ]
-        }
+    const headerIcons = [
+        <HeaderSearch onChange={value => null} placeholder="Otsi arvet" />,
+        <button style={{ display: 'flex' }}>
+            <FiSliders />
+        </button>,
+        <NewItemButtonContainer onClick={() => history.push(routes.newPurchase)}>
+            <FiPlusCircle />
+        </NewItemButtonContainer>
     ];
 
     useEffect(() => {
-        // purchaseStore.fetchPurchases();
-    }, []);
+        invoiceStore.fetchSales({ isPaid: paidFilter });
+    }, [paidFilter]);
 
     const paidOptions = [
-        {
-            label: 'Kõik',
-            value: 'all'
-        },
-        {
-            label: 'Makstud',
-            value: 'paid'
-        },
-        {
-            label: 'Maksmata',
-            value: 'notPaid'
-        }
+        { label: 'Kõik', value: undefined },
+        { label: 'Makstud', value: true },
+        { label: 'Maksmata', value: false }
     ];
 
     return (
         <>
-            <Header title="Ostuarved" components={headerIcons} />
+            <Header title="Müügiarved" components={headerIcons} />
             <SortingContainer>
-                
+                <Radio
+                    options={paidOptions}
+                    name="radio-paid"
+                    onSelect={value => setPaidFilter(value)}
+                    defaultValue={paidOptions[0].value}
+                />
             </SortingContainer>
             <ContentContainer>
-                {/* purchaseStore.purchases.map(purchase => (
-                    <PurchaseItem {...purchase} key={purchase.id} />
-                )) */}
+                {invoiceStore.sales.map(purchase => (
+                    <InvoiceItem {...purchase} key={purchase.id} />
+                ))}
+                {invoiceStore.paginatedSales.pageInfo.hasNextPage && (
+                    <LoadMoreButton onClick={() => invoiceStore.fetchMoreSales({ isPaid: paidFilter })}>
+                        <FiRefreshCw />
+                        Lae juurde
+                    </LoadMoreButton>
+                )}
             </ContentContainer>
         </>
     );
 });
 
-export default Sales;
+export default Purchases;

@@ -3,12 +3,12 @@ import moment from 'moment';
 import currency from 'currency.js';
 
 import routes from '../../util/routes';
-import { PurchaseItemContainer, DaysLeftStyled } from './styles';
+import { InvoiceItemContainer, DaysLeftStyled } from './styles';
 import { Invoice } from '@shared/types';
 import { FiChevronRight } from 'react-icons/fi';
 
-const PurchaseItem: React.FC<Invoice> = props => {
-    const { number, sum, partner, id, dueDate, isPaid } = props;
+const InvoiceItem: React.FC<Invoice> = props => {
+    const { number, sum, partner, id, dueDate, isPaid, type } = props;
 
     const getDaysUntilDueDate = () => {
         let text = '';
@@ -29,8 +29,13 @@ const PurchaseItem: React.FC<Invoice> = props => {
 
     const formattedSum = currency(sum).toString();
 
+    const routeProps = {
+        pathname: `${type === 'PURCHASE' ? routes.purchases : routes.sales}/${id}`,
+        invoice: props
+    };
+
     return (
-        <PurchaseItemContainer to={{ pathname: `${routes.purchases}/${id}`, purchase: props }}>
+        <InvoiceItemContainer to={routeProps}>
             <div className="col-1">
                 <div className="row-1">
                     <div className="partner-name">{partner.name}</div>
@@ -44,8 +49,8 @@ const PurchaseItem: React.FC<Invoice> = props => {
             <div className="col-2">
                 <FiChevronRight />
             </div>
-        </PurchaseItemContainer>
+        </InvoiceItemContainer>
     );
 };
 
-export default PurchaseItem;
+export default InvoiceItem;

@@ -7,6 +7,7 @@ export default {
     newPurchase: '/purchases/new',
     newPurchaseItem: '/purchases/new/item',
     sales: '/sales',
+    saleDetails: '/sales/:id',
     expenses: '/expenses',
     incomes: '/incomes',
     partners: '/partners',
