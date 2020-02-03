@@ -36,11 +36,15 @@ const handleError = error => {
     if (error instanceof ApolloError) {
         const err: GraphQLError = error.graphQLErrors[0];
 
-        return {
-            message: err.message,
-            ...err.extensions
-        };
+        if (err) {
+            return {
+                message: err.message,
+                ...err.extensions
+            };
+        }
     }
+
+    throw error;
 };
 
 const getResult = (data, opts) => {

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { FiPlusCircle, FiSliders, FiRefreshCw } from 'react-icons/fi';
 import { observer } from 'mobx-react-lite';
+import { PaginatedData, Invoice } from '@shared/types';
 
 import ContentContainer from '@ui/components/util/ContentContainer';
 import { SortingContainer, NewItemButtonContainer } from '../Products/styles';
@@ -16,11 +17,19 @@ import { LoadMoreButton } from './styles';
 
 const Purchases = observer(() => {
     const [paidFilter, setPaidFilter] = useState<boolean | undefined>(undefined);
+    const [searchResults, setSearchResults] = useState<PaginatedData<Invoice>>({
+        data: [],
+        pageInfo: {
+            hasNextPage: false,
+            cursor: undefined
+        }
+    });
+    const [searchQuery, setSearchQuery] = useState('');
 
     const invoiceStore = useContext(InvoiceStoreContext);
 
     const headerIcons = [
-        <HeaderSearch onChange={value => null} placeholder="Otsi arvet" />,
+        <HeaderSearch onChange={setSearchQuery} placeholder="Otsi arvet" />,
         <button style={{ display: 'flex' }}>
             <FiSliders />
         </button>,
@@ -28,6 +37,17 @@ const Purchases = observer(() => {
             <FiPlusCircle />
         </NewItemButtonContainer>
     ];
+
+    useEffect(() => {
+        const handleSearch = async () => {
+            const searchedPurchases = await invoiceStore.fetchPurchases({
+                generalQuery: searchQuery
+            });
+            setSearchResults(searchedPurchases);
+        };
+
+        handleSearch();
+    }, [searchQuery]);
 
     useEffect(() => {
         invoiceStore.fetchPurchases({ isPaid: paidFilter });
@@ -51,10 +71,10 @@ const Purchases = observer(() => {
                 />
             </SortingContainer>
             <ContentContainer>
-                {invoiceStore.purchases.map(purchase => (
-                    <InvoiceItem {...purchase} key={purchase.id} />
-                ))}
-                {invoiceStore.paginatedPurchases.pageInfo.hasNextPage && (
+                {!searchQuery
+                    ? invoiceStore.purchases.map(purchase => <InvoiceItem {...purchase} key={purchase.id} />)
+                    : searchResults.data.map(purchase => <InvoiceItem {...purchase} key={purchase.id} />)}
+                {invoiceStore.paginatedPurchases.pageInfo.hasNextPage && !searchQuery && (
                     <LoadMoreButton onClick={() => invoiceStore.fetchMorePurchases({ isPaid: paidFilter })}>
                         <FiRefreshCw />
                         Lae juurde

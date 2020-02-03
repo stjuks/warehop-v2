@@ -1,4 +1,5 @@
 import styled from '@ui/util/styled';
+import { keyframes } from 'styled-components';
 
 interface ContentContainerStyledProps {
     padded?: boolean;

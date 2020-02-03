@@ -1,7 +1,19 @@
 import styled from '@ui/util/styled';
+import { keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
 
+const fadeIn = keyframes`
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+`;
+
 export const ProductItemContainer = styled(Link)`
+    animation: ${fadeIn} 0.3s;
     ${({ theme }) => `
         padding: 1rem;
         display: flex;

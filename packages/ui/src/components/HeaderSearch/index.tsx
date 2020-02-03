@@ -2,7 +2,7 @@ import React, { useState, createRef } from 'react';
 import { FiSearch, FiX } from 'react-icons/fi';
 
 import { HeaderSearchContainer, InputContainer, IconContainer } from './styles';
-import { useDebounce } from '../../util/hooks';
+import { useDebounce } from 'react-use';
 
 interface IHeaderSearchProps {
     onChange(value: string): void;
@@ -30,9 +30,13 @@ function HeaderSearch({ onChange, placeholder }: IHeaderSearchProps) {
         }
     };
 
-    useDebounce(() => {
-        onChange(query);
-    }, 500);
+    useDebounce(
+        () => {
+            onChange(query);
+        },
+        500,
+        [query]
+    );
 
     return (
         <HeaderSearchContainer>
