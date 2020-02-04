@@ -31,17 +31,13 @@ const Purchases = observer(() => {
         </NewItemButtonContainer>
     ];
 
-    const filter: InvoiceSearchFilter = {
+    const filter: InvoiceSearchInput = {
         isPaid: paidFilter,
         generalQuery: searchQuery
-    }
+    };
 
     useEffect(() => {
-        const handleSearch = async () => {
-            await invoiceStore.fetchPurchases(filter);
-        };
-
-        handleSearch();
+        invoiceStore.fetchPurchases(filter);
     }, [paidFilter, searchQuery]);
 
     const paidOptions = [

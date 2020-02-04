@@ -66,7 +66,7 @@ export default class Invoice extends Model<Invoice> {
     @Column(DataType.DECIMAL(12, 4))
     sum: object;
 
-    @Column
+    @Column(DataType.CITEXT)
     description: string;
 
     @Column

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { FiPlusCircle, FiSliders, FiRefreshCw } from 'react-icons/fi';
 import { observer } from 'mobx-react-lite';
+import { InvoiceSearchInput } from '@shared/types';
 
 import ContentContainer from '@ui/components/util/ContentContainer';
 import { SortingContainer, NewItemButtonContainer } from '../Products/styles';
@@ -15,12 +16,13 @@ import InvoiceItem from '../InvoiceItem';
 import { LoadMoreButton } from './styles';
 
 const Purchases = observer(() => {
-    const [paidFilter, setPaidFilter] = useState<boolean | undefined>(undefined);
+    const [paidFilter, setPaidFilter] = useState(undefined);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const invoiceStore = useContext(InvoiceStoreContext);
 
     const headerIcons = [
-        <HeaderSearch onChange={value => null} placeholder="Otsi arvet" />,
+        <HeaderSearch onChange={setSearchQuery} placeholder="Otsi arvet" />,
         <button style={{ display: 'flex' }}>
             <FiSliders />
         </button>,
@@ -29,9 +31,14 @@ const Purchases = observer(() => {
         </NewItemButtonContainer>
     ];
 
+    const filter: InvoiceSearchInput = {
+        isPaid: paidFilter,
+        generalQuery: searchQuery
+    };
+
     useEffect(() => {
-        invoiceStore.fetchSales({ isPaid: paidFilter });
-    }, [paidFilter]);
+        invoiceStore.fetchSales(filter);
+    }, [paidFilter, searchQuery]);
 
     const paidOptions = [
         { label: 'Kõik', value: undefined },
@@ -55,7 +62,7 @@ const Purchases = observer(() => {
                     <InvoiceItem {...purchase} key={purchase.id} />
                 ))}
                 {invoiceStore.paginatedSales.pageInfo.hasNextPage && (
-                    <LoadMoreButton onClick={() => invoiceStore.fetchMoreSales({ isPaid: paidFilter })}>
+                    <LoadMoreButton onClick={() => invoiceStore.fetchMoreSales(filter)}>
                         <FiRefreshCw />
                         Lae juurde
                     </LoadMoreButton>

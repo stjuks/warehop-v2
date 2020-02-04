@@ -26,8 +26,6 @@ class InvoiceStore {
         uiStore.setLoading(false);
 
         this.paginatedPurchases = purchases;
-
-        return purchases;
     };
 
     @task
@@ -49,10 +47,16 @@ class InvoiceStore {
 
     @task
     fetchSales = async (filter: InvoiceSearchInput) => {
+        uiStore.setLoading(true);
+
+        const safeFilter = filter || {};
+
         const sales = await api.fetchSales({
             ...filter,
             pagination: { limit: this.INVOICE_LIMIT }
         });
+
+        uiStore.setLoading(false);
 
         this.paginatedSales = sales;
     };
