@@ -211,8 +211,6 @@ const findInvoices = async ({ models, user }: ApolloContext, filter: InvoiceSear
     const cursor = pagination && pagination.cursor;
     const limit = pagination && pagination.limit;
 
-    console.log(pagination);
-
     if (generalQuery) {
         const generalLike = { [Op.like]: `%${generalQuery}%` };
         where[Op.or] = [{ number: generalLike }, { description: generalLike }, { '$partner.name$': generalLike }];

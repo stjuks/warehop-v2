@@ -25,9 +25,7 @@ class InvoiceStore {
 
         uiStore.setLoading(false);
 
-        if (!filter?.generalQuery) {
-            this.paginatedPurchases = purchases;
-        }
+        this.paginatedPurchases = purchases;
 
         return purchases;
     };
