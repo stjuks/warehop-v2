@@ -78,11 +78,22 @@ interface PaginateOptions extends FindOptions {
     cursor: string;
     limit: number;
     paginateBy?: string;
+    // test?: [string, 'ASC' | 'DESC'][];
 }
 
 export const paginate = async (model: ModelCtor, opts: PaginateOptions) => {
     const { cursor, limit, paginateBy, ...restOpts } = opts;
     const where: any = opts.where || {};
+
+    /* if (test) {
+        const cursors = fromCursorHash(cursor).split(',');
+
+        test.forEach((attrs, i) => {
+            where[attrs[0]] = {
+                [attrs[1] === 'DESC' ? Op.lte : Op.gte]: cursors[i]
+            };
+        });
+    } */
 
     if (cursor) {
         const decryptedHash: any = fromCursorHash(cursor);
@@ -118,7 +129,7 @@ export const paginate = async (model: ModelCtor, opts: PaginateOptions) => {
 
         if (hasNextPage) {
             result.data.pop();
-            result.pageInfo.cursor = toCursorHash(lastDataObject[paginateBy || 'id']);
+            result.pageInfo.cursor = toCursorHash(lastDataObject[paginateBy || 'id']);
         }
     }
 

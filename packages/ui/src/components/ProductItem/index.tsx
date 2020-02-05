@@ -26,9 +26,6 @@ function ProductItem(product: ProductItemType) {
                     </div>
                 </div>
             </div>
-            <div className="col-2">
-                <FiChevronRight />
-            </div>
         </ProductItemContainer>
     );
 }

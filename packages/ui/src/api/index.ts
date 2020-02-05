@@ -10,7 +10,7 @@ import { GraphQLError } from 'graphql';
 
 export const query = async <T>(opts: QueryBaseOptions) => {
     try {
-        const { data } = await apollo.query({ ...opts, fetchPolicy: 'no-cache' });
+        const { data } = await apollo.query({ ...opts });
 
         const result: T = getResult(data, opts);
 

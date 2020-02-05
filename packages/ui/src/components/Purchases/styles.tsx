@@ -89,7 +89,7 @@ export const LoadMoreButton = styled.button`
     }
 
     ${({ theme }) => `
-        background: ${theme.colors.lightGrey};
+        background: ${theme.colors.lightColor1};
         color: ${theme.colors.lightText};
         border: solid ${theme.colors.midGrey};
         border-width: 1px 0 0 0;

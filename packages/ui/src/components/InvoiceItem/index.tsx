@@ -2,10 +2,9 @@ import React from 'react';
 import moment from 'moment';
 import currency from 'currency.js';
 
-import routes from '../../util/routes';
+import routes from '@ui/util/routes';
 import { InvoiceItemContainer, DaysLeftStyled } from './styles';
 import { Invoice } from '@shared/types';
-import { FiChevronRight } from 'react-icons/fi';
 
 const InvoiceItem: React.FC<Invoice> = props => {
     const { number, sum, partner, id, dueDate, isPaid, type } = props;
@@ -45,9 +44,6 @@ const InvoiceItem: React.FC<Invoice> = props => {
                     <div className="invoice-nr">#{number}</div>
                     <div className="days-left">{getDaysUntilDueDate()}</div>
                 </div>
-            </div>
-            <div className="col-2">
-                <FiChevronRight />
             </div>
         </InvoiceItemContainer>
     );
