@@ -16,7 +16,8 @@ export default gql`
     }
 
     input SearchPartnerInput {
-        type: PartnerType!
+        type: PartnerType
+        pagination: PaginatedQueryInput
         name: String
         phoneNr: String
         email: String
@@ -44,8 +45,7 @@ export default gql`
     }
 
     extend type Query {
-        partners(pagination: PaginatedQueryInput): PaginatedPartner!
-        searchPartners(query: SearchPartnerInput): [Partner!]!
+        partners(filter: SearchPartnerInput): PaginatedPartner!
     }
 
     extend type Mutation {

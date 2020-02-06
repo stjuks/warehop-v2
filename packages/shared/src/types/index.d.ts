@@ -84,7 +84,8 @@ export interface AddTransactionInput {
 }
 
 export interface SearchPartnerInput {
-    type: PartnerType;
+    type?: PartnerType;
+    pagination?: PaginatedQueryInput;
     name?: string;
     phoneNr?: string;
     email?: string;

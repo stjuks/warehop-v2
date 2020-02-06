@@ -20,12 +20,12 @@ import PurchaseForm from '../PurchaseForm';
 import Sales from '../Sales';
 import Purchases from '../Purchases';
 import Footer from '../Footer';
+import Partners from '../Partners';
 import HamburgerMenu from '../HamburgerMenu';
 import InvoiceDetails from '../InvoiceDetails';
 
 const App = () => {
     const warehouseStore = useContext(WarehouseStoreContext);
-    const partnerStore = useContext(PartnerStoreContext);
     const commonStore = useContext(CommonStoreContext);
 
     useEffect(() => {
@@ -39,7 +39,7 @@ const App = () => {
                 <IconContext.Provider value={{ className: 'react-icon' }}>
                     <AppContainer>
                         <Switch>
-                            <Route path={routes.ProductForm} component={ProductForm} />
+                            <Route path={routes.productForm} component={ProductForm} />
                             <Route path={routes.productDetails} component={ProductDetails} />
                             <Route path={routes.products} component={Products} />
                             <Route path={routes.purchaseForm} component={PurchaseForm} />
@@ -47,6 +47,8 @@ const App = () => {
                             <Route path={routes.purchases} component={Purchases} />
                             <Route path={routes.saleDetails} component={InvoiceDetails} />
                             <Route path={routes.sales} component={Sales} />
+                            <Route path={routes.partnerDetails} component={Purchases} />
+                            <Route path={routes.partners} component={Partners} />
                         </Switch>
                         <Footer />
                         <HamburgerMenu />

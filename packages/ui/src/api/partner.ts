@@ -18,8 +18,24 @@ const partnerSchema = `
 `;
 
 export const FETCH_PARTNERS = gql`
-    query partners($cursor: String, $limit: Int!) {
-        partners(pagination: { cursor: $cursor, limit: $limit }) {
+    query partners(
+        $type: PartnerType, 
+        $pagination: PaginatedQueryInput, 
+        $name: String, 
+        $email: String, 
+        $phoneNr: String,
+        $generalQuery: String
+    ) {
+        partners(
+            filter: { 
+                type: $type 
+                pagination: $pagination
+                name: $name
+                email: $email
+                phoneNr: $phoneNr
+                generalQuery: $generalQuery
+            }
+        ) {
             pageInfo {
                 hasNextPage
                 cursor
@@ -118,10 +134,8 @@ export const EDIT_PARTNER = gql`
 `;
 
 export default {
-    fetchPartners: async (args: { cursor?: string; limit: number }) =>
-        await query<PaginatedData<Partner>>({ query: FETCH_PARTNERS, variables: args }),
-    searchPartners: async (args: SearchPartnerInput) =>
-        await query<Partner[]>({ query: SEARCH_PARTNERS, variables: args }),
+    fetchPartners: async (filter: SearchPartnerInput) =>
+        await query<PaginatedData<Partner>>({ query: FETCH_PARTNERS, variables: filter }),
     addPartner: async (partner: Partner) => await mutate<number>({ mutation: ADD_PARTNER, variables: partner }),
     deletePartner: async (id: number) => await mutate<boolean>({ mutation: DELETE_PARTNER, variables: { id } }),
     editPartner: async (id: number, editedPartner: Partner) =>

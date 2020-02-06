@@ -4,22 +4,14 @@ import { PaginatedQueryInput, SearchPartnerInput } from '@shared/types';
 
 const partnerResolver: Resolver = {
     Query: {
-        partners: authResolver(
-            async ({ pagination: { cursor, limit } }: { pagination: PaginatedQueryInput }, { models, user }) => {
-                return await paginate(models.Partner, {
-                    cursor,
-                    limit,
-                    where: { userId: user.id },
-                    include: [models.PartnerType]
-                });
-            }
-        ),
-        searchPartners: authResolver(async ({ query }: { query: SearchPartnerInput }, { models, user }) => {
-            const { type, name, phoneNr, email, generalQuery } = query;
+        partners: authResolver(async ({ filter }: { filter: SearchPartnerInput }, { models, user }) => {
+            const { type, name, phoneNr, email, generalQuery, pagination } = filter;
 
-            const where: any = { type, userId: user.id };
+            const where: any = { userId: user.id };
 
             const like = (arg: string) => ({ [Op.like]: `%${arg}%` });
+
+            if (type) where.type = type;
 
             if (generalQuery) {
                 const generalLike = like(generalQuery);
@@ -31,7 +23,14 @@ const partnerResolver: Resolver = {
                 if (email) where.email = like(email);
             }
 
-            return await models.Partner.findAll({ where });
+            const cursor = pagination && pagination.cursor;
+            const limit = pagination && pagination.limit;
+
+            return await paginate(models.Partner, {
+                cursor,
+                limit,
+                where
+            });
         })
     },
     Mutation: {

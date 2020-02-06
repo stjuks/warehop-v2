@@ -1,7 +1,7 @@
 export default {
     products: '/products',
     productDetails: '/products/:id',
-    ProductForm: '/products/new',
+    productForm: '/products/new',
     purchases: '/purchases',
     purchaseDetails: '/purchases/:id',
     purchaseForm: '/purchases/new',
@@ -11,6 +11,7 @@ export default {
     expenses: '/expenses',
     incomes: '/incomes',
     partners: '/partners',
+    partnerDetails: '/partners/:id',
     statistics: '/statistics',
     settings: '/settings'
 };

@@ -229,7 +229,6 @@ const findInvoices = async ({ models, user }: ApolloContext, filter: InvoiceSear
         cursor,
         limit,
         paginateBy: 'dueDate',
-        // test: [['dueDate', 'DESC'], ['lol', 'ASC']],
         where: restWhere,
         include: [
             {
