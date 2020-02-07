@@ -76,7 +76,7 @@ class InvoiceStore {
     addInvoice = async (invoice: Invoice) => {
         const invoiceInput: AddInvoiceInput = {
             ...invoice,
-            partnerId: invoice.partner.id
+            partnerId: invoice.partner.id || 0
         };
 
         invoiceInput.items = invoice.items.map(item => {
