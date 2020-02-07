@@ -12,6 +12,7 @@ export default {
     incomes: '/incomes',
     partners: '/partners',
     partnerDetails: '/partners/:id',
+    partnerForm: '/partners/new',
     statistics: '/statistics',
     settings: '/settings'
 };

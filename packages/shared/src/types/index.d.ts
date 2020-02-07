@@ -160,7 +160,7 @@ export interface InvoiceItem {
 }
 
 export interface Partner {
-    id: number;
+    id?: number;
     name: string;
     type: PartnerType;
     regNr?: string;

@@ -7,12 +7,12 @@ import { uiStore } from './UIStore';
 import { paginatedData } from '../util/helpers';
 
 class PartnerStore {
-    private PARTNER_LIMIT = 5;
+    private PARTNER_LIMIT = 25;
 
     @observable paginatedPartners = paginatedData<Partner>();
 
     @task
-    fetchPartners = async (filter?: SearchPartnerInput) => {
+    fetchPartners = async (filter?: SearchPartnerInput, keepStoreValue?: boolean) => {
         uiStore.setLoading(true);
         const safeFilter = filter || {};
 
@@ -23,7 +23,9 @@ class PartnerStore {
 
         uiStore.setLoading(false);
 
-        this.paginatedPartners = partners;
+        if (!keepStoreValue) {
+            this.paginatedPartners = partners;
+        }
 
         return partners.data;
     };
@@ -42,6 +44,19 @@ class PartnerStore {
 
         this.paginatedPartners.pageInfo = partners.pageInfo;
         this.paginatedPartners.data.push(...partners.data);
+    };
+
+    @task
+    addPartner = async (partner: Partner) => {
+        uiStore.setLoading(true);
+
+        try {
+            await api.addPartner(partner);
+        } catch (err) {
+            throw err;
+        } finally {
+            uiStore.setLoading(false);
+        }
     };
 
     @computed

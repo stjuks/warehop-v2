@@ -23,7 +23,7 @@ const Partners = observer(() => {
 
     const headerIcons = [
         <HeaderSearch onChange={setSearchQuery} placeholder="Otsi partnerit" />,
-        <NewItemButtonContainer onClick={() => history.push(routes.productForm)}>
+        <NewItemButtonContainer onClick={() => history.push(routes.partnerForm)}>
             <FiPlusCircle />
         </NewItemButtonContainer>
     ];

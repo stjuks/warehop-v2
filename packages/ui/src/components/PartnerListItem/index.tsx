@@ -10,14 +10,18 @@ const PartnerListItem: React.FC<Partner> = ({ name, phoneNr, id, email }) => {
             <div className="col-1">
                 <div className="row row-1">{name}</div>
                 <div className="row row-2">
-                    <div className="contact-detail">
-                        <FiPhone />
-                        {phoneNr}
-                    </div>
-                    <div className="contact-detail">
-                        <FiMail />
-                        {email}
-                    </div>
+                    {phoneNr && (
+                        <div className="contact-detail">
+                            <FiPhone />
+                            {phoneNr}
+                        </div>
+                    )}
+                    {email && (
+                        <div className="contact-detail">
+                            <FiMail />
+                            {email}
+                        </div>
+                    )}
                 </div>
             </div>
         </PartnerListItemContainer>
