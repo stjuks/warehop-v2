@@ -48,9 +48,6 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
   const backRoute = invoice && invoice.type === 'PURCHASE' ? routes.purchases : routes.sales;
 
   const headerComponents = [
-    <button>
-      <FiDownload />
-    </button>,
     <DropdownMenu
       button={<FiMoreVertical />}
       options={[
@@ -59,6 +56,14 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
       ]}
     />
   ];
+
+  if (invoice && invoice.filePath) {
+    headerComponents.unshift(
+      <button onClick={() => invoiceStore.downloadInvoice(invoice?.id || -1)}>
+        <FiDownload />
+      </button>
+    );
+  }
 
   return (
     <>

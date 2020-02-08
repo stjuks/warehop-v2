@@ -111,6 +111,30 @@ class InvoiceStore {
     }
   };
 
+  @task
+  downloadInvoice = async (invoiceId: number) => {
+    try {
+      const file = await api.downloadInvoice(invoiceId);
+
+      console.log(file);
+
+      const pdf = new Blob([file.data], { type: 'application/pdf' });
+
+      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveOrOpenBlob(pdf);
+        return;
+      }
+
+      const data = window.URL.createObjectURL(pdf);
+      const link = document.createElement('a');
+      link.href = data;
+      link.download = 'Arve';
+      link.click();
+    } catch (err) {
+      throw err;
+    }
+  };
+
   @computed
   get purchases() {
     return this.paginatedPurchases.data;

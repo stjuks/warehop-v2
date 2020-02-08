@@ -18,6 +18,7 @@ import {
 } from '@shared/types';
 import Invoice from '../db/models/Invoice';
 import { GraphQLUpload } from 'apollo-server-express';
+import db from '../db';
 
 const validateAddInvoice = Joi.object({
   invoice: Joi.object({
@@ -99,7 +100,7 @@ const resolver: Resolver = {
 
         const transaction = await sequelize.transaction();
 
-        const uploadFile = async () => {
+        const uploadFile = async invoiceId => {
           if (file && invoice.type === 'PURCHASE') {
             const { createReadStream, filename }: any = await file;
             const stream = createReadStream();
@@ -119,6 +120,8 @@ const resolver: Resolver = {
               stream.on('error', error => wStream.destroy(error));
               stream.pipe(wStream);
             });
+
+            await models.Invoice.update({ filePath: fileName }, { where: { id: invoiceId }, transaction });
           }
         };
 
@@ -193,7 +196,7 @@ const resolver: Resolver = {
 
           await createInvoiceItems(items, addedInvoice);
 
-          await uploadFile();
+          await uploadFile(addedInvoice.id);
 
           await transaction.commit();
 

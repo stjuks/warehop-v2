@@ -66,4 +66,5 @@ export const authenticateJWT = async (req, res) =>
       resolve(user);
     })(req, res);
   });
+
 export default passport;

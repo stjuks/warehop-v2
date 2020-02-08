@@ -1,6 +1,8 @@
 import { gql } from 'apollo-boost-upload';
+import axios, { AxiosRequestConfig } from 'axios';
 import { query, mutate } from '.';
 import { Invoice, PaginatedData, AddInvoiceInput, InvoiceSearchInput } from '@shared/types';
+import { API_URL, JWT_ACCESS_TOKEN } from '@ui/util/constants';
 
 const invoiceSchema = `
     id
@@ -130,5 +132,18 @@ export default {
   fetchInvoice: async (id: number) =>
     await query<Invoice>({ query: FETCH_INVOICE, variables: { id } }),
   addInvoice: async (invoice: AddInvoiceInput) =>
-    await mutate<number>({ mutation: ADD_INVOICE, variables: invoice })
+    await mutate<number>({ mutation: ADD_INVOICE, variables: invoice }),
+  downloadInvoice: async (invoiceId: number) => {
+    const config: AxiosRequestConfig = {
+      headers: {
+        Authorization: `Bearer ${JWT_ACCESS_TOKEN}`
+      },
+      params: {
+        invoiceId
+      },
+      responseType: 'arraybuffer'
+    };
+
+    return await axios.get(`${API_URL}/rest/files/invoice`, config);
+  }
 };
