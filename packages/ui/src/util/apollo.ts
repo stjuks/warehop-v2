@@ -1,4 +1,4 @@
-import ApolloClient, { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-boost';
+import ApolloClient, { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-boost-upload';
 
 const apollo = new ApolloClient({
   uri: 'http://192.168.0.14:5000/graphql',

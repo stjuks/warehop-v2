@@ -16,6 +16,10 @@ const apollo = new ApolloServer({
   context: async ({ req, res }) => {
     return { models, sequelize, req, res };
   },
+  uploads: {
+    maxFileSize: 500000,
+    maxFiles: 1
+  },
   formatError
 });
 

@@ -1,5 +1,5 @@
 import apollo from '../util/apollo';
-import { QueryBaseOptions, MutationOptions, ApolloError } from 'apollo-boost';
+import { QueryBaseOptions, MutationOptions, ApolloError, gql } from 'apollo-boost-upload';
 
 import commonApi from './common';
 import partnerApi from './partner';

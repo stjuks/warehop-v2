@@ -1,4 +1,4 @@
-import { gql } from 'apollo-boost';
+import { gql } from 'apollo-boost-upload';
 import { query, mutate } from '.';
 import { ItemInput, ProductItem, ExpenseItem, PaginatedData } from '@shared/types';
 

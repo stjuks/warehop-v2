@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize-typescript';
 import path from 'path';
-import fs from 'fs';
+import fs, { unlink } from 'fs';
 import currency from 'currency.js';
 import mkdirp from 'mkdirp';
 import util from 'util';
@@ -58,31 +58,7 @@ const resolver: Resolver = {
     }),
     sales: authResolver(async ({ filter }: { filter: InvoiceSearchInput }, context) => {
       return await findInvoices(context, { ...filter, type: 'SALE' });
-    }) /* ,
-        searchInvoices: authResolver(async ({ query }: { query: InvoiceSearchInput }, context) => {
-            const { user } = context;
-            const { type, number, description, partnerName, isPaid, generalQuery } = query;
-
-            const where: any = {
-                userId: user.id,
-                type,
-                partner: {}
-            };
-
-            if (generalQuery) {
-                const generalLike = { [Op.like]: `%${generalQuery}%` };
-                where[Op.or] = [{ number: generalLike }, { description: generalLike }];
-            } else {
-                if (number) where.number = { [Op.like]: `%${number}%` };
-                if (description) where.description = { [Op.like]: `%${description}%` };
-            }
-
-            if (partnerName) where.partner.name = { [Op.like]: `%${partnerName}%` };
-            if (isPaid === true) where.sum = { [Op.lte]: Sequelize.col('paidSum') };
-            if (isPaid === false) where.sum = { [Op.gt]: Sequelize.col('paidSum') };
-
-            return await findInvoices(context, { where });
-        }) */,
+    }),
     invoiceItems: authResolver(async ({ invoiceId }, { models, user }) => {
       const invoiceItems = await models.InvoiceItem.findAll({
         where: {
@@ -125,19 +101,24 @@ const resolver: Resolver = {
 
         const uploadFile = async () => {
           if (file && invoice.type === 'PURCHASE') {
-            const uploadedFile: any = file;
+            const { createReadStream, filename }: any = await file;
+            const stream = createReadStream();
 
-            uploadedFile.then(promisedFile => console.log('fail', promisedFile));
+            const uploadDir = path.join('..', '..', 'purchaseUploads');
+            const fileName = `${new Date().getTime()}-${filename}`;
+            const filePath = path.join(uploadDir, fileName);
 
-            const uploadPath = path.join(
-              '..',
-              '..',
-              'purchaseUploads',
-              `${new Date().getTime()}-${uploadedFile.filename}`
-            );
+            await mkdirp(uploadDir);
 
-            await mkdirp(uploadPath);
-            fs.writeFileSync(uploadPath, file);
+            await new Promise((resolve, reject) => {
+              const wStream = fs.createWriteStream(filePath);
+
+              wStream.on('finish', resolve);
+              wStream.on('error', error => fs.unlink(filePath, () => reject(error)));
+
+              stream.on('error', error => wStream.destroy(error));
+              stream.pipe(wStream);
+            });
           }
         };
 
@@ -212,7 +193,7 @@ const resolver: Resolver = {
 
           await createInvoiceItems(items, addedInvoice);
 
-          // await uploadFile();
+          await uploadFile();
 
           await transaction.commit();
 

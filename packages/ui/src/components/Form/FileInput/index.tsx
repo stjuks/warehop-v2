@@ -8,9 +8,10 @@ import { FiFile, FiX } from 'react-icons/fi';
 interface FileInputProps {
   name: string;
   label: string;
+  accept: string;
 }
 
-const FileInputBase: React.FC<FileInputProps & FieldProps> = ({ form, field, label }) => {
+const FileInputBase: React.FC<FileInputProps & FieldProps> = ({ form, field, label, accept }) => {
   const [displayValue, setDisplayValue] = useState('');
 
   const handleChange = e => {
@@ -31,7 +32,7 @@ const FileInputBase: React.FC<FileInputProps & FieldProps> = ({ form, field, lab
 
   const InputComponent = (
     <>
-      <FileInputStyled type='file' onChange={handleChange} />
+      <FileInputStyled type='file' onChange={handleChange} accept={accept} />
       <input
         onChange={handleChange}
         readOnly={true}

@@ -31,7 +31,7 @@ interface PurchaseFormFormValues {
   type: InvoiceType;
   partner: Partner | undefined;
   number: string;
-  invoiceFile?: File;
+  file?: File;
   issueDate: Date;
   dueDate: Date;
   description?: string;
@@ -45,7 +45,7 @@ const PurchaseForm = observer(() => {
     type: 'PURCHASE',
     partner: undefined,
     number: '',
-    invoiceFile: undefined,
+    file: undefined,
     issueDate: moment().toDate(),
     dueDate: moment().toDate(),
     description: '',
@@ -93,7 +93,6 @@ const FormFields: React.FC<any> = observer(({ formikProps }) => {
   const partnerStore = useContext(PartnerStoreContext);
 
   useEffect(() => {
-    console.log('fetchPartners');
     partnerStore.fetchPartners();
   }, [partnerStore]);
 
@@ -126,7 +125,7 @@ const FormFields: React.FC<any> = observer(({ formikProps }) => {
         <DateInput name='dueDate' label='Maksetähtaeg' />
       </Row>
       <FormTitle>Lisaandmed</FormTitle>
-      <FileInput name='invoiceFile' label='Arve fail (PDF)' />
+      <FileInput name='file' accept=".pdf" label='Arve fail (PDF)' />
       <TextInput name='description' label='Märkused' isTextarea />
       <FieldArray name='items'>
         {arrayHelpers => (

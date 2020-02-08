@@ -1,4 +1,5 @@
 import { ModelCtor, Model } from 'sequelize-typescript';
+import util from 'util';
 import { ApolloError } from 'apollo-server-express';
 import { ErrorCode } from '@shared/types';
 import { GraphQLError } from 'graphql';
@@ -60,7 +61,7 @@ export const createError = (message: string, code: ErrorCode, extensions?: any) 
 export const formatError = (err: GraphQLError) => {
   const exception = err.extensions.exception;
 
-  console.error(err);
+  console.log(util.inspect(err, { showHidden: false, depth: null }));
 
   if (exception && exception.name) {
     if (exception.name === 'SequelizeUniqueConstraintError') {
