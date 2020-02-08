@@ -13,8 +13,8 @@ const fadeIn = keyframes`
 `;
 
 export const MainListItemContainer = styled(Link)`
-    animation: ${fadeIn} 0.3s;
-    ${({ theme }) => `
+  animation: ${fadeIn} 0.3s;
+  ${({ theme }) => `
         padding: 1rem;
         display: flex;
         align-items: center;

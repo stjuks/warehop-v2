@@ -2,33 +2,35 @@ import React from 'react';
 import styled from '@ui/util/styled';
 
 interface DropdownMenuProps {
-    items: {
-        label: string;
-        value: any;
-    }[];
-    menuProps?: any;
-    menuItemProps?: (item: any) => { isActive: boolean };
+  items: {
+    label: string;
+    value: any;
+  }[];
+  menuProps?: any;
+  menuItemProps?: (item: any) => { isActive: boolean };
 }
 
 export const DropdownMenu: React.FC<DropdownMenuProps> = ({ items, menuProps, menuItemProps }) => (
-    <MenuContainer {...menuProps}>
-        <ul>
-            {items.map((item, i) => {
-                const { isActive, ...restProps } = menuItemProps ? menuItemProps(item) : { isActive: false };
-                return (
-                    <li key={i}>
-                        <MenuItemContainer {...restProps} data-active={isActive}>
-                            {item.label}
-                        </MenuItemContainer>
-                    </li>
-                );
-            })}
-        </ul>
-    </MenuContainer>
+  <MenuContainer {...menuProps}>
+    <ul>
+      {items.map((item, i) => {
+        const { isActive, ...restProps } = menuItemProps
+          ? menuItemProps(item)
+          : { isActive: false };
+        return (
+          <li key={i}>
+            <MenuItemContainer {...restProps} data-active={isActive}>
+              {item.label}
+            </MenuItemContainer>
+          </li>
+        );
+      })}
+    </ul>
+  </MenuContainer>
 );
 
 export const MenuContainer = styled.div.attrs({ className: 'select-menu' })`
-    ${({ theme }) => `
+  ${({ theme }) => `
         position: absolute;
         top: calc(100% + 0.25rem);
         width: 100%;
@@ -62,9 +64,9 @@ export const MenuContainer = styled.div.attrs({ className: 'select-menu' })`
 `;
 
 export const MenuItemContainer = styled.div.attrs({
-    className: 'select-menu-item'
+  className: 'select-menu-item'
 })`
-    ${({ theme }) => `
+  ${({ theme }) => `
         padding: 0.5rem 1rem;
         font-weight: 500;
         outline: none;

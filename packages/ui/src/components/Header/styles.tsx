@@ -1,12 +1,12 @@
 import styled from '@ui/util/styled';
 
 interface IIconContainerProps {
-    size?: string;
-    highlighted?: boolean;
+  size?: string;
+  highlighted?: boolean;
 }
 
 export const HeaderContainer = styled.div`
-    ${({ theme }) => `
+  ${({ theme }) => `
         background: ${theme.colors.white};
         color: ${theme.colors.text};
         box-shadow: ${theme.lightShadow};
@@ -24,23 +24,23 @@ export const HeaderContainer = styled.div`
 `;
 
 export const TitleContainer = styled.div`
+  display: flex;
+
+  .back-button {
+    min-width: 1.5rem;
     display: flex;
+    align-items: center;
 
-    .back-button {
-        min-width: 1.5rem;
-        display: flex;
-        align-items: center;
-
-        .icon-container {
-            display: flex;
-            align-items: center;
-            width: 1.5rem;
-        }
+    .icon-container {
+      display: flex;
+      align-items: center;
+      width: 1.5rem;
     }
+  }
 `;
 
 export const IconsContainer = styled.div`
-    ${({ theme }) => `
+  ${({ theme }) => `
         display: flex;
         z-index: 3;
         flex: 1;
@@ -55,20 +55,6 @@ export const IconsContainer = styled.div`
         svg {
             cursor: pointer;
             stroke-width: 1.5;
-        }
-    `}
-`;
-
-export const IconContainer = styled.button<IIconContainerProps>`
-    ${({ size, highlighted, theme }) => `
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        font-size: ${size || '1.75rem'};
-        color: ${highlighted ? theme.colors.primary : theme.colors.text};
-
-        :not(:last-child) {
-            margin-right: 0.75rem;
         }
     `}
 `;

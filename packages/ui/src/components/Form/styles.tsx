@@ -1,17 +1,17 @@
 import styled from '@ui/util/styled';
 
 interface InputFieldProps {
-    isFocused?: boolean;
-    isMounted?: boolean;
-    hasValue?: boolean;
+  isFocused?: boolean;
+  isMounted?: boolean;
+  hasValue?: boolean;
 }
 
 export const FormContainer = styled.form`
-    padding: 0.75rem;
+  padding: 0.75rem;
 `;
 
 export const FormTitle = styled.h3`
-    ${({ theme }) => `
+  ${({ theme }) => `
         display: flex;
         align-items: center;
         padding: 0.25rem 1rem;
@@ -25,22 +25,24 @@ export const FormTitle = styled.h3`
     `}
 `;
 
-export const InputContainer = styled.div.attrs({ className: 'input-container' })`
-    display: flex;
-    margin: 0.25rem;
-    flex-direction: column;
-    min-width: 11rem;
+export const InputContainer = styled.div.attrs({
+  className: 'input-container'
+})`
+  display: flex;
+  margin: 0.25rem;
+  flex-direction: column;
+  min-width: 11rem;
 `;
 
 export const LabelContainer = styled.label.attrs({ className: 'label' })`
-    height: 1.5rem;
-    display: flex;
-    align-items: center;
-    font-size: 0.875rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
 `;
 
 export const InputFieldContainer = styled.div<InputFieldProps>`
-    ${({ isFocused, theme, hasValue, isMounted = true }) => `
+  ${({ isFocused, theme, hasValue, isMounted = true }) => `
         min-height: 2.5rem;
         display: flex;
         box-shadow: 0 1px 0 ${theme.colors.lightText};
@@ -91,8 +93,10 @@ export const InputFieldContainer = styled.div<InputFieldProps>`
     `}
 `;
 
-export const ErrorMessageContainer = styled.div.attrs({ className: 'error-message' })`
-    ${({ theme }) => `
+export const ErrorMessageContainer = styled.div.attrs({
+  className: 'error-message'
+})`
+  ${({ theme }) => `
         height: 1.5rem;
         color: ${theme.colors.danger};
         font-size: 0.75rem;
@@ -101,8 +105,10 @@ export const ErrorMessageContainer = styled.div.attrs({ className: 'error-messag
     `}
 `;
 
-export const InputIndicatorContainer = styled.div.attrs({ className: 'input-indicator' })`
-    ${({ theme }) => `
+export const InputIndicatorContainer = styled.div.attrs({
+  className: 'input-indicator'
+})`
+  ${({ theme }) => `
         color: ${theme.colors.lightText};
         min-width: 2rem;
         display: flex;

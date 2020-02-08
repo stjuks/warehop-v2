@@ -5,55 +5,55 @@ import { HeaderSearchContainer, InputContainer, IconContainer } from './styles';
 import { useDebounce } from 'react-use';
 
 interface IHeaderSearchProps {
-    onChange(value: string): void;
-    placeholder?: string;
+  onChange(value: string): void;
+  placeholder?: string;
 }
 
 function HeaderSearch({ onChange, placeholder }: IHeaderSearchProps) {
-    const [isOpened, setOpened] = useState(false);
-    const [query, setQuery] = useState('');
+  const [isOpened, setOpened] = useState(false);
+  const [query, setQuery] = useState('');
 
-    const input = createRef<HTMLInputElement>();
+  const input = createRef<HTMLInputElement>();
 
-    const handleChange = e => {
-        const inputValue = e.target.value;
-        setQuery(inputValue);
-    };
+  const handleChange = e => {
+    const inputValue = e.target.value;
+    setQuery(inputValue);
+  };
 
-    const handleButton = () => {
-        setOpened(!isOpened);
+  const handleButton = () => {
+    setOpened(!isOpened);
 
-        if (!isOpened && input.current) {
-            input.current.focus();
-        } else {
-            setQuery('');
-        }
-    };
+    if (!isOpened && input.current) {
+      input.current.focus();
+    } else {
+      setQuery('');
+    }
+  };
 
-    useDebounce(
-        () => {
-            onChange(query);
-        },
-        500,
-        [query]
-    );
+  useDebounce(
+    () => {
+      onChange(query);
+    },
+    500,
+    [query]
+  );
 
-    return (
-        <HeaderSearchContainer>
-            <InputContainer isOpened={isOpened}>
-                <input
-                    value={query}
-                    className="search-input"
-                    placeholder={placeholder}
-                    onChange={handleChange}
-                    ref={input}
-                />
-            </InputContainer>
-            <IconContainer type="button" onClick={handleButton}>
-                <FiSearch />
-            </IconContainer>
-        </HeaderSearchContainer>
-    );
+  return (
+    <HeaderSearchContainer>
+      <InputContainer isOpened={isOpened}>
+        <input
+          value={query}
+          className='search-input'
+          placeholder={placeholder}
+          onChange={handleChange}
+          ref={input}
+        />
+      </InputContainer>
+      <IconContainer type='button' onClick={handleButton}>
+        <FiSearch />
+      </IconContainer>
+    </HeaderSearchContainer>
+  );
 }
 
 export default HeaderSearch;

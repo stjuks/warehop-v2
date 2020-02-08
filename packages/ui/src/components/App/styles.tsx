@@ -1,11 +1,11 @@
 import styled from '@ui/util/styled';
 
 interface IContentContainerProps {
-    padded?: boolean;
+  padded?: boolean;
 }
 
 export const AppContainer = styled.div`
-    ${({ theme }) => `
+  ${({ theme }) => `
         display: flex;
         flex-direction: column;
         height: 100%;
@@ -14,7 +14,7 @@ export const AppContainer = styled.div`
 `;
 
 export const ContentContainer = styled.div<IContentContainerProps>`
-    ${({ theme, padded }) => `
+  ${({ theme, padded }) => `
         background: ${theme.colors.lightGrey};
         flex: 1;
         overflow: auto;

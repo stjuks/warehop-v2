@@ -1,7 +1,7 @@
 import styled from '@ui/util/styled';
 
 export const InvoiceItemListItemContainer = styled.div`
-    ${({ theme }) => `
+  ${({ theme }) => `
         padding: 1rem;
         background: ${theme.colors.white};
         box-shadow: ${theme.lightShadow};

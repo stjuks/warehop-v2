@@ -7,50 +7,50 @@ import FormikOnChange from './util/FormikOnChange';
 import { observer } from 'mobx-react-lite';
 
 interface FormProps {
-    initialValues: any;
-    onSubmit: (values: any) => any;
-    id: string;
-    validationSchema?: any;
-    onChange?: (values: any) => any;
+  initialValues: any;
+  onSubmit: (values: any) => any;
+  id: string;
+  validationSchema?: any;
+  onChange?: (values: any) => any;
 }
 
 const Form: React.FC<React.PropsWithChildren<FormProps>> = observer(
-    ({ initialValues, onSubmit, validationSchema, id, children, onChange }) => {
-        const handleChildren = formikProps => {
-            if (children instanceof Function) return children(formikProps);
-            else return children;
-        };
+  ({ initialValues, onSubmit, validationSchema, id, children, onChange }) => {
+    const handleChildren = formikProps => {
+      if (children instanceof Function) return children(formikProps);
+      else return children;
+    };
 
-        const handleSubmit = async (values, formikBag) => {
-            const { setErrors, errors } = formikBag;
+    const handleSubmit = async (values, formikBag) => {
+      const { setErrors, errors } = formikBag;
 
-            try {
-                await onSubmit(values);
-            } catch (err) {
-                setErrors({ ...errors, __thrownError: err });
-            }
-        };
+      try {
+        await onSubmit(values);
+      } catch (err) {
+        setErrors({ ...errors, __thrownError: err });
+      }
+    };
 
-        return (
-            <Formik
-                initialValues={initialValues}
-                onSubmit={async (values, formikBag) => await handleSubmit(values, formikBag)}
-                validationSchema={validationSchema}
-                validateOnChange={false}
-                validateOnBlur={false}
-                validateOnMount={false}
-            >
-                {formikProps => (
-                    <>
-                        <FormContainer id={id} onSubmit={formikProps.handleSubmit}>
-                            {onChange && <FormikOnChange onChange={onChange} />}
-                            {handleChildren(formikProps)}
-                        </FormContainer>
-                    </>
-                )}
-            </Formik>
-        );
-    }
+    return (
+      <Formik
+        initialValues={initialValues}
+        onSubmit={async (values, formikBag) => await handleSubmit(values, formikBag)}
+        validationSchema={validationSchema}
+        validateOnChange={false}
+        validateOnBlur={false}
+        validateOnMount={false}
+      >
+        {formikProps => (
+          <>
+            <FormContainer id={id} onSubmit={formikProps.handleSubmit}>
+              {onChange && <FormikOnChange onChange={onChange} />}
+              {handleChildren(formikProps)}
+            </FormContainer>
+          </>
+        )}
+      </Formik>
+    );
+  }
 );
 
 export default Form;

@@ -1,16 +1,16 @@
 import {
-    Model,
-    Table,
-    Column,
-    PrimaryKey,
-    AutoIncrement,
-    AllowNull,
-    BelongsTo,
-    DataType,
-    Unique,
-    Default,
-    HasMany,
-    Index
+  Model,
+  Table,
+  Column,
+  PrimaryKey,
+  AutoIncrement,
+  AllowNull,
+  BelongsTo,
+  DataType,
+  Unique,
+  Default,
+  HasMany,
+  Index
 } from 'sequelize-typescript';
 
 import User from './User';
@@ -21,74 +21,74 @@ import InvoiceItem from './InvoiceItem';
 import Transaction from './Transaction';
 
 @Table({
-    indexes: [
-        {
-            name: 'IDX_UQ_Invoices_userId_type_number',
-            unique: true,
-            fields: ['userId', 'type', 'number']
-        }
-    ]
+  indexes: [
+    {
+      name: 'IDX_UQ_Invoices_userId_type_number',
+      unique: true,
+      fields: ['userId', 'type', 'number']
+    }
+  ]
 })
 export default class Invoice extends Model<Invoice> {
-    @PrimaryKey
-    @AutoIncrement
-    @Unique
-    @Column
-    id: number;
+  @PrimaryKey
+  @AutoIncrement
+  @Unique
+  @Column
+  id: number;
 
-    @PrimaryKey
-    @Column
-    userId: number;
+  @PrimaryKey
+  @Column
+  userId: number;
 
-    @AllowNull(false)
-    @Index
-    @Column
-    partnerId: number;
+  @AllowNull(false)
+  @Index
+  @Column
+  partnerId: number;
 
-    @AllowNull(false)
-    @Index
-    @Column
-    type: string;
+  @AllowNull(false)
+  @Index
+  @Column
+  type: string;
 
-    @AllowNull(false)
-    @Column(DataType.CITEXT)
-    number: string;
+  @AllowNull(false)
+  @Column(DataType.CITEXT)
+  number: string;
 
-    @AllowNull(false)
-    @Column
-    dueDate: Date;
+  @AllowNull(false)
+  @Column
+  dueDate: Date;
 
-    @AllowNull(false)
-    @Column
-    issueDate: Date;
+  @AllowNull(false)
+  @Column
+  issueDate: Date;
 
-    @AllowNull(false)
-    @Column(DataType.DECIMAL(12, 4))
-    sum: object;
+  @AllowNull(false)
+  @Column(DataType.DECIMAL(12, 4))
+  sum: object;
 
-    @Column(DataType.CITEXT)
-    description: string;
+  @Column(DataType.CITEXT)
+  description: string;
 
-    @Column
-    filePath: string;
+  @Column
+  filePath: string;
 
-    @AllowNull(false)
-    @Default(0)
-    @Column(DataType.DECIMAL(12, 4))
-    paidSum: object;
+  @AllowNull(false)
+  @Default(0)
+  @Column(DataType.DECIMAL(12, 4))
+  paidSum: object;
 
-    @BelongsTo(() => User, { foreignKey: 'userId', onDelete: 'RESTRICT' })
-    user: User;
+  @BelongsTo(() => User, { foreignKey: 'userId', onDelete: 'RESTRICT' })
+  user: User;
 
-    @BelongsTo(() => Partner, { foreignKey: 'partnerId', onDelete: 'RESTRICT' })
-    partner: Partner;
+  @BelongsTo(() => Partner, { foreignKey: 'partnerId', onDelete: 'RESTRICT' })
+  partner: Partner;
 
-    @BelongsTo(() => InvoiceType, { foreignKey: 'type', onDelete: 'RESTRICT' })
-    invoiceType: InvoiceType;
+  @BelongsTo(() => InvoiceType, { foreignKey: 'type', onDelete: 'RESTRICT' })
+  invoiceType: InvoiceType;
 
-    @HasMany(() => InvoiceItem, { foreignKey: 'invoiceId', onDelete: 'RESTRICT', as: 'items' })
-    items: Item[];
+  @HasMany(() => InvoiceItem, { foreignKey: 'invoiceId', onDelete: 'RESTRICT', as: 'items' })
+  items: Item[];
 
-    @HasMany(() => Transaction, { foreignKey: 'invoiceId', onDelete: 'RESTRICT', as: 'transactions' })
-    transactions: Transaction[];
+  @HasMany(() => Transaction, { foreignKey: 'invoiceId', onDelete: 'RESTRICT', as: 'transactions' })
+  transactions: Transaction[];
 }

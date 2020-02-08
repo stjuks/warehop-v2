@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import MainListItem from '../util/MainListItem';
 
 export const ProductItemContainer = styled(MainListItem)`
-    ${({ theme }) => `
+  ${({ theme }) => `
         .col-1 {
             flex: 1;
         }

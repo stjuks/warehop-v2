@@ -2,12 +2,12 @@ import styled from '@ui/util/styled';
 import AriaSelect from '../Form/AriaSelect';
 
 interface DaysLeftStyledProps {
-    diff: number | undefined;
-    isPaid: boolean;
+  diff: number | undefined;
+  isPaid: boolean;
 }
 
 export const SelectStyled = styled(AriaSelect)`
-    ${({ theme }) => `
+  ${({ theme }) => `
         label {
             text-transform: uppercase;
             font-size: 0.75rem;
@@ -74,21 +74,21 @@ export const SelectStyled = styled(AriaSelect)`
 `;
 
 export const LoadMoreButton = styled.button`
-    padding: 1rem;
-    width: 100%;
-    outline: none;
-    font-family: 'Roboto';
-    display: flex;
-    font-weight: 500;
-    align-items: center;
-    justify-content: center;
+  padding: 1rem;
+  width: 100%;
+  outline: none;
+  font-family: 'Roboto';
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  justify-content: center;
 
-    .react-icon {
-        margin-right: 0.5rem;
-        stroke-width: 3;
-    }
+  .react-icon {
+    margin-right: 0.5rem;
+    stroke-width: 3;
+  }
 
-    ${({ theme }) => `
+  ${({ theme }) => `
         background: ${theme.colors.lightGrey};
         color: ${theme.colors.lightText};
         border: solid ${theme.colors.midGrey};

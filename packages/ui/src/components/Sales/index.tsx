@@ -16,60 +16,60 @@ import InvoiceItem from '../InvoiceItem';
 import { LoadMoreButton } from './styles';
 
 const Purchases = observer(() => {
-    const [paidFilter, setPaidFilter] = useState(undefined);
-    const [searchQuery, setSearchQuery] = useState('');
+  const [paidFilter, setPaidFilter] = useState(undefined);
+  const [searchQuery, setSearchQuery] = useState('');
 
-    const invoiceStore = useContext(InvoiceStoreContext);
+  const invoiceStore = useContext(InvoiceStoreContext);
 
-    const headerIcons = [
-        <HeaderSearch onChange={setSearchQuery} placeholder="Otsi arvet" />,
-        <button style={{ display: 'flex' }}>
-            <FiSliders />
-        </button>,
-        <NewItemButtonContainer onClick={() => history.push(routes.purchaseForm)}>
-            <FiPlusCircle />
-        </NewItemButtonContainer>
-    ];
+  const headerIcons = [
+    <HeaderSearch onChange={setSearchQuery} placeholder='Otsi arvet' />,
+    <button style={{ display: 'flex' }}>
+      <FiSliders />
+    </button>,
+    <NewItemButtonContainer onClick={() => history.push(routes.purchaseForm)}>
+      <FiPlusCircle />
+    </NewItemButtonContainer>
+  ];
 
-    const filter: InvoiceSearchInput = {
-        isPaid: paidFilter,
-        generalQuery: searchQuery
-    };
+  const filter: InvoiceSearchInput = {
+    isPaid: paidFilter,
+    generalQuery: searchQuery
+  };
 
-    useEffect(() => {
-        invoiceStore.fetchSales(filter);
-    }, [paidFilter, searchQuery]);
+  useEffect(() => {
+    invoiceStore.fetchSales(filter);
+  }, [paidFilter, searchQuery]);
 
-    const paidOptions = [
-        { label: 'Kõik', value: undefined },
-        { label: 'Makstud', value: true },
-        { label: 'Maksmata', value: false }
-    ];
+  const paidOptions = [
+    { label: 'Kõik', value: undefined },
+    { label: 'Makstud', value: true },
+    { label: 'Maksmata', value: false }
+  ];
 
-    return (
-        <>
-            <Header title="Müügiarved" components={headerIcons} />
-            <SortingContainer>
-                <Radio
-                    options={paidOptions}
-                    name="radio-paid"
-                    onSelect={value => setPaidFilter(value)}
-                    defaultValue={paidOptions[0].value}
-                />
-            </SortingContainer>
-            <ContentContainer>
-                {invoiceStore.sales.map(purchase => (
-                    <InvoiceItem {...purchase} key={purchase.id} />
-                ))}
-                {invoiceStore.paginatedSales.pageInfo.hasNextPage && (
-                    <LoadMoreButton onClick={() => invoiceStore.fetchMoreSales(filter)}>
-                        <FiRefreshCw />
-                        Lae juurde
-                    </LoadMoreButton>
-                )}
-            </ContentContainer>
-        </>
-    );
+  return (
+    <>
+      <Header title='Müügiarved' components={headerIcons} />
+      <SortingContainer>
+        <Radio
+          options={paidOptions}
+          name='radio-paid'
+          onSelect={value => setPaidFilter(value)}
+          defaultValue={paidOptions[0].value}
+        />
+      </SortingContainer>
+      <ContentContainer>
+        {invoiceStore.sales.map(purchase => (
+          <InvoiceItem {...purchase} key={purchase.id} />
+        ))}
+        {invoiceStore.paginatedSales.pageInfo.hasNextPage && (
+          <LoadMoreButton onClick={() => invoiceStore.fetchMoreSales(filter)}>
+            <FiRefreshCw />
+            Lae juurde
+          </LoadMoreButton>
+        )}
+      </ContentContainer>
+    </>
+  );
 });
 
 export default Purchases;

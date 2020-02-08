@@ -1,7 +1,7 @@
 import styled from '@ui/util/styled';
 
 export const RadioContainer = styled.div`
-    ${({ theme }) => `
+  ${({ theme }) => `
         display: flex;
         align-items: center;
         flex: 1;
@@ -41,13 +41,13 @@ export const RadioContainer = styled.div`
 `;
 
 export const RadioOptionContainer = styled.div`
-    flex: 1;
+  flex: 1;
 
-    :not(:last-child) {
-        margin-right: 0.25rem;
-    }
+  :not(:last-child) {
+    margin-right: 0.25rem;
+  }
 
-    :not(:first-child) {
-        margin-left: 0.25rem;
-    }
+  :not(:first-child) {
+    margin-left: 0.25rem;
+  }
 `;

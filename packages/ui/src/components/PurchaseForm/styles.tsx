@@ -6,7 +6,7 @@ import { ContentContainer } from '../App/styles';
 export const ProductFormContainer = styled(ContentContainer)``;
 
 export const AddPurchaseItemBtn = styled(Link)`
-    ${({ theme }) => `
+  ${({ theme }) => `
         color: ${theme.colors.primary};
         padding: 0.125rem 0.5rem;
         border: 1px solid ${theme.colors.primary};
@@ -20,7 +20,7 @@ export const AddPurchaseItemBtn = styled(Link)`
 `;
 
 export const PurchaseItemContainer = styled.div`
-    ${({ theme }) => `
+  ${({ theme }) => `
         padding: 1rem;
         background: ${theme.colors.white};
         box-shadow: ${theme.lightShadow};

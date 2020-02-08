@@ -1,27 +1,27 @@
 import styled from '@ui/util/styled';
 
 interface IIconContainerProps {
-    size?: string;
-    highlighted?: boolean;
+  size?: string;
+  highlighted?: boolean;
 }
 
 interface IInputContainerProps {
-    isOpened: boolean;
+  isOpened: boolean;
 }
 
 export const HeaderSearchContainer = styled.div`
-    display: flex;
-    align-items: center;
-    flex: 1;
-    justify-content: flex-end;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  justify-content: flex-end;
 
-    svg {
-        flex-shrink: 0;
-    }
+  svg {
+    flex-shrink: 0;
+  }
 `;
 
 export const InputContainer = styled.div<IInputContainerProps>`
-    ${({ theme, isOpened }) => `
+  ${({ theme, isOpened }) => `
         width: ${isOpened ? '100%' : '0%'};
         display: flex;
         height: 100%;
@@ -55,6 +55,6 @@ export const InputContainer = styled.div<IInputContainerProps>`
 `;
 
 export const IconContainer = styled.button`
-    display: flex;
-    color: currentColor;
+  display: flex;
+  color: currentColor;
 `;

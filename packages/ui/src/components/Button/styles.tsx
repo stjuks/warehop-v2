@@ -1,7 +1,7 @@
 import styled from '@ui/util/styled';
 
 export const ButtonContainer = styled.button`
-    ${({ theme }) => `
+  ${({ theme }) => `
         background: ${theme.colors.primary};
         color: ${theme.colors.white};
         width: 100%;

@@ -10,7 +10,7 @@ const detailLabel = theme => `
 `;
 
 export const TitleContainer = styled.div`
-    ${({ theme }) => `
+  ${({ theme }) => `
         box-shadow: inset 2px 0 0 ${theme.colors.primary};
         padding: 0.5rem 0 0.5rem 1.5rem;
 
@@ -30,14 +30,14 @@ export const TitleContainer = styled.div`
 `;
 
 export const DetailLabel = styled.div`
-    ${({ theme }) => `
+  ${({ theme }) => `
         ${detailLabel(theme)};
         margin: 1rem 0;
     `}
 `;
 
 export const DetailCardContainer = styled.div`
-    ${({ theme }) => `
+  ${({ theme }) => `
         padding: 1rem;
         margin-top: 1rem;
         background: ${theme.colors.white};
@@ -70,7 +70,7 @@ export const DetailCardContainer = styled.div`
 `;
 
 export const WarehouseRowContainer = styled.div`
-    ${({ theme }) => `
+  ${({ theme }) => `
         display: flex;
         font-weight: 500;
         padding: 0.5rem 0;

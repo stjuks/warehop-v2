@@ -2,11 +2,11 @@ import styled from '@ui/util/styled';
 import { Link } from 'react-router-dom';
 
 interface TransitionProps {
-    transitionName: string;
+  transitionName: string;
 }
 
 export const MenuContainer = styled.div<TransitionProps>`
-    ${({ theme, transitionName }) => `
+  ${({ theme, transitionName }) => `
         width: 15rem;
         position: fixed;
         background: ${theme.colors.text};
@@ -34,7 +34,7 @@ export const MenuContainer = styled.div<TransitionProps>`
 `;
 
 export const BackgroundContainer = styled.div<TransitionProps>`
-    ${({ theme, transitionName }) => `
+  ${({ theme, transitionName }) => `
         background: rgba(0, 0, 0, .4);
         position: fixed;
         top: 0;
@@ -54,7 +54,7 @@ export const BackgroundContainer = styled.div<TransitionProps>`
 `;
 
 export const MenuItemContainer = styled(Link)`
-    ${({ theme }) => `
+  ${({ theme }) => `
         display: flex;
         color: ${theme.colors.lightColor1};
         padding: 1rem 1.5rem;

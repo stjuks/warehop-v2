@@ -1,12 +1,12 @@
 import styled from '@ui/util/styled';
 
 interface IInputContainerProps {
-    value?: any;
-    isFocused?: boolean;
+  value?: any;
+  isFocused?: boolean;
 }
 
 export const LoaderContainer = styled.div`
-    ${({ theme }) => `
+  ${({ theme }) => `
         display: flex;
         align-items: center;
         flex-direction: column;

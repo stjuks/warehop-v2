@@ -9,7 +9,7 @@ const spin = keyframes`
 `;
 
 const Loader = styled(FiLoader).attrs({ className: 'loader' })`
-    animation: 1s ${spin} infinite;
+  animation: 1s ${spin} infinite;
 `;
 
 export default Loader;

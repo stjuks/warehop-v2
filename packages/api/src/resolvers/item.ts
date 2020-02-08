@@ -3,120 +3,134 @@ import { ItemType, ItemInput, PaginatedQueryInput } from '@shared/types';
 import { Op } from 'sequelize';
 
 interface ItemSearchInput {
-    query: {
-        type: ItemType;
-        code?: string;
-        name?: string;
-        description?: string;
-        generalQuery?: string;
-    };
+  query: {
+    type: ItemType;
+    code?: string;
+    name?: string;
+    description?: string;
+    generalQuery?: string;
+  };
 }
 
 const resolver: Resolver = {
-    Query: {
-        products: authResolver(
-            async ({ pagination: { cursor, limit } }: { pagination: PaginatedQueryInput }, context) => {
-                return await findItems(context, { type: 'PRODUCT', limit, cursor });
-            }
-        ),
-        services: authResolver(
-            async ({ pagination: { cursor, limit } }: { pagination: PaginatedQueryInput }, context) => {
-                return await findItems(context, { type: 'SERVICE', limit, cursor });
-            }
-        ),
-        searchItems: authResolver(
-            async ({ query: { type, name, description, code, generalQuery } }: ItemSearchInput, context) => {
-                const { user } = context;
+  Query: {
+    products: authResolver(
+      async ({ pagination: { cursor, limit } }: { pagination: PaginatedQueryInput }, context) => {
+        return await findItems(context, { type: 'PRODUCT', limit, cursor });
+      }
+    ),
+    services: authResolver(
+      async ({ pagination: { cursor, limit } }: { pagination: PaginatedQueryInput }, context) => {
+        return await findItems(context, { type: 'SERVICE', limit, cursor });
+      }
+    ),
+    searchItems: authResolver(
+      async (
+        { query: { type, name, description, code, generalQuery } }: ItemSearchInput,
+        context
+      ) => {
+        const { user } = context;
 
-                const where: any = {
-                    userId: user.id,
-                    type
-                };
+        const where: any = {
+          userId: user.id,
+          type
+        };
 
-                if (generalQuery) {
-                    const generalLike = { [Op.like]: `%${generalQuery}%` };
-                    where[Op.or] = [{ name: generalLike }, { code: generalLike }, { description: generalLike }];
-                } else {
-                    if (name) where.name = { [Op.like]: `%${name}%` };
-                    if (description) where.description = { [Op.like]: `%${description}%` };
-                    if (code) where.code = { [Op.like]: `%${code}%` };
-                }
+        if (generalQuery) {
+          const generalLike = { [Op.like]: `%${generalQuery}%` };
+          where[Op.or] = [
+            { name: generalLike },
+            { code: generalLike },
+            { description: generalLike }
+          ];
+        } else {
+          if (name) where.name = { [Op.like]: `%${name}%` };
+          if (description) where.description = { [Op.like]: `%${description}%` };
+          if (code) where.code = { [Op.like]: `%${code}%` };
+        }
 
-                return await findItems(context, { where });
-            }
-        )
-    },
-    Mutation: {
-        addItem: authResolver(async ({ item }: { item: ItemInput }, { models, sequelize, user }) => {
-            const { warehouseQuantity, ...restItem } = item;
-            const transaction = await sequelize.transaction();
+        return await findItems(context, { where });
+      }
+    )
+  },
+  Mutation: {
+    addItem: authResolver(async ({ item }: { item: ItemInput }, { models, sequelize, user }) => {
+      const { warehouseQuantity, ...restItem } = item;
+      const transaction = await sequelize.transaction();
 
-            try {
-                const addedItem = await models.Item.create({ ...restItem, userId: user.id }, { transaction });
+      try {
+        const addedItem = await models.Item.create(
+          { ...restItem, userId: user.id },
+          { transaction }
+        );
 
-                const warehouseItems = warehouseQuantity.map(wh => ({
-                    ...wh,
-                    warehouseId: wh.id,
-                    itemId: addedItem.id,
-                    userId: user.id
-                }));
+        const warehouseItems = warehouseQuantity.map(wh => ({
+          ...wh,
+          warehouseId: wh.id,
+          itemId: addedItem.id,
+          userId: user.id
+        }));
 
-                await models.WarehouseItem.bulkCreate(warehouseItems, { transaction });
-                await transaction.commit();
+        await models.WarehouseItem.bulkCreate(warehouseItems, { transaction });
+        await transaction.commit();
 
-                return addedItem.id;
-            } catch (err) {
-                await transaction.rollback();
-                throw err;
-            }
-        }),
-        deleteItem: authResolver(async ({ id }, { models, user }) => {
-            return await models.Item.destroy({ where: { id, userId: user.id } });
-        }),
-        editItem: authResolver(async ({ id, item }, { models, user }) => {
-            const [, [editedItem]] = await models.Item.update(item, {
-                where: { id, userId: user.id },
-                returning: true
-            });
+        return addedItem.id;
+      } catch (err) {
+        await transaction.rollback();
+        throw err;
+      }
+    }),
+    deleteItem: authResolver(async ({ id }, { models, user }) => {
+      return await models.Item.destroy({ where: { id, userId: user.id } });
+    }),
+    editItem: authResolver(async ({ id, item }, { models, user }) => {
+      const [, [editedItem]] = await models.Item.update(item, {
+        where: { id, userId: user.id },
+        returning: true
+      });
 
-            return editedItem;
-        })
-    },
-    Item: {
-        __resolveType: item => (item.type === 'PRODUCT' ? 'ProductItem' : 'ExpenseItem')
-    }
+      return editedItem;
+    })
+  },
+  Item: {
+    __resolveType: item => (item.type === 'PRODUCT' ? 'ProductItem' : 'ExpenseItem')
+  }
 };
 
 const findItems = async (
-    { models, user }: ApolloContext,
-    opts: { type?: ItemType; where?: any; limit?: number; cursor?: string }
+  { models, user }: ApolloContext,
+  opts: { type?: ItemType; where?: any; limit?: number; cursor?: string }
 ) => {
-    const { type, cursor, limit } = opts;
-    const where: any = opts.where || { userId: user.id };
+  const { type, cursor, limit } = opts;
+  const where: any = opts.where || { userId: user.id };
 
-    if (type) where.type = type;
+  if (type) where.type = type;
 
-    const result = await paginate(models.Item, {
-        cursor,
-        limit,
-        where,
-        include: [models.Partner, models.Unit, { model: models.Warehouse, through: {}, as: 'warehouseQuantity' }]
+  const result = await paginate(models.Item, {
+    cursor,
+    limit,
+    where,
+    include: [
+      models.Partner,
+      models.Unit,
+      { model: models.Warehouse, through: {}, as: 'warehouseQuantity' }
+    ]
+  });
+
+  result.data = result.data.map(i => {
+    const item: any = i.get({ plain: true });
+
+    item.warehouseQuantity = item.warehouseQuantity.map(wh => {
+      return {
+        ...wh,
+        quantity: wh.WarehouseItem.quantity
+      };
     });
 
-    result.data = result.data.map(i => {
-        const item: any = i.get({ plain: true });
+    return item;
+  });
 
-        item.warehouseQuantity = item.warehouseQuantity.map(wh => {
-            return {
-                ...wh,
-                quantity: wh.WarehouseItem.quantity
-            };
-        });
-
-        return item;
-    });
-
-    return result;
+  return result;
 };
 
 export default resolver;

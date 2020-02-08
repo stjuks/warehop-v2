@@ -12,30 +12,30 @@ import { FooterContainer } from './styles';
 import UIStoreContext from '@ui/stores/UIStore';
 
 export const Footer = withRouter(
-    observer((props: React.PropsWithChildren<any> & RouteProps) => {
-        const uiStore = useContext(UIStoreContext);
+  observer((props: React.PropsWithChildren<any> & RouteProps) => {
+    const uiStore = useContext(UIStoreContext);
 
-        const footerItems: IFooterItemProps[] = [
-            { label: 'Kaubad', icon: <FaBoxes />, to: routes.products },
-            { label: 'Ost', icon: <FaShoppingBasket />, to: routes.purchases },
-            { label: 'Müük', icon: <FaMoneyCheck />, to: routes.sales },
-            { icon: <FiMenu />, onClick: () => uiStore.setHamburgerMenuOpen(true) }
-        ];
+    const footerItems: IFooterItemProps[] = [
+      { label: 'Kaubad', icon: <FaBoxes />, to: routes.products },
+      { label: 'Ost', icon: <FaShoppingBasket />, to: routes.purchases },
+      { label: 'Müük', icon: <FaMoneyCheck />, to: routes.sales },
+      { icon: <FiMenu />, onClick: () => uiStore.setHamburgerMenuOpen(true) }
+    ];
 
-        const footerlessRoutes = [routes.productForm, routes.purchaseForm, routes.partnerForm];
+    const footerlessRoutes = [routes.productForm, routes.purchaseForm, routes.partnerForm];
 
-        if (footerlessRoutes.find(route => matchPath(props.location.pathname, route))) return null;
+    if (footerlessRoutes.find(route => matchPath(props.location.pathname, route))) return null;
 
-        return (
-            <>
-                <FooterContainer>
-                    {footerItems.map((item, i) => (
-                        <FooterItem {...item} key={i} />
-                    ))}
-                </FooterContainer>
-            </>
-        );
-    })
+    return (
+      <>
+        <FooterContainer>
+          {footerItems.map((item, i) => (
+            <FooterItem {...item} key={i} />
+          ))}
+        </FooterContainer>
+      </>
+    );
+  })
 );
 
 export default Footer;

@@ -5,41 +5,41 @@ import { Unit, ItemType, PartnerType, InvoiceType } from '@shared/types';
 import api from '../api';
 
 class CommonStore {
-    @observable units: Unit[] = [];
-    
-    @observable itemTypes: ItemType[] = [];
-    @observable partnerTypes: PartnerType[] = [];
-    @observable invoiceTypes: InvoiceType[] = [];
+  @observable units: Unit[] = [];
 
-    @task
-    initialize = async () => {
-        this.fetchUnits();
-        this.fetchTypes();
-    };
+  @observable itemTypes: ItemType[] = [];
+  @observable partnerTypes: PartnerType[] = [];
+  @observable invoiceTypes: InvoiceType[] = [];
 
-    @task
-    fetchUnits = async () => {
-        const units = await api.fetchUnits();
+  @task
+  initialize = async () => {
+    this.fetchUnits();
+    this.fetchTypes();
+  };
 
-        this.units = units;
-    };
+  @task
+  fetchUnits = async () => {
+    const units = await api.fetchUnits();
 
-    @task
-    addUnit = async (unit: Unit) => {
-        const unitId = await api.addUnit(unit);
-        unit.id = unitId;
+    this.units = units;
+  };
 
-        this.units.push(unit);
-    };
+  @task
+  addUnit = async (unit: Unit) => {
+    const unitId = await api.addUnit(unit);
+    unit.id = unitId;
 
-    @task
-    fetchTypes = async () => {
-        const types = await api.fetchTypes();
+    this.units.push(unit);
+  };
 
-        this.itemTypes = types.itemTypes;
-        this.partnerTypes = types.partnerTypes;
-        this.invoiceTypes = types.invoiceTypes;
-    };
+  @task
+  fetchTypes = async () => {
+    const types = await api.fetchTypes();
+
+    this.itemTypes = types.itemTypes;
+    this.partnerTypes = types.partnerTypes;
+    this.invoiceTypes = types.invoiceTypes;
+  };
 }
 
 const CommonStoreContext: React.Context<CommonStore> = createContext(new CommonStore());

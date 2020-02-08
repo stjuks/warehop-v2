@@ -26,39 +26,39 @@ import HamburgerMenu from '../HamburgerMenu';
 import InvoiceDetails from '../InvoiceDetails';
 
 const App = () => {
-    const warehouseStore = useContext(WarehouseStoreContext);
-    const commonStore = useContext(CommonStoreContext);
+  const warehouseStore = useContext(WarehouseStoreContext);
+  const commonStore = useContext(CommonStoreContext);
 
-    useEffect(() => {
-        warehouseStore.fetchWarehouses();
-        commonStore.initialize();
-    }, []);
+  useEffect(() => {
+    warehouseStore.fetchWarehouses();
+    commonStore.initialize();
+  }, []);
 
-    return (
-        <ThemeProvider theme={theme}>
-            <Router history={history}>
-                <IconContext.Provider value={{ className: 'react-icon' }}>
-                    <AppContainer>
-                        <Switch>
-                            <Route path={routes.partnerForm} component={PartnerForm} />
-                            <Route path={routes.productForm} component={ProductForm} />
-                            <Route path={routes.purchaseForm} component={PurchaseForm} />
-                            <Route path={routes.productDetails} component={ProductDetails} />
-                            <Route path={routes.purchaseDetails} component={InvoiceDetails} />
-                            <Route path={routes.saleDetails} component={InvoiceDetails} />
-                            <Route path={routes.partnerDetails} component={Purchases} />
-                            <Route path={routes.products} component={Products} />
-                            <Route path={routes.purchases} component={Purchases} />
-                            <Route path={routes.sales} component={Sales} />
-                            <Route path={routes.partners} component={Partners} />
-                        </Switch>
-                        <Footer />
-                        <HamburgerMenu />
-                    </AppContainer>
-                </IconContext.Provider>
-            </Router>
-        </ThemeProvider>
-    );
+  return (
+    <ThemeProvider theme={theme}>
+      <Router history={history}>
+        <IconContext.Provider value={{ className: 'react-icon' }}>
+          <AppContainer>
+            <Switch>
+              <Route path={routes.partnerForm} component={PartnerForm} />
+              <Route path={routes.productForm} component={ProductForm} />
+              <Route path={routes.purchaseForm} component={PurchaseForm} />
+              <Route path={routes.productDetails} component={ProductDetails} />
+              <Route path={routes.purchaseDetails} component={InvoiceDetails} />
+              <Route path={routes.saleDetails} component={InvoiceDetails} />
+              <Route path={routes.partnerDetails} component={Purchases} />
+              <Route path={routes.products} component={Products} />
+              <Route path={routes.purchases} component={Purchases} />
+              <Route path={routes.sales} component={Sales} />
+              <Route path={routes.partners} component={Partners} />
+            </Switch>
+            <Footer />
+            <HamburgerMenu />
+          </AppContainer>
+        </IconContext.Provider>
+      </Router>
+    </ThemeProvider>
+  );
 };
 
 export default App;

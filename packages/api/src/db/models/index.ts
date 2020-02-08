@@ -12,16 +12,16 @@ import Transaction from './Transaction';
 import WarehouseItem from './WarehouseItem';
 
 export default {
-    User,
-    Warehouse,
-    Invoice,
-    InvoiceType,
-    Partner,
-    PartnerType,
-    Unit,
-    ItemType,
-    Item,
-    InvoiceItem,
-    Transaction,
-    WarehouseItem
+  User,
+  Warehouse,
+  Invoice,
+  InvoiceType,
+  Partner,
+  PartnerType,
+  Unit,
+  ItemType,
+  Item,
+  InvoiceItem,
+  Transaction,
+  WarehouseItem
 };

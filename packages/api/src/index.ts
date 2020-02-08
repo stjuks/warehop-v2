@@ -1,10 +1,10 @@
-import express from "express";
-import cors from "cors";
+import express from 'express';
+import cors from 'cors';
 
-import db from "./db";
-import apollo from "./util/apollo";
-import passport from "./util/passport";
-import { Partner } from "@shared/types";
+import db from './db';
+import apollo from './util/apollo';
+import passport from './util/passport';
+import { Partner } from '@shared/types';
 
 const app = express();
 
@@ -13,16 +13,16 @@ app.use(cors());
 app.use(passport.initialize());
 app.use(passport.session());
 
-apollo.initialize({ app, path: "/graphql" });
+apollo.initialize({ app, path: '/graphql' });
 db.initialize();
 
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
 
-process.on("SIGINT", () => {
-    console.log("Bye bye!");
-    process.exit();
+process.on('SIGINT', () => {
+  console.log('Bye bye!');
+  process.exit();
 });

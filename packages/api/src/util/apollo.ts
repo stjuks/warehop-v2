@@ -10,15 +10,15 @@ import { ValidationError as SequelizeValidationError, ValidationErrorItem } from
 import { formatError } from './helpers';
 
 const apollo = new ApolloServer({
-    playground: true,
-    typeDefs: schema,
-    resolvers,
-    context: async ({ req, res }) => {
-        return { models, sequelize, req, res };
-    },
-    formatError
+  playground: true,
+  typeDefs: schema,
+  resolvers,
+  context: async ({ req, res }) => {
+    return { models, sequelize, req, res };
+  },
+  formatError
 });
 
 export default {
-    initialize: (opts: { app: Application; path: string }) => apollo.applyMiddleware(opts)
+  initialize: (opts: { app: Application; path: string }) => apollo.applyMiddleware(opts)
 };

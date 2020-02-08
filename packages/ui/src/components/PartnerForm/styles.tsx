@@ -3,11 +3,11 @@ import styled from '@ui/util/styled';
 import { ContentContainer } from '../App/styles';
 
 interface IFormRowContainerProps {
-    flex?: number[];
+  flex?: number[];
 }
 
 export const ProductFormContainer = styled(ContentContainer)`
-    ${({ theme }) => `
+  ${({ theme }) => `
         .form-subtitle {
             padding: 0.25rem 1rem;
             text-transform: uppercase;
@@ -22,24 +22,24 @@ export const ProductFormContainer = styled(ContentContainer)`
 `;
 
 const createFlex = (flex: number[]) => {
-    let styles = '';
+  let styles = '';
 
-    flex.forEach(
-        (f, i) =>
-            (styles += `
+  flex.forEach(
+    (f, i) =>
+      (styles += `
         > :nth-child(${i + 1}) {
             flex: ${f};
         }
     `)
-    );
+  );
 
-    return css`
-        ${styles}
-    `;
+  return css`
+    ${styles}
+  `;
 };
 
 export const FormRowContainer = styled.div<IFormRowContainerProps>`
-    ${({ flex = [1, 1] }) => `
+  ${({ flex = [1, 1] }) => `
         display: flex;
 
         > * {
@@ -59,7 +59,7 @@ export const FormRowContainer = styled.div<IFormRowContainerProps>`
 `;
 
 export const AddWarehouseButton = styled.button`
-    ${({ theme }) => `
+  ${({ theme }) => `
         padding: 0.5rem;
         border-radius: 0.25rem;
         font-weight: 500;
@@ -80,7 +80,7 @@ export const AddWarehouseButton = styled.button`
 `;
 
 export const TrashButtonContainer = styled.div`
-    ${({ theme }) => `
+  ${({ theme }) => `
         display: flex;
         flex-direction: column;
         justify-content: flex-end;

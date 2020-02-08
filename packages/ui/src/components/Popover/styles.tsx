@@ -1,7 +1,7 @@
 import styled from '@ui/util/styled';
 
 export const ContentContainer = styled.div`
-    ${({ theme }) => `
+  ${({ theme }) => `
         background: ${theme.colors.white};
         box-shadow: ${theme.lightShadow};
         border-radius: 0.25rem;
@@ -14,7 +14,7 @@ export const ContentContainer = styled.div`
 `;
 
 export const MenuItemContainer = styled.button`
-    ${({ theme }) => `
+  ${({ theme }) => `
         padding: 0.5rem 1rem;
         text-align: left;
         color: ${theme.colors.text};

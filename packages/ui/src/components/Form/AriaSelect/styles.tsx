@@ -1,28 +1,32 @@
 import styled from '@ui/util/styled';
 import { Wrapper, Button, Menu, MenuItem } from 'react-aria-menubutton';
 
-export const WrapperContainer = styled(Wrapper).attrs({ className: 'select-wrapper' })`
-    .input-field {
-        position: relative;
-        cursor: default;
-    }
+export const WrapperContainer = styled(Wrapper).attrs({
+  className: 'select-wrapper'
+})`
+  .input-field {
+    position: relative;
+    cursor: default;
+  }
 `;
 
-export const ButtonContainer = styled(Button).attrs({ className: 'select-btn' })`
-    outline: none;
+export const ButtonContainer = styled(Button).attrs({
+  className: 'select-btn'
+})`
+  outline: none;
 
-    &,
-    .inner-btn-container {
-        display: flex;
-    }
+  &,
+  .inner-btn-container {
+    display: flex;
+  }
 
-    .inner-btn-container {
-        flex: 1;
-    }
+  .inner-btn-container {
+    flex: 1;
+  }
 `;
 
 export const MenuContainer = styled(Menu).attrs({ className: 'select-menu' })`
-    ${({ theme }) => `
+  ${({ theme }) => `
         position: absolute;
         top: calc(100% + 0.25rem);
         width: 100%;
@@ -72,9 +76,9 @@ export const MenuContainer = styled(Menu).attrs({ className: 'select-menu' })`
 `;
 
 export const MenuItemContainer = styled(MenuItem).attrs({
-    className: 'select-menu-item'
+  className: 'select-menu-item'
 })`
-    ${({ theme }) => `
+  ${({ theme }) => `
         padding: 0.5rem 1rem;
         font-weight: 500;
         outline: none;
@@ -94,7 +98,7 @@ export const MenuItemContainer = styled(MenuItem).attrs({
 `;
 
 export const SearchInput = styled.input`
-    ${({ theme }) => `
+  ${({ theme }) => `
         cursor: text;
         outline: none;
         background: ${theme.colors.lightColor1};

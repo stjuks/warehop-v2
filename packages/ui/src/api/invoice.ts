@@ -97,34 +97,38 @@ const FETCH_INVOICE = gql`
 `;
 
 const ADD_INVOICE = gql`
-    mutation addInvoice(
-        $partnerId: ID!
-        $type: InvoiceType!
-        $number: String!
-        $items: [InvoiceItemInput!]!
-        $dueDate: Date!
-        $issueDate: Date!
-        $description: String
-    ) {
-        addInvoice(
-            invoice: {
-                partnerId: $partnerId
-                type: $type
-                number: $number
-                items: $items
-                dueDate: $dueDate
-                issueDate: $issueDate
-                description: $description
-            }
-        )
-    }
+  mutation addInvoice(
+    $partnerId: ID!
+    $type: InvoiceType!
+    $number: String!
+    $items: [InvoiceItemInput!]!
+    $dueDate: Date!
+    $issueDate: Date!
+    $description: String
+    $file: Upload
+  ) {
+    addInvoice(
+      invoice: {
+        partnerId: $partnerId
+        type: $type
+        number: $number
+        items: $items
+        dueDate: $dueDate
+        issueDate: $issueDate
+        description: $description
+        file: $file
+      }
+    )
+  }
 `;
 
 export default {
-    fetchPurchases: async (variables: InvoiceSearchInput) =>
-        await query<PaginatedData<Invoice>>({ query: FETCH_PURCHASES, variables }),
-    fetchSales: async (variables: InvoiceSearchInput) =>
-        await query<PaginatedData<Invoice>>({ query: FETCH_SALES, variables }),
-    fetchInvoice: async (id: number) => await query<Invoice>({ query: FETCH_INVOICE, variables: { id } }),
-    addInvoice: async (invoice: AddInvoiceInput) => await mutate<number>({ mutation: ADD_INVOICE, variables: invoice })
+  fetchPurchases: async (variables: InvoiceSearchInput) =>
+    await query<PaginatedData<Invoice>>({ query: FETCH_PURCHASES, variables }),
+  fetchSales: async (variables: InvoiceSearchInput) =>
+    await query<PaginatedData<Invoice>>({ query: FETCH_SALES, variables }),
+  fetchInvoice: async (id: number) =>
+    await query<Invoice>({ query: FETCH_INVOICE, variables: { id } }),
+  addInvoice: async (invoice: AddInvoiceInput) =>
+    await mutate<number>({ mutation: ADD_INVOICE, variables: invoice })
 };

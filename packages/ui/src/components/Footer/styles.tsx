@@ -16,31 +16,31 @@ export const FooterContainer = styled.div`
 `;
 
 export const FooterItemContainer = styled.div`
-    text-decoration: none;
-    text-align: center;
-    font-family: 'Red Hat Display', sans-serif;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
+  text-decoration: none;
+  text-align: center;
+  font-family: 'Red Hat Display', sans-serif;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
 
-    .footer-item__active {
-        font-weight: 700;
-    }
+  .footer-item__active {
+    font-weight: 700;
+  }
 
-    ${({ theme }) => `
+  ${({ theme }) => `
         color: ${theme.colors.text};
     `}
 `;
 
 export const IconContainer = styled.div`
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const LabelContainer = styled.div`
-    margin-top: 0.25rem;
-    font-size: 0.75rem;
-    width: 3rem;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  width: 3rem;
 `;

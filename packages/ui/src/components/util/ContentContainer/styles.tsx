@@ -2,11 +2,11 @@ import styled from '@ui/util/styled';
 import { keyframes } from 'styled-components';
 
 interface ContentContainerStyledProps {
-    padded?: boolean;
+  padded?: boolean;
 }
 
 export const ContentContainerStyled = styled.div<ContentContainerStyledProps>`
-    ${({ theme, padded }) => `
+  ${({ theme, padded }) => `
         background: ${theme.colors.lightGrey};
         flex: 1;
         overflow: auto;
@@ -16,7 +16,7 @@ export const ContentContainerStyled = styled.div<ContentContainerStyledProps>`
 `;
 
 export const LoadingOverlay = styled.div`
-    ${({ theme }) => `
+  ${({ theme }) => `
         background: ${theme.colors.lightGrey.opacity(0.75)};
 
         .loading-message {
@@ -24,14 +24,14 @@ export const LoadingOverlay = styled.div`
             color: ${theme.colors.lightText};
         }
     `}
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 `;

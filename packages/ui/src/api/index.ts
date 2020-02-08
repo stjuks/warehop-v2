@@ -9,59 +9,61 @@ import invoiceApi from './invoice';
 import { GraphQLError } from 'graphql';
 
 export const query = async <T>(opts: QueryBaseOptions) => {
-    try {
-        const { data } = await apollo.query({ ...opts, fetchPolicy: 'no-cache' });
+  try {
+    const { data } = await apollo.query({ ...opts, fetchPolicy: 'no-cache' });
 
-        const result: T = getResult(data, opts);
+    const result: T = getResult(data, opts);
 
-        return result;
-    } catch (err) {
-        throw handleError(err);
-    }
+    return result;
+  } catch (err) {
+    throw handleError(err);
+  }
 };
 
 export const mutate = async <T>(opts: MutationOptions) => {
-    try {
-        const { data } = await apollo.mutate(opts);
+  try {
+    const { data } = await apollo.mutate(opts);
 
-        const result: T = getResult(data, opts);
+    const result: T = getResult(data, opts);
 
-        return result;
-    } catch (err) {
-        throw handleError(err);
-    }
+    return result;
+  } catch (err) {
+    throw handleError(err);
+  }
 };
 
 const handleError = error => {
-    if (error instanceof ApolloError) {
-        const err: GraphQLError = error.graphQLErrors[0];
+  if (error instanceof ApolloError) {
+    const err: GraphQLError = error.graphQLErrors[0];
 
-        if (err) {
-            return {
-                message: err.message,
-                ...err.extensions
-            };
-        }
+    if (err) {
+      return {
+        message: err.message,
+        ...err.extensions
+      };
     }
+  }
 
-    throw error;
+  throw error;
 };
 
 const getResult = (data, opts) => {
-    let queryName = '';
+  let queryName = '';
 
-    const queryDefinition: any = opts.query ? opts.query.definitions[0] : opts.mutation.definitions[0];
-    if (queryDefinition && queryDefinition.name) queryName = queryDefinition.name.value;
+  const queryDefinition: any = opts.query
+    ? opts.query.definitions[0]
+    : opts.mutation.definitions[0];
+  if (queryDefinition && queryDefinition.name) queryName = queryDefinition.name.value;
 
-    const result = queryName ? data[queryName] : data;
+  const result = queryName ? data[queryName] : data;
 
-    return result;
+  return result;
 };
 
 export default {
-    ...commonApi,
-    ...partnerApi,
-    ...warehouseApi,
-    ...itemApi,
-    ...invoiceApi
+  ...commonApi,
+  ...partnerApi,
+  ...warehouseApi,
+  ...itemApi,
+  ...invoiceApi
 };

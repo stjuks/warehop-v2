@@ -9,50 +9,56 @@ import invoiceSchema from './invoice';
 import transactionSchema from './transaction';
 
 const baseSchema = gql`
-    scalar Date
+  scalar Date
 
-    enum InvoiceType {
-        SALE
-        PURCHASE
-    }
+  type File {
+    filename: String!
+    mimetype: String!
+    encoding: String!
+  }
 
-    enum PartnerType {
-        CLIENT
-        VENDOR
-    }
+  enum InvoiceType {
+    SALE
+    PURCHASE
+  }
 
-    enum ItemType {
-        PRODUCT
-        SERVICE
-        EXPENSE
-    }
+  enum PartnerType {
+    CLIENT
+    VENDOR
+  }
 
-    type PageInfo {
-        hasNextPage: Boolean!
-        cursor: String
-    }
+  enum ItemType {
+    PRODUCT
+    SERVICE
+    EXPENSE
+  }
 
-    input PaginatedQueryInput {
-        cursor: String
-        limit: Int
-    }
+  type PageInfo {
+    hasNextPage: Boolean!
+    cursor: String
+  }
 
-    type Query {
-        _: Boolean
-    }
+  input PaginatedQueryInput {
+    cursor: String
+    limit: Int
+  }
 
-    type Mutation {
-        _: Boolean
-    }
+  type Query {
+    _: Boolean
+  }
+
+  type Mutation {
+    _: Boolean
+  }
 `;
 
 export default [
-    baseSchema,
-    userSchema,
-    warehouseSchema,
-    commonSchema,
-    partnerSchema,
-    itemSchema,
-    invoiceSchema,
-    transactionSchema
+  baseSchema,
+  userSchema,
+  warehouseSchema,
+  commonSchema,
+  partnerSchema,
+  itemSchema,
+  invoiceSchema,
+  transactionSchema
 ];
