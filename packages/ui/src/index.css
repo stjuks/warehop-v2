@@ -19,6 +19,8 @@ textarea {
   padding: 0;
   border: none;
   cursor: inherit;
+  color: currentColor;
+  font-family: inherit;
 }
 
 body {

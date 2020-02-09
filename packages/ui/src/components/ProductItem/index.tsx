@@ -13,14 +13,14 @@ function ProductItem(product: ProductItemType) {
 
   return (
     <ProductItemContainer to={{ pathname: `${routes.products}/${id}`, product }}>
-      <div className='col-1'>
-        <div className='row-1'>
-          <div className='product-name'>{name}</div>
-          <div className='product-price'>{retailPrice ? `${currency(retailPrice)}€` : '-'}</div>
+      <div className="col-1">
+        <div className="row-1">
+          <div className="product-name">{name}</div>
+          <div className="product-price">{retailPrice ? `${currency(retailPrice)}€` : '-'}</div>
         </div>
-        <div className='row-2'>
-          <div className='product-code'>{code}</div>
-          <div className='product-quantity'>
+        <div className="row-2">
+          <div className="product-code">{code}</div>
+          <div className="product-quantity">
             {quantity}
             {unit.abbreviation}
           </div>

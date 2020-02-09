@@ -13,6 +13,7 @@ export default {
   partners: '/partners',
   partnerDetails: '/partners/:id',
   partnerForm: '/partners/new',
+  transactionForm: '/transactions/new',
   statistics: '/statistics',
   settings: '/settings'
 };

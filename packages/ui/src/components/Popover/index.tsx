@@ -23,7 +23,7 @@ function Popover({ children, position, content, closeContentOnClick = false }: I
       isOpen={isOpen}
       position={position}
       content={closeContentOnClick ? contentClosesOnClick : content}
-      align='end'
+      align="end"
       containerStyle={{ overflow: 'visible' }}
       onClickOutside={() => setIsOpen(false)}
     >

@@ -43,13 +43,13 @@ function HeaderSearch({ onChange, placeholder }: IHeaderSearchProps) {
       <InputContainer isOpened={isOpened}>
         <input
           value={query}
-          className='search-input'
+          className="search-input"
           placeholder={placeholder}
           onChange={handleChange}
           ref={input}
         />
       </InputContainer>
-      <IconContainer type='button' onClick={handleButton}>
+      <IconContainer type="button" onClick={handleButton}>
         <FiSearch />
       </IconContainer>
     </HeaderSearchContainer>

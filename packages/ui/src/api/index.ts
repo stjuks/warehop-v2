@@ -6,6 +6,8 @@ import partnerApi from './partner';
 import warehouseApi from './warehouse';
 import itemApi from './item';
 import invoiceApi from './invoice';
+import transactionApi from './transaction';
+
 import { GraphQLError } from 'graphql';
 
 export const query = async <T>(opts: QueryBaseOptions) => {
@@ -65,5 +67,6 @@ export default {
   ...partnerApi,
   ...warehouseApi,
   ...itemApi,
-  ...invoiceApi
+  ...invoiceApi,
+  ...transactionApi
 };

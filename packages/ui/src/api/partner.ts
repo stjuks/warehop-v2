@@ -18,33 +18,33 @@ const partnerSchema = `
 `;
 
 export const FETCH_PARTNERS = gql`
-    query partners(
-        $type: PartnerType, 
-        $pagination: PaginatedQueryInput, 
-        $name: String, 
-        $email: String, 
-        $phoneNr: String,
-        $generalQuery: String
+  query partners(
+    $type: PartnerType, 
+    $pagination: PaginatedQueryInput, 
+    $name: String, 
+    $email: String, 
+    $phoneNr: String,
+    $generalQuery: String
+  ) {
+    partners(
+      filter: { 
+        type: $type 
+        pagination: $pagination
+        name: $name
+        email: $email
+        phoneNr: $phoneNr
+        generalQuery: $generalQuery
+      }
     ) {
-        partners(
-            filter: { 
-                type: $type 
-                pagination: $pagination
-                name: $name
-                email: $email
-                phoneNr: $phoneNr
-                generalQuery: $generalQuery
-            }
-        ) {
-            pageInfo {
-                hasNextPage
-                cursor
-            }
-            data {
-                ${partnerSchema}
-            }
+        pageInfo {
+          hasNextPage
+          cursor
+        }
+        data {
+          ${partnerSchema}
         }
     }
+  }
 `;
 
 export const ADD_PARTNER = gql`

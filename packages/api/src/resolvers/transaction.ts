@@ -1,43 +1,39 @@
 import { Resolver, authResolver, ApolloContext, paginate } from '.';
-import { TransactionType, InvoiceType, PaginatedQueryInput } from '@shared/types';
-
-interface TransactionInput {
-  id: number;
-  transaction: {
-    invoiceId: number;
-    sum: string;
-    date: Date;
-    description?: string;
-  };
-}
+import { InvoiceType, TransactionQueryInput, AddTransactionInput } from '@shared/types';
+import { Op } from 'sequelize';
 
 const resolver: Resolver = {
   Query: {
-    incomes: authResolver(async ({ pagination }: { pagination: PaginatedQueryInput }, context) => {
-      return await findTransactions(context, { type: 'INCOME', ...pagination });
+    incomes: authResolver(async ({ filter }: { filter: TransactionQueryInput }, context) => {
+      return await findTransactions(context, { ...filter, type: 'INCOME' });
     }),
-    expenses: authResolver(async ({ pagination }: { pagination: PaginatedQueryInput }, context) => {
-      return await findTransactions(context, { type: 'EXPENSE', ...pagination });
+    expenses: authResolver(async ({ filter }: { filter: TransactionQueryInput }, context) => {
+      return await findTransactions(context, { ...filter, type: 'EXPENSE' });
     })
   },
   Mutation: {
-    addTransaction: authResolver(async ({ transaction }: TransactionInput, { models, user }) => {
-      try {
-        const addedTransaction = await models.Transaction.create({
-          ...transaction,
-          userId: user.id
-        });
+    addTransaction: authResolver(
+      async ({ transaction }: { transaction: AddTransactionInput }, { models, user }) => {
+        try {
+          const addedTransaction = await models.Transaction.create({
+            ...transaction,
+            userId: user.id
+          });
 
-        return addedTransaction.id;
-      } catch (err) {
-        throw err;
+          return addedTransaction.id;
+        } catch (err) {
+          throw err;
+        }
       }
-    }),
+    ),
     deleteTransaction: authResolver(async ({ id }, { models, user }) => {
       return await models.Transaction.destroy({ where: { id, userId: user.id } });
     }),
     editTransaction: authResolver(
-      async ({ id, transaction }: TransactionInput, { models, user }) => {
+      async (
+        { id, transaction }: { id: number; transaction: AddTransactionInput },
+        { models, user }
+      ) => {
         const [isUpdated] = await models.Transaction.update(transaction, {
           where: { userId: user.id, id }
         });
@@ -48,19 +44,31 @@ const resolver: Resolver = {
   }
 };
 
-const findTransactions = async (
-  context: ApolloContext,
-  opts: { type: TransactionType; cursor?: string; limit?: number }
-) => {
-  const { type, cursor, limit } = opts;
+const findTransactions = async (context: ApolloContext, filter: TransactionQueryInput) => {
+  const {
+    type,
+    pagination: { limit, cursor },
+    startDate,
+    endDate
+  } = filter;
+
   const { models, user } = context;
 
   const invoiceType: InvoiceType = type === 'EXPENSE' ? 'PURCHASE' : 'SALE';
 
+  const where: any = {
+    userId: user.id
+  };
+
+  if (startDate && endDate) where.date = { [Op.between]: [startDate, endDate] };
+  else if (startDate) where.date = { [Op.gte]: startDate };
+  else if (endDate) where.date = { [Op.lte]: endDate };
+
   const transactions = await paginate(models.Transaction, {
     cursor,
     limit,
-    where: { userId: user.id },
+    paginateBy: 'date',
+    where,
     include: [{ model: models.Invoice, where: { type: invoiceType }, include: [models.Partner] }]
   });
 

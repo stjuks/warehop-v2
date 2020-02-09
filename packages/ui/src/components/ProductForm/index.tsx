@@ -66,10 +66,10 @@ const ProductForm = observer(() => {
 
   return (
     <>
-      <Header title='Uus kaup' backTo={routes.products} />
+      <Header title="Uus kaup" backTo={routes.products} />
       <ProductFormContainer>
         <Form
-          id='new-product-form'
+          id="new-product-form"
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={(values: ProductItem) => itemStore.addProduct(values)}
@@ -77,28 +77,28 @@ const ProductForm = observer(() => {
           {formikProps => (
             <>
               <FormTitle>Põhiandmed</FormTitle>
-              <TextInput name='code' label='Kood' />
-              <TextInput name='name' label='Nimetus' />
+              <TextInput name="code" label="Kood" />
+              <TextInput name="name" label="Nimetus" />
               <AriaSelect
-                name='unit'
-                label='Ühik'
+                name="unit"
+                label="Ühik"
                 optionMap={{ label: unit => unit.name }}
                 options={units}
               />
               <FormTitle>Lisainfo</FormTitle>
               <AriaSelect
-                name='partner'
-                label='Tarnija'
+                name="partner"
+                label="Tarnija"
                 optionMap={{ label: partner => partner.name }}
                 options={partners}
               />
               <Row flex={[1, 1]}>
-                <TextInput name='purchasePrice' label='Ostuhind' indicator={'€'} />
-                <TextInput name='retailPrice' label='Müügihind' indicator={'€'} />
+                <TextInput name="purchasePrice" label="Ostuhind" indicator={'€'} />
+                <TextInput name="retailPrice" label="Müügihind" indicator={'€'} />
               </Row>
-              <TextInput name='description' label='Märkused' isTextarea />
+              <TextInput name="description" label="Märkused" isTextarea />
               <FormTitle>Laoseis</FormTitle>
-              <FieldArray name='warehouseQuantity'>
+              <FieldArray name="warehouseQuantity">
                 {arrayHelpers => (
                   <>
                     {formikProps.values.warehouseQuantity.map((wh, i) => (
@@ -115,10 +115,10 @@ const ProductForm = observer(() => {
                         <TextInput
                           name={`warehouseQuantity[${i}].quantity`}
                           label={i === 0 ? 'Kogus' : undefined}
-                          type='number'
+                          type="number"
                         />
                         <TrashButtonContainer>
-                          <button type='button' onClick={() => arrayHelpers.remove(i)}>
+                          <button type="button" onClick={() => arrayHelpers.remove(i)}>
                             <FiTrash2 />
                           </button>
                         </TrashButtonContainer>
@@ -127,7 +127,7 @@ const ProductForm = observer(() => {
                     {formikProps.values.warehouseQuantity.length <
                       warehouseStore.warehouses.length && (
                       <AddWarehouseButton
-                        type='button'
+                        type="button"
                         onClick={() =>
                           arrayHelpers.push(
                             findFirstNonChosenWarehouse(
@@ -149,7 +149,7 @@ const ProductForm = observer(() => {
         </Form>
       </ProductFormContainer>
       <FooterContainer style={{ padding: '0.5rem 1rem' }}>
-        <Button title='Lisa kaup' form='new-product-form' />
+        <Button title="Lisa kaup" form="new-product-form" />
       </FooterContainer>
     </>
   );

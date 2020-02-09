@@ -68,7 +68,7 @@ const createCheckConstraints = async () => {
     createCheckConstraint({
       table: models.Transaction,
       name: 'check_sum_date',
-      query: 'sum >= 0 AND date < Now()'
+      query: 'sum >= 0 AND date <= Now()'
     })
   );
 

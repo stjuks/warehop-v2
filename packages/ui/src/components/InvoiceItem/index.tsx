@@ -35,14 +35,14 @@ const InvoiceItem: React.FC<Invoice> = props => {
 
   return (
     <InvoiceItemContainer to={routeProps}>
-      <div className='col-1'>
-        <div className='row-1'>
-          <div className='partner-name'>{partner.name}</div>
-          <div className='sum'>{formattedSum}€</div>
+      <div className="col-1">
+        <div className="row-1">
+          <div className="partner-name">{partner.name}</div>
+          <div className="sum">{formattedSum}€</div>
         </div>
-        <div className='row-2'>
-          <div className='invoice-nr'>#{number}</div>
-          <div className='days-left'>{getDaysUntilDueDate()}</div>
+        <div className="row-2">
+          <div className="invoice-nr">#{number}</div>
+          <div className="days-left">{getDaysUntilDueDate()}</div>
         </div>
       </div>
     </InvoiceItemContainer>

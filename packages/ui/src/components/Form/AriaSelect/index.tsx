@@ -159,7 +159,7 @@ const InputComponent: React.FC<any> = observer(
   }) => (
     <>
       <ButtonContainer>
-        <div className='inner-btn-container'>
+        <div className="inner-btn-container">
           <span className={`value-container ${!displayValue && `placeholder`}`}>
             {displayValue || placeholder}
           </span>
@@ -175,7 +175,7 @@ const InputComponent: React.FC<any> = observer(
       </ButtonContainer>
       <MenuContainer>
         {isSearchable && (
-          <div className='search-container'>
+          <div className="search-container">
             <SearchInput
               placeholder={searchPlaceholder || 'Otsi'}
               onChange={handleSearch}
@@ -184,7 +184,7 @@ const InputComponent: React.FC<any> = observer(
             {isLoadingSearch && <Loader />}
           </div>
         )}
-        <ul className='item-list'>
+        <ul className="item-list">
           {options.map((item, i) => {
             return (
               <li key={i}>

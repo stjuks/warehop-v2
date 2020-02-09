@@ -17,9 +17,9 @@ function Header(props) {
     <HeaderContainer>
       <TitleContainer>
         {backTo ? (
-          <Link to={backTo} className='back-button'>
-            <span className='icon-container'>
-              <FiChevronLeft className='icon' />
+          <Link to={backTo} className="back-button">
+            <span className="icon-container">
+              <FiChevronLeft className="icon" />
             </span>
             {title}
           </Link>

@@ -24,6 +24,7 @@ import Partners from '../Partners';
 import PartnerForm from '../PartnerForm';
 import HamburgerMenu from '../HamburgerMenu';
 import InvoiceDetails from '../InvoiceDetails';
+import TransactionForm from '../TransactionForm';
 
 const App = () => {
   const warehouseStore = useContext(WarehouseStoreContext);

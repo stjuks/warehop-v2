@@ -48,6 +48,11 @@ export const IconsContainer = styled.div`
         font-size: 1.75rem;
         color: ${theme.colors.text};
 
+        > * {
+          display: flex;
+          align-items: center;
+        }
+
         > *:not(:last-child) {
             margin-right: 0.75rem;
         }

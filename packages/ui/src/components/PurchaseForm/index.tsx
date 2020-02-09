@@ -71,19 +71,19 @@ const PurchaseForm = observer(() => {
 
   return (
     <>
-      <Header title='Uus ostuarve' backTo={routes.purchases} />
+      <Header title="Uus ostuarve" backTo={routes.purchases} />
       <ProductFormContainer>
         <Form
           validationSchema={validationSchema}
           initialValues={initialValues}
           onSubmit={handleSubmit}
-          id='new-purchase-form'
+          id="new-purchase-form"
         >
           {formikProps => <FormFields formikProps={formikProps} />}
         </Form>
       </ProductFormContainer>
       <FooterContainer style={{ padding: '0.25rem 1rem' }}>
-        <Button title='Loo arve' form='new-purchase-form' type='submit' />
+        <Button title="Loo arve" form="new-purchase-form" type="submit" />
       </FooterContainer>
     </>
   );
@@ -106,8 +106,8 @@ const FormFields: React.FC<any> = observer(({ formikProps }) => {
       />
       <FormTitle>Põhiandmed</FormTitle>
       <AriaSelect
-        name='partner'
-        label='Tarnija'
+        name="partner"
+        label="Tarnija"
         onSearch={async query => {
           const partners = await partnerStore.fetchPartners(
             { type: 'VENDOR', generalQuery: query },
@@ -115,19 +115,19 @@ const FormFields: React.FC<any> = observer(({ formikProps }) => {
           );
           return mapSelectOptions(partners, { label: partner => partner.name });
         }}
-        searchPlaceholder='Otsi tarnijat'
+        searchPlaceholder="Otsi tarnijat"
         options={partnerStore.partners}
         optionMap={{ label: partner => partner.name }}
       />
-      <TextInput name='number' label='Arve nr' />
+      <TextInput name="number" label="Arve nr" />
       <Row flex={[1, 1]}>
-        <DateInput name='issueDate' label='Ostukuupäev' />
-        <DateInput name='dueDate' label='Maksetähtaeg' />
+        <DateInput name="issueDate" label="Ostukuupäev" />
+        <DateInput name="dueDate" label="Maksetähtaeg" />
       </Row>
       <FormTitle>Lisaandmed</FormTitle>
-      <FileInput name='file' accept=".pdf" label='Arve fail (PDF)' />
-      <TextInput name='description' label='Märkused' isTextarea />
-      <FieldArray name='items'>
+      <FileInput name="file" accept=".pdf" label="Arve fail (PDF)" />
+      <TextInput name="description" label="Märkused" isTextarea />
+      <FieldArray name="items">
         {arrayHelpers => (
           <>
             <FormTitle>

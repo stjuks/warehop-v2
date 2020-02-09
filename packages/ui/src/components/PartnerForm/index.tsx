@@ -51,10 +51,10 @@ const PartnerForm = observer(() => {
 
   return (
     <>
-      <Header title='Uus partner' backTo={routes.partners} />
+      <Header title="Uus partner" backTo={routes.partners} />
       <ContentContainer>
         <Form
-          id='new-partner-form'
+          id="new-partner-form"
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
@@ -69,22 +69,22 @@ const PartnerForm = observer(() => {
           <AriaSelect
             options={commonStore.partnerTypes}
             optionMap={{ label: value => partnerTypeTranslations[value] }}
-            name='type'
-            label='Partneri tüüp'
+            name="type"
+            label="Partneri tüüp"
           />
-          <TextInput name='name' label='Nimi' />
-          <TextInput name='regNr' label='Registrikood' />
-          <TextInput name='VATnr' label='KMK nr' />
-          <TextInput name='phoneNr' label='Telefoni number' />
-          <TextInput name='email' label='E-post' />
-          <TextInput name='address' label='Aadress' />
-          <TextInput name='postalCode' label='Postikood' />
-          <TextInput name='county' label='Maakond' />
-          <TextInput name='country' label='Riik' />
+          <TextInput name="name" label="Nimi" />
+          <TextInput name="regNr" label="Registrikood" />
+          <TextInput name="VATnr" label="KMK nr" />
+          <TextInput name="phoneNr" label="Telefoni number" />
+          <TextInput name="email" label="E-post" />
+          <TextInput name="address" label="Aadress" />
+          <TextInput name="postalCode" label="Postikood" />
+          <TextInput name="county" label="Maakond" />
+          <TextInput name="country" label="Riik" />
         </Form>
       </ContentContainer>
       <FooterContainer style={{ padding: '0.5rem 1rem' }}>
-        <Button title='Lisa partner' form='new-partner-form' />
+        <Button title="Lisa partner" form="new-partner-form" />
       </FooterContainer>
     </>
   );

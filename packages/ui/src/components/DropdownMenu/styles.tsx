@@ -26,6 +26,7 @@ export const DropdownMenuContainer = styled(Menu).attrs({
   ${({ theme }) => `
     background: ${theme.colors.lightGrey};
     box-shadow: ${theme.lightShadow};
+    border: 1px solid ${theme.colors.midGrey};
     border-radius: 0.25rem;
   `}
 `;
@@ -33,8 +34,18 @@ export const DropdownMenuContainer = styled(Menu).attrs({
 export const DropdownMenuItem = styled(MenuItem).attrs({
   className: 'dropdown-menu-item'
 })`
-  padding: 0.375rem 0.75rem;
+  .react-icon {
+    margin-right: 0.375rem;
+    margin-bottom: 1px;
+    opacity: 0.75;
+  }
+
+  white-space: nowrap;
+  font-weight: 400;
+  padding: 0.5rem 0.75rem;
   cursor: pointer;
+  display: flex;
+  align-items: center;
 
   ${({ theme }) => `
     color: ${theme.colors.lightText};

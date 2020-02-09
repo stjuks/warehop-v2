@@ -38,7 +38,7 @@ const Products = observer(() => {
   };
 
   const headerIcons = [
-    <HeaderSearch onChange={handleSearch} placeholder='Otsi kaupa' />,
+    <HeaderSearch onChange={handleSearch} placeholder="Otsi kaupa" />,
     <NewItemButtonContainer onClick={() => history.push(routes.productForm)}>
       <FiPlusCircle />
     </NewItemButtonContainer>
@@ -62,10 +62,10 @@ const Products = observer(() => {
 
   return (
     <>
-      <Header title='Kaubad' components={headerIcons} />
+      <Header title="Kaubad" components={headerIcons} />
       <SortingContainer>
         <Formik onSubmit={values => console.log(values)} initialValues={{}}>
-          <SelectStyled name='warehouseOption' options={warehouseOptions} />
+          <SelectStyled name="warehouseOption" options={warehouseOptions} />
         </Formik>
       </SortingContainer>
       <ContentContainer>

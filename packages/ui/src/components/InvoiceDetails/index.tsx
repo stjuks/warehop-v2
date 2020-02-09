@@ -1,17 +1,20 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { Invoice } from '@shared/types';
 import routes from '@ui/util/routes';
+import history from '@ui/util/history';
 import InvoiceStoreContext from '@ui/stores/InvoiceStore';
 import currency from 'currency.js';
 
 import { InvoiceHero, IsPaidStyled, InvoiceDetailsContainer } from './styles';
 import Header from '../Header';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, Route } from 'react-router';
 import { DetailCardContainer, DetailLabel } from '../ProductDetails/styles';
 import moment from 'moment';
 import InvoiceItemListItem from '../InvoiceItemListItem';
+import TransactionForm from '../TransactionForm';
 import DropdownMenu from '../DropdownMenu';
-import { FiMoreVertical, FiDownload } from 'react-icons/fi';
+import { FiMoreVertical, FiDownload, FiDollarSign, FiTrash2, FiEdit } from 'react-icons/fi';
+import { FaMoneyCheckAlt, FaMoneyBillAlt, FaMoneyBill } from 'react-icons/fa';
 
 interface InvoiceDetailsProps {
   invoice?: Invoice;
@@ -47,57 +50,91 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
 
   const backRoute = invoice && invoice.type === 'PURCHASE' ? routes.purchases : routes.sales;
 
-  const headerComponents = [
-    <DropdownMenu
-      button={<FiMoreVertical />}
-      options={[
-        { label: 'Kustuta', onClick: () => console.log('delete') },
-        { label: 'Muuda', onClick: () => console.log('edit') }
-      ]}
-    />
+  const dropdownOptions = [
+    {
+      label: (
+        <>
+          <FiEdit />
+          <span>Muuda</span>
+        </>
+      ),
+      onClick: () => console.log('edit')
+    },
+    {
+      label: (
+        <>
+          <FiTrash2 />
+          <span>Kustuta</span>
+        </>
+      ),
+      onClick: () => console.log('delete')
+    }
   ];
 
   if (invoice && invoice.filePath) {
-    headerComponents.unshift(
-      <button onClick={() => invoiceStore.downloadInvoice(invoice?.id || -1)}>
-        <FiDownload />
-      </button>
-    );
+    dropdownOptions.unshift({
+      label: (
+        <>
+          <FiDownload />
+          <span>Lae alla</span>
+        </>
+      ),
+      onClick: () => invoiceStore.downloadInvoice(invoice?.id || -1)
+    });
   }
+
+  if (invoice && !invoice.isPaid) {
+    dropdownOptions.unshift({
+      label: (
+        <>
+          <FiDollarSign />
+          <span>Maksa</span>
+        </>
+      ),
+      onClick: () => history.push('/purchases/40/pay')
+    });
+  }
+
+  const headerComponents = [<DropdownMenu button={<FiMoreVertical />} options={dropdownOptions} />];
 
   return (
     <>
-      <Header title='Arve detailid' backTo={backRoute} components={headerComponents} />
+      <Header title="Arve detailid" backTo={backRoute} components={headerComponents} />
       <InvoiceDetailsContainer padded>
         {invoice && (
           <>
-            <InvoiceHero>
-              <div className='row-1'>
-                <span className='col-1'>{invoice.partner.name}</span>
-                <span className='col-2'>{sum}€</span>
+            <Route
+              path={'/purchases/:id/pay'}
+              render={() => <TransactionForm invoice={invoice} />}
+            />
+
+            <InvoiceHero paidSum={Number(invoice.paidSum)}>
+              <div className="row-1">
+                <span className="col-1">{invoice.partner.name}</span>
+                <span className="col-2">{sum}€</span>
               </div>
-              <div className='row-2'>
-                <span className='col-1'>#{invoice.number}</span>
+              <div className="row-2">
+                <span className="col-1">#{invoice.number}</span>
                 <IsPaidStyled isPaid={invoice.isPaid}>
                   {invoice.isPaid ? 'Makstud' : 'Maksmata'}
                 </IsPaidStyled>
               </div>
             </InvoiceHero>
             <DetailCardContainer>
-              <div className='row'>
-                <div className='detail'>
-                  <div className='detail-label'>Ostukuupäev</div>
-                  <div className='detail-value'>{issueDate}</div>
+              <div className="row">
+                <div className="detail">
+                  <div className="detail-label">Ostukuupäev</div>
+                  <div className="detail-value">{issueDate}</div>
                 </div>
-                <div className='detail'>
-                  <div className='detail-label'>Maksetähtaeg</div>
-                  <div className='detail-value'>{dueDate}</div>
+                <div className="detail">
+                  <div className="detail-label">Maksetähtaeg</div>
+                  <div className="detail-value">{dueDate}</div>
                 </div>
               </div>
-              <div className='row'>
-                <div className='detail'>
-                  <div className='detail-label'>Märkused</div>
-                  <div className='detail-value'>{invoice.description || '-'}</div>
+              <div className="row">
+                <div className="detail">
+                  <div className="detail-label">Märkused</div>
+                  <div className="detail-value">{invoice.description || '-'}</div>
                 </div>
               </div>
             </DetailCardContainer>

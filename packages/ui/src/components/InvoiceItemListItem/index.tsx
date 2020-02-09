@@ -26,32 +26,32 @@ const InvoiceItemListItem: React.FC<InvoiceItemListItemProps> = ({
 
   return (
     <InvoiceItemListItemContainer style={style}>
-      <div className='action-items'>
+      <div className="action-items">
         {onEdit && (
-          <button className='btn btn__delete' onClick={onEdit} type='button'>
+          <button className="btn btn__delete" onClick={onEdit} type="button">
             <FiEdit />
           </button>
         )}
         {onDelete && (
-          <button className='btn btn__edit' onClick={onDelete} type='button'>
+          <button className="btn btn__edit" onClick={onDelete} type="button">
             <FiTrash2 />
           </button>
         )}
       </div>
-      <div className='row row-1'>
-        <span className='attr-1'>{item.name}</span>
-        <span className='attr-2'>{summedPrice}€</span>
+      <div className="row row-1">
+        <span className="attr-1">{item.name}</span>
+        <span className="attr-2">{summedPrice}€</span>
       </div>
-      <div className='row row-2'>
-        <span className='attr-3'>{item.code}</span>
-        <span className='attr-4'>
+      <div className="row row-2">
+        <span className="attr-3">{item.code}</span>
+        <span className="attr-4">
           {item.quantity}
           {item.unit && item.unit.abbreviation} × {formattedPrice}€
         </span>
       </div>
-      <div className='row row-3'>
-        <span className='attr-5'>{item.warehouse && item.warehouse.name}</span>
-        <span className='attr-6'>{itemTypeTranslations[item.type]}</span>
+      <div className="row row-3">
+        <span className="attr-5">{item.warehouse && item.warehouse.name}</span>
+        <span className="attr-6">{itemTypeTranslations[item.type]}</span>
       </div>
     </InvoiceItemListItemContainer>
   );

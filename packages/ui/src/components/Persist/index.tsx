@@ -19,7 +19,7 @@ const Persist = ({ name, setValues, values }) => {
       }
     }, 300);
 
-    return <input type='hidden' />;
+    return <input type="hidden" />;
   };
 
   return <Field component={Input} />;

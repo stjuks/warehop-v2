@@ -29,6 +29,7 @@ export const InputContainer = styled.div<IInputContainerProps>`
         justify-content: flex-end;
         position: relative;
         margin: 0 0.5rem 0 0.75rem;
+        font-family: 'Roboto', sans-serif;
 
         input {
             border: none;

@@ -21,11 +21,11 @@ function FooterItem({ icon, label, onClick, to }: IFooterItemProps) {
   return (
     <FooterItemContainer>
       {to ? (
-        <NavLink to={to} activeClassName='footer-item__active'>
+        <NavLink to={to} activeClassName="footer-item__active">
           <ItemComponent />
         </NavLink>
       ) : (
-        <button type='button' onClick={onClick}>
+        <button type="button" onClick={onClick}>
           <ItemComponent />
         </button>
       )}

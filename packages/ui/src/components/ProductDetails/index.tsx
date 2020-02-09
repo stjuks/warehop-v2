@@ -48,7 +48,7 @@ const ProductDetails = props => {
           onClick: () => null
         }
       ]}
-      position='bottom'
+      position="bottom"
       closeContentOnClick
     >
       <FiMoreHorizontal />
@@ -57,41 +57,41 @@ const ProductDetails = props => {
 
   return (
     <>
-      <Header title='Kauba detailid' components={headerIcons} backTo={routes.products} />
+      <Header title="Kauba detailid" components={headerIcons} backTo={routes.products} />
       <ContentContainer padded>
         {product && (
           <>
             <TitleContainer>
-              <div className='product-name'>{product.name}</div>
-              <div className='product-code'>{product.code}</div>
+              <div className="product-name">{product.name}</div>
+              <div className="product-code">{product.code}</div>
             </TitleContainer>
             <DetailCardContainer>
-              <div className='row'>
-                <div className='detail'>
-                  <div className='detail-label'>Tarnija</div>
-                  <div className='detail-value'>{product.partner && product.partner.name}</div>
+              <div className="row">
+                <div className="detail">
+                  <div className="detail-label">Tarnija</div>
+                  <div className="detail-value">{product.partner && product.partner.name}</div>
                 </div>
               </div>
-              <div className='row'>
-                <div className='detail'>
-                  <div className='detail-label'>Ostuhind</div>
-                  <div className='detail-value'>{product.purchasePrice}€</div>
+              <div className="row">
+                <div className="detail">
+                  <div className="detail-label">Ostuhind</div>
+                  <div className="detail-value">{product.purchasePrice}€</div>
                 </div>
-                <div className='detail'>
-                  <div className='detail-label'>Müügihind</div>
-                  <div className='detail-value'>{product.retailPrice}€</div>
+                <div className="detail">
+                  <div className="detail-label">Müügihind</div>
+                  <div className="detail-value">{product.retailPrice}€</div>
                 </div>
-                <div className='detail'>
-                  <div className='detail-label'>Ühik</div>
-                  <div className='detail-value'>
+                <div className="detail">
+                  <div className="detail-label">Ühik</div>
+                  <div className="detail-value">
                     {product.unit.name} ({product.unit.abbreviation})
                   </div>
                 </div>
               </div>
-              <div className='row'>
-                <div className='detail'>
-                  <div className='detail-label'>Märkused</div>
-                  <div className='detail-value'>{product.description}</div>
+              <div className="row">
+                <div className="detail">
+                  <div className="detail-label">Märkused</div>
+                  <div className="detail-value">{product.description}</div>
                 </div>
               </div>
             </DetailCardContainer>
@@ -100,16 +100,16 @@ const ProductDetails = props => {
               {product.warehouseQuantity &&
                 product.warehouseQuantity.map((wh, i) => (
                   <WarehouseRowContainer key={i}>
-                    <span className='warehouse-name'>{wh.name}</span>
-                    <span className='warehouse-quantity'>
+                    <span className="warehouse-name">{wh.name}</span>
+                    <span className="warehouse-quantity">
                       {wh.quantity}
                       {product.unit.abbreviation}
                     </span>
                   </WarehouseRowContainer>
                 ))}
               <WarehouseRowContainer>
-                <span className='warehouse-name'>KOKKU</span>
-                <span className='warehouse-quantity'>
+                <span className="warehouse-name">KOKKU</span>
+                <span className="warehouse-quantity">
                   {product.warehouseQuantity.reduce((acc, wh) => acc + wh.quantity, 0)}
                   {product.unit.abbreviation}
                 </span>

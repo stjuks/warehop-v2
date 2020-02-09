@@ -91,7 +91,7 @@ export const TextInputBase: React.FC<InputProps> = ({
         isFocused={isFocused}
         isMounted={isMounted}
         hasValue={value != null && value != ''}
-        className='input-field'
+        className="input-field"
       >
         {inputComponent || (
           <>
@@ -101,8 +101,8 @@ export const TextInputBase: React.FC<InputProps> = ({
                 onChange={onChange}
                 value={value || ''}
                 name={name}
-                autoComplete='off'
-                className='value-container'
+                autoComplete="off"
+                className="value-container"
               />
             ) : (
               <input
@@ -111,8 +111,8 @@ export const TextInputBase: React.FC<InputProps> = ({
                 value={value || ''}
                 type={type}
                 name={name}
-                autoComplete='off'
-                className='value-container'
+                autoComplete="off"
+                className="value-container"
                 readOnly={readOnly}
               />
             )}

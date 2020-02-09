@@ -43,6 +43,13 @@ export interface WarehouseQuantityInput {
   quantity: number;
 }
 
+export interface TransactionQueryInput {
+  pagination: PaginatedQueryInput;
+  type?: TransactionType;
+  startDate?: Date;
+  endDate?: Date;
+}
+
 export interface AddItemInput {
   type: ItemType;
   name: string;
@@ -137,6 +144,7 @@ export interface Invoice {
   items: InvoiceItem[];
   isPaid: boolean;
   sum: string;
+  paidSum: string;
   description?: string;
   filePath?: string;
 }

@@ -32,7 +32,7 @@ const Radio: React.FC<RadioProps> = ({ options, name, onSelect, defaultValue }) 
       {options.map((option, i) => (
         <RadioOptionContainer key={i}>
           <input
-            type='radio'
+            type="radio"
             name={name}
             id={`${name}${i}`}
             onChange={() => handleSelect(option.value)}

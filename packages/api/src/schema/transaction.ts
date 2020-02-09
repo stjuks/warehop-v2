@@ -21,9 +21,15 @@ export default gql`
     data: [Transaction!]!
   }
 
+  input TransactionQueryInput {
+    pagination: PaginatedQueryInput!
+    startDate: Date
+    endDate: Date
+  }
+
   extend type Query {
-    incomes(pagination: PaginatedQueryInput): PaginatedTransaction!
-    expenses(pagination: PaginatedQueryInput): PaginatedTransaction!
+    incomes(filter: TransactionQueryInput): PaginatedTransaction!
+    expenses(filter: TransactionQueryInput): PaginatedTransaction!
   }
 
   extend type Mutation {

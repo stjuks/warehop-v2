@@ -22,10 +22,7 @@ const Purchases = observer(() => {
   const invoiceStore = useContext(InvoiceStoreContext);
 
   const headerIcons = [
-    <HeaderSearch onChange={setSearchQuery} placeholder='Otsi arvet' />,
-    <button style={{ display: 'flex' }}>
-      <FiSliders />
-    </button>,
+    <HeaderSearch onChange={setSearchQuery} placeholder="Otsi arvet" />,
     <NewItemButtonContainer onClick={() => history.push(routes.purchaseForm)}>
       <FiPlusCircle />
     </NewItemButtonContainer>
@@ -48,11 +45,11 @@ const Purchases = observer(() => {
 
   return (
     <>
-      <Header title='Müügiarved' components={headerIcons} />
+      <Header title="Müügiarved" components={headerIcons} />
       <SortingContainer>
         <Radio
           options={paidOptions}
-          name='radio-paid'
+          name="radio-paid"
           onSelect={value => setPaidFilter(value)}
           defaultValue={paidOptions[0].value}
         />

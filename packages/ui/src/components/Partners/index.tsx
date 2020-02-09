@@ -22,7 +22,7 @@ const Partners = observer(() => {
   const [partnerType, setPartnerType] = useState<PartnerType>('CLIENT');
 
   const headerIcons = [
-    <HeaderSearch onChange={setSearchQuery} placeholder='Otsi partnerit' />,
+    <HeaderSearch onChange={setSearchQuery} placeholder="Otsi partnerit" />,
     <NewItemButtonContainer onClick={() => history.push(routes.partnerForm)}>
       <FiPlusCircle />
     </NewItemButtonContainer>
@@ -44,11 +44,11 @@ const Partners = observer(() => {
 
   return (
     <>
-      <Header title='Partnerid' components={headerIcons} />
+      <Header title="Partnerid" components={headerIcons} />
       <SortingContainer>
         <Radio
           options={partnerTypeOptions}
-          name='radio-partner-type'
+          name="radio-partner-type"
           onSelect={setPartnerType}
           defaultValue={partnerTypeOptions[0].value}
         />

@@ -32,12 +32,12 @@ const FileInputBase: React.FC<FileInputProps & FieldProps> = ({ form, field, lab
 
   const InputComponent = (
     <>
-      <FileInputStyled type='file' onChange={handleChange} accept={accept} />
+      <FileInputStyled type="file" onChange={handleChange} accept={accept} />
       <input
         onChange={handleChange}
         readOnly={true}
         value={displayValue}
-        className='value-container'
+        className="value-container"
         tabIndex={-1}
       />
       <InputActionButtons

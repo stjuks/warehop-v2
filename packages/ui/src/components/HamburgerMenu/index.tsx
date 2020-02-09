@@ -91,7 +91,7 @@ const HamburgerMenu = observer(() => {
                     onClick={() => uiStore.setHamburgerMenuOpen(false)}
                   />
                 ))}
-                {i + 1 !== menuItems.length && <div className='divider' />}
+                {i + 1 !== menuItems.length && <div className="divider" />}
               </React.Fragment>
             );
           })}

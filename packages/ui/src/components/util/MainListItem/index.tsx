@@ -12,7 +12,7 @@ const MainListItem: React.FC<MainListItemProps> = ({ children, to, className }) 
   return (
     <MainListItemContainer to={to} className={className}>
       {children}
-      <div className='col-2'>
+      <div className="col-2">
         <FiChevronRight />
       </div>
     </MainListItemContainer>

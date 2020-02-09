@@ -10,13 +10,13 @@ interface ILoaderProps {
 function Loader({ loadingText }: ILoaderProps) {
   return (
     <LoaderContainer>
-      <div className='lds-ellipsis'>
+      <div className="lds-ellipsis">
         <div></div>
         <div></div>
         <div></div>
         <div></div>
       </div>
-      {loadingText && <div className='loader-text'>{loadingText}</div>}
+      {loadingText && <div className="loader-text">{loadingText}</div>}
     </LoaderContainer>
   );
 }

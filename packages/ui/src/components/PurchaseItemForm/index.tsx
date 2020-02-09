@@ -93,52 +93,52 @@ const ItemForm = ({ type }: { type: ItemType }) => {
     return (
       <>
         <AutosuggestInput
-          name='code'
-          label='Kood'
+          name="code"
+          label="Kood"
           getSuggestions={query => []}
           suggestionMap={{ label: item => item.code }}
           onSelect={handleAutosuggestSelect}
         />
         <AutosuggestInput
-          name='name'
-          label='Nimetus'
+          name="name"
+          label="Nimetus"
           getSuggestions={query => []}
           suggestionMap={{ label: item => item.name }}
           onSelect={handleAutosuggestSelect}
         />
         <Row flex={[1, 1]}>
-          <TextInput name='quantity' label='Kogus' type='number' />
+          <TextInput name="quantity" label="Kogus" type="number" />
           <AriaSelect
-            name='unit'
-            label='Ühik'
+            name="unit"
+            label="Ühik"
             options={commonStore.units}
             optionMap={{ label: unit => unit.name }}
           />
         </Row>
         <AriaSelect
-          name='warehouse'
-          label='Ladu'
+          name="warehouse"
+          label="Ladu"
           options={warehouseStore.warehouses}
           optionMap={{ label: warehouse => warehouse.name }}
         />
-        <TextInput name='price' label='Ostuhind' indicator={'€'} />
+        <TextInput name="price" label="Ostuhind" indicator={'€'} />
       </>
     );
   }
 
   return (
     <>
-      <TextInput name='name' label='Nimetus' />
+      <TextInput name="name" label="Nimetus" />
       <Row flex={[1, 1]}>
-        <TextInput name='quantity' label='Kogus' type='number' />
+        <TextInput name="quantity" label="Kogus" type="number" />
         <AriaSelect
-          name='unit'
-          label='Ühik'
+          name="unit"
+          label="Ühik"
           options={commonStore.units}
           optionMap={{ label: unit => unit.name }}
         />
       </Row>
-      <TextInput name='price' label='Ostuhind' indicator={'€'} />
+      <TextInput name="price" label="Ostuhind" indicator={'€'} />
     </>
   );
 };
@@ -185,11 +185,11 @@ const PurchaseItemForm: React.FC<PurchaseItemFormProps & RouteChildrenProps> = o
   const submitBtnTitle = state && state.index !== undefined ? 'Muuda kaupa' : 'Lisa kaup';
 
   return (
-    <Modal isOpen={true} title='Lisa kaup' backTo={routes.purchaseForm}>
+    <Modal isOpen={true} title="Lisa kaup" backTo={routes.purchaseForm}>
       <Header title={headerTitle} backTo={routes.purchaseForm} />
       <ContentContainer>
         <Form
-          id='new-purchase-item-form'
+          id="new-purchase-item-form"
           validationSchema={validationSchema}
           initialValues={initialValues}
           onSubmit={handleSubmit}
@@ -197,8 +197,8 @@ const PurchaseItemForm: React.FC<PurchaseItemFormProps & RouteChildrenProps> = o
         >
           <>
             <AriaSelect
-              name='type'
-              label='Kauba tüüp'
+              name="type"
+              label="Kauba tüüp"
               options={commonStore.itemTypes}
               optionMap={{ label: type => itemTypeTranslations[type] }}
             />
@@ -207,7 +207,7 @@ const PurchaseItemForm: React.FC<PurchaseItemFormProps & RouteChildrenProps> = o
         </Form>
       </ContentContainer>
       <FooterContainer style={{ padding: '0.25rem 1rem' }}>
-        <Button title={submitBtnTitle} form='new-purchase-item-form' type='submit' />
+        <Button title={submitBtnTitle} form="new-purchase-item-form" type="submit" />
       </FooterContainer>
     </Modal>
   );
