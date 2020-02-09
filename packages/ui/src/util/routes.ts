@@ -1,4 +1,4 @@
-export default {
+const routes = {
   products: '/products',
   productDetails: '/products/:id',
   productForm: '/products/new',
@@ -13,7 +13,10 @@ export default {
   partners: '/partners',
   partnerDetails: '/partners/:id',
   partnerForm: '/partners/new',
-  transactionForm: '/transactions/new',
+  incomeForm: '/sales/:id/income',
+  expenseForm: '/purchases/:id/expense',
   statistics: '/statistics',
   settings: '/settings'
 };
+
+export default routes;

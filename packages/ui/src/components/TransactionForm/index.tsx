@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
+import currency from 'currency.js';
 import { observer } from 'mobx-react-lite';
 import Modal from '../Modal';
 import routes from '../../util/routes';
@@ -34,12 +35,10 @@ const TransactionForm: React.FC<TransactionFormProps & RouteChildrenProps> = ({ 
 
   const initialValues = {
     invoiceId: invoice.id,
-    sum: invoice.sum,
+    sum: currency(Number(invoice.sum) - Number(invoice.paidSum)).toString(),
     date: new Date(),
     description: ''
   };
-
-  console.log('tere');
 
   const handleSubmit = async (transaction: AddTransactionInput) => {
     try {
@@ -62,7 +61,7 @@ const TransactionForm: React.FC<TransactionFormProps & RouteChildrenProps> = ({ 
 
   return (
     <Modal isOpen={true}>
-      <Header title={`Arve ${invoice.number}`} backTo={`${routes.purchases}/${invoice.id}`} />
+      <Header title={`Makse #${invoice.number}`} backTo={`${routes.purchases}/${invoice.id}`} />
       <ContentContainer>
         <Form
           id="new-transaction-form"
@@ -76,7 +75,7 @@ const TransactionForm: React.FC<TransactionFormProps & RouteChildrenProps> = ({ 
         </Form>
       </ContentContainer>
       <FooterContainer style={{ padding: '0.25rem 1rem' }}>
-        <Button title="Maksa" form="new-transaction-form" type="submit" />
+        <Button title="Lisa makse" form="new-transaction-form" type="submit" />
       </FooterContainer>
     </Modal>
   );

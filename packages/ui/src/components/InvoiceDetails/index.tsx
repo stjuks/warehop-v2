@@ -83,6 +83,15 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
     });
   }
 
+  let transactionFormRoute = '';
+
+  if (invoice) {
+    transactionFormRoute =
+      invoice.type === 'PURCHASE'
+        ? `${routes.purchases}/${invoice.id}/expense`
+        : `${routes.sales}/${invoice.id}/income`;
+  }
+
   if (invoice && !invoice.isPaid) {
     dropdownOptions.unshift({
       label: (
@@ -91,7 +100,7 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
           <span>Maksa</span>
         </>
       ),
-      onClick: () => history.push('/purchases/40/pay')
+      onClick: () => history.push(transactionFormRoute)
     });
   }
 
@@ -104,7 +113,7 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
         {invoice && (
           <>
             <Route
-              path={'/purchases/:id/pay'}
+              path={invoice.type === 'PURCHASE' ? routes.expenseForm : routes.incomeForm}
               render={() => <TransactionForm invoice={invoice} />}
             />
 
