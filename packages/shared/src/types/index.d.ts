@@ -62,12 +62,12 @@ export interface AddItemInput {
   warehouseQuantity: WarehouseQuantityInput[];
 }
 
-export interface ItemSearchInput {
-  type: ItemType;
+export interface ItemQueryInput {
   name?: string;
   code?: string;
   description?: string;
   generalQuery?: string;
+  pagination?: PaginatedQueryInput;
 }
 
 export interface AddPartnerInput {

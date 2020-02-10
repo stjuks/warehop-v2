@@ -1,10 +1,24 @@
 import { gql } from 'apollo-boost-upload';
 import { query, mutate } from '.';
-import { ItemInput, ProductItem, ExpenseItem, PaginatedData } from '@shared/types';
+import { ItemInput, ProductItem, ExpenseItem, PaginatedData, ItemQueryInput } from '@shared/types';
 
 export const FETCH_PRODUCTS = gql`
-  query products($cursor: String, $limit: Int!) {
-    products(pagination: { cursor: $cursor, limit: $limit }) {
+  query products(
+    $name: String
+    $code: String
+    $description: String
+    $generalQuery: String
+    $pagination: PaginatedQueryInput
+  ) {
+    products(
+      filter: {
+        name: $name
+        code: $code
+        description: $description
+        generalQuery: $generalQuery
+        pagination: $pagination
+      }
+    ) {
       pageInfo {
         hasNextPage
         cursor
@@ -89,8 +103,8 @@ export const DELETE_ITEM = ``;
 export const EDIT_ITEM = ``;
 
 export default {
-  fetchProducts: async (variables: { limit: number; cursor?: string }) =>
-    await query<PaginatedData<ProductItem>>({ query: FETCH_PRODUCTS, variables }),
+  fetchProducts: async (filter: ItemQueryInput) =>
+    await query<PaginatedData<ProductItem>>({ query: FETCH_PRODUCTS, variables: filter }),
   fetchServices: async (variables: { limit: number; cursor?: string }) =>
     await query<PaginatedData<ExpenseItem>>({ query: FETCH_SERVICES, variables }),
   searchItems: () => null,

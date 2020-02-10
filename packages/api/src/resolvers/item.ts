@@ -1,5 +1,5 @@
 import { Resolver, authResolver, ApolloContext, paginate } from '.';
-import { ItemType, ItemInput, PaginatedQueryInput } from '@shared/types';
+import { ItemType, ItemInput, PaginatedQueryInput, ItemQueryInput } from '@shared/types';
 import { Op } from 'sequelize';
 
 interface ItemSearchInput {
@@ -14,44 +14,12 @@ interface ItemSearchInput {
 
 const resolver: Resolver = {
   Query: {
-    products: authResolver(
-      async ({ pagination: { cursor, limit } }: { pagination: PaginatedQueryInput }, context) => {
-        return await findItems(context, { type: 'PRODUCT', limit, cursor });
-      }
-    ),
-    services: authResolver(
-      async ({ pagination: { cursor, limit } }: { pagination: PaginatedQueryInput }, context) => {
-        return await findItems(context, { type: 'SERVICE', limit, cursor });
-      }
-    ),
-    searchItems: authResolver(
-      async (
-        { query: { type, name, description, code, generalQuery } }: ItemSearchInput,
-        context
-      ) => {
-        const { user } = context;
-
-        const where: any = {
-          userId: user.id,
-          type
-        };
-
-        if (generalQuery) {
-          const generalLike = { [Op.like]: `%${generalQuery}%` };
-          where[Op.or] = [
-            { name: generalLike },
-            { code: generalLike },
-            { description: generalLike }
-          ];
-        } else {
-          if (name) where.name = { [Op.like]: `%${name}%` };
-          if (description) where.description = { [Op.like]: `%${description}%` };
-          if (code) where.code = { [Op.like]: `%${code}%` };
-        }
-
-        return await findItems(context, { where });
-      }
-    )
+    products: authResolver(async ({ filter }: { filter: ItemQueryInput }, context) => {
+      return await findItems(context, { ...filter, type: 'PRODUCT' });
+    }),
+    services: authResolver(async ({ filter }: { filter: ItemQueryInput }, context) => {
+      return await findItems(context, { ...filter, type: 'SERVICE' });
+    })
   },
   Mutation: {
     addItem: authResolver(async ({ item }: { item: ItemInput }, { models, sequelize, user }) => {
@@ -97,14 +65,30 @@ const resolver: Resolver = {
   }
 };
 
-const findItems = async (
-  { models, user }: ApolloContext,
-  opts: { type?: ItemType; where?: any; limit?: number; cursor?: string }
-) => {
-  const { type, cursor, limit } = opts;
-  const where: any = opts.where || { userId: user.id };
+const findItems = async ({ models, user }: ApolloContext, filter: ItemQueryInput) => {
+  const {
+    type,
+    pagination: { cursor, limit },
+    name,
+    code,
+    description,
+    generalQuery
+  } = filter;
+  const where: any = { userId: user.id, type };
 
-  if (type) where.type = type;
+  const like = query => ({ [Op.like]: `%${query}%` });
+
+  if (generalQuery) {
+    where[Op.or] = [
+      { name: like(generalQuery) },
+      { code: like(generalQuery) },
+      { description: like(generalQuery) }
+    ];
+  } else {
+    if (name) where.name = like(name);
+    if (code) where.code = like(code);
+    if (description) where.description = like(description);
+  }
 
   const result = await paginate(models.Item, {
     cursor,

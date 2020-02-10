@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { Invoice } from '@shared/types';
+import { Invoice, AddTransactionInput } from '@shared/types';
 import routes from '@ui/util/routes';
 import history from '@ui/util/history';
 import InvoiceStoreContext from '@ui/stores/InvoiceStore';
@@ -106,6 +106,18 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
 
   const headerComponents = [<DropdownMenu button={<FiMoreVertical />} options={dropdownOptions} />];
 
+  const handleTransactionSubmit = (transaction: AddTransactionInput) => {
+    if (invoice) {
+      const paidSum = Number(invoice.paidSum) + Number(transaction.sum);
+      const newValues = {
+        paidSum: paidSum.toString(),
+        isPaid: paidSum >= Number(invoice.sum)
+      };
+
+      setInvoice({ ...invoice, ...newValues });
+    }
+  };
+
   return (
     <>
       <Header title="Arve detailid" backTo={backRoute} components={headerComponents} />
@@ -114,7 +126,9 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
           <>
             <Route
               path={invoice.type === 'PURCHASE' ? routes.expenseForm : routes.incomeForm}
-              render={() => <TransactionForm invoice={invoice} />}
+              render={() => (
+                <TransactionForm invoice={invoice} onSubmit={handleTransactionSubmit} />
+              )}
             />
 
             <InvoiceHero paidSum={Number(invoice.paidSum)}>

@@ -1,31 +1,47 @@
 import { observable, computed } from 'mobx';
 import { task } from 'mobx-task';
 import { createContext } from 'react';
-import { ProductItem, ExpenseItem, AddItemInput } from '@shared/types';
+import { ProductItem, ExpenseItem, AddItemInput, ItemQueryInput } from '@shared/types';
 import api from '../api';
 import { paginatedData } from '../util/helpers';
+import { uiStore } from './UIStore';
 
 class ItemStore {
-  private ITEM_LIMIT = 10;
+  private ITEM_LIMIT = 25;
 
   @observable paginatedProducts = paginatedData<ProductItem>();
   @observable paginatedServices = paginatedData<ExpenseItem>();
 
   @task
-  fetchProducts = async () => {
+  fetchProducts = async (filter?: ItemQueryInput) => {
+    uiStore.setLoading(true);
+
+    const safeFilter = filter || {};
+
     const products = await api.fetchProducts({
-      limit: this.ITEM_LIMIT
+      ...safeFilter,
+      pagination: {
+        limit: this.ITEM_LIMIT
+      }
     });
+
+    uiStore.setLoading(false);
 
     this.paginatedProducts = products;
   };
 
   @task
-  fetchMoreProducts = async () => {
+  fetchMoreProducts = async (filter?: ItemQueryInput) => {
+    uiStore.setLoading(true);
+
+    const safeFilter = filter || {};
+
     const products = await api.fetchProducts({
-      limit: this.ITEM_LIMIT,
-      cursor: this.paginatedProducts.pageInfo.cursor
+      ...safeFilter,
+      pagination: { cursor: this.paginatedProducts.pageInfo.cursor, limit: this.ITEM_LIMIT }
     });
+
+    uiStore.setLoading(false);
 
     this.paginatedProducts.pageInfo = products.pageInfo;
     this.paginatedProducts.data.push(...products.data);

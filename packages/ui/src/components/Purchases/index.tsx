@@ -13,7 +13,7 @@ import Header from '../Header';
 import HeaderSearch from '../HeaderSearch';
 import Radio from '../Radio';
 import InvoiceItem from '../InvoiceItem';
-import { LoadMoreButton } from './styles';
+import LoadMoreButton from '../util/LoadMoreButton';
 
 const Purchases = observer(() => {
   const [paidFilter, setPaidFilter] = useState(undefined);
@@ -59,10 +59,7 @@ const Purchases = observer(() => {
           <InvoiceItem {...purchase} key={purchase.id} />
         ))}
         {invoiceStore.paginatedPurchases.pageInfo.hasNextPage && (
-          <LoadMoreButton onClick={() => invoiceStore.fetchMorePurchases(filter)}>
-            <FiRefreshCw />
-            Lae juurde
-          </LoadMoreButton>
+          <LoadMoreButton onClick={() => invoiceStore.fetchMorePurchases(filter)} />
         )}
       </ContentContainer>
     </>

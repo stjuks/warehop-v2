@@ -8,7 +8,7 @@ import { FiFile, FiX } from 'react-icons/fi';
 interface FileInputProps {
   name: string;
   label: string;
-  accept: string;
+  accept?: string;
 }
 
 const FileInputBase: React.FC<FileInputProps & FieldProps> = ({ form, field, label, accept }) => {

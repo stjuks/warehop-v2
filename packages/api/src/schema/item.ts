@@ -58,12 +58,12 @@ export default gql`
     unit: Unit
   }
 
-  input ItemSearchInput {
-    type: ItemType!
+  input ItemQueryInput {
     name: String
     code: String
     description: String
     generalQuery: String
+    pagination: PaginatedQueryInput
   }
 
   type PaginatedProductItem {
@@ -77,9 +77,8 @@ export default gql`
   }
 
   extend type Query {
-    products(pagination: PaginatedQueryInput): PaginatedProductItem!
-    services(pagination: PaginatedQueryInput): PaginatedExpenseItem!
-    searchItems(query: ItemSearchInput!, general: Boolean): [Item!]!
+    products(filter: ItemQueryInput): PaginatedProductItem!
+    services(filter: ItemQueryInput): PaginatedExpenseItem!
   }
 
   extend type Mutation {

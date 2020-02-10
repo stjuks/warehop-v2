@@ -28,9 +28,13 @@ import TransactionStoreContext from '@ui/stores/TransactionStore';
 
 interface TransactionFormProps {
   invoice: Invoice;
+  onSubmit?: (transaction: AddTransactionInput) => any;
 }
 
-const TransactionForm: React.FC<TransactionFormProps & RouteChildrenProps> = ({ invoice }) => {
+const TransactionForm: React.FC<TransactionFormProps & RouteChildrenProps> = ({
+  invoice,
+  onSubmit
+}) => {
   const transactionStore = useContext(TransactionStoreContext);
 
   const initialValues = {
@@ -43,6 +47,7 @@ const TransactionForm: React.FC<TransactionFormProps & RouteChildrenProps> = ({ 
   const handleSubmit = async (transaction: AddTransactionInput) => {
     try {
       await transactionStore.addTransaction(transaction);
+      if (onSubmit) onSubmit(transaction);
       history.goBack();
     } catch (err) {
       throw err;

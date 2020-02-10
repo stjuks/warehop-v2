@@ -2,10 +2,12 @@ import React, { useContext, useEffect, useState } from 'react';
 import { FiPlusCircle } from 'react-icons/fi';
 import { observer } from 'mobx-react-lite';
 
-import { ContentContainer } from '../App/styles';
+import ContentContainer from '../util/ContentContainer';
 import { SortingContainer, NewItemButtonContainer } from './styles';
 import history from '../../util/history';
+import LoadMoreButton from '../util/LoadMoreButton';
 import routes from '../../util/routes';
+import { ItemQueryInput } from '@shared/types';
 
 import Header from '../Header';
 import ProductItem from '../ProductItem';
@@ -25,40 +27,20 @@ const Products = observer(() => {
     { label: 'Ladu 2', value: 'Ladu 2' }
   ];
 
-  const sortOptions = [
-    { label: 'Kood', value: 'Kood' },
-    { label: 'Müügihind', value: 'Müügihind' },
-    { label: 'Kogus', value: 'Kogus' },
-    { label: 'Nimetus', value: 'Nimetus' }
-  ];
-
-  const handleSearch = query => {
-    setSearchQuery(query);
-    // productStore.searchProducts(query);
+  const filter: ItemQueryInput = {
+    generalQuery: searchQuery
   };
 
   const headerIcons = [
-    <HeaderSearch onChange={handleSearch} placeholder="Otsi kaupa" />,
+    <HeaderSearch onChange={setSearchQuery} placeholder="Otsi kaupa" />,
     <NewItemButtonContainer onClick={() => history.push(routes.productForm)}>
       <FiPlusCircle />
     </NewItemButtonContainer>
   ];
 
   useEffect(() => {
-    itemStore.fetchProducts();
-  }, [itemStore]);
-
-  const getProducts = () => {
-    /* if (itemStore.pa) {
-            return <Loader />;
-        }
-
-        if (searchQuery) {
-            return productStore.productsSearch.map(product => <ProductItem {...product} key={product.id} />);
-        } */
-
-    return itemStore.products.map(product => <ProductItem {...product} key={product.id} />);
-  };
+    itemStore.fetchProducts(filter);
+  }, [itemStore, searchQuery]);
 
   return (
     <>
@@ -69,9 +51,13 @@ const Products = observer(() => {
         </Formik>
       </SortingContainer>
       <ContentContainer>
-        {getProducts()}
+        {itemStore.products.map(product => (
+          <ProductItem {...product} key={product.id} />
+        ))}
         {itemStore.paginatedProducts.pageInfo.hasNextPage && (
-          <button onClick={() => null}>Lae rohkem</button>
+          <LoadMoreButton onClick={() => itemStore.fetchMoreProducts(filter)}>
+            Lae veel
+          </LoadMoreButton>
         )}
       </ContentContainer>
     </>
