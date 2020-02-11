@@ -63,6 +63,7 @@ export interface AddItemInput {
 }
 
 export interface ItemQueryInput {
+  type?: ItemType;
   name?: string;
   code?: string;
   description?: string;
