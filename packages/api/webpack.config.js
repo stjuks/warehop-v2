@@ -16,7 +16,7 @@ module.exports = {
     extensions: ['.ts', '.js', '.node'], //resolve all the modules other than index.ts
     plugins: [new TsconfigPathsPlugin()]
   },
-  plugins: [new Dotenv()],
+  plugins: [new Dotenv(), new NodemonPlugin({ script: './build/bundle.js', watch: './build' })],
   module: {
     rules: [
       {

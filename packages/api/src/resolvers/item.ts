@@ -19,6 +19,18 @@ const resolver: Resolver = {
     }),
     services: authResolver(async ({ filter }: { filter: ItemQueryInput }, context) => {
       return await findItems(context, { ...filter, type: 'SERVICE' });
+    }),
+    item: authResolver(async ({ id }: { id: number }, { models, user }) => {
+      const item = await models.Item.findOne({
+        where: { id, userId: user.id },
+        include: [
+          models.Partner,
+          models.Unit,
+          { model: models.Warehouse, through: {}, as: 'warehouseQuantity' }
+        ]
+      });
+
+      return parseItem(item);
     })
   },
   Mutation: {
@@ -101,8 +113,14 @@ const findItems = async ({ models, user }: ApolloContext, filter: ItemQueryInput
     ]
   });
 
-  result.data = result.data.map(i => {
-    const item: any = i.get({ plain: true });
+  result.data = result.data.map(parseItem);
+
+  return result;
+};
+
+const parseItem = item => {
+  if (item) {
+    item = item.get({ plain: true });
 
     item.warehouseQuantity = item.warehouseQuantity.map(wh => {
       return {
@@ -112,9 +130,9 @@ const findItems = async ({ models, user }: ApolloContext, filter: ItemQueryInput
     });
 
     return item;
-  });
+  }
 
-  return result;
+  return null;
 };
 
 export default resolver;

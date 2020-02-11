@@ -79,6 +79,7 @@ export default gql`
   extend type Query {
     products(filter: ItemQueryInput): PaginatedProductItem!
     services(filter: ItemQueryInput): PaginatedExpenseItem!
+    item(id: ID!): Item
   }
 
   extend type Mutation {

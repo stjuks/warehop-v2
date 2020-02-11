@@ -6,11 +6,11 @@ import { theme } from '@ui/util/styled';
 
 import Header from '../Header';
 import { MenuPopover } from '../Popover';
-import { ProductItem, Invoice } from '@shared/types';
+import { ProductItem } from '@shared/types';
 import routes from '../../util/routes';
 import { ContentContainer } from '../App/styles';
 
-const ProductDetails: React.FC<Invoice> = (props) => {
+const ProductDetails: React.FC<ProductItem> = (props) => {
   const [product] = useState<ProductItem>();
 
   // useEffect(() => {}, [product, props.match.params]);
