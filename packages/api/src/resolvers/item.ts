@@ -2,16 +2,6 @@ import { Resolver, authResolver, ApolloContext, paginate } from '.';
 import { ItemType, ItemInput, PaginatedQueryInput, ItemQueryInput } from '@shared/types';
 import { Op } from 'sequelize';
 
-interface ItemSearchInput {
-  query: {
-    type: ItemType;
-    code?: string;
-    name?: string;
-    description?: string;
-    generalQuery?: string;
-  };
-}
-
 const resolver: Resolver = {
   Query: {
     products: authResolver(async ({ filter }: { filter: ItemQueryInput }, context) => {

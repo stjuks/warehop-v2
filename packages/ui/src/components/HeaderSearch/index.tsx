@@ -1,4 +1,4 @@
-import React, { useState, createRef } from 'react';
+import React, { useState, createRef, useEffect } from 'react';
 import { FiSearch, FiX } from 'react-icons/fi';
 
 import { HeaderSearchContainer, InputContainer, IconContainer } from './styles';
@@ -37,6 +37,22 @@ function HeaderSearch({ onChange, placeholder }: IHeaderSearchProps) {
     500,
     [query]
   );
+
+  useEffect(() => {
+    const handleKeyDown = e => {
+      // if ESC
+      if (e.keyCode === 27) {
+        setOpened(false);
+        setQuery('');
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   return (
     <HeaderSearchContainer>
