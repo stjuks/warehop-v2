@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { FiMoreHorizontal, FiEdit, FiTrash2 } from 'react-icons/fi';
 
 import { TitleContainer, DetailCardContainer, DetailLabel, WarehouseRowContainer } from './styles';
@@ -9,11 +9,32 @@ import { MenuPopover } from '../Popover';
 import { ProductItem } from '@shared/types';
 import routes from '../../util/routes';
 import { ContentContainer } from '../App/styles';
+import ItemStoreContext from '@ui/stores/ItemStore';
+import { RouteComponentProps } from 'react-router';
 
-const ProductDetails: React.FC<ProductItem> = (props) => {
-  const [product] = useState<ProductItem>();
+const ProductDetails: React.FC<ProductItem & RouteComponentProps> = props => {
+  const itemStore = useContext(ItemStoreContext);
+  const [product, setProduct] = useState<ProductItem>();
 
-  // useEffect(() => {}, [product, props.match.params]);
+  useEffect(() => {
+    const handleItemLoading = async () => {
+      const location: any = props.location;
+
+      if (location.product) {
+        setProduct(location.product);
+      } else {
+        const match: any = props.match;
+        const { id } = match.params;
+
+        if (id !== undefined) {
+          const product = await itemStore.fetchProduct(id);
+          setProduct(product);
+        }
+      }
+    };
+
+    handleItemLoading();
+  }, []);
 
   const headerIcons = [
     <MenuPopover

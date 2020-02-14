@@ -48,6 +48,17 @@ class ItemStore {
   };
 
   @task
+  fetchProduct = async (id: number) => {
+    uiStore.setLoading(true);
+
+    const product = await api.fetchProduct(id);
+
+    uiStore.setLoading(false);
+
+    return product;
+  };
+
+  @task
   fetchServices = async () => {
     const services = await api.fetchServices({
       limit: this.ITEM_LIMIT

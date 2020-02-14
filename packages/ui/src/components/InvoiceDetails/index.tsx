@@ -5,7 +5,7 @@ import history from '@ui/util/history';
 import InvoiceStoreContext from '@ui/stores/InvoiceStore';
 import currency from 'currency.js';
 
-import { InvoiceHero, IsPaidStyled, InvoiceDetailsContainer } from './styles';
+import { InvoiceHero, IsPaidStyled, InvoiceDetailsContainer, TransactionItem } from './styles';
 import Header from '../Header';
 import { RouteComponentProps, Route } from 'react-router';
 import { DetailCardContainer, DetailLabel } from '../ProductDetails/styles';
@@ -13,8 +13,16 @@ import moment from 'moment';
 import InvoiceItemListItem from '../InvoiceItemListItem';
 import TransactionForm from '../TransactionForm';
 import DropdownMenu from '../DropdownMenu';
-import { FiMoreVertical, FiDownload, FiDollarSign, FiTrash2, FiEdit } from 'react-icons/fi';
-import { FaMoneyCheckAlt, FaMoneyBillAlt, FaMoneyBill } from 'react-icons/fa';
+import {
+  FiMoreVertical,
+  FiDownload,
+  FiDollarSign,
+  FiTrash2,
+  FiEdit,
+  FiChevronRight,
+  FiArrowUp,
+  FiArrowDown
+} from 'react-icons/fi';
 
 interface InvoiceDetailsProps {
   invoice?: Invoice;
@@ -164,6 +172,19 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
             <DetailLabel>Kaubad</DetailLabel>
             {invoice.items.map(item => (
               <InvoiceItemListItem item={item} key={item.id} />
+            ))}
+            <DetailLabel>Tehingud</DetailLabel>
+            {invoice.transactions.map(transaction => (
+              <TransactionItem>
+                {invoice.type === 'PURCHASE' ? (
+                  <FiArrowDown className="expense-arrow" />
+                ) : (
+                  <FiArrowUp className="income-arrow" />
+                )}
+                <div className="sum">{currency(transaction.sum).toString()}€</div>
+                <div className="date">{moment(transaction.date).format('DD.MM.YYYY')}</div>
+                <FiChevronRight className="indicator" />
+              </TransactionItem>
             ))}
           </>
         )}

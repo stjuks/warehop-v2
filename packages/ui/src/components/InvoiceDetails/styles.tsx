@@ -1,6 +1,7 @@
 import styled from '@ui/util/styled';
 import currency from 'currency.js';
 import ContentContainer from '../util/ContentContainer';
+import { DetailCardContainer } from '../ProductDetails/styles';
 
 interface InvoiceHeroProps {
   paidSum: number;
@@ -73,9 +74,45 @@ export const IsPaidStyled = styled.div<IsPaidStyledProps>`
   font-size: 0.875rem;
 
   ${({ isPaid, theme }) => `
-        background: ${
-          isPaid ? theme.colors.success.opacity(0.075) : theme.colors.danger.opacity(0.075)
-        };
-        color: ${isPaid ? theme.colors.success : theme.colors.danger};
-    `}
+    background: ${
+      isPaid ? theme.colors.success.opacity(0.075) : theme.colors.danger.opacity(0.075)
+    };
+    color: ${isPaid ? theme.colors.success : theme.colors.danger};
+  `}
+`;
+
+export const TransactionItem = styled(DetailCardContainer)`
+  ${({ theme }) => `
+    display: flex;
+    align-items: center;
+
+    .sum  {
+      font-weight: 500;
+    }
+    
+    .expense-arrow,
+    .income-arrow {
+      margin-right: 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    .expense-arrow {
+      color: ${theme.colors.danger};
+    }
+
+    .income-arrow {
+      color: ${theme.colors.success};
+    }
+
+    .indicator {
+      color: ${theme.colors.lightText};
+      margin-left: 0.5rem;
+    }
+
+    .date {
+      margin-left: auto;
+      font-size: 0.875rem;
+      color: ${theme.colors.lightText};
+    }
+  `}
 `;

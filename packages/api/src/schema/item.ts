@@ -66,20 +66,15 @@ export default gql`
     pagination: PaginatedQueryInput
   }
 
-  type PaginatedProductItem {
+  type PaginatedItem {
     pageInfo: PageInfo!
-    data: [ProductItem!]!
-  }
-
-  type PaginatedExpenseItem {
-    pageInfo: PageInfo!
-    data: [ExpenseItem!]!
+    data: [Item!]!
   }
 
   extend type Query {
-    products(filter: ItemQueryInput): PaginatedProductItem!
-    services(filter: ItemQueryInput): PaginatedExpenseItem!
-    item(id: ID!): Item
+    products(filter: ItemQueryInput): PaginatedItem!
+    services(filter: ItemQueryInput): PaginatedItem!
+    product(id: ID!): Item
   }
 
   extend type Mutation {

@@ -143,6 +143,7 @@ export interface Invoice {
   dueDate: Date;
   issueDate: Date;
   items: InvoiceItem[];
+  transactions: Transaction[];
   isPaid: boolean;
   sum: string;
   paidSum: string;

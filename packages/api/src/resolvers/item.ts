@@ -10,7 +10,7 @@ const resolver: Resolver = {
     services: authResolver(async ({ filter }: { filter: ItemQueryInput }, context) => {
       return await findItems(context, { ...filter, type: 'SERVICE' });
     }),
-    item: authResolver(async ({ id }: { id: number }, { models, user }) => {
+    product: authResolver(async ({ id }: { id: number }, { models, user }) => {
       const item = await models.Item.findOne({
         where: { id, userId: user.id },
         include: [
