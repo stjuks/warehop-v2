@@ -121,7 +121,10 @@ const resolver: Resolver = {
               stream.pipe(wStream);
             });
 
-            await models.Invoice.update({ filePath: fileName }, { where: { id: invoiceId }, transaction });
+            await models.Invoice.update(
+              { filePath: fileName },
+              { where: { id: invoiceId }, transaction }
+            );
           }
         };
 
@@ -145,7 +148,7 @@ const resolver: Resolver = {
         const upsertProduct = async item => {
           const [, isNewItem] = await models.WarehouseItem.findOrCreate({
             defaults: { ...item, itemId: item.id, userId: user.id },
-            where: { userId: user.id, itemId: item.id },
+            where: { userId: user.id, itemId: item.id, warehouseId: item.warehouseId },
             transaction
           });
 
@@ -280,7 +283,10 @@ const findInvoices = async ({ models, user }: ApolloContext, filter: InvoiceSear
         attributes: ['id', 'sum', 'date', 'description']
       }
     ],
-    order: [['dueDate', 'ASC']],
+    order: [
+      ['dueDate', 'ASC'],
+      [{ model: models.Transaction, as: 'transactions' }, 'date', 'DESC']
+    ],
     attributes: [
       'id',
       'type',
@@ -325,6 +331,8 @@ const findInvoice = async ({ models, user }: ApolloContext, id: number) => {
       id,
       userId: user.id
     },
+    // order transactions by date
+    order: [[{ model: models.Transaction, as: 'transactions' }, 'date', 'DESC']],
     include: [
       {
         model: models.Partner

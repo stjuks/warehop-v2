@@ -32,18 +32,21 @@ interface AriaSelectProps {
   searchPlaceholder?: string;
   placeholder?: string;
   className?: string;
+  value?: any;
   label?: string;
   isClearable?: boolean;
+  noFormik?: boolean;
   unregisterOnUnmount?: boolean;
   onChange?: (value: Option) => any;
   onSearch?: (query: string, mappedOptions: Option[]) => Option[] | Promise<Option[]>;
 }
 
-const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = observer(
+const AriaSelectBase: React.FC<AriaSelectProps & Partial<FieldProps>> = observer(
   ({
     label,
     field,
     form,
+    name,
     options,
     optionMap,
     isClearable,
@@ -51,7 +54,8 @@ const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = observer(
     className,
     placeholder,
     onSearch,
-    searchPlaceholder
+    searchPlaceholder,
+    value
   }) => {
     const [mappedOptions, setMappedOptions] = useState<Option[]>([]);
     const [searchOptions, setSearchOptions] = useState<Option[]>([]);
@@ -61,35 +65,35 @@ const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = observer(
     const [isLoadingOptions, setLoadingOptions] = useState(false);
     const [isLoadingSearch, setLoadingSearch] = useState(false);
 
+    const fieldValue = field ? field.value : value;
+
     useEffect(() => {
       const loadOptions = async () => {
         setLoadingOptions(true);
 
         const loadedOptions = await options;
 
-        if (field.value) {
-          setDisplayValue(mapSelectOption(field.value, optionMap).label);
-        }
+        if (fieldValue) setDisplayValue(mapSelectOption(fieldValue, optionMap).label);
 
         setMappedOptions(mapSelectOptions(loadedOptions, optionMap));
         setLoadingOptions(false);
       };
 
       loadOptions();
-      console.log('aria select effect');
     }, [options]);
 
     const handleSelect = ({ value, label }) => {
       if (onChange) onChange({ value, label });
-      else {
+      else if (form && field) {
         form.setFieldValue(field.name, value);
-        setDisplayValue(label);
       }
+      setDisplayValue(label);
     };
 
     const handleClear = e => {
       e.stopPropagation();
-      form.setFieldValue(field.name, undefined);
+      if (form && field) form.setFieldValue(field.name, undefined);
+      if (onChange) onChange({ value: undefined, label: '' });
       setDisplayValue('');
     };
 
@@ -121,7 +125,7 @@ const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = observer(
       >
         <TextInputBase
           label={label}
-          name={`${field.name}Display`}
+          name={`${name}Display`}
           inputComponent={
             <InputComponent
               displayValue={displayValue}
@@ -132,12 +136,12 @@ const AriaSelectBase: React.FC<AriaSelectProps & FieldProps> = observer(
               handleClear={handleClear}
               searchQuery={searchQuery}
               searchPlaceholder={searchPlaceholder}
-              isSearchable={onSearch != undefined}
+              isSearchable={onSearch !== undefined}
               isLoadingSearch={isLoadingSearch}
             />
           }
           value={displayValue}
-          errorMessage={form.errors[field.name]}
+          errorMessage={form && field && form.errors[field.name]}
         />
       </WrapperContainer>
     );
@@ -204,8 +208,11 @@ const InputComponent: React.FC<any> = observer(
   )
 );
 
-const AriaSelect: React.FC<AriaSelectProps> = props => (
-  <Field {...props} component={AriaSelectBase} />
-);
+const AriaSelect: React.FC<AriaSelectProps> = ({ noFormik, ...restProps }) =>
+  noFormik ? (
+    <AriaSelectBase {...restProps} />
+  ) : (
+    <Field {...restProps} component={AriaSelectBase} />
+  );
 
 export default AriaSelect;

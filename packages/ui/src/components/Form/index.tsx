@@ -12,10 +12,11 @@ interface FormProps {
   id: string;
   validationSchema?: any;
   onChange?: (values: any) => any;
+  style?: React.CSSProperties;
 }
 
 const Form: React.FC<React.PropsWithChildren<FormProps>> = observer(
-  ({ initialValues, onSubmit, validationSchema, id, children, onChange }) => {
+  ({ initialValues, onSubmit, validationSchema, id, children, onChange, style }) => {
     const handleChildren = formikProps => {
       if (children instanceof Function) return children(formikProps);
       else return children;
@@ -42,7 +43,7 @@ const Form: React.FC<React.PropsWithChildren<FormProps>> = observer(
       >
         {formikProps => (
           <>
-            <FormContainer id={id} onSubmit={formikProps.handleSubmit}>
+            <FormContainer id={id} onSubmit={formikProps.handleSubmit} style={style}>
               {onChange && <FormikOnChange onChange={onChange} />}
               {handleChildren(formikProps)}
             </FormContainer>

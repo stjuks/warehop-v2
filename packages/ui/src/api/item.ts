@@ -43,6 +43,7 @@ export const FETCH_PRODUCTS = gql`
     $description: String
     $generalQuery: String
     $pagination: PaginatedQueryInput
+    $warehouseId: ID
   ) {
     products(
       filter: {
@@ -51,6 +52,7 @@ export const FETCH_PRODUCTS = gql`
         description: $description
         generalQuery: $generalQuery
         pagination: $pagination
+        warehouseId: $warehouseId
       }
     ) {
       pageInfo {

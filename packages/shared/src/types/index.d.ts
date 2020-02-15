@@ -38,7 +38,7 @@ export interface PaginatedQueryInput {
 }
 
 export interface WarehouseQuantityInput {
-  id: number;
+  id?: number;
   name: string;
   quantity: number;
 }
@@ -68,6 +68,7 @@ export interface ItemQueryInput {
   code?: string;
   description?: string;
   generalQuery?: string;
+  warehouseId?: number;
   pagination?: PaginatedQueryInput;
 }
 
@@ -209,7 +210,7 @@ export interface Settings {
 }
 
 export interface Warehouse {
-  id: number;
+  id?: number;
   name: string;
 }
 

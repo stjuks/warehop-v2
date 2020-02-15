@@ -19,7 +19,7 @@ export const Footer = withRouter(
       { label: 'Kaubad', icon: <FaBoxes />, to: routes.products },
       { label: 'Ost', icon: <FaShoppingBasket />, to: routes.purchases },
       { label: 'Müük', icon: <FaMoneyCheck />, to: routes.sales },
-      { icon: <FiMenu />, onClick: () => uiStore.setHamburgerMenuOpen(true) }
+      { label: 'Menüü', icon: <FiMenu />, onClick: () => uiStore.setHamburgerMenuOpen(true) }
     ];
 
     const footerlessRoutes = [routes.productForm, routes.purchaseForm, routes.partnerForm];

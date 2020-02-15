@@ -7,7 +7,7 @@ import { SortingContainer, NewItemButtonContainer } from './styles';
 import history from '../../util/history';
 import LoadMoreButton from '../util/LoadMoreButton';
 import routes from '../../util/routes';
-import { ItemQueryInput } from '@shared/types';
+import { ItemQueryInput, Warehouse } from '@shared/types';
 
 import Header from '../Header';
 import ProductItem from '../ProductItem';
@@ -16,19 +16,21 @@ import Loader from '../Loader';
 import { Formik } from 'formik';
 import { SelectStyled } from '../Purchases/styles';
 import ItemStoreContext from '../../stores/ItemStore';
+import WarehouseStoreContext from '@ui/stores/WarehouseStore';
+import Form from '../Form';
 
 const Products = observer(() => {
   const itemStore = useContext(ItemStoreContext);
+  const warehouseStore = useContext(WarehouseStoreContext);
   const [searchQuery, setSearchQuery] = useState('');
-
-  const warehouseOptions = [
-    { label: 'Kõik laod', value: 'Kõik laod' },
-    { label: 'pesumasinate varuosad', value: 'Ladu 1' },
-    { label: 'Ladu 2', value: 'Ladu 2' }
-  ];
+  const [warehouseFilter, setWarehouseFilter] = useState<Warehouse>({
+    id: undefined,
+    name: 'Kõik laod'
+  });
 
   const filter: ItemQueryInput = {
-    generalQuery: searchQuery
+    generalQuery: searchQuery,
+    warehouseId: warehouseFilter.id
   };
 
   const headerIcons = [
@@ -40,15 +42,23 @@ const Products = observer(() => {
 
   useEffect(() => {
     itemStore.fetchProducts(filter);
-  }, [itemStore, searchQuery]);
+    console.log('ay');
+  }, [itemStore, searchQuery, warehouseFilter]);
+
+  const warehouseOptions = [{ id: undefined, name: 'Kõik laod' }, ...warehouseStore.warehouses];
 
   return (
     <>
       <Header title="Kaubad" components={headerIcons} />
       <SortingContainer>
-        <Formik onSubmit={values => console.log(values)} initialValues={{}}>
-          <SelectStyled name="warehouseOption" options={warehouseOptions} />
-        </Formik>
+        <SelectStyled
+          name="warehouseId"
+          options={warehouseOptions}
+          value={warehouseFilter}
+          onChange={({ value }) => setWarehouseFilter(value)}
+          optionMap={{ label: wh => wh.name, value: wh => wh }}
+          noFormik
+        />
       </SortingContainer>
       <ContentContainer>
         {itemStore.products.map(product => (

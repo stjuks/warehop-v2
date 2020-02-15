@@ -74,7 +74,8 @@ const findItems = async ({ models, user }: ApolloContext, filter: ItemQueryInput
     name,
     code,
     description,
-    generalQuery
+    generalQuery,
+    warehouseId
   } = filter;
   const where: any = { userId: user.id, type };
 
@@ -92,6 +93,10 @@ const findItems = async ({ models, user }: ApolloContext, filter: ItemQueryInput
     if (description) where.description = like(description);
   }
 
+  const warehouseWhere: any = {};
+
+  if (warehouseId) warehouseWhere.id = warehouseId;
+
   const result = await paginate(models.Item, {
     cursor,
     limit,
@@ -99,7 +104,7 @@ const findItems = async ({ models, user }: ApolloContext, filter: ItemQueryInput
     include: [
       models.Partner,
       models.Unit,
-      { model: models.Warehouse, through: {}, as: 'warehouseQuantity' }
+      { model: models.Warehouse, through: {}, as: 'warehouseQuantity', where: warehouseWhere }
     ]
   });
 

@@ -175,7 +175,7 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
             ))}
             <DetailLabel>Tehingud</DetailLabel>
             {invoice.transactions.map(transaction => (
-              <TransactionItem>
+              <TransactionItem key={transaction.id}>
                 {invoice.type === 'PURCHASE' ? (
                   <FiArrowDown className="expense-arrow" />
                 ) : (

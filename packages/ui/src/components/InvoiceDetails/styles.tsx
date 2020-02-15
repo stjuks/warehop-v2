@@ -32,7 +32,7 @@ export const InvoiceHero = styled.div<InvoiceHeroProps>`
         position: relative;
 
         :before {
-          content: 'Makstud ${currency(paidSum)}€ /';
+          content: '${currency(paidSum)}€ /';
           white-space: nowrap;
           position: absolute;
           font-size: 0.75rem;

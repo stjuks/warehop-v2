@@ -64,6 +64,7 @@ export default gql`
     description: String
     generalQuery: String
     pagination: PaginatedQueryInput
+    warehouseId: ID
   }
 
   type PaginatedItem {

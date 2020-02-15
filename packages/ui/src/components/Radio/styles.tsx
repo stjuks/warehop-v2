@@ -19,7 +19,6 @@ export const RadioContainer = styled.div`
             align-items: center;
             background: ${theme.colors.white};
             border-radius: 4rem;
-            box-sizing: border-box;
             transition: all .2s;
             border: 1px solid ${theme.colors.lightColor1};
             color: ${theme.colors.lightText};
