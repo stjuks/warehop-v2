@@ -8,7 +8,9 @@ import {
   WrapperContainer,
   MenuItemContainer,
   MenuContainer,
-  SearchInput
+  SearchInput,
+  ActionButton,
+  SearchContainer
 } from './styles';
 import { TextInputBase, InputActionButtons } from '../TextInput';
 import {
@@ -34,6 +36,10 @@ interface AriaSelectProps {
   className?: string;
   value?: any;
   label?: string;
+  action?: {
+    onClick: () => any;
+    label: string | React.ReactElement;
+  };
   isClearable?: boolean;
   noFormik?: boolean;
   unregisterOnUnmount?: boolean;
@@ -55,7 +61,8 @@ const AriaSelectBase: React.FC<AriaSelectProps & Partial<FieldProps>> = observer
     placeholder,
     onSearch,
     searchPlaceholder,
-    value
+    value,
+    action
   }) => {
     const [mappedOptions, setMappedOptions] = useState<Option[]>([]);
     const [searchOptions, setSearchOptions] = useState<Option[]>([]);
@@ -138,6 +145,7 @@ const AriaSelectBase: React.FC<AriaSelectProps & Partial<FieldProps>> = observer
               searchPlaceholder={searchPlaceholder}
               isSearchable={onSearch !== undefined}
               isLoadingSearch={isLoadingSearch}
+              action={action}
             />
           }
           value={displayValue}
@@ -159,53 +167,76 @@ const InputComponent: React.FC<any> = observer(
     searchQuery,
     searchPlaceholder,
     isSearchable,
-    isLoadingSearch
-  }) => (
-    <>
-      <ButtonContainer>
-        <div className="inner-btn-container">
-          <span className={`value-container ${!displayValue && `placeholder`}`}>
-            {displayValue || placeholder}
-          </span>
-          <InputActionButtons
-            indicator={<FiChevronDown />}
-            action={
-              isClearable && displayValue
-                ? { icon: <FiX />, onClick: e => handleClear(e) }
-                : undefined
-            }
-          />
-        </div>
-      </ButtonContainer>
-      <MenuContainer>
-        {isSearchable && (
-          <div className="search-container">
-            <SearchInput
-              placeholder={searchPlaceholder || 'Otsi'}
-              onChange={handleSearch}
-              value={searchQuery}
+    isLoadingSearch,
+    action
+  }) => {
+    const searchInputRef = useRef<HTMLInputElement>(null);
+
+    const handleActionKeyDown = (e: KeyboardEvent) => {
+      e.preventDefault();
+
+      if (e.key === 'Enter' && action) {
+        action.onClick();
+      }
+    };
+
+    const handleActionClick = (e: MouseEvent) => {
+      e.preventDefault();
+      if (action) action.onClick();
+    };
+
+    return (
+      <>
+        <ButtonContainer>
+          <div className="inner-btn-container">
+            <span className={`value-container ${!displayValue && `placeholder`}`}>
+              {displayValue || placeholder}
+            </span>
+            <InputActionButtons
+              indicator={<FiChevronDown />}
+              action={
+                isClearable && displayValue
+                  ? { icon: <FiX />, onClick: e => handleClear(e) }
+                  : undefined
+              }
             />
-            {isLoadingSearch && <Loader />}
           </div>
-        )}
-        <ul className="item-list">
-          {options.map((item, i) => {
-            return (
-              <li key={i}>
+        </ButtonContainer>
+        <MenuContainer>
+          {isSearchable && (
+            <SearchContainer>
+              <SearchInput
+                placeholder={searchPlaceholder || 'Otsi'}
+                onChange={handleSearch}
+                value={searchQuery}
+                ref={searchInputRef}
+              />
+              {isLoadingSearch && <Loader />}
+            </SearchContainer>
+          )}
+          <ul className="item-list">
+            {options.map((item, i) => {
+              return (
                 <MenuItemContainer
+                  key={i}
                   value={item}
                   text={item.label}
                   data-active={displayValue === item.label}
                 >
                   {item.label}
                 </MenuItemContainer>
-              </li>
-            );
-          })}
-        </ul>
-      </MenuContainer>
-    </>
-  )
+              );
+            })}
+          </ul>
+          {action && (
+            <ActionButton onClick={handleActionClick} onKeyDown={handleActionKeyDown}>
+              {action.label}
+            </ActionButton>
+          )}
+        </MenuContainer>
+      </>
+    );
+  }
 );
 
 const AriaSelect: React.FC<AriaSelectProps> = ({ noFormik, ...restProps }) =>

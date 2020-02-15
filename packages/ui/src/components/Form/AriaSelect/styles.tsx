@@ -105,13 +105,52 @@ export const SearchInput = styled.input`
         border: 1px solid ${theme.colors.midGrey};
         padding: 0.5rem 2rem 0.5rem 1rem;
         color: currentColor;
-        font-size: 0.875rem;
         border-radius: 0.25rem;
+        font-size: 1rem;
         font-weight: 500;
         flex: 1;
+
+        ::placeholder {
+          font-weight: 400;
+        }
 
         :focus {
             border: 1px solid ${theme.colors.darkGrey};
         }
     `}
+`;
+
+export const SearchContainer = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25rem;
+
+  .loader {
+    position: absolute;
+    right: 0.5rem;
+  }
+`;
+
+export const ActionButton = styled(MenuItem)`
+  ${({ theme }) => `
+    color: ${theme.colors.lightText};
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    margin-top: 0.25rem;
+    background: ${theme.colors.lightColor1};
+    border-radius: 3rem;
+    border: 1px solid ${theme.colors.midGrey};
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: none;
+
+    :hover,
+    :focus {
+      color: ${theme.colors.primary};
+      border-color: ${theme.colors.darkGrey};
+    }
+  `}
 `;

@@ -57,6 +57,14 @@ const Products = observer(() => {
           value={warehouseFilter}
           onChange={({ value }) => setWarehouseFilter(value)}
           optionMap={{ label: wh => wh.name, value: wh => wh }}
+          action={{
+            label: (
+              <>
+                <FiPlusCircle style={{ marginRight: '0.25rem' }} /> Lisa ladu
+              </>
+            ),
+            onClick: () => console.log('Lisa ladu')
+          }}
           noFormik
         />
       </SortingContainer>

@@ -26,6 +26,7 @@ import DateInput from '../Form/DateInput';
 import { FormTitle } from '../Form/styles';
 import { mapSelectOptions } from '../../util/helpers';
 import FormError from '../Form/FormError';
+import { FiPlusCircle } from 'react-icons/fi';
 
 interface PurchaseFormFormValues {
   type: InvoiceType;
@@ -108,6 +109,15 @@ const FormFields: React.FC<any> = observer(({ formikProps }) => {
       <AriaSelect
         name="partner"
         label="Tarnija"
+        action={{
+          label: (
+            <>
+              <FiPlusCircle style={{ marginRight: '0.25rem' }} />
+              Lisa tarnija
+            </>
+          ),
+          onClick: () => console.log('Lisa partner')
+        }}
         onSearch={async query => {
           const partners = await partnerStore.fetchPartners(
             { type: 'VENDOR', generalQuery: query },

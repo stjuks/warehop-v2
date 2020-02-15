@@ -42,7 +42,7 @@ export const SelectStyled = styled(AriaSelect)`
         .select-btn:focus,
         .select-btn:hover,
         .select-btn[aria-expanded="true"] {
-            border-color: ${theme.colors.lightText};
+            border-color: ${theme.colors.darkGrey};
         }
 
         .select-btn[aria-expanded="true"] {
@@ -60,10 +60,10 @@ export const SelectStyled = styled(AriaSelect)`
 
         .select-menu {
             box-shadow: none;
-            border: 1px solid ${theme.colors.lightText};
+            border: 1px solid ${theme.colors.darkGrey};
             top: 100%;
             border-top-width: 0;
-            border-radius: 0 0 0.25rem 0.25rem;
+            border-radius: 0 0 1.25rem 1.25rem;
         }
 
         .placeholder {
