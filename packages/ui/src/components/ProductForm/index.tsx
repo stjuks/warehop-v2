@@ -1,7 +1,8 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import * as yup from 'yup';
 import { FiTrash2, FiPlusCircle } from 'react-icons/fi';
+import history from '@ui/util/history';
 
 import routes from '../../util/routes';
 import WarehouseStoreContext from '../../stores/WarehouseStore';
@@ -18,13 +19,12 @@ import TextInput from '../Form/TextInput';
 import AriaSelect from '../Form/AriaSelect';
 import { Row } from '../Layout/styles';
 import FieldArray from '../Form/util/FieldArray';
+import CommonStoreContext from '@ui/stores/CommonStore';
+import PartnerStoreContext from '@ui/stores/PartnerStore';
+import FormError from '../Form/FormError';
 
 const ProductForm = observer(() => {
-  const warehouseStore = useContext(WarehouseStoreContext);
   const itemStore = useContext(ItemStoreContext);
-
-  const units = [];
-  const partners = [];
 
   const initialValues: ProductItem = {
     type: 'PRODUCT',
@@ -47,21 +47,28 @@ const ProductForm = observer(() => {
     name: yup.string().required('Palun sisesta kauba nimetus.'),
     purchasePrice: yup.number(),
     retailPrice: yup.number(),
-    description: yup.string()
+    description: yup.string(),
+    warehouseQuantity: yup
+      .array()
+      .of(
+        yup.object({
+          name: yup.string().required('Palun sisesta lao nimi.'),
+          quantity: yup
+            .number()
+            .typeError('Kogus peab olema number.')
+            .required('Palun sisesta kauba kogus.')
+        })
+      )
+      .required('Palun sisesta kauba kogus.')
   });
 
-  const filterChosenWarehouseOptions = (
-    formValues: WarehouseQuantity[],
-    warehouses: Warehouse[]
-  ) => {
-    return warehouses.filter(wh => formValues.map(whVal => whVal.id).indexOf(Number(wh.id)) === -1);
-  };
-
-  const findFirstNonChosenWarehouse = (
-    formValues: WarehouseQuantity[],
-    warehouses: Warehouse[]
-  ) => {
-    return warehouses.find(wh => formValues.map(whVal => whVal.id).indexOf(Number(wh.id)) === -1);
+  const handleSubmit = async (item: ProductItem) => {
+    try {
+      await itemStore.addProduct(item);
+      history.goBack();
+    } catch (err) {
+      throw err;
+    }
   };
 
   return (
@@ -72,76 +79,27 @@ const ProductForm = observer(() => {
           id="new-product-form"
           initialValues={initialValues}
           validationSchema={validationSchema}
-          onSubmit={(values: ProductItem) => itemStore.addProduct(values)}
+          onSubmit={handleSubmit}
         >
           {formikProps => (
             <>
-              <FormTitle>Põhiandmed</FormTitle>
-              <TextInput name="code" label="Kood" />
-              <TextInput name="name" label="Nimetus" />
-              <AriaSelect
-                name="unit"
-                label="Ühik"
-                optionMap={{ label: unit => unit.name }}
-                options={units}
+              <FormError
+                fields={[
+                  'warehouseQuantity',
+                  'warehouseQuantity[0].quantity',
+                  'warehouseQuantity[0].name'
+                ]}
+                messages={{
+                  EntityAlreadyExistsError: {
+                    code: 'Sellise koodiga kaup juba eksisteerib.'
+                  }
+                }}
               />
-              <FormTitle>Lisainfo</FormTitle>
-              <AriaSelect
-                name="partner"
-                label="Tarnija"
-                optionMap={{ label: partner => partner.name }}
-                options={partners}
-              />
-              <Row flex={[1, 1]}>
-                <TextInput name="purchasePrice" label="Ostuhind" indicator={'€'} />
-                <TextInput name="retailPrice" label="Müügihind" indicator={'€'} />
-              </Row>
-              <TextInput name="description" label="Märkused" isTextarea />
+              <FormFields />
               <FormTitle>Laoseis</FormTitle>
               <FieldArray name="warehouseQuantity">
                 {arrayHelpers => (
-                  <>
-                    {formikProps.values.warehouseQuantity.map((wh, i) => (
-                      <Row key={i} flex={[1, 0, 0]}>
-                        <AriaSelect
-                          name={`warehouseQuantity[${i}]`}
-                          label={i === 0 ? 'Ladu' : undefined}
-                          options={filterChosenWarehouseOptions(
-                            formikProps.values.warehouseQuantity,
-                            warehouseStore.warehouses
-                          )}
-                          optionMap={{ label: warehouse => warehouse.name }}
-                        />
-                        <TextInput
-                          name={`warehouseQuantity[${i}].quantity`}
-                          label={i === 0 ? 'Kogus' : undefined}
-                          type="number"
-                        />
-                        <TrashButtonContainer>
-                          <button type="button" onClick={() => arrayHelpers.remove(i)}>
-                            <FiTrash2 />
-                          </button>
-                        </TrashButtonContainer>
-                      </Row>
-                    ))}
-                    {formikProps.values.warehouseQuantity.length <
-                      warehouseStore.warehouses.length && (
-                      <AddWarehouseButton
-                        type="button"
-                        onClick={() =>
-                          arrayHelpers.push(
-                            findFirstNonChosenWarehouse(
-                              formikProps.values.warehouseQuantity,
-                              warehouseStore.warehouses
-                            )
-                          )
-                        }
-                      >
-                        <FiPlusCircle />
-                        &nbsp;Lisa ladu
-                      </AddWarehouseButton>
-                    )}
-                  </>
+                  <WarehouseFields arrayHelpers={arrayHelpers} formikProps={formikProps} />
                 )}
               </FieldArray>
             </>
@@ -151,6 +109,105 @@ const ProductForm = observer(() => {
       <FooterContainer style={{ padding: '0.5rem 1rem' }}>
         <Button title="Lisa kaup" form="new-product-form" />
       </FooterContainer>
+    </>
+  );
+});
+
+const FormFields: React.FC = observer(() => {
+  const commonStore = useContext(CommonStoreContext);
+  const partnerStore = useContext(PartnerStoreContext);
+
+  useEffect(() => {
+    partnerStore.fetchPartners();
+  }, [partnerStore]);
+
+  return (
+    <>
+      <FormTitle>Põhiandmed</FormTitle>
+      <TextInput name="code" label="Kood" />
+      <TextInput name="name" label="Nimetus" />
+      <AriaSelect
+        name="unit"
+        label="Ühik"
+        optionMap={{ label: unit => unit.name }}
+        options={commonStore.units}
+      />
+      <FormTitle>Lisainfo</FormTitle>
+      <AriaSelect
+        name="partner"
+        label="Tarnija"
+        optionMap={{ label: partner => partner.name }}
+        options={partnerStore.partners}
+        onSearch={query => partnerStore.fetchPartners({ generalQuery: query }, true)}
+        action={{
+          label: (
+            <>
+              <FiPlusCircle style={{ marginRight: '0.25rem' }} />
+              Lisa tarnija
+            </>
+          ),
+          onClick: () => console.log('Lisa partner')
+        }}
+      />
+      <Row flex={[1, 1]}>
+        <TextInput name="purchasePrice" label="Ostuhind" indicator={'€'} />
+        <TextInput name="retailPrice" label="Müügihind" indicator={'€'} />
+      </Row>
+      <TextInput name="description" label="Märkused" isTextarea />
+    </>
+  );
+});
+
+const filterChosenWarehouseOptions = (formValues: WarehouseQuantity[], warehouses: Warehouse[]) => {
+  return warehouses.filter(
+    wh => formValues.map(whVal => Number(whVal.id)).indexOf(Number(wh.id)) === -1
+  );
+};
+
+const findFirstNonChosenWarehouse = (formValues: WarehouseQuantity[], warehouses: Warehouse[]) => {
+  return warehouses.find(
+    wh => formValues.map(whVal => Number(whVal.id)).indexOf(Number(wh.id)) === -1
+  );
+};
+
+const WarehouseFields: React.FC<any> = observer(({ formikProps, arrayHelpers }) => {
+  const warehouseStore = useContext(WarehouseStoreContext);
+  const { warehouseQuantity } = formikProps.values;
+  const { warehouses } = warehouseStore;
+
+  return (
+    <>
+      {warehouseQuantity.map((wh, i) => (
+        <Row key={i} flex={[1, 0, 0]}>
+          <AriaSelect
+            name={`warehouseQuantity[${i}]`}
+            label={i === 0 ? 'Ladu' : undefined}
+            options={filterChosenWarehouseOptions(warehouseQuantity, warehouses)}
+            optionMap={{ label: warehouse => warehouse.name }}
+          />
+          <TextInput
+            name={`warehouseQuantity[${i}].quantity`}
+            label={i === 0 ? 'Kogus' : undefined}
+            type="number"
+          />
+          <TrashButtonContainer>
+            <button type="button" onClick={() => arrayHelpers.remove(i)}>
+              <FiTrash2 />
+            </button>
+          </TrashButtonContainer>
+        </Row>
+      ))}
+      {warehouseQuantity.length < warehouses.length && (
+        <AddWarehouseButton
+          type="button"
+          onClick={() =>
+            arrayHelpers.push(findFirstNonChosenWarehouse(warehouseQuantity, warehouses))
+          }
+        >
+          <FiPlusCircle />
+          &nbsp;Lisa ladu
+        </AddWarehouseButton>
+      )}
     </>
   );
 });

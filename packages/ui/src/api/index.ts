@@ -7,6 +7,7 @@ import warehouseApi from './warehouse';
 import itemApi from './item';
 import invoiceApi from './invoice';
 import transactionApi from './transaction';
+import { omitDeep } from '@ui/util/helpers';
 
 import { GraphQLError } from 'graphql';
 
@@ -57,7 +58,8 @@ const getResult = (data, opts) => {
     : opts.mutation.definitions[0];
   if (queryDefinition && queryDefinition.name) queryName = queryDefinition.name.value;
 
-  const result = queryName ? data[queryName] : data;
+  let result = queryName ? data[queryName] : data;
+  result = omitDeep(result, '__typename');
 
   return result;
 };

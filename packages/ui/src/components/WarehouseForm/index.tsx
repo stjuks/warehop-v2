@@ -18,6 +18,8 @@ import { FooterContainer } from '../Footer/styles';
 import Button from '../Button';
 import { RouteChildrenProps } from 'react-router';
 import WarehouseStoreContext from '@ui/stores/WarehouseStore';
+import UIStoreContext from '@ui/stores/UIStore';
+import FormError from '../Form/FormError';
 
 interface WarehouseFormProps {
   warehouse: Warehouse;
@@ -28,7 +30,8 @@ const WarehouseForm: React.FC<WarehouseFormProps & RouteChildrenProps> = ({
   warehouse,
   onSubmit
 }) => {
-  const WarehouseStore = useContext(WarehouseStoreContext);
+  const warehouseStore = useContext(WarehouseStoreContext);
+  const uiStore = useContext(UIStoreContext);
 
   const initialValues = {
     name: ''
@@ -36,9 +39,9 @@ const WarehouseForm: React.FC<WarehouseFormProps & RouteChildrenProps> = ({
 
   const handleSubmit = async (warehouse: AddWarehouseInput) => {
     try {
-      await WarehouseStore.addWarehouse(warehouse);
+      await warehouseStore.addWarehouse(warehouse);
       if (onSubmit) onSubmit(warehouse);
-      history.goBack();
+      uiStore.closeModal();
     } catch (err) {
       throw err;
     }
@@ -50,7 +53,7 @@ const WarehouseForm: React.FC<WarehouseFormProps & RouteChildrenProps> = ({
 
   return (
     <>
-      <Header title="Uus ladu" backTo={routes.products} />
+      <Header title="Uus ladu" onBack={() => uiStore.closeModal()} />
       <ContentContainer>
         <Form
           id="warehouse-form"
@@ -58,11 +61,16 @@ const WarehouseForm: React.FC<WarehouseFormProps & RouteChildrenProps> = ({
           initialValues={initialValues}
           onSubmit={handleSubmit}
         >
+          <FormError messages={{
+            EntityAlreadyExistsError: {
+              name: 'Sellise nimega ladu on juba olemas.'
+            }
+          }}/>
           <TextInput name="name" label="Nimetus" />
         </Form>
       </ContentContainer>
       <FooterContainer style={{ padding: '0.25rem 1rem' }}>
-        <Button title="Lisa makse" form="warehouse-form" type="submit" />
+        <Button title="Lisa ladu" form="warehouse-form" type="submit" />
       </FooterContainer>
     </>
   );

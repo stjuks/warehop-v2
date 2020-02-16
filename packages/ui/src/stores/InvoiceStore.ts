@@ -93,7 +93,6 @@ class InvoiceStore {
     });
 
     try {
-      console.log(invoiceInput);
       await api.addInvoice(invoiceInput);
     } catch (err) {
       throw err;
@@ -115,8 +114,6 @@ class InvoiceStore {
   downloadInvoice = async (invoiceId: number) => {
     try {
       const file = await api.downloadInvoice(invoiceId);
-
-      console.log(file);
 
       const pdf = new Blob([file.data], { type: 'application/pdf' });
 

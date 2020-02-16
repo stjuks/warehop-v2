@@ -3,6 +3,7 @@ import { useFormikContext } from 'formik';
 
 import { FormErrorContainer } from './styles';
 import { ErrorCode } from '@shared/types';
+import { getObjectProperty } from '@ui/util/helpers';
 
 interface FormErrorProps {
   messages?: {
@@ -21,11 +22,12 @@ const FormError: React.FC<FormErrorProps> = ({ messages, fields }) => {
   const formikErrors: any = formikContext.errors;
 
   const handleErrors = useCallback(() => {
-    const errorMessages: string[] = [];
+    const errorMessages: any[] = [];
 
     if (fields) {
       fields.forEach(field => {
-        if (formikErrors[field]) errorMessages.push(formikErrors[field]);
+        const message = getObjectProperty(formikErrors, field);
+        if (typeof message === 'string') errorMessages.push(message);
       });
     }
 

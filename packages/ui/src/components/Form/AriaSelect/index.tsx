@@ -44,7 +44,7 @@ interface AriaSelectProps {
   noFormik?: boolean;
   unregisterOnUnmount?: boolean;
   onChange?: (value: Option) => any;
-  onSearch?: (query: string, mappedOptions: Option[]) => Option[] | Promise<Option[]>;
+  onSearch?: (query: string, mappedOptions: Option[]) => any;
 }
 
 const AriaSelectBase: React.FC<AriaSelectProps & Partial<FieldProps>> = observer(
@@ -109,7 +109,7 @@ const AriaSelectBase: React.FC<AriaSelectProps & Partial<FieldProps>> = observer
         if (onSearch && searchQuery) {
           setLoadingSearch(true);
           const searchedOptions = await onSearch(searchQuery, mappedOptions);
-          setSearchOptions(searchedOptions);
+          setSearchOptions(mapSelectOptions(searchedOptions, optionMap));
           setLoadingSearch(false);
         }
       },

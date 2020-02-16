@@ -7,7 +7,8 @@ import {
   BelongsTo,
   AllowNull,
   Unique,
-  BelongsToMany
+  BelongsToMany,
+  DataType
 } from 'sequelize-typescript';
 
 import User from './User';
@@ -27,7 +28,8 @@ export default class Warehouse extends Model<Warehouse> {
   userId: number;
 
   @AllowNull(false)
-  @Column
+  @Unique
+  @Column(DataType.CITEXT)
   name: string;
 
   @BelongsTo(() => User, { foreignKey: 'userId', onDelete: 'RESTRICT' })

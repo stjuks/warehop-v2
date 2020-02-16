@@ -51,3 +51,36 @@ export const mapSelectOption = (value: any, optionMap?: MapSelectOptionAttribute
 
   return result;
 };
+
+export const getObjectProperty = <T>(obj: object, s: string) => {
+  s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
+  s = s.replace(/^\./, ''); // strip a leading dot
+
+  let propertyArr = s.split('.');
+
+  for (let i = 0; i <= propertyArr.length; i++) {
+    const property = propertyArr[i];
+
+    if (obj instanceof Object && property in obj) {
+      obj = obj[property];
+    } else {
+      if (i !== propertyArr.length) {
+        return undefined;
+      }
+    }
+  }
+
+  return obj;
+};
+
+export const omitDeep = (value, key) => {
+  if (Array.isArray(value)) {
+    return value.map(i => omitDeep(i, key));
+  } else if (typeof value === 'object' && value !== null) {
+    return Object.keys(value).reduce((newObject, k) => {
+      if (k == key) return newObject;
+      return Object.assign({ [k]: omitDeep(value[k], key) }, newObject);
+    }, {});
+  }
+  return value;
+};

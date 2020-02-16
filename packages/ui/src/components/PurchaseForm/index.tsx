@@ -120,13 +120,9 @@ const FormFields: React.FC<any> = observer(({ formikProps }) => {
           ),
           onClick: () => console.log('Lisa partner')
         }}
-        onSearch={async query => {
-          const partners = await partnerStore.fetchPartners(
-            { type: 'VENDOR', generalQuery: query },
-            true
-          );
-          return mapSelectOptions(partners, { label: partner => partner.name });
-        }}
+        onSearch={query =>
+          partnerStore.fetchPartners({ type: 'VENDOR', generalQuery: query }, true)
+        }
         searchPlaceholder="Otsi tarnijat"
         options={partnerStore.partners}
         optionMap={{ label: partner => partner.name }}

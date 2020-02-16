@@ -18,10 +18,14 @@ import { SelectStyled } from '../Purchases/styles';
 import ItemStoreContext from '../../stores/ItemStore';
 import WarehouseStoreContext from '@ui/stores/WarehouseStore';
 import Form from '../Form';
+import UIStoreContext from '@ui/stores/UIStore';
+import WarehouseForm from '../WarehouseForm';
 
 const Products = observer(() => {
   const itemStore = useContext(ItemStoreContext);
   const warehouseStore = useContext(WarehouseStoreContext);
+  const uiStore = useContext(UIStoreContext);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [warehouseFilter, setWarehouseFilter] = useState<Warehouse>({
     id: undefined,
@@ -63,7 +67,7 @@ const Products = observer(() => {
                 <FiPlusCircle style={{ marginRight: '0.25rem' }} /> Lisa ladu
               </>
             ),
-            onClick: () => console.log('Lisa ladu')
+            onClick: () => uiStore.openModal(<WarehouseForm />)
           }}
           noFormik
         />
