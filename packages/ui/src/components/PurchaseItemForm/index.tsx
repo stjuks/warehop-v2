@@ -11,7 +11,7 @@ import AriaSelect from '../Form/AriaSelect';
 import TextInput from '../Form/TextInput';
 import { Row } from '../Layout/styles';
 import AutosuggestInput from '../Form/AutosuggestInput';
-import { ItemType } from '@shared/types';
+import { ItemType, InvoiceItem } from '@shared/types';
 import Header from '../Header';
 import { ContentContainer } from '../App/styles';
 import { FooterContainer } from '../Footer/styles';
@@ -19,11 +19,14 @@ import Button from '../Button';
 import { filterObjectProperties } from '../../util/helpers';
 import { itemTypeTranslations } from '../../util/translations';
 import CommonStoreContext from '../../stores/CommonStore';
+import UIStoreContext from '@ui/stores/UIStore';
 import { RouteChildrenProps } from 'react-router';
 import WarehouseStoreContext from '../../stores/WarehouseStore';
 
 interface PurchaseItemFormProps {
   arrayHelpers: any;
+  item?: InvoiceItem;
+  index?: number;
 }
 
 const DEFAULT_ITEM_TYPE: ItemType = 'PRODUCT';
@@ -143,74 +146,72 @@ const ItemForm = ({ type }: { type: ItemType }) => {
   );
 };
 
-const PurchaseItemForm: React.FC<PurchaseItemFormProps & RouteChildrenProps> = observer(props => {
-  const commonStore = useContext(CommonStoreContext);
+const PurchaseItemForm: React.FC<PurchaseItemFormProps> = observer(
+  ({ index, arrayHelpers, item }) => {
+    const commonStore = useContext(CommonStoreContext);
+    const uiStore = useContext(UIStoreContext);
 
-  const {
-    location: { state },
-    arrayHelpers
-  }: { [key: string]: any } = props;
+    const [activeItemType, setActiveItemType] = useState<ItemType>(
+      (item && item.type) || DEFAULT_ITEM_TYPE
+    );
 
-  const [activeItemType, setActiveItemType] = useState<ItemType>(
-    (state && state.item.type) || DEFAULT_ITEM_TYPE
-  );
+    const initialValues = item || {
+      type: DEFAULT_ITEM_TYPE,
+      ...forms[activeItemType].initialValues
+    };
 
-  const initialValues = (state && state.item) || {
-    type: DEFAULT_ITEM_TYPE,
-    ...forms[activeItemType].initialValues
-  };
+    const handleSubmit = values => {
+      const filteredValues = filterObjectProperties(values, forms[values.type].fields);
 
-  const handleSubmit = values => {
-    const filteredValues = filterObjectProperties(values, forms[values.type].fields);
+      if (index !== undefined) {
+        arrayHelpers.replace(index, filteredValues);
+      } else {
+        arrayHelpers.push(filteredValues);
+      }
 
-    if (state && state.index !== undefined) {
-      arrayHelpers.replace(state.index, filteredValues);
-    } else {
-      arrayHelpers.push(filteredValues);
-    }
+      uiStore.closeModal();
+    };
 
-    history.push(routes.purchaseForm);
-  };
+    const handleTypeSelect = ({ changedField, formik }) => {
+      if (changedField.name === 'type') {
+        formik.setErrors({});
 
-  const handleTypeSelect = ({ changedField, formik }) => {
-    if (changedField.name === 'type') {
-      formik.setErrors({});
+        setActiveItemType(changedField.value);
+      }
+    };
 
-      setActiveItemType(changedField.value);
-    }
-  };
+    const validationSchema = forms[activeItemType].validationSchema;
+    const headerTitle = item ? 'Muuda arvekaupa' : 'Lisa arvekaup';
+    const submitBtnTitle = item ? 'Muuda kaupa' : 'Lisa kaup';
 
-  const validationSchema = forms[activeItemType].validationSchema;
-  const headerTitle = state && state.index !== undefined ? 'Muuda arvekaupa' : 'Lisa arvekaup';
-  const submitBtnTitle = state && state.index !== undefined ? 'Muuda kaupa' : 'Lisa kaup';
+    return (
+      <>
+        <Header title={headerTitle} onBack={() => uiStore.closeModal()} />
+        <ContentContainer>
+          <Form
+            id="new-purchase-item-form"
+            validationSchema={validationSchema}
+            initialValues={initialValues}
+            onSubmit={handleSubmit}
+            onChange={handleTypeSelect}
+          >
+            <>
+              <AriaSelect
+                name="type"
+                label="Kauba tüüp"
+                options={commonStore.itemTypes}
+                optionMap={{ label: type => itemTypeTranslations[type] }}
+              />
+              <ItemForm type={activeItemType} />
+            </>
+          </Form>
+        </ContentContainer>
+        <FooterContainer style={{ padding: '0.25rem 1rem' }}>
+          <Button title={submitBtnTitle} form="new-purchase-item-form" type="submit" />
+        </FooterContainer>
+      </>
+    );
+  }
+);
 
-  return (
-    <Modal isOpen={true} title="Lisa kaup" backTo={routes.purchaseForm}>
-      <Header title={headerTitle} backTo={routes.purchaseForm} />
-      <ContentContainer>
-        <Form
-          id="new-purchase-item-form"
-          validationSchema={validationSchema}
-          initialValues={initialValues}
-          onSubmit={handleSubmit}
-          onChange={handleTypeSelect}
-        >
-          <>
-            <AriaSelect
-              name="type"
-              label="Kauba tüüp"
-              options={commonStore.itemTypes}
-              optionMap={{ label: type => itemTypeTranslations[type] }}
-            />
-            <ItemForm type={activeItemType} />
-          </>
-        </Form>
-      </ContentContainer>
-      <FooterContainer style={{ padding: '0.25rem 1rem' }}>
-        <Button title={submitBtnTitle} form="new-purchase-item-form" type="submit" />
-      </FooterContainer>
-    </Modal>
-  );
-});
-
-export default withRouter(PurchaseItemForm);
+export default PurchaseItemForm;

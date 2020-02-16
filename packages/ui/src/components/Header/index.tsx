@@ -4,35 +4,50 @@ import { Link } from 'react-router-dom';
 
 import { HeaderContainer, IconsContainer, TitleContainer } from './styles';
 
-interface IHeaderProps {
+interface HeaderProps {
   title: string;
   backTo?: string;
-  components?: React.Component[];
+  onBack?: () => any;
+  components?: React.ReactElement[];
 }
 
-function Header(props) {
-  const { title, components, backTo }: IHeaderProps = props;
+const Header: React.FC<HeaderProps> = ({ title, components, backTo, onBack }) => {
+  let titleComponent = (
+    <>
+      {(onBack || backTo) && (
+        <span className="icon-container">
+          <FiChevronLeft className="icon" />
+        </span>
+      )}
+      {title}
+    </>
+  );
+
+  if (backTo) {
+    titleComponent = (
+      <Link to={backTo} className="back-button">
+        {titleComponent}
+      </Link>
+    );
+  }
+
+  if (onBack) {
+    titleComponent = (
+      <button onClick={onBack} className="back-button">
+        {titleComponent}
+      </button>
+    );
+  }
 
   return (
     <HeaderContainer>
-      <TitleContainer>
-        {backTo ? (
-          <Link to={backTo} className="back-button">
-            <span className="icon-container">
-              <FiChevronLeft className="icon" />
-            </span>
-            {title}
-          </Link>
-        ) : (
-          title
-        )}
-      </TitleContainer>
+      <TitleContainer>{titleComponent}</TitleContainer>
       <IconsContainer>
         {components &&
           components.map((component, i) => <React.Fragment key={i}>{component}</React.Fragment>)}
       </IconsContainer>
     </HeaderContainer>
   );
-}
+};
 
 export default Header;

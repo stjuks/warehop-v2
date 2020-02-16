@@ -1,16 +1,12 @@
 import styled from '@ui/util/styled';
 
-interface TitleContainerProps {
-  positionAbsolute: boolean;
-}
-
 export const HeaderContainer = styled.div`
   ${({ theme }) => `
     background: ${theme.colors.white};
     color: ${theme.colors.text};
     box-shadow: ${theme.lightShadow};
     
-    font-family: 'Red Hat Display', sans-serif;
+    font-family: 'Red Hat Display', sans-serif !important;
     padding: 0 1rem;
     height: 4rem;
     display: flex;
@@ -24,10 +20,14 @@ export const HeaderContainer = styled.div`
 
 export const TitleContainer = styled.div`
   display: flex;
+
   .back-button {
     min-width: 1.5rem;
     display: flex;
     align-items: center;
+    font-family: 'Red Hat Display', sans-serif !important;
+    font-weight: 500;
+
     .icon-container {
       display: flex;
       align-items: center;

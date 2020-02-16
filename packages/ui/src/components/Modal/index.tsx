@@ -1,20 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { ModalContainer } from './styles';
-import Header from '../Header';
-import { ContentContainer } from '../App/styles';
-import { FooterContainer } from '../Footer/styles';
+import { observer } from 'mobx-react-lite';
+import UIStoreContext from '@ui/stores/UIStore';
 
-interface ModalProps {
-  isOpen: boolean;
-  title?: string;
-  backTo?: string;
-  headerContent?: JSX.Element;
-  footerContent?: JSX.Element;
-}
+const Modal: React.FC = observer(() => {
+  const uiStore = useContext(UIStoreContext);
 
-const Modal: React.FC<ModalProps> = ({ isOpen, children, footerContent, title, backTo }) => {
-  return <ModalContainer isOpen={isOpen}>{children}</ModalContainer>;
-};
+  const isOpen = uiStore.modals.length > 0;
+  const content = isOpen ? uiStore.modals[uiStore.modals.length - 1] : null;
+
+  return <ModalContainer isOpen={isOpen}>{content}</ModalContainer>;
+});
 
 export default Modal;

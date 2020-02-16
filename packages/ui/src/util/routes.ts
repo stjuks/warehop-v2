@@ -5,7 +5,6 @@ const routes = {
   purchases: '/purchases',
   purchaseDetails: '/purchases/:id',
   purchaseForm: '/purchases/new',
-  purchaseFormItem: '/purchases/new/item',
   sales: '/sales',
   saleDetails: '/sales/:id',
   expenses: '/expenses',
@@ -13,8 +12,6 @@ const routes = {
   partners: '/partners',
   partnerDetails: '/partners/:id',
   partnerForm: '/partners/new',
-  incomeForm: '/sales/:id/income',
-  expenseForm: '/purchases/:id/expense',
   statistics: '/statistics',
   settings: '/settings'
 };

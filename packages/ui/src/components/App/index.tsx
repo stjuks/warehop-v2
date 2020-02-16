@@ -25,6 +25,7 @@ import PartnerForm from '../PartnerForm';
 import HamburgerMenu from '../HamburgerMenu';
 import InvoiceDetails from '../InvoiceDetails';
 import TransactionForm from '../TransactionForm';
+import Modal from '../Modal';
 
 const App = () => {
   const warehouseStore = useContext(WarehouseStoreContext);
@@ -55,6 +56,7 @@ const App = () => {
             </Switch>
             <Footer />
             <HamburgerMenu />
+            <Modal />
           </AppContainer>
         </IconContext.Provider>
       </Router>

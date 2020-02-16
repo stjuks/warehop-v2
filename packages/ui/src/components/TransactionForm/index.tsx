@@ -25,6 +25,7 @@ import CommonStoreContext from '../../stores/CommonStore';
 import { RouteChildrenProps } from 'react-router';
 import WarehouseStoreContext from '../../stores/WarehouseStore';
 import TransactionStoreContext from '@ui/stores/TransactionStore';
+import UIStoreContext from '@ui/stores/UIStore';
 
 interface TransactionFormProps {
   invoice: Invoice;
@@ -36,6 +37,7 @@ const TransactionForm: React.FC<TransactionFormProps & RouteChildrenProps> = ({
   onSubmit
 }) => {
   const transactionStore = useContext(TransactionStoreContext);
+  const uiStore = useContext(UIStoreContext);
 
   const initialValues = {
     invoiceId: invoice.id,
@@ -48,7 +50,7 @@ const TransactionForm: React.FC<TransactionFormProps & RouteChildrenProps> = ({
     try {
       await transactionStore.addTransaction(transaction);
       if (onSubmit) onSubmit(transaction);
-      history.goBack();
+      uiStore.closeModal();
     } catch (err) {
       throw err;
     }
@@ -65,7 +67,7 @@ const TransactionForm: React.FC<TransactionFormProps & RouteChildrenProps> = ({
   });
 
   return (
-    <Modal isOpen={true}>
+    <>
       <Header title={`Makse #${invoice.number}`} backTo={`${routes.purchases}/${invoice.id}`} />
       <ContentContainer>
         <Form
@@ -82,7 +84,7 @@ const TransactionForm: React.FC<TransactionFormProps & RouteChildrenProps> = ({
       <FooterContainer style={{ padding: '0.25rem 1rem' }}>
         <Button title="Lisa makse" form="new-transaction-form" type="submit" />
       </FooterContainer>
-    </Modal>
+    </>
   );
 };
 

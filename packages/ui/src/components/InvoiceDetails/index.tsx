@@ -3,6 +3,7 @@ import { Invoice, AddTransactionInput } from '@shared/types';
 import routes from '@ui/util/routes';
 import history from '@ui/util/history';
 import InvoiceStoreContext from '@ui/stores/InvoiceStore';
+import UIStoreContext from '@ui/stores/UIStore';
 import currency from 'currency.js';
 
 import { InvoiceHero, IsPaidStyled, InvoiceDetailsContainer, TransactionItem } from './styles';
@@ -30,6 +31,7 @@ interface InvoiceDetailsProps {
 
 const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = props => {
   const invoiceStore = useContext(InvoiceStoreContext);
+  const uiStore = useContext(UIStoreContext);
   const [invoice, setInvoice] = useState<Invoice | undefined>(undefined);
 
   useEffect(() => {
@@ -91,15 +93,6 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
     });
   }
 
-  let transactionFormRoute = '';
-
-  if (invoice) {
-    transactionFormRoute =
-      invoice.type === 'PURCHASE'
-        ? `${routes.purchases}/${invoice.id}/expense`
-        : `${routes.sales}/${invoice.id}/income`;
-  }
-
   if (invoice && !invoice.isPaid) {
     dropdownOptions.unshift({
       label: (
@@ -108,7 +101,8 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
           <span>Maksa</span>
         </>
       ),
-      onClick: () => history.push(transactionFormRoute)
+      onClick: () =>
+        uiStore.openModal(<TransactionForm invoice={invoice} onSubmit={handleTransactionSubmit} />)
     });
   }
 
@@ -128,17 +122,14 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
 
   return (
     <>
-      <Header title="Arve detailid" backTo={backRoute} components={headerComponents} />
+      <Header
+        title="Arve detailid"
+        backTo={backRoute}
+        components={headerComponents}
+      />
       <InvoiceDetailsContainer padded>
         {invoice && (
           <>
-            <Route
-              path={invoice.type === 'PURCHASE' ? routes.expenseForm : routes.incomeForm}
-              render={() => (
-                <TransactionForm invoice={invoice} onSubmit={handleTransactionSubmit} />
-              )}
-            />
-
             <InvoiceHero paidSum={Number(invoice.paidSum)}>
               <div className="row-1">
                 <span className="col-1">{invoice.partner.name}</span>

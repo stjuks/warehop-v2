@@ -22,6 +22,10 @@ export interface AddInvoiceInput {
   file?: File;
 }
 
+export interface AddWarehouseInput {
+  name: string;
+}
+
 export interface InvoiceSearchInput {
   type?: InvoiceType;
   pagination?: PaginatedQueryInput;

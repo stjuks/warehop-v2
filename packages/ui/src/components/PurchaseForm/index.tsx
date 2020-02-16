@@ -27,6 +27,7 @@ import { FormTitle } from '../Form/styles';
 import { mapSelectOptions } from '../../util/helpers';
 import FormError from '../Form/FormError';
 import { FiPlusCircle } from 'react-icons/fi';
+import UIStoreContext from '@ui/stores/UIStore';
 
 interface PurchaseFormFormValues {
   type: InvoiceType;
@@ -92,6 +93,7 @@ const PurchaseForm = observer(() => {
 
 const FormFields: React.FC<any> = observer(({ formikProps }) => {
   const partnerStore = useContext(PartnerStoreContext);
+  const uiStore = useContext(UIStoreContext);
 
   useEffect(() => {
     partnerStore.fetchPartners();
@@ -142,12 +144,13 @@ const FormFields: React.FC<any> = observer(({ formikProps }) => {
           <>
             <FormTitle>
               Kaubad{' '}
-              <AddPurchaseItemBtn to={routes.purchaseFormItem}>+ Lisa kaup</AddPurchaseItemBtn>
+              <AddPurchaseItemBtn
+                onClick={() => uiStore.openModal(<PurchaseItemForm arrayHelpers={arrayHelpers} />)}
+                type="button"
+              >
+                + Lisa kaup
+              </AddPurchaseItemBtn>
             </FormTitle>
-            <Route
-              path={routes.purchaseFormItem}
-              render={() => <PurchaseItemForm arrayHelpers={arrayHelpers} />}
-            />
             {formikProps.values.items.map((item, index) => (
               <InvoiceItemListItem
                 key={index}
@@ -155,13 +158,9 @@ const FormFields: React.FC<any> = observer(({ formikProps }) => {
                 style={{ margin: '0 0.25rem' }}
                 onDelete={() => arrayHelpers.remove(index)}
                 onEdit={() =>
-                  history.push({
-                    pathname: routes.purchaseFormItem,
-                    state: {
-                      index,
-                      item
-                    }
-                  })
+                  uiStore.openModal(
+                    <PurchaseItemForm item={item} index={index} arrayHelpers={arrayHelpers} />
+                  )
                 }
               />
             ))}
