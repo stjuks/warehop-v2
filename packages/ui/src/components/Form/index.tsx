@@ -12,11 +12,12 @@ interface FormProps {
   id: string;
   validationSchema?: any;
   onChange?: (values: any) => any;
+  onError?: () => any;
   style?: React.CSSProperties;
 }
 
 const Form: React.FC<React.PropsWithChildren<FormProps>> = observer(
-  ({ initialValues, onSubmit, validationSchema, id, children, onChange, style }) => {
+  ({ initialValues, onSubmit, validationSchema, id, children, onChange, style, onError }) => {
     const handleChildren = formikProps => {
       if (children instanceof Function) return children(formikProps);
       else return children;

@@ -16,6 +16,8 @@ import { Warehouse, WarehouseQuantity, ProductItem } from '@shared/types';
 import Form from '../Form';
 import { FormTitle } from '../Form/styles';
 import TextInput from '../Form/TextInput';
+import UnitSelect from '../util/inputs/UnitSelect';
+import PartnerSelect from '../util/inputs/PartnerSelect';
 import AriaSelect from '../Form/AriaSelect';
 import { Row } from '../Layout/styles';
 import FieldArray from '../Form/util/FieldArray';
@@ -114,41 +116,14 @@ const ProductForm = observer(() => {
 });
 
 const FormFields: React.FC = observer(() => {
-  const commonStore = useContext(CommonStoreContext);
-  const partnerStore = useContext(PartnerStoreContext);
-
-  useEffect(() => {
-    partnerStore.fetchPartners();
-  }, [partnerStore]);
-
   return (
     <>
       <FormTitle>Põhiandmed</FormTitle>
       <TextInput name="code" label="Kood" />
       <TextInput name="name" label="Nimetus" />
-      <AriaSelect
-        name="unit"
-        label="Ühik"
-        optionMap={{ label: unit => unit.name }}
-        options={commonStore.units}
-      />
+      <UnitSelect name="unit" label="Ühik" />
       <FormTitle>Lisainfo</FormTitle>
-      <AriaSelect
-        name="partner"
-        label="Tarnija"
-        optionMap={{ label: partner => partner.name }}
-        options={partnerStore.partners}
-        onSearch={query => partnerStore.fetchPartners({ generalQuery: query }, true)}
-        action={{
-          label: (
-            <>
-              <FiPlusCircle style={{ marginRight: '0.25rem' }} />
-              Lisa tarnija
-            </>
-          ),
-          onClick: () => console.log('Lisa partner')
-        }}
-      />
+      <PartnerSelect name="partner" label="Tarnija" partnerType="VENDOR" />
       <Row flex={[1, 1]}>
         <TextInput name="purchasePrice" label="Ostuhind" indicator={'€'} />
         <TextInput name="retailPrice" label="Müügihind" indicator={'€'} />

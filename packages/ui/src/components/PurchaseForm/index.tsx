@@ -5,7 +5,7 @@ import * as yup from 'yup';
 
 import routes from '../../util/routes';
 import history from '../../util/history';
-import { ProductFormContainer, AddPurchaseItemBtn } from './styles';
+import { AddPurchaseItemBtn } from './styles';
 import PartnerStoreContext from '../../stores/PartnerStore';
 import InvoiceStoreContext from '../../stores/InvoiceStore';
 
@@ -20,6 +20,7 @@ import { Route } from 'react-router';
 import PurchaseItemForm from '../PurchaseItemForm';
 import AriaSelect from '../Form/AriaSelect';
 import TextInput from '../Form/TextInput';
+import PartnerSelect from '../util/inputs/PartnerSelect';
 import { Row } from '../Layout/styles';
 import FileInput from '../Form/FileInput';
 import DateInput from '../Form/DateInput';
@@ -28,6 +29,7 @@ import { mapSelectOptions } from '../../util/helpers';
 import FormError from '../Form/FormError';
 import { FiPlusCircle } from 'react-icons/fi';
 import UIStoreContext from '@ui/stores/UIStore';
+import ContentContainer from '../util/ContentContainer';
 
 interface PurchaseFormFormValues {
   type: InvoiceType;
@@ -74,16 +76,17 @@ const PurchaseForm = observer(() => {
   return (
     <>
       <Header title="Uus ostuarve" backTo={routes.purchases} />
-      <ProductFormContainer>
+      <ContentContainer>
         <Form
           validationSchema={validationSchema}
           initialValues={initialValues}
           onSubmit={handleSubmit}
+          onError={() => console.log('err')}
           id="new-purchase-form"
         >
           {formikProps => <FormFields formikProps={formikProps} />}
         </Form>
-      </ProductFormContainer>
+      </ContentContainer>
       <FooterContainer style={{ padding: '0.25rem 1rem' }}>
         <Button title="Loo arve" form="new-purchase-form" type="submit" />
       </FooterContainer>
@@ -92,12 +95,7 @@ const PurchaseForm = observer(() => {
 });
 
 const FormFields: React.FC<any> = observer(({ formikProps }) => {
-  const partnerStore = useContext(PartnerStoreContext);
   const uiStore = useContext(UIStoreContext);
-
-  useEffect(() => {
-    partnerStore.fetchPartners();
-  }, [partnerStore]);
 
   return (
     <>
@@ -108,25 +106,7 @@ const FormFields: React.FC<any> = observer(({ formikProps }) => {
         fields={['items']}
       />
       <FormTitle>Põhiandmed</FormTitle>
-      <AriaSelect
-        name="partner"
-        label="Tarnija"
-        action={{
-          label: (
-            <>
-              <FiPlusCircle style={{ marginRight: '0.25rem' }} />
-              Lisa tarnija
-            </>
-          ),
-          onClick: () => console.log('Lisa partner')
-        }}
-        onSearch={query =>
-          partnerStore.fetchPartners({ type: 'VENDOR', generalQuery: query }, true)
-        }
-        searchPlaceholder="Otsi tarnijat"
-        options={partnerStore.partners}
-        optionMap={{ label: partner => partner.name }}
-      />
+      <PartnerSelect name="partner" label="Tarnija" partnerType="VENDOR" />
       <TextInput name="number" label="Arve nr" />
       <Row flex={[1, 1]}>
         <DateInput name="issueDate" label="Ostukuupäev" />

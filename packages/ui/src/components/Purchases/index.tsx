@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useLayoutEffect, useState, useMemo } from 'react';
+import React, { useContext, useEffect, useLayoutEffect, useState, useMemo, useRef } from 'react';
 import { FiPlusCircle, FiSliders, FiRefreshCw } from 'react-icons/fi';
 import { observer } from 'mobx-react-lite';
 import { PaginatedData, Invoice, InvoiceSearchInput } from '@shared/types';

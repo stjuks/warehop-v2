@@ -1,10 +1,6 @@
 import styled from '@ui/util/styled';
 import { Link } from 'react-router-dom';
 
-import { ContentContainer } from '../App/styles';
-
-export const ProductFormContainer = styled(ContentContainer)``;
-
 export const AddPurchaseItemBtn = styled.button`
   ${({ theme }) => `
     color: ${theme.colors.primary};

@@ -1,29 +1,18 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { withRouter } from 'react-router-dom';
-import moment from 'moment';
 import currency from 'currency.js';
-import { observer } from 'mobx-react-lite';
-import Modal from '../Modal';
 import routes from '../../util/routes';
-import history from '../../util/history';
 import Form from '../Form';
 import * as yup from 'yup';
 
-import AriaSelect from '../Form/AriaSelect';
 import TextInput from '../Form/TextInput';
 import DateInput from '../Form/DateInput';
-import { Row } from '../Layout/styles';
-import AutosuggestInput from '../Form/AutosuggestInput';
-import { ItemType, Invoice, AddTransactionInput } from '@shared/types';
+import { Invoice, AddTransactionInput } from '@shared/types';
 import Header from '../Header';
 import { ContentContainer } from '../App/styles';
 import { FooterContainer } from '../Footer/styles';
 import Button from '../Button';
-import { filterObjectProperties } from '../../util/helpers';
-import { itemTypeTranslations } from '../../util/translations';
-import CommonStoreContext from '../../stores/CommonStore';
 import { RouteChildrenProps } from 'react-router';
-import WarehouseStoreContext from '../../stores/WarehouseStore';
 import TransactionStoreContext from '@ui/stores/TransactionStore';
 import UIStoreContext from '@ui/stores/UIStore';
 

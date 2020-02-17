@@ -22,6 +22,7 @@ import CommonStoreContext from '../../stores/CommonStore';
 import UIStoreContext from '@ui/stores/UIStore';
 import { RouteChildrenProps } from 'react-router';
 import WarehouseStoreContext from '../../stores/WarehouseStore';
+import UnitSelect from '../util/inputs/UnitSelect';
 
 interface PurchaseItemFormProps {
   arrayHelpers: any;
@@ -111,12 +112,7 @@ const ItemForm = ({ type }: { type: ItemType }) => {
         />
         <Row flex={[1, 1]}>
           <TextInput name="quantity" label="Kogus" type="number" />
-          <AriaSelect
-            name="unit"
-            label="Ühik"
-            options={commonStore.units}
-            optionMap={{ label: unit => unit.name }}
-          />
+          <UnitSelect name="unit" label="Ühik" />
         </Row>
         <AriaSelect
           name="warehouse"
@@ -134,12 +130,7 @@ const ItemForm = ({ type }: { type: ItemType }) => {
       <TextInput name="name" label="Nimetus" />
       <Row flex={[1, 1]}>
         <TextInput name="quantity" label="Kogus" type="number" />
-        <AriaSelect
-          name="unit"
-          label="Ühik"
-          options={commonStore.units}
-          optionMap={{ label: unit => unit.name }}
-        />
+        <UnitSelect name="unit" label="Ühik" />
       </Row>
       <TextInput name="price" label="Ostuhind" indicator={'€'} />
     </>
