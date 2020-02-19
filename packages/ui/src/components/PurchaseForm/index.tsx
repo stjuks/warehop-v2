@@ -83,6 +83,7 @@ const PurchaseForm = observer(() => {
           onSubmit={handleSubmit}
           onError={() => console.log('err')}
           id="new-purchase-form"
+          persist
         >
           {formikProps => <FormFields formikProps={formikProps} />}
         </Form>

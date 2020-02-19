@@ -1,10 +1,13 @@
 import React, { useContext, useState, useEffect } from 'react';
 import AriaSelect from '@ui/components/Form/AriaSelect';
 import PartnerStoreContext from '@ui/stores/PartnerStore';
+import history from '@ui/util/history';
 import { observer } from 'mobx-react-lite';
 import { FiPlusCircle } from 'react-icons/fi';
 import { PartnerType, Partner } from '@shared/types';
 import { useAsyncFn } from 'react-use';
+import UIStoreContext from '@ui/stores/UIStore';
+import routes from '@ui/util/routes';
 
 interface PartnerSelectProps {
   name: string;
@@ -14,6 +17,8 @@ interface PartnerSelectProps {
 
 const PartnerSelect: React.FC<PartnerSelectProps> = observer(({ name, label, partnerType }) => {
   const partnerStore = useContext(PartnerStoreContext);
+  const uiStore = useContext(UIStoreContext);
+
   const [options, setOptions] = useState<Partner[]>([]);
   const [loadOptions, setLoadOptions] = useState<boolean>(false);
 
@@ -49,7 +54,7 @@ const PartnerSelect: React.FC<PartnerSelectProps> = observer(({ name, label, par
             Lisa partner
           </>
         ),
-        onClick: () => console.log('Lisa partner')
+        onClick: () => history.push(routes.partnerForm)
       }}
       onMenuOpen={() => setLoadOptions(true)}
     />

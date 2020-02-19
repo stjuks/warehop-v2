@@ -82,6 +82,7 @@ const ProductForm = observer(() => {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
+          persist
         >
           {formikProps => (
             <>
