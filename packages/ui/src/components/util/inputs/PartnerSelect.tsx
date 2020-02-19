@@ -19,11 +19,14 @@ const PartnerSelect: React.FC<PartnerSelectProps> = observer(({ name, label, par
 
   useEffect(() => {
     const fetchPartners = async () => {
-      const partners = await partnerStore.fetchPartners({ type: partnerType }, true);
+      const partners = await partnerStore.fetchPartners(
+        { type: partnerType },
+        { keepStoreValue: true }
+      );
       setOptions(partners);
     };
 
-    fetchPartners();
+    if (loadOptions) fetchPartners();
   }, [loadOptions]);
 
   return (
@@ -33,7 +36,10 @@ const PartnerSelect: React.FC<PartnerSelectProps> = observer(({ name, label, par
       optionMap={{ label: partner => partner.name }}
       options={options}
       onSearch={query =>
-        partnerStore.fetchPartners({ type: partnerType, generalQuery: query }, true)
+        partnerStore.fetchPartners(
+          { type: partnerType, generalQuery: query },
+          { keepStoreValue: true }
+        )
       }
       searchPlaceholder="Otsi partnerit"
       action={{

@@ -6,22 +6,30 @@ import api from '../api';
 import { uiStore } from './UIStore';
 import { paginatedData } from '../util/helpers';
 
+interface FetchOptions {
+  keepStoreValue?: boolean;
+  globalLoader?: boolean;
+}
+
 class PartnerStore {
   private PARTNER_LIMIT = 25;
 
   @observable paginatedPartners = paginatedData<Partner>();
 
   @task
-  fetchPartners = async (filter?: SearchPartnerInput, keepStoreValue?: boolean) => {
-    uiStore.setLoading(true);
+  fetchPartners = async (filter?: SearchPartnerInput, opts?: FetchOptions) => {
     const safeFilter = filter || {};
+    const safeOpts = opts || {};
+    const { keepStoreValue, globalLoader } = safeOpts;
+
+    if (globalLoader) uiStore.setLoading(true);
 
     const partners = await api.fetchPartners({
       ...safeFilter,
       pagination: { limit: this.PARTNER_LIMIT }
     });
 
-    uiStore.setLoading(false);
+    if (globalLoader) uiStore.setLoading(false);
 
     if (!keepStoreValue) {
       this.paginatedPartners = partners;
