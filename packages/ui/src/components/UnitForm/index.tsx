@@ -9,7 +9,7 @@ import PartnerStoreContext from '@ui/stores/PartnerStore';
 import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
 import Button from '../Button';
-import { Partner } from '@shared/types';
+import { Partner, Unit } from '@shared/types';
 import Form from '../Form';
 import ContentContainer from '../util/ContentContainer';
 import CommonStoreContext from '@ui/stores/CommonStore';
@@ -17,33 +17,26 @@ import AriaSelect from '../Form/AriaSelect';
 import { partnerTypeTranslations } from '@ui/util/translations';
 import TextInput from '../Form/TextInput';
 import FormError from '../Form/FormError';
+import { uiStore } from '@ui/stores/UIStore';
 
-const PartnerForm = observer(() => {
+const UnitForm = observer(() => {
   const partnerStore = useContext(PartnerStoreContext);
   const commonStore = useContext(CommonStoreContext);
 
-  const initialValues: Partner = {
+  const initialValues: Unit = {
     name: '',
-    type: 'CLIENT',
-    regNr: '',
-    VATnr: '',
-    phoneNr: '',
-    email: '',
-    street: '',
-    postalCode: '',
-    county: '',
-    country: ''
+    abbreviation: ''
   };
 
   const validationSchema = yup.object({
-    type: yup.string().required('Palun vali partneri tüüp.'),
-    name: yup.string().required('Palun sisesta partneri nimi.')
+    abbreviation: yup.string().required('Palun sisesta ühiku lühend.'),
+    name: yup.string().required('Palun sisesta ühiku nimetus.')
   });
 
-  const handleSubmit = async (partner: Partner) => {
+  const handleSubmit = async (unit: Unit) => {
     try {
-      await partnerStore.addPartner(partner);
-      history.push(routes.partners);
+      await commonStore.addUnit(unit);
+      history.goBack();
     } catch (err) {
       throw err;
     }
@@ -51,10 +44,10 @@ const PartnerForm = observer(() => {
 
   return (
     <>
-      <Header title="Uus partner" onBack={() => history.goBack()} />
+      <Header title="Uus Ühik" onBack={() => uiStore.closeModal()} />
       <ContentContainer>
         <Form
-          id="new-partner-form"
+          id="unit-form"
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
@@ -63,25 +56,13 @@ const PartnerForm = observer(() => {
           <FormError
             messages={{
               EntityAlreadyExistsError: {
-                name: 'Sellise nimega partner on juba olemas.'
+                abbreviation: 'Sellise lühendiga ühik on juba olemas.',
+                name: 'Sellise nimega ühik on juba olemas.'
               }
             }}
           />
-          <AriaSelect
-            options={commonStore.partnerTypes}
-            optionMap={{ label: value => partnerTypeTranslations[value] }}
-            name="type"
-            label="Partneri tüüp"
-          />
-          <TextInput name="name" label="Nimi" />
-          <TextInput name="regNr" label="Registrikood" />
-          <TextInput name="VATnr" label="KMK nr" />
-          <TextInput name="phoneNr" label="Telefoni number" />
-          <TextInput name="email" label="E-post" />
-          <TextInput name="address" label="Aadress" />
-          <TextInput name="postalCode" label="Postikood" />
-          <TextInput name="county" label="Maakond" />
-          <TextInput name="country" label="Riik" />
+          <TextInput name="name" label="Nimetus" />
+          <TextInput name="abbreviation" label="Lühend" />
         </Form>
       </ContentContainer>
       <FooterContainer style={{ padding: '0.5rem 1rem' }}>
@@ -91,4 +72,4 @@ const PartnerForm = observer(() => {
   );
 });
 
-export default PartnerForm;
+export default UnitForm;

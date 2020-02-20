@@ -185,6 +185,7 @@ const PurchaseItemForm: React.FC<PurchaseItemFormProps> = observer(
             initialValues={initialValues}
             onSubmit={handleSubmit}
             onChange={handleTypeSelect}
+            persist
           >
             <>
               <AriaSelect

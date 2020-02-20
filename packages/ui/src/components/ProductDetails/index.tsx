@@ -18,18 +18,12 @@ const ProductDetails: React.FC<ProductItem & RouteComponentProps> = props => {
 
   useEffect(() => {
     const handleItemLoading = async () => {
-      const location: any = props.location;
+      const match: any = props.match;
+      const { id } = match.params;
 
-      if (location.product) {
-        setProduct(location.product);
-      } else {
-        const match: any = props.match;
-        const { id } = match.params;
-
-        if (id !== undefined) {
-          const product = await itemStore.fetchProduct(id);
-          setProduct(product);
-        }
+      if (id !== undefined) {
+        const product = await itemStore.fetchProduct(id);
+        setProduct(product);
       }
     };
 
