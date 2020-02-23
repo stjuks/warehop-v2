@@ -17,8 +17,14 @@ class WarehouseStore {
 
   @task
   addWarehouse = async (warehouse: AddWarehouseInput) => {
-    await api.addWarehouse(warehouse);
-  }
+    const id = await api.addWarehouse(warehouse);
+    const newWarehouse: Warehouse = {
+      ...warehouse,
+      id
+    };
+
+    this.warehouses.push(newWarehouse);
+  };
 }
 
 const WarehouseStoreContext: React.Context<WarehouseStore> = createContext(new WarehouseStore());

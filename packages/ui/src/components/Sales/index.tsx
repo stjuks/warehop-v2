@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { FiPlusCircle, FiSliders, FiRefreshCw } from 'react-icons/fi';
+import { FiPlusCircle, FiRefreshCw } from 'react-icons/fi';
 import { observer } from 'mobx-react-lite';
 import { InvoiceSearchInput } from '@shared/types';
 
 import ContentContainer from '@ui/components/util/ContentContainer';
 import { SortingContainer, NewItemButtonContainer } from '../Products/styles';
-import history from '../../util/history';
 import routes from '../../util/routes';
 import InvoiceStoreContext from '../../stores/InvoiceStore';
 
@@ -14,16 +13,18 @@ import HeaderSearch from '../HeaderSearch';
 import Radio from '../Radio';
 import InvoiceItem from '../InvoiceItem';
 import { LoadMoreButton } from './styles';
+import UIStoreContext from '@ui/stores/UIStore';
 
 const Purchases = observer(() => {
   const [paidFilter, setPaidFilter] = useState(undefined);
   const [searchQuery, setSearchQuery] = useState('');
 
   const invoiceStore = useContext(InvoiceStoreContext);
+  const uiStore = useContext(UIStoreContext);
 
   const headerIcons = [
     <HeaderSearch onChange={setSearchQuery} placeholder="Otsi arvet" />,
-    <NewItemButtonContainer onClick={() => history.push(routes.purchaseForm)}>
+    <NewItemButtonContainer onClick={() => uiStore.setRoute(routes.purchaseForm)}>
       <FiPlusCircle />
     </NewItemButtonContainer>
   ];

@@ -1,17 +1,10 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { withRouter } from 'react-router-dom';
-import moment from 'moment';
-import currency from 'currency.js';
-import { observer } from 'mobx-react-lite';
-import Modal from '../Modal';
-import routes from '../../util/routes';
-import history from '../../util/history';
 import Form from '../Form';
 import * as yup from 'yup';
 
 import TextInput from '../Form/TextInput';
-import DateInput from '../Form/DateInput';
-import { Invoice, AddWarehouseInput, Warehouse } from '@shared/types';
+import { AddWarehouseInput, Warehouse } from '@shared/types';
 import Header from '../Header';
 import { ContentContainer } from '../App/styles';
 import { FooterContainer } from '../Footer/styles';
@@ -53,7 +46,7 @@ const WarehouseForm: React.FC<WarehouseFormProps & RouteChildrenProps> = ({
 
   return (
     <>
-      <Header title="Uus ladu" onBack={() => uiStore.closeModal()} />
+      <Header title="Uus ladu" backTo />
       <ContentContainer>
         <Form
           id="warehouse-form"
@@ -61,11 +54,13 @@ const WarehouseForm: React.FC<WarehouseFormProps & RouteChildrenProps> = ({
           initialValues={initialValues}
           onSubmit={handleSubmit}
         >
-          <FormError messages={{
-            EntityAlreadyExistsError: {
-              name: 'Sellise nimega ladu on juba olemas.'
-            }
-          }}/>
+          <FormError
+            messages={{
+              EntityAlreadyExistsError: {
+                name: 'Sellise nimega ladu on juba olemas.'
+              }
+            }}
+          />
           <TextInput name="name" label="Nimetus" />
         </Form>
       </ContentContainer>

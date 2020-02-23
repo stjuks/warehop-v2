@@ -4,7 +4,6 @@ import { observer } from 'mobx-react-lite';
 
 import ContentContainer from '../util/ContentContainer';
 import { SortingContainer, NewItemButtonContainer } from './styles';
-import history from '../../util/history';
 import LoadMoreButton from '../util/LoadMoreButton';
 import routes from '../../util/routes';
 import { ItemQueryInput, Warehouse } from '@shared/types';
@@ -39,7 +38,7 @@ const Products = observer(() => {
 
   const headerIcons = [
     <HeaderSearch onChange={setSearchQuery} placeholder="Otsi kaupa" />,
-    <NewItemButtonContainer onClick={() => history.push(routes.productForm)}>
+    <NewItemButtonContainer onClick={() => uiStore.setRoute(routes.productForm)}>
       <FiPlusCircle />
     </NewItemButtonContainer>
   ];

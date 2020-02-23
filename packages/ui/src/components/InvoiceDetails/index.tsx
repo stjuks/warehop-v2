@@ -1,7 +1,6 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { Invoice, AddTransactionInput } from '@shared/types';
 import routes from '@ui/util/routes';
-import history from '@ui/util/history';
 import InvoiceStoreContext from '@ui/stores/InvoiceStore';
 import UIStoreContext from '@ui/stores/UIStore';
 import currency from 'currency.js';

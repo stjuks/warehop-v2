@@ -1,9 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { withRouter } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
-import Modal from '../Modal';
-import routes from '../../util/routes';
-import history from '../../util/history';
 import Form from '../Form';
 import * as yup from 'yup';
 
@@ -20,7 +16,6 @@ import { filterObjectProperties } from '../../util/helpers';
 import { itemTypeTranslations } from '../../util/translations';
 import CommonStoreContext from '../../stores/CommonStore';
 import UIStoreContext from '@ui/stores/UIStore';
-import { RouteChildrenProps } from 'react-router';
 import WarehouseStoreContext from '../../stores/WarehouseStore';
 import UnitSelect from '../util/inputs/UnitSelect';
 
@@ -177,7 +172,7 @@ const PurchaseItemForm: React.FC<PurchaseItemFormProps> = observer(
 
     return (
       <>
-        <Header title={headerTitle} onBack={() => uiStore.closeModal()} />
+        <Header title={headerTitle} backTo />
         <ContentContainer>
           <Form
             id="new-purchase-item-form"

@@ -3,7 +3,6 @@ import { observer } from 'mobx-react-lite';
 import * as yup from 'yup';
 
 import routes from '@ui/util/routes';
-import history from '@ui/util/history';
 import PartnerStoreContext from '@ui/stores/PartnerStore';
 
 import Header from '../Header';
@@ -17,10 +16,12 @@ import AriaSelect from '../Form/AriaSelect';
 import { partnerTypeTranslations } from '@ui/util/translations';
 import TextInput from '../Form/TextInput';
 import FormError from '../Form/FormError';
+import UIStoreContext from '@ui/stores/UIStore';
 
 const PartnerForm = observer(() => {
   const partnerStore = useContext(PartnerStoreContext);
   const commonStore = useContext(CommonStoreContext);
+  const uiStore = useContext(UIStoreContext);
 
   const initialValues: Partner = {
     name: '',
@@ -43,7 +44,7 @@ const PartnerForm = observer(() => {
   const handleSubmit = async (partner: Partner) => {
     try {
       await partnerStore.addPartner(partner);
-      history.push(routes.partners);
+      uiStore.goBack(routes.partners);
     } catch (err) {
       throw err;
     }
@@ -51,7 +52,7 @@ const PartnerForm = observer(() => {
 
   return (
     <>
-      <Header title="Uus partner" onBack={() => history.goBack()} />
+      <Header title="Uus partner" backTo={routes.partners} />
       <ContentContainer>
         <Form
           id="new-partner-form"

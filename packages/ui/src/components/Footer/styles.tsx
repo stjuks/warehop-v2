@@ -28,7 +28,7 @@ export const FooterItemContainer = styled.div`
   }
 
   ${({ theme }) => `
-        color: ${theme.colors.text};
+        * { color: ${theme.colors.text}; }
     `}
 `;
 

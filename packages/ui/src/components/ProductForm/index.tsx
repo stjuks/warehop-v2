@@ -2,7 +2,6 @@ import React, { useContext, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import * as yup from 'yup';
 import { FiTrash2, FiPlusCircle } from 'react-icons/fi';
-import history from '@ui/util/history';
 
 import routes from '../../util/routes';
 import WarehouseStoreContext from '../../stores/WarehouseStore';
@@ -21,12 +20,12 @@ import PartnerSelect from '../util/inputs/PartnerSelect';
 import AriaSelect from '../Form/AriaSelect';
 import { Row } from '../Layout/styles';
 import FieldArray from '../Form/util/FieldArray';
-import CommonStoreContext from '@ui/stores/CommonStore';
-import PartnerStoreContext from '@ui/stores/PartnerStore';
 import FormError from '../Form/FormError';
+import UIStoreContext from '@ui/stores/UIStore';
 
 const ProductForm = observer(() => {
   const itemStore = useContext(ItemStoreContext);
+  const uiStore = useContext(UIStoreContext);
 
   const initialValues: ProductItem = {
     type: 'PRODUCT',
@@ -67,7 +66,7 @@ const ProductForm = observer(() => {
   const handleSubmit = async (item: ProductItem) => {
     try {
       await itemStore.addProduct(item);
-      history.goBack();
+      uiStore.goBack(routes.products);
     } catch (err) {
       throw err;
     }

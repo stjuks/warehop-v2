@@ -5,7 +5,6 @@ import { LoadMoreButton } from '../Purchases/styles';
 
 import ContentContainer from '../util/ContentContainer';
 import { SortingContainer, NewItemButtonContainer } from './styles';
-import history from '@ui/util/history';
 import routes from '@ui/util/routes';
 
 import Radio from '../Radio';
@@ -14,16 +13,18 @@ import HeaderSearch from '../HeaderSearch';
 import PartnerStoreContext from '@ui/stores/PartnerStore';
 import PartnerListItem from '../PartnerListItem';
 import { PartnerType, SearchPartnerInput } from '@shared/types';
+import UIStoreContext from '@ui/stores/UIStore';
 
 const Partners = observer(() => {
   const partnerStore = useContext(PartnerStoreContext);
+  const uiStore = useContext(UIStoreContext);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [partnerType, setPartnerType] = useState<PartnerType>('CLIENT');
 
   const headerIcons = [
     <HeaderSearch onChange={setSearchQuery} placeholder="Otsi partnerit" />,
-    <NewItemButtonContainer onClick={() => history.push(routes.partnerForm)}>
+    <NewItemButtonContainer onClick={() => uiStore.setRoute(routes.partnerForm)}>
       <FiPlusCircle />
     </NewItemButtonContainer>
   ];

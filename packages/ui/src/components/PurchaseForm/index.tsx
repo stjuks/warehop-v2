@@ -1,12 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { observer, useObserver } from 'mobx-react-lite';
+import React, { useContext } from 'react';
+import { observer } from 'mobx-react-lite';
 import moment from 'moment';
 import * as yup from 'yup';
 
 import routes from '../../util/routes';
-import history from '../../util/history';
 import { AddPurchaseItemBtn } from './styles';
-import PartnerStoreContext from '../../stores/PartnerStore';
 import InvoiceStoreContext from '../../stores/InvoiceStore';
 
 import Header from '../Header';
@@ -16,18 +14,14 @@ import { Partner, InvoiceItem, InvoiceType } from '@shared/types';
 import Form from '../Form';
 import FieldArray from '../Form/util/FieldArray';
 import InvoiceItemListItem from '../InvoiceItemListItem';
-import { Route } from 'react-router';
 import PurchaseItemForm from '../PurchaseItemForm';
-import AriaSelect from '../Form/AriaSelect';
 import TextInput from '../Form/TextInput';
 import PartnerSelect from '../util/inputs/PartnerSelect';
 import { Row } from '../Layout/styles';
 import FileInput from '../Form/FileInput';
 import DateInput from '../Form/DateInput';
 import { FormTitle } from '../Form/styles';
-import { mapSelectOptions } from '../../util/helpers';
 import FormError from '../Form/FormError';
-import { FiPlusCircle } from 'react-icons/fi';
 import UIStoreContext from '@ui/stores/UIStore';
 import ContentContainer from '../util/ContentContainer';
 
@@ -44,6 +38,7 @@ interface PurchaseFormFormValues {
 
 const PurchaseForm = observer(() => {
   const invoiceStore = useContext(InvoiceStoreContext);
+  const uiStore = useContext(UIStoreContext);
 
   const initialValues: PurchaseFormFormValues = {
     type: 'PURCHASE',
@@ -67,7 +62,7 @@ const PurchaseForm = observer(() => {
   const handleSubmit = async purchase => {
     try {
       await invoiceStore.addInvoice(purchase);
-      history.push(routes.purchases);
+      uiStore.goBack(routes.purchases);
     } catch (err) {
       throw err;
     }

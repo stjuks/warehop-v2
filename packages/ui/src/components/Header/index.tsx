@@ -1,20 +1,23 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { FiChevronLeft } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 
 import { HeaderContainer, IconsContainer, TitleContainer } from './styles';
+import { observer } from 'mobx-react-lite';
+import UIStoreContext from '@ui/stores/UIStore';
 
 interface HeaderProps {
   title: string;
-  backTo?: string;
-  onBack?: () => any;
+  backTo?: string | boolean;
   components?: React.ReactElement[];
 }
 
-const Header: React.FC<HeaderProps> = ({ title, components, backTo, onBack }) => {
+const Header: React.FC<HeaderProps> = observer(({ title, components, backTo }) => {
+  const uiStore = useContext(UIStoreContext);
+
   let titleComponent = (
     <>
-      {(onBack || backTo) && (
+      {backTo && (
         <span className="icon-container">
           <FiChevronLeft className="icon" />
         </span>
@@ -23,17 +26,11 @@ const Header: React.FC<HeaderProps> = ({ title, components, backTo, onBack }) =>
     </>
   );
 
+  const backRoute = typeof backTo === 'string' ? backTo : undefined;
+
   if (backTo) {
     titleComponent = (
-      <Link to={backTo} className="back-button">
-        {titleComponent}
-      </Link>
-    );
-  }
-
-  if (onBack) {
-    titleComponent = (
-      <button onClick={onBack} className="back-button">
+      <button onClick={() => uiStore.goBack(backRoute)} className="back-button">
         {titleComponent}
       </button>
     );
@@ -48,6 +45,6 @@ const Header: React.FC<HeaderProps> = ({ title, components, backTo, onBack }) =>
       </IconsContainer>
     </HeaderContainer>
   );
-};
+});
 
 export default Header;
