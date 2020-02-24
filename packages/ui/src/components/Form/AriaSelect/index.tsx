@@ -174,7 +174,6 @@ const InputComponent: React.FC<any> = observer(
     isLoadingSearch,
     action
   }) => {
-    const searchInputRef = useRef<HTMLInputElement>(null);
 
     const handleActionKeyDown = (e: KeyboardEvent) => {
       e.preventDefault();
@@ -213,7 +212,6 @@ const InputComponent: React.FC<any> = observer(
                 placeholder={searchPlaceholder || 'Otsi'}
                 onChange={handleSearch}
                 value={searchQuery}
-                ref={searchInputRef}
               />
               {isLoadingSearch && <Loader />}
             </SearchContainer>

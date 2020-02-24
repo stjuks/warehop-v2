@@ -156,7 +156,7 @@ const PurchaseItemForm: React.FC<PurchaseItemFormProps> = observer(
         arrayHelpers.push(filteredValues);
       }
 
-      uiStore.closeModal();
+      uiStore.goBack();
     };
 
     const handleTypeSelect = ({ changedField, formik }) => {

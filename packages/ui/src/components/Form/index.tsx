@@ -63,17 +63,15 @@ const Form: React.FC<React.PropsWithChildren<FormProps>> = observer(
       return initialValues;
     };
 
-    if (persist) {
-      useDebounce(
-        () => {
-          if (Object.keys(values).length > 0) {
-            localStorage.setItem(id, JSON.stringify(values));
-          }
-        },
-        500,
-        [values]
-      );
-    }
+    useDebounce(
+      () => {
+        if (Object.keys(values).length > 0) {
+          localStorage.setItem(id, JSON.stringify(values));
+        }
+      },
+      500,
+      [persist ? values : undefined]
+    );
 
     return (
       <Formik

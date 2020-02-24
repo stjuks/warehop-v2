@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { FiMoreVertical, FiEdit, FiTrash2 } from 'react-icons/fi';
+import currency from 'currency.js';
 
 import { TitleContainer, DetailCardContainer, DetailLabel, WarehouseRowContainer } from './styles';
 
@@ -49,7 +50,8 @@ const ProductDetails: React.FC<ProductItem & RouteComponentProps> = props => {
           <span>Kustuta</span>
         </>
       ),
-      onClick: () => console.log('delete')
+      onClick: () =>
+        uiStore.openModal(<div onClick={() => uiStore.goBack()}>Kas soovid kustutada?</div>)
     }
   ];
 
@@ -75,11 +77,11 @@ const ProductDetails: React.FC<ProductItem & RouteComponentProps> = props => {
               <div className="row">
                 <div className="detail">
                   <div className="detail-label">Ostuhind</div>
-                  <div className="detail-value">{product.purchasePrice}€</div>
+                  <div className="detail-value">{currency(product.purchasePrice).toString()}€</div>
                 </div>
                 <div className="detail">
                   <div className="detail-label">Müügihind</div>
-                  <div className="detail-value">{product.retailPrice}€</div>
+                  <div className="detail-value">{currency(product.retailPrice).toString()}€</div>
                 </div>
                 <div className="detail">
                   <div className="detail-label">Ühik</div>

@@ -55,7 +55,7 @@ class UIStore {
   };
 
   @action
-  closeModal = () => {
+  private closeModal = () => {
     this.modals.pop();
   };
 }
