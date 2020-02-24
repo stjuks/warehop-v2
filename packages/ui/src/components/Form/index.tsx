@@ -48,15 +48,17 @@ const Form: React.FC<React.PropsWithChildren<FormProps>> = observer(
       }
     };
 
-    const handleChange = (values) => {
+    const handleChange = values => {
       if (onChange) onChange(values);
       setValues(values.nextValues);
     };
 
     const handleInitialValues = () => {
-      let savedValues = localStorage.getItem(id);
+      if (persist) {
+        let savedValues = localStorage.getItem(id);
 
-      if (savedValues) return JSON.parse(savedValues);
+        if (savedValues) return JSON.parse(savedValues);
+      }
 
       return initialValues;
     };

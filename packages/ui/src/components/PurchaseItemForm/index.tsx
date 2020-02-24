@@ -18,6 +18,7 @@ import CommonStoreContext from '../../stores/CommonStore';
 import UIStoreContext from '@ui/stores/UIStore';
 import WarehouseStoreContext from '../../stores/WarehouseStore';
 import UnitSelect from '../util/inputs/UnitSelect';
+import ItemStoreContext from '@ui/stores/ItemStore';
 
 interface PurchaseItemFormProps {
   arrayHelpers: any;
@@ -74,8 +75,8 @@ const forms = {
 };
 
 const ItemForm = ({ type }: { type: ItemType }) => {
-  const commonStore = useContext(CommonStoreContext);
   const warehouseStore = useContext(WarehouseStoreContext);
+  const itemStore = useContext(ItemStoreContext);
 
   // autofill fields on select
   const handleAutosuggestSelect = ({ suggestion, formik }) => {
@@ -94,14 +95,14 @@ const ItemForm = ({ type }: { type: ItemType }) => {
         <AutosuggestInput
           name="code"
           label="Kood"
-          getSuggestions={query => []}
+          getSuggestions={query => itemStore.fetchProducts({ code: query })}
           suggestionMap={{ label: item => item.code }}
           onSelect={handleAutosuggestSelect}
         />
         <AutosuggestInput
           name="name"
           label="Nimetus"
-          getSuggestions={query => []}
+          getSuggestions={query => itemStore.fetchProducts({ name: query })}
           suggestionMap={{ label: item => item.name }}
           onSelect={handleAutosuggestSelect}
         />

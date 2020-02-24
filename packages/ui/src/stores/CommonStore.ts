@@ -30,6 +30,7 @@ class CommonStore {
     unit.id = unitId;
 
     this.units.push(unit);
+    console.log(this.units);
   };
 
   @task

@@ -38,7 +38,7 @@ const UnitForm = observer(() => {
 
   return (
     <>
-      <Header title="Uus Ühik" backTo />
+      <Header title="Uus ühik" backTo />
       <ContentContainer>
         <Form
           id="unit-form"
@@ -60,7 +60,7 @@ const UnitForm = observer(() => {
         </Form>
       </ContentContainer>
       <FooterContainer style={{ padding: '0.5rem 1rem' }}>
-        <Button title="Lisa partner" form="new-partner-form" />
+        <Button title="Lisa ühik" form="unit-form" />
       </FooterContainer>
     </>
   );

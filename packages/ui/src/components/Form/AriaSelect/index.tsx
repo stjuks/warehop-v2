@@ -243,11 +243,8 @@ const InputComponent: React.FC<any> = observer(
   }
 );
 
-const AriaSelect: React.FC<AriaSelectProps> = ({ noFormik, ...restProps }) =>
-  noFormik ? (
-    <AriaSelectBase {...restProps} />
-  ) : (
-    <Field {...restProps} component={AriaSelectBase} />
-  );
+const AriaSelect: React.FC<AriaSelectProps> = observer(({ noFormik, ...restProps }) =>
+  noFormik ? <AriaSelectBase {...restProps} /> : <Field {...restProps} component={AriaSelectBase} />
+);
 
 export default AriaSelect;

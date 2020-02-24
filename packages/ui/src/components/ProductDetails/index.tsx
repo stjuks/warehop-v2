@@ -1,19 +1,21 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { FiMoreHorizontal, FiEdit, FiTrash2 } from 'react-icons/fi';
+import { FiMoreVertical, FiEdit, FiTrash2 } from 'react-icons/fi';
 
 import { TitleContainer, DetailCardContainer, DetailLabel, WarehouseRowContainer } from './styles';
-import { theme } from '@ui/util/styled';
 
 import Header from '../Header';
-import { MenuPopover } from '../Popover';
 import { ProductItem } from '@shared/types';
 import routes from '../../util/routes';
 import { ContentContainer } from '../App/styles';
 import ItemStoreContext from '@ui/stores/ItemStore';
 import { RouteComponentProps } from 'react-router';
+import DropdownMenu from '../DropdownMenu';
+import UIStoreContext from '@ui/stores/UIStore';
 
 const ProductDetails: React.FC<ProductItem & RouteComponentProps> = props => {
   const itemStore = useContext(ItemStoreContext);
+  const uiStore = useContext(UIStoreContext);
+
   const [product, setProduct] = useState<ProductItem>();
 
   useEffect(() => {
@@ -30,45 +32,28 @@ const ProductDetails: React.FC<ProductItem & RouteComponentProps> = props => {
     handleItemLoading();
   }, []);
 
-  const headerIcons = [
-    <MenuPopover
-      options={[
-        {
-          label: (
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center'
-              }}
-            >
-              <FiEdit style={{ margin: '0 0.25rem 0.1rem 0' }} />
-              Muuda
-            </div>
-          ),
-          onClick: () => null
-        },
-        {
-          label: (
-            <div
-              style={{
-                color: theme.colors.danger.toString(),
-                display: 'flex',
-                alignItems: 'center'
-              }}
-            >
-              <FiTrash2 style={{ margin: '0 0.25rem 0.1rem 0' }} />
-              Kustuta
-            </div>
-          ),
-          onClick: () => null
-        }
-      ]}
-      position="bottom"
-      closeContentOnClick
-    >
-      <FiMoreHorizontal />
-    </MenuPopover>
+  const dropdownOptions = [
+    {
+      label: (
+        <>
+          <FiEdit />
+          <span>Muuda</span>
+        </>
+      ),
+      onClick: () => uiStore.setRoute(routes.productForm, { state: product })
+    },
+    {
+      label: (
+        <>
+          <FiTrash2 />
+          <span>Kustuta</span>
+        </>
+      ),
+      onClick: () => console.log('delete')
+    }
   ];
+
+  const headerIcons = [<DropdownMenu button={<FiMoreVertical />} options={dropdownOptions} />];
 
   return (
     <>

@@ -116,7 +116,11 @@ export const ADD_ITEM = gql`
 
 export const DELETE_ITEM = ``;
 
-export const EDIT_ITEM = ``;
+export const EDIT_ITEM = gql`
+  mutation editItem($id: ID!, $item: ItemInput!) {
+    editItem(id: $id, item: $item)
+  }
+`;
 
 export default {
   fetchProduct: async (id: number) =>
@@ -129,5 +133,6 @@ export default {
   addItem: async (itemInput: ItemInput) =>
     await mutate<number>({ mutation: ADD_ITEM, variables: itemInput }),
   deleteItem: () => null,
-  editItem: () => null
+  editItem: async (id: number, item: ItemInput) =>
+    await mutate<boolean>({ mutation: EDIT_ITEM, variables: { id, item } })
 };

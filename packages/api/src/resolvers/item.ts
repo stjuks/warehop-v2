@@ -54,12 +54,11 @@ const resolver: Resolver = {
       return await models.Item.destroy({ where: { id, userId: user.id } });
     }),
     editItem: authResolver(async ({ id, item }, { models, user }) => {
-      const [, [editedItem]] = await models.Item.update(item, {
-        where: { id, userId: user.id },
-        returning: true
+      const [isEdited] = await models.Item.update(item, {
+        where: { id, userId: user.id }
       });
 
-      return editedItem;
+      return isEdited;
     })
   },
   Item: {

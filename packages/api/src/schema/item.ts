@@ -81,6 +81,6 @@ export default gql`
   extend type Mutation {
     addItem(item: ItemInput!): ID!
     deleteItem(id: ID!): Boolean!
-    editItem(id: ID!, item: ItemInput): Item
+    editItem(id: ID!, item: ItemInput!): Boolean!
   }
 `;

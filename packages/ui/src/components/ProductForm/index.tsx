@@ -22,12 +22,21 @@ import { Row } from '../Layout/styles';
 import FieldArray from '../Form/util/FieldArray';
 import FormError from '../Form/FormError';
 import UIStoreContext from '@ui/stores/UIStore';
+import { RouteComponentProps } from 'react-router';
 
-const ProductForm = observer(() => {
+interface ProductFormProps {
+  location: {
+    state?: ProductItem;
+  };
+}
+
+const ProductForm: React.FC<ProductFormProps> = observer(props => {
   const itemStore = useContext(ItemStoreContext);
   const uiStore = useContext(UIStoreContext);
 
-  const initialValues: ProductItem = {
+  const isEditing = props.location.state !== undefined;
+
+  const initialValues: ProductItem = props.location.state || {
     type: 'PRODUCT',
     code: '',
     name: '',
@@ -65,7 +74,8 @@ const ProductForm = observer(() => {
 
   const handleSubmit = async (item: ProductItem) => {
     try {
-      await itemStore.addProduct(item);
+      if (isEditing) await itemStore.editProduct(item);
+      else await itemStore.addProduct(item);
       uiStore.goBack(routes.products);
     } catch (err) {
       throw err;
@@ -74,14 +84,14 @@ const ProductForm = observer(() => {
 
   return (
     <>
-      <Header title="Uus kaup" backTo={routes.products} />
+      <Header title={isEditing ? 'Muuda kaupa' : 'Uus kaup'} backTo={routes.products} />
       <ProductFormContainer>
         <Form
           id="new-product-form"
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
-          persist
+          persist={!isEditing}
         >
           {formikProps => (
             <>
@@ -93,7 +103,8 @@ const ProductForm = observer(() => {
                 ]}
                 messages={{
                   EntityAlreadyExistsError: {
-                    code: 'Sellise koodiga kaup juba eksisteerib.'
+                    code: 'Sellise koodiga kaup juba eksisteerib.',
+                    name: 'Sellise nimega kaup juba eksisteerib.'
                   }
                 }}
               />
@@ -109,13 +120,13 @@ const ProductForm = observer(() => {
         </Form>
       </ProductFormContainer>
       <FooterContainer style={{ padding: '0.5rem 1rem' }}>
-        <Button title="Lisa kaup" form="new-product-form" />
+        <Button title={isEditing ? 'Muuda kaupa' : 'Lisa kaup'} form="new-product-form" />
       </FooterContainer>
     </>
   );
 });
 
-const FormFields: React.FC = observer(() => {
+const FormFields: React.FC = () => {
   return (
     <>
       <FormTitle>Põhiandmed</FormTitle>
@@ -131,7 +142,7 @@ const FormFields: React.FC = observer(() => {
       <TextInput name="description" label="Märkused" isTextarea />
     </>
   );
-});
+};
 
 const filterChosenWarehouseOptions = (formValues: WarehouseQuantity[], warehouses: Warehouse[]) => {
   return warehouses.filter(
@@ -145,7 +156,7 @@ const findFirstNonChosenWarehouse = (formValues: WarehouseQuantity[], warehouses
   );
 };
 
-const WarehouseFields: React.FC<any> = observer(({ formikProps, arrayHelpers }) => {
+const WarehouseFields: React.FC<any> = ({ formikProps, arrayHelpers }) => {
   const warehouseStore = useContext(WarehouseStoreContext);
   const { warehouseQuantity } = formikProps.values;
   const { warehouses } = warehouseStore;
@@ -185,6 +196,6 @@ const WarehouseFields: React.FC<any> = observer(({ formikProps, arrayHelpers }) 
       )}
     </>
   );
-});
+};
 
 export default ProductForm;

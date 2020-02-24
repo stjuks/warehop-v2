@@ -21,8 +21,8 @@ class UIStore {
   }
 
   @action
-  setRoute = (route: string) => {
-    history.push(route);
+  setRoute = (route: string, historyOptions?: object) => {
+    history.push({ ...historyOptions, pathname: route });
     this.routeHistory.push(route);
   };
 

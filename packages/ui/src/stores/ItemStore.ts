@@ -1,7 +1,7 @@
 import { observable, computed } from 'mobx';
 import { task } from 'mobx-task';
 import { createContext } from 'react';
-import { ProductItem, ExpenseItem, AddItemInput, ItemQueryInput } from '@shared/types';
+import { ProductItem, ExpenseItem, AddItemInput, ItemQueryInput, ItemInput } from '@shared/types';
 import api from '../api';
 import { paginatedData } from '../util/helpers';
 import { uiStore } from './UIStore';
@@ -28,6 +28,8 @@ class ItemStore {
     uiStore.setLoading(false);
 
     this.paginatedProducts = products;
+
+    return products.data;
   };
 
   @task
@@ -56,6 +58,21 @@ class ItemStore {
     uiStore.setLoading(false);
 
     return product;
+  };
+
+  @task
+  editProduct = async (item: ProductItem) => {
+    const itemInput = {
+      ...item,
+      partnerId: item.partner?.id,
+      unitId: item.unit.id
+    };
+
+    delete itemInput.unit;
+    delete itemInput.partner;
+    delete itemInput.id;
+
+    if (item.id) await api.editItem(item.id, itemInput);
   };
 
   @task
