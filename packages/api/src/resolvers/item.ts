@@ -53,13 +53,49 @@ const resolver: Resolver = {
     deleteItem: authResolver(async ({ id }, { models, user }) => {
       return await models.Item.destroy({ where: { id, userId: user.id } });
     }),
-    editItem: authResolver(async ({ id, item }, { models, user }) => {
-      const [isEdited] = await models.Item.update(item, {
-        where: { id, userId: user.id }
-      });
+    editItem: authResolver(
+      async ({ id, item }: { id: number; item: ItemInput }, { models, user, sequelize }) => {
+        const transaction = await sequelize.transaction();
 
-      return isEdited;
-    })
+        try {
+          const [isEdited] = await models.Item.update(item, {
+            where: { id, userId: user.id },
+            transaction
+          });
+
+          if (isEdited) {
+            console.log('1');
+            await models.WarehouseItem.destroy({
+              where: { itemId: id, userId: user.id },
+              transaction
+            });
+            console.log('2');
+
+            await models.WarehouseItem.bulkCreate(
+              item.warehouseQuantity.map(quantity => ({
+                ...quantity,
+                itemId: id,
+                userId: user.id,
+                warehouseId: quantity.id
+              })),
+              {
+                transaction
+              }
+            );
+            console.log('3');
+
+            await transaction.commit();
+
+            return isEdited;
+          }
+
+          throw new Error('No such item.');
+        } catch (err) {
+          transaction.rollback();
+          throw err;
+        }
+      }
+    )
   },
   Item: {
     __resolveType: item => (item.type === 'PRODUCT' ? 'ProductItem' : 'ExpenseItem')
