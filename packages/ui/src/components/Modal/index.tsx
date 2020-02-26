@@ -10,7 +10,15 @@ const Modal: React.FC = observer(() => {
   const isOpen = uiStore.modals.length > 0;
   const content = isOpen ? uiStore.modals[uiStore.modals.length - 1] : null;
 
-  return <ModalContainer isOpen={isOpen}>{content}</ModalContainer>;
+  return (
+    <ModalContainer
+      isOpen={isOpen}
+      shouldCloseOnOverlayClick={true}
+      onRequestClose={() => uiStore.goBack()}
+    >
+      {content}
+    </ModalContainer>
+  );
 });
 
 export default Modal;

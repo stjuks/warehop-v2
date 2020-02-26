@@ -12,6 +12,7 @@ import ItemStoreContext from '@ui/stores/ItemStore';
 import { RouteComponentProps } from 'react-router';
 import DropdownMenu from '../DropdownMenu';
 import UIStoreContext from '@ui/stores/UIStore';
+import ConfirmationDialog from '../ConfirmationDialog';
 
 const ProductDetails: React.FC<ProductItem & RouteComponentProps> = props => {
   const itemStore = useContext(ItemStoreContext);
@@ -51,7 +52,12 @@ const ProductDetails: React.FC<ProductItem & RouteComponentProps> = props => {
         </>
       ),
       onClick: () =>
-        uiStore.openModal(<div onClick={() => uiStore.goBack()}>Kas soovid kustutada?</div>)
+        uiStore.openModal(
+          <ConfirmationDialog
+            title="Kas oled kindel, et soovid kauba kustutada?"
+            onConfirm={() => console.log('delete')}
+          />
+        )
     }
   ];
 

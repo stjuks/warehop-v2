@@ -7,23 +7,23 @@ interface ContentContainerStyledProps {
 
 export const ContentContainerStyled = styled.div<ContentContainerStyledProps>`
   ${({ theme, padded }) => `
-        background: ${theme.colors.lightGrey};
-        flex: 1;
-        overflow: auto;
-        position: relative;
-        ${padded ? 'padding: 1rem;' : ''}
-    `}
+    background: ${theme.colors.lightGrey};
+    flex: 1;
+    overflow: auto;
+    position: relative;
+    ${padded ? 'padding: 1rem;' : ''}
+  `}
 `;
 
 export const LoadingOverlay = styled.div`
   ${({ theme }) => `
-        background: ${theme.colors.lightGrey.opacity(0.75)};
+    background: ${theme.colors.lightGrey.opacity(0.75)};
 
-        .loading-message {
-            font-family: 'Roboto', sans-serif;
-            color: ${theme.colors.lightText};
-        }
-    `}
+    .loading-message {
+        font-family: 'Roboto', sans-serif;
+        color: ${theme.colors.lightText};
+    }
+  `}
   position: absolute;
   top: 0;
   bottom: 0;

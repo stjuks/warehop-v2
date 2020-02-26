@@ -32,7 +32,8 @@ export const theme = {
     text: new Color('#062047'),
     lightText: new Color('#6D7878'),
     midGrey: new Color('#F0F0F0'),
-    darkGrey: new Color('#D0D0D0')
+    darkGrey: new Color('#D0D0D0'),
+    black: new Color('#000')
   }
 };
 
