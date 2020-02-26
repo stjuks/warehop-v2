@@ -54,7 +54,11 @@ const ProductDetails: React.FC<ProductItem & RouteComponentProps> = props => {
       onClick: () =>
         uiStore.openModal(
           <ConfirmationDialog
+            icon={<FiTrash2 />}
+            type="danger"
+            confirmText="Kustuta"
             title="Kas oled kindel, et soovid kauba kustutada?"
+            description="Kaupa saab kustutada vaid siis, kui see ei sisaldu üheski arves."
             onConfirm={() => console.log('delete')}
           />
         )

@@ -34,6 +34,9 @@ export const theme = {
     midGrey: new Color('#F0F0F0'),
     darkGrey: new Color('#D0D0D0'),
     black: new Color('#000')
+  },
+  devices: {
+    mobileL: '425px'
   }
 };
 
