@@ -55,9 +55,9 @@ const ProductForm: React.FC<ProductFormProps> = observer(props => {
   const validationSchema = yup.object({
     code: yup.string().required('Palun sisesta kauba kood.'),
     name: yup.string().required('Palun sisesta kauba nimetus.'),
-    purchasePrice: yup.number(),
-    retailPrice: yup.number(),
-    description: yup.string(),
+    purchasePrice: yup.string().nullable(),
+    retailPrice: yup.string().nullable(),
+    description: yup.string().nullable(),
     warehouseQuantity: yup
       .array()
       .of(

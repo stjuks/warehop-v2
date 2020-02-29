@@ -109,6 +109,7 @@ export const SearchInput = styled.input`
         font-size: 1rem;
         font-weight: 500;
         flex: 1;
+        min-width: 0;
 
         ::placeholder {
           font-weight: 400;

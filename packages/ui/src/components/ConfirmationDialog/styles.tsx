@@ -17,6 +17,7 @@ export const ConfirmationDialogContainer = styled.div<ConfirmationDialogContaine
     padding: 1.5rem;
     border-radius: 0.25rem;
     margin: 1rem;
+    color: ${theme.colors.lightText};
 
     .dialog-icon {
       width: 6rem;
@@ -40,10 +41,10 @@ export const ConfirmationDialogContainer = styled.div<ConfirmationDialogContaine
     .dialog-title {
       font-size: 1.25rem;
       font-weight: 500;
+      color: ${theme.colors.text};
     }
 
     .dialog-description {
-      color: ${theme.colors.lightText};
       max-width: 75%;
       line-height: 1.5rem;
     }
