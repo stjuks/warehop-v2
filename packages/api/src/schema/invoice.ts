@@ -42,6 +42,7 @@ export default gql`
     isPaid: Boolean!
     paidSum: String!
     sum: String!
+    isLocked: Boolean!
     description: String
     filePath: String
   }
@@ -92,5 +93,7 @@ export default gql`
 
   extend type Mutation {
     addInvoice(invoice: InvoiceInput!): ID!
+    lockInvoice(id: ID!): Boolean!
+    unlockInvoice(id: ID!): Boolean!
   }
 `;

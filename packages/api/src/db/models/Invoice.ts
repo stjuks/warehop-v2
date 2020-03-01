@@ -73,6 +73,11 @@ export default class Invoice extends Model<Invoice> {
   filePath: string;
 
   @AllowNull(false)
+  @Default(false)
+  @Column
+  isLocked: boolean;
+
+  @AllowNull(false)
   @Default(0)
   @Column(DataType.DECIMAL(12, 4))
   paidSum: object;

@@ -21,8 +21,11 @@ import {
   FiEdit,
   FiChevronRight,
   FiArrowUp,
-  FiArrowDown
+  FiArrowDown,
+  FiUnlock,
+  FiLock
 } from 'react-icons/fi';
+import ConfirmationDialog from '../ConfirmationDialog';
 
 interface InvoiceDetailsProps {
   invoice?: Invoice;
@@ -52,6 +55,20 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
 
     handleInvoiceLoading();
   }, []);
+
+  const handleInvoiceLock = async () => {
+    try {
+      if (invoice?.isLocked) {
+        await invoiceStore.unlockInvoice(invoice?.id);
+      } else {
+        await invoiceStore.lockInvoice(invoice?.id);
+      }
+
+      if (invoice) setInvoice({ ...invoice, isLocked: !invoice.isLocked });
+    } catch (err) {
+      throw err;
+    }
+  };
 
   const sum = invoice ? currency(invoice.sum).toString() : null;
   const issueDate = invoice ? moment(invoice.issueDate).format('DD.MM.YYYY') : null;
@@ -107,6 +124,28 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
 
   const headerComponents = [<DropdownMenu button={<FiMoreVertical />} options={dropdownOptions} />];
 
+  const lockIcon = invoice?.isLocked ? <FiUnlock /> : <FiLock />;
+
+  headerComponents.unshift(
+    <button
+      type="button"
+      onClick={() =>
+        uiStore.openModal(
+          <ConfirmationDialog
+            title={`Kas oled kindel, et soovid arvet ${
+              invoice?.isLocked ? 'lukust lahti võtta' : 'lukustada'
+            }?`}
+            description={invoice?.isLocked ? 'Arve lukust lahti võtmine...' : 'Arve lukustamine...'}
+            icon={invoice?.isLocked ? <FiUnlock /> : <FiLock />}
+            onConfirm={handleInvoiceLock}
+          />
+        )
+      }
+    >
+      {lockIcon}
+    </button>
+  );
+
   const handleTransactionSubmit = (transaction: AddTransactionInput) => {
     if (invoice) {
       const paidSum = Number(invoice.paidSum) + Number(transaction.sum);
@@ -121,11 +160,7 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
 
   return (
     <>
-      <Header
-        title="Arve detailid"
-        backTo={backRoute}
-        components={headerComponents}
-      />
+      <Header title="Arve detailid" backTo={backRoute} components={headerComponents} />
       <InvoiceDetailsContainer padded>
         {invoice && (
           <>

@@ -132,6 +132,24 @@ class InvoiceStore {
     }
   };
 
+  @task
+  lockInvoice = async (invoiceId?: number) => {
+    try {
+      if (invoiceId) await api.lockInvoice(invoiceId);
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  @task
+  unlockInvoice = async (invoiceId?: number) => {
+    try {
+      if (invoiceId) await api.unlockInvoice(invoiceId);
+    } catch (err) {
+      throw err;
+    }
+  };
+
   @computed
   get purchases() {
     return this.paginatedPurchases.data;

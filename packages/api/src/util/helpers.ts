@@ -61,7 +61,7 @@ export const createError = (message: string, code: ErrorCode, extensions?: any) 
 export const formatError = (err: GraphQLError) => {
   const exception = err.extensions.exception;
 
-  console.error(err);
+  console.log(util.inspect(err, { showHidden: false, depth: null }));
 
   if (exception && exception.name) {
     if (exception.name === 'SequelizeUniqueConstraintError') {

@@ -39,6 +39,7 @@ const invoiceSchema = `
         date
         description
     }
+    isLocked
     isPaid
     paidSum
     sum
@@ -124,6 +125,18 @@ const ADD_INVOICE = gql`
   }
 `;
 
+const LOCK_INVOICE = gql`
+  mutation lockInvoice($id: ID!) {
+    lockInvoice(id: $id)
+  }
+`;
+
+const UNLOCK_INVOICE = gql`
+  mutation unlockInvoice($id: ID!) {
+    unlockInvoice(id: $id)
+  }
+`;
+
 const errorMessageHandler = {
   EntityAlreadyExistsError: {
     number: 'Sellise numbriga arve juba eksisteerib.'
@@ -151,5 +164,9 @@ export default {
     };
 
     return await axios.get(`${API_URL}/rest/files/invoice`, config);
-  }
+  },
+  lockInvoice: async (id: number) =>
+    await mutate<boolean>({ mutation: LOCK_INVOICE, variables: { id } }),
+  unlockInvoice: async (id: number) =>
+    await mutate<boolean>({ mutation: UNLOCK_INVOICE, variables: { id } })
 };

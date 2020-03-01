@@ -150,6 +150,7 @@ export interface Invoice {
   items: InvoiceItem[];
   transactions: Transaction[];
   isPaid: boolean;
+  isLocked: boolean;
   sum: string;
   paidSum: string;
   description?: string;

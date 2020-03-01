@@ -56,7 +56,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
     <ConfirmationDialogContainer type={styleType}>
       {icon && (
         <div className="dialog-icon">
-          <FiTrash2 />
+          {icon}
         </div>
       )}
       <div className="dialog-title">{title}</div>
