@@ -42,7 +42,7 @@ const ProductDetails: React.FC<ProductItem & RouteComponentProps> = props => {
           <span>Muuda</span>
         </>
       ),
-      onClick: () => uiStore.setRoute(routes.productForm, { state: product })
+      onClick: () => uiStore.goTo(routes.productForm, { state: product })
     },
     {
       label: (
@@ -60,6 +60,7 @@ const ProductDetails: React.FC<ProductItem & RouteComponentProps> = props => {
             title="Kas oled kindel, et soovid kauba kustutada?"
             description="Kaupa saab kustutada vaid siis, kui see ei sisaldu üheski arves."
             onConfirm={() => (product && product.id ? itemStore.deleteItem(product.id) : null)}
+            callBackRoute={routes.products}
           />
         )
     }

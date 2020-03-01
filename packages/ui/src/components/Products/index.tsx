@@ -38,7 +38,7 @@ const Products = observer(() => {
 
   const headerIcons = [
     <HeaderSearch onChange={setSearchQuery} placeholder="Otsi kaupa" />,
-    <NewItemButtonContainer onClick={() => uiStore.setRoute(routes.productForm)}>
+    <NewItemButtonContainer onClick={() => uiStore.goTo(routes.productForm)}>
       <FiPlusCircle />
     </NewItemButtonContainer>
   ];

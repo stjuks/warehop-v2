@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { FiTrash2 } from 'react-icons/fi';
 
 import { ConfirmationDialogContainer } from './styles';
 import UIStoreContext from '@ui/stores/UIStore';
+import { FormErrorContainer } from '../Form/FormError/styles';
 
 interface ConfirmationDialogProps {
   title: string;
@@ -13,6 +14,7 @@ interface ConfirmationDialogProps {
   cancelText?: string;
   description?: string;
   type?: 'danger' | 'success' | 'warning';
+  callBackRoute?: string;
 }
 
 const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
@@ -23,17 +25,21 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   onConfirm,
   onCancel,
   type,
-  icon
+  icon,
+  callBackRoute
 }) => {
   const uiStore = useContext(UIStoreContext);
+  const [errorMessages, setErrorMessages] = useState<string[]>([]);
   const styleType = type || 'success';
 
   const handleConfirm = async () => {
     try {
       await onConfirm();
+      if (callBackRoute) uiStore.goTo(callBackRoute, { replace: true });
+
       uiStore.goBack();
     } catch (err) {
-      throw err;
+      if (err.messages) setErrorMessages(err.messages);
     }
   };
 
@@ -42,7 +48,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
       if (onCancel) await onCancel();
       else uiStore.goBack();
     } catch (err) {
-      throw err;
+      if (err.messages) setErrorMessages(err.messages);
     }
   };
 
@@ -55,6 +61,16 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
       )}
       <div className="dialog-title">{title}</div>
       <div className="dialog-description">{description}</div>
+      {errorMessages.length > 0 && (
+        <FormErrorContainer>
+          <ul>
+            {errorMessages.map(msg => (
+              <li key={msg}>{msg}</li>
+            ))}
+          </ul>
+        </FormErrorContainer>
+      )}
+
       <div className="btn-container">
         <button className="cancel-btn" onClick={handleCancel}>
           {cancelText || 'Tühista'}

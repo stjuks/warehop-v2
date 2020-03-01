@@ -52,7 +52,7 @@ const PartnerSelect: React.FC<PartnerSelectProps> = observer(({ name, label, par
             Lisa partner
           </>
         ),
-        onClick: () => uiStore.setRoute(routes.partnerForm)
+        onClick: () => uiStore.goTo(routes.partnerForm)
       }}
       onMenuOpen={() => setLoadOptions(true)}
     />

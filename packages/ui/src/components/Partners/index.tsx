@@ -24,7 +24,7 @@ const Partners = observer(() => {
 
   const headerIcons = [
     <HeaderSearch onChange={setSearchQuery} placeholder="Otsi partnerit" />,
-    <NewItemButtonContainer onClick={() => uiStore.setRoute(routes.partnerForm)}>
+    <NewItemButtonContainer onClick={() => uiStore.goTo(routes.partnerForm)}>
       <FiPlusCircle />
     </NewItemButtonContainer>
   ];

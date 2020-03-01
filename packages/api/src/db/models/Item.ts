@@ -98,7 +98,7 @@ export default class Item extends Model<Item> {
   @BelongsToMany(() => Warehouse, {
     through: () => WarehouseItem,
     foreignKey: 'itemId',
-    onDelete: 'RESTRICT',
+    onDelete: 'CASCADE',
     as: 'warehouseQuantity'
   })
   warehouses: Warehouse[];

@@ -183,15 +183,13 @@ const PurchaseItemForm: React.FC<PurchaseItemFormProps> = observer(
             onChange={handleTypeSelect}
             persist
           >
-            <>
-              <AriaSelect
-                name="type"
-                label="Kauba tüüp"
-                options={commonStore.itemTypes}
-                optionMap={{ label: type => itemTypeTranslations[type] }}
-              />
-              <ItemForm type={activeItemType} />
-            </>
+            <AriaSelect
+              name="type"
+              label="Kauba tüüp"
+              options={commonStore.itemTypes}
+              optionMap={{ label: type => itemTypeTranslations[type] }}
+            />
+            <ItemForm type={activeItemType} />
           </Form>
         </ContentContainer>
         <FooterContainer style={{ padding: '0.25rem 1rem' }}>

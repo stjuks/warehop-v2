@@ -111,35 +111,35 @@ const createTestData = async () => {
 
 export const createProcedures = async () => {
   await sequelize.query(`
-        CREATE OR REPLACE FUNCTION add_invoice_paid_sum() RETURNS trigger AS $update_invoice_paid_sum$
-            BEGIN
-                IF (TG_OP = 'DELETE') THEN
-                    UPDATE "Invoices" SET "paidSum"=("paidSum" - OLD.sum) WHERE id=OLD."invoiceId";
-                ELSIF (TG_OP = 'INSERT') THEN
-                    UPDATE "Invoices" SET "paidSum"=("paidSum" + NEW.sum) WHERE id=NEW."invoiceId";
-                ELSIF (TG_OP = 'UPDATE') THEN
-                    UPDATE "Invoices" SET "paidSum"=("paidSum" + (NEW.sum - OLD.sum)) WHERE id=OLD."invoiceId";
-                END IF;
-                RETURN NULL;
-            END;
-        $update_invoice_paid_sum$ LANGUAGE plpgsql;
+    CREATE OR REPLACE FUNCTION add_invoice_paid_sum() RETURNS trigger AS $update_invoice_paid_sum$
+        BEGIN
+            IF (TG_OP = 'DELETE') THEN
+                UPDATE "Invoices" SET "paidSum"=("paidSum" - OLD.sum) WHERE id=OLD."invoiceId";
+            ELSIF (TG_OP = 'INSERT') THEN
+                UPDATE "Invoices" SET "paidSum"=("paidSum" + NEW.sum) WHERE id=NEW."invoiceId";
+            ELSIF (TG_OP = 'UPDATE') THEN
+                UPDATE "Invoices" SET "paidSum"=("paidSum" + (NEW.sum - OLD.sum)) WHERE id=OLD."invoiceId";
+            END IF;
+            RETURN NULL;
+        END;
+    $update_invoice_paid_sum$ LANGUAGE plpgsql;
 
-        CREATE TRIGGER update_invoice_paid_sum 
-        AFTER INSERT OR UPDATE OR DELETE ON "Transactions"
-        FOR EACH ROW EXECUTE PROCEDURE add_invoice_paid_sum();
-    `);
+    CREATE TRIGGER update_invoice_paid_sum 
+    AFTER INSERT OR UPDATE OR DELETE ON "Transactions"
+    FOR EACH ROW EXECUTE PROCEDURE add_invoice_paid_sum();
+  `);
 };
 
 const createIndexes = async () => {
   await sequelize.query(`
-        START TRANSACTION;
-        CREATE INDEX "Invoices_number_trgm_idx" ON "Invoices" USING GIN(number gin_trgm_ops);
-        CREATE INDEX "Invoices_description_trgm_idx" ON "Invoices" USING GIN(description gin_trgm_ops);
-        CREATE INDEX "Items_name_trgm_idx" ON "Items" USING GIN(name gin_trgm_ops);
-        CREATE INDEX "Items_code_trgm_idx" ON "Items" USING GIN(code gin_trgm_ops);
-        CREATE INDEX "Partners_name_trgm_idx" ON "Partners" USING GIN(name gin_trgm_ops);
-        COMMIT;
-    `);
+    START TRANSACTION;
+    CREATE INDEX "Invoices_number_trgm_idx" ON "Invoices" USING GIN(number gin_trgm_ops);
+    CREATE INDEX "Invoices_description_trgm_idx" ON "Invoices" USING GIN(description gin_trgm_ops);
+    CREATE INDEX "Items_name_trgm_idx" ON "Items" USING GIN(name gin_trgm_ops);
+    CREATE INDEX "Items_code_trgm_idx" ON "Items" USING GIN(code gin_trgm_ops);
+    CREATE INDEX "Partners_name_trgm_idx" ON "Partners" USING GIN(name gin_trgm_ops);
+    COMMIT;
+  `);
 };
 
 export default async () => {

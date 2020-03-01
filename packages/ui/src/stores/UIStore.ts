@@ -3,6 +3,11 @@ import { observable, action } from 'mobx';
 import { createContext } from 'react';
 import history from '@ui/util/history';
 import routes from '@ui/util/routes';
+import { LocationDescriptorObject } from 'history';
+
+interface HistoryOptions extends LocationDescriptorObject {
+  replace?: boolean;
+}
 
 class UIStore {
   @observable isHamburgerMenuOpen: boolean = false;
@@ -15,15 +20,21 @@ class UIStore {
   constructor() {
     this.routeHistory.push(history.location.pathname);
 
-    window.onpopstate = event => {
+    window.onpopstate = () => {
       this.closeModal();
     };
   }
 
   @action
-  setRoute = (route: string, historyOptions?: object) => {
-    history.push({ ...historyOptions, pathname: route });
-    this.routeHistory.push(route);
+  goTo = (route: string, historyOptions?: HistoryOptions) => {
+    const replace = historyOptions && historyOptions.replace;
+    let historyFn = history.push;
+    if (replace) historyFn = history.replace;
+
+    historyFn({ ...historyOptions, pathname: route });
+
+    if (replace) this.routeHistory.splice(this.routeHistory.length - 1, 1, route);
+    else this.routeHistory.push(route);
   };
 
   @action
@@ -51,7 +62,7 @@ class UIStore {
   @action
   openModal = (modal: React.ReactElement) => {
     this.modals.push(modal);
-    this.setRoute(history.location.pathname);
+    this.goTo(history.location.pathname);
   };
 
   @action
