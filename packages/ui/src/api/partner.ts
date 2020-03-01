@@ -133,13 +133,26 @@ export const EDIT_PARTNER = gql`
   }
 `;
 
+const errorMessageHandler = {
+  EntityAlreadyExistsError: {
+    name: 'Sellise nimega partner juba eksisteerib.'
+  },
+  DeletionRestrictedError: {
+    InvoiceItems: 'Partnerit ei saa kustutada, kuna ta on seotud arvega.',
+    Items: 'Partnerit ei saa kustutada, kuna ta on seotud kaubaga.'
+  }
+};
+
 export default {
   fetchPartners: async (filter: SearchPartnerInput) =>
     await query<PaginatedData<Partner>>({ query: FETCH_PARTNERS, variables: filter }),
   addPartner: async (partner: Partner) =>
-    await mutate<number>({ mutation: ADD_PARTNER, variables: partner }),
+    await mutate<number>({ mutation: ADD_PARTNER, variables: partner }, { errorMessageHandler }),
   deletePartner: async (id: number) =>
-    await mutate<boolean>({ mutation: DELETE_PARTNER, variables: { id } }),
+    await mutate<boolean>({ mutation: DELETE_PARTNER, variables: { id } }, { errorMessageHandler }),
   editPartner: async (id: number, editedPartner: Partner) =>
-    await mutate<boolean>({ mutation: EDIT_PARTNER, variables: { id, ...editedPartner } })
+    await mutate<boolean>(
+      { mutation: EDIT_PARTNER, variables: { id, ...editedPartner } },
+      { errorMessageHandler }
+    )
 };

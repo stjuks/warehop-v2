@@ -53,7 +53,10 @@ const PurchaseForm = observer(() => {
 
   const validationSchema = yup.object({
     partner: yup.object().required('Palun vali tarnija.'),
-    number: yup.string().nullable().required('Palun sisesta arve number.'),
+    number: yup
+      .string()
+      .nullable()
+      .required('Palun sisesta arve number.'),
     issueDate: yup.mixed().required('Palun sisesta ostukuupäev.'),
     dueDate: yup.mixed().required('Palun sisesta maksetähtaeg.'),
     items: yup.array().required('Palun lisa arvele kaubad.')
@@ -95,12 +98,7 @@ const FormFields: React.FC<any> = observer(({ formikProps }) => {
 
   return (
     <>
-      <FormError
-        messages={{
-          EntityAlreadyExistsError: { number: 'Sellise numbriga arve juba eksisteerib.' }
-        }}
-        fields={['items']}
-      />
+      <FormError fields={['items']} />
       <FormTitle>Põhiandmed</FormTitle>
       <PartnerSelect name="partner" label="Tarnija" partnerType="VENDOR" />
       <TextInput name="number" label="Arve nr" />

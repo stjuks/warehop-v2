@@ -44,13 +44,27 @@ export const FETCH_TYPES = gql`
   }
 `;
 
+const errorMessageHandler = {
+  EntityAlreadyExistsError: {
+    name: 'Sellise nimega ühik juba eksisteerib',
+    abbreviation: 'Sellise lühendiga ühik juba eksisteerib.'
+  },
+  DeletionRestrictedError: {
+    Items: 'Ühikut ei saa kustutada, kuna see on kaubaga seotud.'
+  }
+};
+
 export default {
   fetchUnits: async () => await query<Unit[]>({ query: FETCH_UNITS }),
-  addUnit: async (unit: Unit) => await mutate<number>({ mutation: ADD_UNIT, variables: unit }),
+  addUnit: async (unit: Unit) =>
+    await mutate<number>({ mutation: ADD_UNIT, variables: unit }, { errorMessageHandler }),
   deleteUnit: async (id: number) =>
-    await mutate<boolean>({ mutation: DELETE_UNIT, variables: { id } }),
+    await mutate<boolean>({ mutation: DELETE_UNIT, variables: { id } }, { errorMessageHandler }),
   editUnit: async (id: number, editedUnit: Unit) =>
-    await mutate<boolean>({ mutation: EDIT_UNIT, variables: { id, ...editedUnit } }),
+    await mutate<boolean>(
+      { mutation: EDIT_UNIT, variables: { id, ...editedUnit } },
+      { errorMessageHandler }
+    ),
   fetchTypes: async () =>
     await query<{
       itemTypes: ItemType[];

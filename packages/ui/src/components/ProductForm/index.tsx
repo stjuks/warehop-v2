@@ -107,12 +107,6 @@ const ProductForm: React.FC<ProductFormProps> = observer(props => {
                   'warehouseQuantity[0].quantity',
                   'warehouseQuantity[0].name'
                 ]}
-                messages={{
-                  EntityAlreadyExistsError: {
-                    code: 'Sellise koodiga kaup juba eksisteerib.',
-                    name: 'Sellise nimega kaup juba eksisteerib.'
-                  }
-                }}
               />
               <FormFields />
               <FormTitle>Laoseis</FormTitle>

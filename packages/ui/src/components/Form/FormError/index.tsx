@@ -6,15 +6,10 @@ import { ErrorCode } from '@shared/types';
 import { getObjectProperty } from '@ui/util/helpers';
 
 interface FormErrorProps {
-  messages?: {
-    [key in ErrorCode]?: {
-      [key: string]: string;
-    };
-  };
   fields?: string[];
 }
 
-const FormError: React.FC<FormErrorProps> = ({ messages, fields }) => {
+const FormError: React.FC<FormErrorProps> = ({ fields }) => {
   const [errors, setErrors] = useState<string[]>([]);
   const formikContext = useFormikContext();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -33,27 +28,12 @@ const FormError: React.FC<FormErrorProps> = ({ messages, fields }) => {
 
     const thrownError = formikErrors.__thrownError;
 
-    if (messages && thrownError) {
-      if (thrownError.code) {
-        const code: ErrorCode = thrownError.code;
-        const codeMessages = messages[code];
-
-        if (code === 'EntityAlreadyExistsError' && codeMessages) {
-          if (thrownError.fields) {
-            thrownError.fields.forEach(field => {
-              const errorMessage: any = codeMessages[field];
-
-              if (errorMessage) errorMessages.push(errorMessage);
-            });
-          }
-        } else {
-          errorMessages.push('Viga.');
-        }
-      }
+    if (thrownError && thrownError.messages) {
+      errorMessages.push(...thrownError.messages);
     }
 
     setErrors(errorMessages);
-  }, [messages, formikErrors, fields]);
+  }, [formikErrors, fields]);
 
   useEffect(() => {
     handleErrors();

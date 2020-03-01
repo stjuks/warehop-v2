@@ -17,6 +17,11 @@ import User from './User';
       name: 'IDX_UQ_Units_userId_name',
       unique: true,
       fields: ['userId', 'name']
+    },
+    {
+      name: 'IDX_UQ_Units_userId_abbreviation',
+      unique: true,
+      fields: ['userId', 'abbreviation']
     }
   ]
 })
@@ -35,7 +40,7 @@ export default class Unit extends Model<Unit> {
   name: string;
 
   @AllowNull(false)
-  @Column
+  @Column(DataType.CITEXT)
   abbreviation: string;
 
   @BelongsTo(() => User, { foreignKey: 'userId', onDelete: 'CASCADE' })

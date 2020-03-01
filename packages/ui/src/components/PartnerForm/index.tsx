@@ -61,13 +61,7 @@ const PartnerForm = observer(() => {
           onSubmit={handleSubmit}
           persist
         >
-          <FormError
-            messages={{
-              EntityAlreadyExistsError: {
-                name: 'Sellise nimega partner on juba olemas.'
-              }
-            }}
-          />
+          <FormError />
           <AriaSelect
             options={commonStore.partnerTypes}
             optionMap={{ label: value => partnerTypeTranslations[value] }}

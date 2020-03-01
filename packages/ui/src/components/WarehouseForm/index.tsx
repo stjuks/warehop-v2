@@ -54,13 +54,7 @@ const WarehouseForm: React.FC<WarehouseFormProps & RouteChildrenProps> = ({
           initialValues={initialValues}
           onSubmit={handleSubmit}
         >
-          <FormError
-            messages={{
-              EntityAlreadyExistsError: {
-                name: 'Sellise nimega ladu on juba olemas.'
-              }
-            }}
-          />
+          <FormError />
           <TextInput name="name" label="Nimetus" />
         </Form>
       </ContentContainer>

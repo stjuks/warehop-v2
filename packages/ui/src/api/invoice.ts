@@ -124,6 +124,12 @@ const ADD_INVOICE = gql`
   }
 `;
 
+const errorMessageHandler = {
+  EntityAlreadyExistsError: {
+    number: 'Sellise numbriga arve juba eksisteerib.'
+  }
+};
+
 export default {
   fetchPurchases: async (variables: InvoiceSearchInput) =>
     await query<PaginatedData<Invoice>>({ query: FETCH_PURCHASES, variables }),
@@ -132,7 +138,7 @@ export default {
   fetchInvoice: async (id: number) =>
     await query<Invoice>({ query: FETCH_INVOICE, variables: { id } }),
   addInvoice: async (invoice: AddInvoiceInput) =>
-    await mutate<number>({ mutation: ADD_INVOICE, variables: invoice }),
+    await mutate<number>({ mutation: ADD_INVOICE, variables: invoice }, { errorMessageHandler }),
   downloadInvoice: async (invoiceId: number) => {
     const config: AxiosRequestConfig = {
       headers: {

@@ -47,14 +47,7 @@ const UnitForm = observer(() => {
           onSubmit={handleSubmit}
           persist
         >
-          <FormError
-            messages={{
-              EntityAlreadyExistsError: {
-                abbreviation: 'Sellise lühendiga ühik on juba olemas.',
-                name: 'Sellise nimega ühik on juba olemas.'
-              }
-            }}
-          />
+          <FormError />
           <TextInput name="name" label="Nimetus" />
           <TextInput name="abbreviation" label="Lühend" />
         </Form>

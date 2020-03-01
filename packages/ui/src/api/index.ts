@@ -45,18 +45,45 @@ export const mutate = async <T>(opts: MutationOptions, errorOptions?: ErrorOptio
 };
 
 const handleError = (error, options?: ErrorOptions) => {
+  const messages: string[] = [];
+
   if (error instanceof ApolloError) {
     const err: GraphQLError = error.graphQLErrors[0];
 
-    if (err) {
+    if (err && err.extensions && options) {
+      const { errorMessageHandler } = options;
+
+      const {
+        extensions: { code, fields, table }
+      } = err;
+
+      const codeMessages = errorMessageHandler[code];
+
+      if (code === 'EntityAlreadyExistsError' && codeMessages) {
+        fields.forEach((field: string) => {
+          const message = codeMessages[field];
+          if (message) messages.push(message);
+        });
+      }
+
+      if (code === 'DeletionRestrictedError' && codeMessages) {
+        const message = codeMessages[table];
+        if (message) messages.push(message);
+      }
+
+      if (messages.length === 0) messages.push('Viga');
+
       return {
+        messages,
         message: err.message,
         ...err.extensions
       };
     }
   }
 
-  throw error;
+  messages.push('Viga');
+
+  return { messages };
 };
 
 const getResult = (data, opts) => {

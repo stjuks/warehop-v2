@@ -1,9 +1,7 @@
 import { gql } from 'apollo-boost-upload';
 import { query, mutate } from '.';
 import {
-  Partner,
   PaginatedData,
-  SearchPartnerInput,
   TransactionQueryInput,
   Transaction,
   AddTransactionInput
