@@ -60,7 +60,7 @@ export default class InvoiceItem extends Model<InvoiceItem> {
   @Column(DataType.DECIMAL(12, 4))
   price: object;
 
-  @BelongsTo(() => Invoice, { foreignKey: 'invoiceId' })
+  @BelongsTo(() => Invoice, { foreignKey: 'invoiceId', onDelete: 'CASCADE' })
   invoice: Invoice;
 
   @BelongsTo(() => Warehouse, { foreignKey: 'warehouseId' })
@@ -69,9 +69,9 @@ export default class InvoiceItem extends Model<InvoiceItem> {
   @BelongsTo(() => Unit, { foreignKey: 'unitId', onDelete: 'RESTRICT' })
   unit: Unit;
 
-  @BelongsTo(() => User, { foreignKey: 'userId', onDelete: 'RESTRICT' })
+  @BelongsTo(() => User, { foreignKey: 'userId', onDelete: 'CASCADE' })
   user: User;
 
-  @BelongsTo(() => Item, { foreignKey: 'itemId', onDelete: 'CASCADE' })
+  @BelongsTo(() => Item, { foreignKey: 'itemId', onDelete: 'RESTRICT' })
   item: Item;
 }

@@ -38,6 +38,6 @@ export default class Unit extends Model<Unit> {
   @Column
   abbreviation: string;
 
-  @BelongsTo(() => User, { foreignKey: 'userId', onDelete: 'RESTRICT' })
+  @BelongsTo(() => User, { foreignKey: 'userId', onDelete: 'CASCADE' })
   user: User;
 }

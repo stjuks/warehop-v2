@@ -10,8 +10,17 @@ import transactionApi from './transaction';
 import { omitDeep } from '@ui/util/helpers';
 
 import { GraphQLError } from 'graphql';
+import { ErrorCode } from '@shared/types';
 
-export const query = async <T>(opts: QueryBaseOptions) => {
+interface ErrorOptions {
+  errorMessageHandler: {
+    [key in ErrorCode]?: {
+      [key: string]: string;
+    };
+  };
+}
+
+export const query = async <T>(opts: QueryBaseOptions, errorOptions?: ErrorOptions) => {
   try {
     const { data } = await apollo.query({ ...opts, fetchPolicy: 'no-cache' });
 
@@ -19,11 +28,11 @@ export const query = async <T>(opts: QueryBaseOptions) => {
 
     return result;
   } catch (err) {
-    throw handleError(err);
+    throw handleError(err, errorOptions);
   }
 };
 
-export const mutate = async <T>(opts: MutationOptions) => {
+export const mutate = async <T>(opts: MutationOptions, errorOptions?: ErrorOptions) => {
   try {
     const { data } = await apollo.mutate(opts);
 
@@ -31,11 +40,11 @@ export const mutate = async <T>(opts: MutationOptions) => {
 
     return result;
   } catch (err) {
-    throw handleError(err);
+    throw handleError(err, errorOptions);
   }
 };
 
-const handleError = error => {
+const handleError = (error, options?: ErrorOptions) => {
   if (error instanceof ApolloError) {
     const err: GraphQLError = error.graphQLErrors[0];
 

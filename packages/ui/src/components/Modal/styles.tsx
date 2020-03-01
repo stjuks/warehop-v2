@@ -11,11 +11,13 @@ export const ModalContainer = styled(ReactModal)`
       border-radius: 0.25rem;
       outline: none;
       overflow: hidden;
+      max-height: 95%;
 
       @media only screen and (max-width: ${theme.devices.mobileL}) {
         height: 100%;
         width: 100%;
         border-radius: 0;
+        max-height: 100%;
       } 
     }
   `}

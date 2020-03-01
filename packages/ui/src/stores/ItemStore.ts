@@ -109,6 +109,11 @@ class ItemStore {
     this.paginatedProducts.data.push(product);
   };
 
+  @task
+  deleteItem = async (id: number) => {
+    await api.deleteItem(id);
+  }
+
   @computed
   get products() {
     return this.paginatedProducts.data;

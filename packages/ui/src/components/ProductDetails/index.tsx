@@ -59,7 +59,7 @@ const ProductDetails: React.FC<ProductItem & RouteComponentProps> = props => {
             confirmText="Kustuta"
             title="Kas oled kindel, et soovid kauba kustutada?"
             description="Kaupa saab kustutada vaid siis, kui see ei sisaldu üheski arves."
-            onConfirm={() => console.log('delete')}
+            onConfirm={() => (product && product.id ? itemStore.deleteItem(product.id) : null)}
           />
         )
     }

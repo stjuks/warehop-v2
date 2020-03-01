@@ -70,7 +70,7 @@ export default class Partner extends Model<Partner> {
   @Column
   postalCode?: string;
 
-  @BelongsTo(() => User, { foreignKey: 'userId', onDelete: 'RESTRICT' })
+  @BelongsTo(() => User, { foreignKey: 'userId', onDelete: 'CASCADE' })
   user: User;
 
   @BelongsTo(() => PartnerType, { foreignKey: 'type', onDelete: 'RESTRICT' })

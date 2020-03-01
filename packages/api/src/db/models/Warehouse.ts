@@ -32,7 +32,7 @@ export default class Warehouse extends Model<Warehouse> {
   @Column(DataType.CITEXT)
   name: string;
 
-  @BelongsTo(() => User, { foreignKey: 'userId', onDelete: 'RESTRICT' })
+  @BelongsTo(() => User, { foreignKey: 'userId', onDelete: 'CASCADE' })
   user: User;
 
   @BelongsToMany(() => Item, {

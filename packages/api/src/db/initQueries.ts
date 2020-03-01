@@ -8,32 +8,38 @@ const createForeignKeys = async () => {
       {
         table: models.Invoice,
         cols: ['partnerId', 'userId'],
-        ref: { table: models.Partner, cols: ['id', 'userId'] }
+        ref: { table: models.Partner, cols: ['id', 'userId'] },
+        onDelete: 'RESTRICT'
       },
       {
         table: models.Item,
         cols: ['unitId', 'userId'],
-        ref: { table: models.Unit, cols: ['id', 'userId'] }
+        ref: { table: models.Unit, cols: ['id', 'userId'] },
+        onDelete: 'RESTRICT'
       },
       {
         table: models.Item,
         cols: ['partnerId', 'userId'],
-        ref: { table: models.Partner, cols: ['id', 'userId'] }
+        ref: { table: models.Partner, cols: ['id', 'userId'] },
+        onDelete: 'RESTRICT'
       },
       {
         table: models.Transaction,
         cols: ['invoiceId', 'userId'],
-        ref: { table: models.Invoice, cols: ['id', 'userId'] }
+        ref: { table: models.Invoice, cols: ['id', 'userId'] },
+        onDelete: 'CASCADE'
       },
       {
         table: models.WarehouseItem,
         cols: ['warehouseId', 'userId'],
-        ref: { table: models.Warehouse, cols: ['id', 'userId'] }
+        ref: { table: models.Warehouse, cols: ['id', 'userId'] },
+        onDelete: 'RESTRICT'
       },
       {
         table: models.WarehouseItem,
         cols: ['itemId', 'userId'],
-        ref: { table: models.Item, cols: ['id', 'userId'] }
+        ref: { table: models.Item, cols: ['id', 'userId'] },
+        onDelete: 'CASCADE'
       }
     ])
   );

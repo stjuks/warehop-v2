@@ -53,8 +53,14 @@ const ProductForm: React.FC<ProductFormProps> = observer(props => {
   };
 
   const validationSchema = yup.object({
-    code: yup.string().required('Palun sisesta kauba kood.'),
-    name: yup.string().required('Palun sisesta kauba nimetus.'),
+    code: yup
+      .string()
+      .nullable()
+      .required('Palun sisesta kauba kood.'),
+    name: yup
+      .string()
+      .nullable()
+      .required('Palun sisesta kauba nimetus.'),
     purchasePrice: yup.string().nullable(),
     retailPrice: yup.string().nullable(),
     description: yup.string().nullable(),
@@ -136,8 +142,8 @@ const FormFields: React.FC = () => {
       <FormTitle>Lisainfo</FormTitle>
       <PartnerSelect name="partner" label="Tarnija" partnerType="VENDOR" />
       <Row flex={[1, 1]}>
-        <TextInput name="purchasePrice" label="Ostuhind" indicator={'€'} />
-        <TextInput name="retailPrice" label="Müügihind" indicator={'€'} />
+        <TextInput name="purchasePrice" label="Ostuhind" inputMode="decimal" indicator={'€'} />
+        <TextInput name="retailPrice" label="Müügihind" inputMode="decimal" indicator={'€'} />
       </Row>
       <TextInput name="description" label="Märkused" isTextarea />
     </>

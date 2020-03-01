@@ -1,5 +1,6 @@
-import { PaginatedData } from '@shared/types';
+import { PaginatedData, ErrorCode } from '@shared/types';
 import { Option } from '../components/Form/AriaSelect';
+import { GraphQLError } from 'graphql';
 
 export const stall = async (delay: number) => {
   await new Promise(resolve => setTimeout(resolve, delay));

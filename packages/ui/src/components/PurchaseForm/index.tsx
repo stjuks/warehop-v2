@@ -53,7 +53,7 @@ const PurchaseForm = observer(() => {
 
   const validationSchema = yup.object({
     partner: yup.object().required('Palun vali tarnija.'),
-    number: yup.string().required('Palun sisesta arve number.'),
+    number: yup.string().nullable().required('Palun sisesta arve number.'),
     issueDate: yup.mixed().required('Palun sisesta ostukuupäev.'),
     dueDate: yup.mixed().required('Palun sisesta maksetähtaeg.'),
     items: yup.array().required('Palun lisa arvele kaubad.')

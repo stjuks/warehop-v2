@@ -71,6 +71,16 @@ export const formatError = (err: GraphQLError) => {
         fields: validationError.errors.map((error: ValidationErrorItem) => error.path)
       });
     }
+
+    if (exception.name === 'SequelizeForeignKeyConstraintError') {
+      return createError(
+        'Entity is strictly related to another entity and cannot be deleted.',
+        'DeletionRestrictedError',
+        {
+          table: exception.parent.table
+        }
+      );
+    }
   }
 
   return createError('Error executing request.', 'GeneralError');

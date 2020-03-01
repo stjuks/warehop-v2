@@ -77,7 +77,7 @@ export default class Invoice extends Model<Invoice> {
   @Column(DataType.DECIMAL(12, 4))
   paidSum: object;
 
-  @BelongsTo(() => User, { foreignKey: 'userId', onDelete: 'RESTRICT' })
+  @BelongsTo(() => User, { foreignKey: 'userId', onDelete: 'CASCADE' })
   user: User;
 
   @BelongsTo(() => Partner, { foreignKey: 'partnerId', onDelete: 'RESTRICT' })

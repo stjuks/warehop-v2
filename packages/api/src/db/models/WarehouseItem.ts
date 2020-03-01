@@ -33,12 +33,12 @@ export default class WarehouseItem extends Model<WarehouseItem> {
   @Column(DataType.DOUBLE)
   quantity: object;
 
-  @BelongsTo(() => Item, { foreignKey: 'itemId', onDelete: 'RESTRICT' })
+  @BelongsTo(() => Item, { foreignKey: 'itemId', onDelete: 'CASCADE' })
   item: Item;
 
   @BelongsTo(() => Warehouse, { foreignKey: 'warehouseId', onDelete: 'RESTRICT' })
   warehouse: Warehouse;
 
-  @BelongsTo(() => User, { foreignKey: 'userId', onDelete: 'RESTRICT' })
+  @BelongsTo(() => User, { foreignKey: 'userId', onDelete: 'CASCADE' })
   user: User;
 }

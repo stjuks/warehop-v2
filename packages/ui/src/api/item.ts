@@ -114,7 +114,11 @@ export const ADD_ITEM = gql`
   }
 `;
 
-export const DELETE_ITEM = ``;
+export const DELETE_ITEM = gql`
+  mutation deleteItem($id: ID!) {
+    deleteItem(id: $id)
+  }
+`;
 
 export const EDIT_ITEM = gql`
   mutation editItem($id: ID!, $item: ItemInput!) {
@@ -131,8 +135,19 @@ export default {
     await query<PaginatedData<ExpenseItem>>({ query: FETCH_SERVICES, variables }),
   searchItems: () => null,
   addItem: async (itemInput: ItemInput) =>
-    await mutate<number>({ mutation: ADD_ITEM, variables: itemInput }),
-  deleteItem: () => null,
+    await mutate<number>(
+      { mutation: ADD_ITEM, variables: itemInput },
+      {
+        errorMessageHandler: {
+          EntityAlreadyExistsError: {
+            name: 'Sellise nimega kaup juba eksisteerib.',
+            code: 'Sellise koodiga kaup juba eksisteerib.'
+          }
+        }
+      }
+    ),
+  deleteItem: async (id: number) =>
+    await mutate<boolean>({ mutation: DELETE_ITEM, variables: { id } }),
   editItem: async (id: number, item: ItemInput) =>
     await mutate<boolean>({ mutation: EDIT_ITEM, variables: { id, item } })
 };

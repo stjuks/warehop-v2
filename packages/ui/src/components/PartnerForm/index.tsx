@@ -77,8 +77,8 @@ const PartnerForm = observer(() => {
           <TextInput name="name" label="Nimi" />
           <TextInput name="regNr" label="Registrikood" />
           <TextInput name="VATnr" label="KMK nr" />
-          <TextInput name="phoneNr" label="Telefoni number" />
-          <TextInput name="email" label="E-post" />
+          <TextInput name="phoneNr" label="Telefoni number" type="tel" />
+          <TextInput name="email" label="E-post" type="email" />
           <TextInput name="address" label="Aadress" />
           <TextInput name="postalCode" label="Postikood" />
           <TextInput name="county" label="Maakond" />

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FieldProps, Field } from 'formik';
+import { FieldProps, Field, FormikProps } from 'formik';
 import { FiX } from 'react-icons/fi';
 
 import {
@@ -13,12 +13,15 @@ import {
 interface InputProps {
   name: string;
   label?: string;
-  onChange?: (e: any) => any;
+  onChange?: (
+    e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>
+  ) => any;
   value?: string;
   errorMessage?: any;
   inputComponent?: JSX.Element;
   indicator?: string | JSX.Element;
-  type?: 'text' | 'number' | 'password' | 'email';
+  inputMode?: 'text' | 'decimal' | 'numeric' | 'email' | 'tel';
+  type?: 'text' | 'number' | 'password' | 'email' | 'tel';
   setFieldValue?: (field: string, value: any) => any;
   inputFieldRef?: any;
   readOnly?: boolean;
@@ -55,7 +58,8 @@ export const TextInputBase: React.FC<InputProps> = ({
   errorMessage,
   name,
   inputComponent,
-  type = 'text',
+  type,
+  inputMode,
   indicator,
   setFieldValue,
   inputFieldRef,
@@ -67,9 +71,9 @@ export const TextInputBase: React.FC<InputProps> = ({
   const [isMounted, setMounted] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleClear = e => {
+  const handleClear = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    if (setFieldValue) setFieldValue(name, '');
+    if (setFieldValue) setFieldValue(name, null);
     if (inputRef.current) inputRef.current.focus();
   };
 
@@ -90,7 +94,7 @@ export const TextInputBase: React.FC<InputProps> = ({
         onBlur={() => handleFocus(false)}
         isFocused={isFocused}
         isMounted={isMounted}
-        hasValue={value != null && value != ''}
+        hasValue={value != null && value !== ''}
         className="input-field"
       >
         {inputComponent || (
@@ -108,6 +112,7 @@ export const TextInputBase: React.FC<InputProps> = ({
               <input
                 ref={inputFieldRef || inputRef}
                 onChange={onChange}
+                inputMode={inputMode}
                 value={value || ''}
                 type={type}
                 name={name}
@@ -129,19 +134,34 @@ export const TextInputBase: React.FC<InputProps> = ({
   );
 };
 
-const TextInput: React.FC<InputProps> = props => (
-  <Field name={props.name} validate={props.validate}>
-    {({ field, form }: FieldProps) => (
-      <TextInputBase
-        setFieldValue={form.setFieldValue}
-        onChange={field.onChange}
-        value={field.value}
-        name={field.name}
-        errorMessage={form.errors[field.name]}
-        {...props}
-      />
-    )}
-  </Field>
-);
+const TextInput: React.FC<InputProps> = props => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>,
+    form: FormikProps<any>
+  ) => {
+    const { type } = props;
+    let value: any = e.target.value;
+
+    if (type === 'number' && !isNaN(value)) value = Number(value);
+    if (value === '') value = null;
+
+    form.setFieldValue(props.name, value);
+  };
+
+  return (
+    <Field name={props.name} validate={props.validate}>
+      {({ field, form }: FieldProps) => (
+        <TextInputBase
+          setFieldValue={form.setFieldValue}
+          onChange={e => handleChange(e, form)}
+          value={field.value}
+          name={field.name}
+          errorMessage={form.errors[field.name]}
+          {...props}
+        />
+      )}
+    </Field>
+  );
+};
 
 export default TextInput;
