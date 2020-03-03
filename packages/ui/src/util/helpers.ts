@@ -85,3 +85,24 @@ export const omitDeep = (value, key) => {
   }
   return value;
 };
+
+export const isEqual = (obj1: any, obj2: any) => {
+  if (obj1 instanceof Object && obj2 instanceof Object) {
+    const aProps = Object.getOwnPropertyNames(obj1);
+    const bProps = Object.getOwnPropertyNames(obj2);
+
+    if (aProps.length !== bProps.length) return false;
+
+    for (let i = 0; i < aProps.length; i++) {
+      const propName = aProps[i];
+
+      if (obj1[propName] !== obj2[propName]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  return obj1 === obj2;
+};

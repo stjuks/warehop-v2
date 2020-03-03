@@ -34,6 +34,7 @@ export interface InvoiceSearchInput {
   description?: string;
   partnerName?: string;
   generalQuery?: string;
+  isLocked?: boolean;
 }
 
 export interface PaginatedQueryInput {

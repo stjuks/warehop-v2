@@ -64,6 +64,7 @@ const searchInputArgTypes = `
     $description: String, 
     $partnerName: String, 
     $generalQuery: String
+    $isLocked: Boolean
 `;
 
 const searchInputArgs = `
@@ -73,6 +74,7 @@ const searchInputArgs = `
     description: $description, 
     partnerName: $partnerName, 
     generalQuery: $generalQuery
+    isLocked: $isLocked
 `;
 
 const FETCH_PURCHASES = gql`

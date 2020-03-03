@@ -77,6 +77,7 @@ export default gql`
     description: String
     partnerName: String
     generalQuery: String
+    isLocked: Boolean
   }
 
   type PaginatedInvoice {

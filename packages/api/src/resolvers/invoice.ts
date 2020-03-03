@@ -208,11 +208,21 @@ const invoiceItemWhere = (item: InvoiceItemInput, userId) => {
 };
 
 const findInvoices = async ({ models, user }: ApolloContext, filter: InvoiceSearchInput) => {
-  const { type, pagination, number, isPaid, description, partnerName, generalQuery } = filter;
+  const {
+    type,
+    pagination,
+    number,
+    isPaid,
+    description,
+    partnerName,
+    generalQuery,
+    isLocked
+  } = filter;
 
   const where: any = {
     userId: user.id,
     type,
+    isLocked: isLocked === false ? false : true,
     partner: {}
   };
 
@@ -236,6 +246,8 @@ const findInvoices = async ({ models, user }: ApolloContext, filter: InvoiceSear
   if (isPaid === false) where.sum = { [Op.gt]: Sequelize.col('paidSum') };
 
   const { partner, ...restWhere } = where;
+
+  console.log(where);
 
   const invoices = await paginate(models.Invoice, {
     cursor,

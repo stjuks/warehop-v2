@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 
 import { RadioContainer, RadioOptionContainer } from './styles';
+import { isEqual } from '@ui/util/helpers';
 
 export interface RadioProps {
   options: {
@@ -36,7 +37,7 @@ const Radio: React.FC<RadioProps> = ({ options, name, onSelect, defaultValue }) 
             name={name}
             id={`${name}${i}`}
             onChange={() => handleSelect(option.value)}
-            checked={value === option.value}
+            checked={isEqual(value, option.value)}
           />
           <label htmlFor={`${name}${i}`}>{option.label}</label>
         </RadioOptionContainer>
