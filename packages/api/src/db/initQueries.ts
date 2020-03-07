@@ -133,29 +133,31 @@ export const createProcedures = async () => {
     CREATE OR REPLACE FUNCTION handle_invoice_lock()
     RETURNS trigger AS $handle_invoice_lock$
       BEGIN
-        IF (NEW."isLocked" = TRUE) THEN
-          IF (NEW.type = 'PURCHASE') THEN
-            INSERT INTO "WarehouseItems" ("itemId", "warehouseId", quantity, "userId")
-            SELECT "itemId", "warehouseId", quantity, "userId" FROM "InvoiceItems" 
-            WHERE "warehouseId" IS NOT NULL AND "invoiceId" = NEW.id
-            ON CONFLICT ("itemId", "warehouseId") DO
-            UPDATE SET quantity = "WarehouseItems".quantity + EXCLUDED.quantity 
-            WHERE "WarehouseItems"."itemId" = EXCLUDED."itemId" 
-              AND "WarehouseItems"."warehouseId" = EXCLUDED."warehouseId";
-          ELSIF (NEW.type = 'SALE') THEN
-            UPDATE "WarehouseItems" SET quantity = "WarehouseItems".quantity - items.quantity
-            FROM (SELECT quantity, "itemId" FROM "InvoiceItems" WHERE "invoiceId" = NEW.id ) AS items
-            WHERE "WarehouseItems"."itemId" = items."itemId";
-          END IF;
-        ELSIF (NEW."isLocked" = FALSE) THEN
-          IF (NEW.type = 'PURCHASE') THEN
-            UPDATE "WarehouseItems" SET quantity = "WarehouseItems".quantity - items.quantity
-            FROM (SELECT quantity, "itemId" FROM "InvoiceItems" WHERE "invoiceId" = NEW.id ) AS items
-            WHERE "WarehouseItems"."itemId" = items."itemId";
-          ELSIF (NEW.type = 'SALE') THEN
-            UPDATE "WarehouseItems" SET quantity = "WarehouseItems".quantity + items.quantity
-            FROM (SELECT quantity, "itemId" FROM "InvoiceItems" WHERE "invoiceId" = NEW.id ) AS items
-            WHERE "WarehouseItems"."itemId" = items."itemId";
+        IF (NEW."isLocked" != OLD."isLocked") THEN
+          IF (NEW."isLocked" = TRUE) THEN
+            IF (NEW.type = 'PURCHASE') THEN
+              INSERT INTO "WarehouseItems" ("itemId", "warehouseId", quantity, "userId")
+              SELECT "itemId", "warehouseId", quantity, "userId" FROM "InvoiceItems" 
+              WHERE "warehouseId" IS NOT NULL AND "invoiceId" = NEW.id
+              ON CONFLICT ("itemId", "warehouseId") DO
+              UPDATE SET quantity = "WarehouseItems".quantity + EXCLUDED.quantity 
+              WHERE "WarehouseItems"."itemId" = EXCLUDED."itemId" 
+                AND "WarehouseItems"."warehouseId" = EXCLUDED."warehouseId";
+            ELSIF (NEW.type = 'SALE') THEN
+              UPDATE "WarehouseItems" SET quantity = "WarehouseItems".quantity - items.quantity
+              FROM (SELECT quantity, "itemId" FROM "InvoiceItems" WHERE "invoiceId" = NEW.id ) AS items
+              WHERE "WarehouseItems"."itemId" = items."itemId";
+            END IF;
+          ELSIF (NEW."isLocked" = FALSE) THEN
+            IF (NEW.type = 'PURCHASE') THEN
+              UPDATE "WarehouseItems" SET quantity = "WarehouseItems".quantity - items.quantity
+              FROM (SELECT quantity, "itemId" FROM "InvoiceItems" WHERE "invoiceId" = NEW.id ) AS items
+              WHERE "WarehouseItems"."itemId" = items."itemId";
+            ELSIF (NEW.type = 'SALE') THEN
+              UPDATE "WarehouseItems" SET quantity = "WarehouseItems".quantity + items.quantity
+              FROM (SELECT quantity, "itemId" FROM "InvoiceItems" WHERE "invoiceId" = NEW.id ) AS items
+              WHERE "WarehouseItems"."itemId" = items."itemId";
+            END IF;
           END IF;
         END IF;
         RETURN NULL;
