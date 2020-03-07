@@ -10,7 +10,10 @@ const sequelize = new Sequelize({
   host: process.env.DB_HOST,
   dialectModule: pg,
   dialect: 'postgres',
-  models: Object.values(models).map(model => model)
+  models: Object.values(models).map(model => model),
+  define: {
+    timestamps: false
+  }
 });
 
 export { Sequelize };

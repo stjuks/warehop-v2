@@ -417,75 +417,18 @@ const handleInvoiceLock = async (
   { id, isLocked }: { id: number; isLocked: boolean },
   { models, user, sequelize }: ApolloContext
 ) => {
-  const transaction = await sequelize.transaction();
-
   const updateInvoice = async () => {
-    const [, [invoice]] = await models.Invoice.update(
+    const [updatedRows] = await models.Invoice.update(
       { isLocked },
-      { where: { userId: user.id, id }, returning: true, transaction }
+      { where: { userId: user.id, id }, returning: true }
     );
 
-    return invoice;
-  };
-
-  const findInvoiceItems: any = async invoice => {
-    const invoiceItems = await models.InvoiceItem.findAll({
-      where: {
-        invoiceId: invoice.id,
-        userId: user.id
-      },
-      attributes: ['warehouseId', 'itemId', 'quantity'],
-      transaction
-    });
-
-    return invoiceItems.map(item => item.get({ plain: true }));
-  };
-
-  const upsertWarehouseItem = async (item, invoice) => {
-    const [, isNewItem] = await models.WarehouseItem.findOrCreate({
-      defaults: { ...item, userId: user.id },
-      where: { userId: user.id, itemId: item.itemId, warehouseId: item.warehouseId },
-      transaction
-    });
-
-    if (isNewItem && invoice.type === 'SALE') {
-      throw Error(`Item "${item.name}" does not exist in specified warehouse.`);
-    }
-
-    if (!isNewItem) {
-      let operator = '+';
-
-      if ((invoice.type === 'SALE' && isLocked) || (invoice.type === 'PURCHASE' && !isLocked))
-        operator = '-';
-
-      await models.WarehouseItem.update(
-        {
-          quantity: Sequelize.literal(`quantity ${operator} ${item.quantity}`)
-        },
-        {
-          where: { userId: user.id, itemId: item.itemId, warehouseId: item.warehouseId },
-          transaction
-        }
-      );
-    }
+    return updatedRows;
   };
 
   try {
-    const invoice = await updateInvoice();
-
-    const invoiceItems = await findInvoiceItems(invoice);
-
-    for (const item of invoiceItems) {
-      if (item.warehouseId) {
-        await upsertWarehouseItem(item, invoice);
-      }
-    }
-
-    await transaction.commit();
-
-    return true;
+    return await updateInvoice();
   } catch (err) {
-    await transaction.rollback();
     throw err;
   }
 };

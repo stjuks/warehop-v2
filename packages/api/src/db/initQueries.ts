@@ -112,21 +112,59 @@ const createTestData = async () => {
 export const createProcedures = async () => {
   await sequelize.query(`
     CREATE OR REPLACE FUNCTION add_invoice_paid_sum() RETURNS trigger AS $update_invoice_paid_sum$
-        BEGIN
-            IF (TG_OP = 'DELETE') THEN
-                UPDATE "Invoices" SET "paidSum"=("paidSum" - OLD.sum) WHERE id=OLD."invoiceId";
-            ELSIF (TG_OP = 'INSERT') THEN
-                UPDATE "Invoices" SET "paidSum"=("paidSum" + NEW.sum) WHERE id=NEW."invoiceId";
-            ELSIF (TG_OP = 'UPDATE') THEN
-                UPDATE "Invoices" SET "paidSum"=("paidSum" + (NEW.sum - OLD.sum)) WHERE id=OLD."invoiceId";
-            END IF;
-            RETURN NULL;
-        END;
+      BEGIN
+        IF (TG_OP = 'DELETE') THEN
+          UPDATE "Invoices" SET "paidSum"=("paidSum" - OLD.sum) WHERE id=OLD."invoiceId";
+        ELSIF (TG_OP = 'INSERT') THEN
+          UPDATE "Invoices" SET "paidSum"=("paidSum" + NEW.sum) WHERE id=NEW."invoiceId";
+        ELSIF (TG_OP = 'UPDATE') THEN
+          UPDATE "Invoices" SET "paidSum"=("paidSum" + (NEW.sum - OLD.sum)) WHERE id=OLD."invoiceId";
+        END IF;
+        RETURN NULL;
+      END;
     $update_invoice_paid_sum$ LANGUAGE plpgsql;
 
     CREATE TRIGGER update_invoice_paid_sum 
     AFTER INSERT OR UPDATE OR DELETE ON "Transactions"
     FOR EACH ROW EXECUTE PROCEDURE add_invoice_paid_sum();
+  `);
+
+  await sequelize.query(`
+    CREATE OR REPLACE FUNCTION handle_invoice_lock()
+    RETURNS trigger AS $handle_invoice_lock$
+      BEGIN
+        IF (NEW."isLocked" = TRUE) THEN
+          IF (NEW.type = 'PURCHASE') THEN
+            INSERT INTO "WarehouseItems" ("itemId", "warehouseId", quantity, "userId")
+            SELECT "itemId", "warehouseId", quantity, "userId" FROM "InvoiceItems" 
+            WHERE "warehouseId" IS NOT NULL AND "invoiceId" = NEW.id
+            ON CONFLICT ("itemId", "warehouseId") DO
+            UPDATE SET quantity = "WarehouseItems".quantity + EXCLUDED.quantity 
+            WHERE "WarehouseItems"."itemId" = EXCLUDED."itemId" 
+              AND "WarehouseItems"."warehouseId" = EXCLUDED."warehouseId";
+          ELSIF (NEW.type = 'SALE') THEN
+            UPDATE "WarehouseItems" SET quantity = "WarehouseItems".quantity - items.quantity
+            FROM (SELECT quantity, "itemId" FROM "InvoiceItems" WHERE "invoiceId" = NEW.id ) AS items
+            WHERE "WarehouseItems"."itemId" = items."itemId";
+          END IF;
+        ELSIF (NEW."isLocked" = FALSE) THEN
+          IF (NEW.type = 'PURCHASE') THEN
+            UPDATE "WarehouseItems" SET quantity = "WarehouseItems".quantity - items.quantity
+            FROM (SELECT quantity, "itemId" FROM "InvoiceItems" WHERE "invoiceId" = NEW.id ) AS items
+            WHERE "WarehouseItems"."itemId" = items."itemId";
+          ELSIF (NEW.type = 'SALE') THEN
+            UPDATE "WarehouseItems" SET quantity = "WarehouseItems".quantity + items.quantity
+            FROM (SELECT quantity, "itemId" FROM "InvoiceItems" WHERE "invoiceId" = NEW.id ) AS items
+            WHERE "WarehouseItems"."itemId" = items."itemId";
+          END IF;
+        END IF;
+        RETURN NULL;
+      END;
+    $handle_invoice_lock$ LANGUAGE plpgsql;
+
+    CREATE TRIGGER handle_invoice_lock
+    AFTER UPDATE OF "isLocked" ON "Invoices"
+    FOR EACH ROW EXECUTE PROCEDURE handle_invoice_lock();
   `);
 };
 
@@ -143,10 +181,14 @@ const createIndexes = async () => {
 };
 
 export default async () => {
-  await createForeignKeys();
-  await createStaticData();
-  await createCheckConstraints();
-  await createTestData();
-  await createProcedures();
-  await createIndexes();
+  try {
+    await createForeignKeys();
+    await createStaticData();
+    await createCheckConstraints();
+    await createTestData();
+    await createProcedures();
+    await createIndexes();
+  } catch (err) {
+    throw err;
+  }
 };
