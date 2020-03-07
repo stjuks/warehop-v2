@@ -81,6 +81,14 @@ export const formatError = (err: GraphQLError) => {
         }
       );
     }
+
+    if (exception.name === 'SequelizeDatabaseError') {
+      const routine = exception?.parent?.routine;
+
+      if (routine === 'exec_stmt_raise') {
+        return createError(err.message, 'TriggerExceptionError')
+      }
+    }
   }
 
   return createError(err.message || 'Error executing request.', 'GeneralError');

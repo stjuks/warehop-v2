@@ -249,4 +249,9 @@ export interface ItemInput {
 }
 
 // errors
-export type ErrorCode = 'EntityAlreadyExistsError' | 'AuthenticationError' | 'GeneralError' | 'DeletionRestrictedError';
+export type ErrorCode =
+  | 'EntityAlreadyExistsError'
+  | 'AuthenticationError'
+  | 'GeneralError'
+  | 'DeletionRestrictedError'
+  | 'TriggerExceptionError';

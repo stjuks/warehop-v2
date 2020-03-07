@@ -164,18 +164,6 @@ const resolver: Resolver = {
           )
           .toString();
 
-        const findInvoice = async () => {
-          const oldInvoice: any = await models.Invoice.findOne({
-            where: { id, userId: user.id },
-            transaction
-          });
-
-          if (!oldInvoice) throw new Error('Invoice does not exist.');
-          if (oldInvoice.isLocked) throw new Error('This invoice is locked. Unlock to edit.');
-
-          return oldInvoice;
-        };
-
         const updateInvoice = async () => {
           const [isUpdated] = await models.Invoice.update(invoice, {
             where: { id, userId: user.id }
@@ -185,7 +173,6 @@ const resolver: Resolver = {
         };
 
         try {
-          await findInvoice();
           const isUpdated = await updateInvoice();
 
           if (isUpdated) {
@@ -415,7 +402,7 @@ const findInvoice = async ({ models, user }: ApolloContext, id: number) => {
 
 const handleInvoiceLock = async (
   { id, isLocked }: { id: number; isLocked: boolean },
-  { models, user, sequelize }: ApolloContext
+  { models, user }: ApolloContext
 ) => {
   const updateInvoice = async () => {
     const [updatedRows] = await models.Invoice.update(

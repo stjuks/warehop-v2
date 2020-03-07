@@ -168,6 +168,23 @@ export const createProcedures = async () => {
     AFTER UPDATE OF "isLocked" ON "Invoices"
     FOR EACH ROW EXECUTE PROCEDURE handle_invoice_lock();
   `);
+
+  await sequelize.query(`
+    CREATE OR REPLACE FUNCTION check_invoice_lock()
+    RETURNS trigger AS $check_invoice_lock$
+      BEGIN
+        IF (NEW."isLocked" = TRUE AND OLD."isLocked" = TRUE) THEN
+          RAISE EXCEPTION 'Can not update a locked invoice. Unlock to update.';
+          RETURN NULL;
+        END IF;
+        RETURN NEW;
+      END;
+    $check_invoice_lock$ LANGUAGE plpgsql;
+
+    CREATE TRIGGER check_invoice_lock
+    BEFORE UPDATE ON "Invoices"
+    FOR EACH ROW EXECUTE PROCEDURE check_invoice_lock();
+  `);
 };
 
 const createIndexes = async () => {
