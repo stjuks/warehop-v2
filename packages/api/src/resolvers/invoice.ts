@@ -4,7 +4,7 @@ import fs, { unlink } from 'fs';
 import currency from 'currency.js';
 import mkdirp from 'mkdirp';
 import util from 'util';
-import { Op, Model, Utils } from 'sequelize';
+import { Op, Model, Utils, Transaction } from 'sequelize';
 import Joi from '@hapi/joi';
 
 import { Resolver, authResolver, ApolloContext, paginate } from '.';
@@ -20,7 +20,8 @@ import Invoice from '../db/models/Invoice';
 import { GraphQLUpload } from 'apollo-server-express';
 import db from '../db';
 
-const validateAddInvoice = Joi.object({
+const validateInvoice = Joi.object({
+  id: Joi.number().optional(),
   invoice: Joi.object({
     items: Joi.array()
       .items(
@@ -87,99 +88,123 @@ const resolver: Resolver = {
     })
   },
   Mutation: {
-    addInvoice: authResolver(
-      async ({ invoice }: { invoice: AddInvoiceInput }, { models, sequelize, user }) => {
-        const { items, file, ...restInvoice } = invoice;
+    addInvoice: authResolver(async ({ invoice }: { invoice: AddInvoiceInput }, context) => {
+      const { models, sequelize, user } = context;
+      const { items, file, ...restInvoice } = invoice;
 
-        restInvoice.sum = items
+      restInvoice.sum = items
+        .reduce<currency>(
+          (acc, item) => currency(acc).add(currency(item.price).multiply(item.quantity)),
+          currency(0)
+        )
+        .toString();
+
+      const transaction = await sequelize.transaction();
+
+      const uploadFile = async invoiceId => {
+        if (file && invoice.type === 'PURCHASE') {
+          const { createReadStream, filename }: any = await file;
+          const stream = createReadStream();
+
+          const uploadDir = path.join('..', '..', 'purchaseUploads');
+          const fileName = `${new Date().getTime()}-${filename}`;
+          const filePath = path.join(uploadDir, fileName);
+
+          await mkdirp(uploadDir);
+
+          await new Promise((resolve, reject) => {
+            const wStream = fs.createWriteStream(filePath);
+
+            wStream.on('finish', resolve);
+            wStream.on('error', error => fs.unlink(filePath, () => reject(error)));
+
+            stream.on('error', error => wStream.destroy(error));
+            stream.pipe(wStream);
+          });
+
+          await models.Invoice.update(
+            { filePath: fileName },
+            { where: { id: invoiceId }, transaction }
+          );
+        }
+      };
+
+      const addInvoice = async () => {
+        return await models.Invoice.create({ ...restInvoice, userId: user.id }, { transaction });
+      };
+
+      // business logic
+      try {
+        const addedInvoice = await addInvoice();
+
+        await createInvoiceItems(items, addedInvoice, context, transaction);
+
+        await uploadFile(addedInvoice.id);
+
+        await transaction.commit();
+
+        return addedInvoice.id;
+      } catch (err) {
+        await transaction.rollback();
+        throw err;
+      }
+    }, validateInvoice),
+    editInvoice: authResolver(
+      async ({ id, invoice }: { id: number; invoice: AddInvoiceInput }, context) => {
+        const { models, user, sequelize } = context;
+
+        const transaction = await sequelize.transaction();
+
+        if (invoice.type) delete invoice.type;
+
+        invoice.sum = invoice.items
           .reduce<currency>(
             (acc, item) => currency(acc).add(currency(item.price).multiply(item.quantity)),
             currency(0)
           )
           .toString();
 
-        const transaction = await sequelize.transaction();
-
-        const uploadFile = async invoiceId => {
-          if (file && invoice.type === 'PURCHASE') {
-            const { createReadStream, filename }: any = await file;
-            const stream = createReadStream();
-
-            const uploadDir = path.join('..', '..', 'purchaseUploads');
-            const fileName = `${new Date().getTime()}-${filename}`;
-            const filePath = path.join(uploadDir, fileName);
-
-            await mkdirp(uploadDir);
-
-            await new Promise((resolve, reject) => {
-              const wStream = fs.createWriteStream(filePath);
-
-              wStream.on('finish', resolve);
-              wStream.on('error', error => fs.unlink(filePath, () => reject(error)));
-
-              stream.on('error', error => wStream.destroy(error));
-              stream.pipe(wStream);
-            });
-
-            await models.Invoice.update(
-              { filePath: fileName },
-              { where: { id: invoiceId }, transaction }
-            );
-          }
-        };
-
-        const addInvoice = async () => {
-          return await models.Invoice.create({ ...restInvoice, userId: user.id }, { transaction });
-        };
-
-        const findOrCreateNewItem = async item => {
-          return await models.Item.findOrCreate({
-            where: invoiceItemWhere(item, user.id),
-            defaults: {
-              ...item,
-              userId: user.id,
-              partnerId: item.type === 'PRODUCT' ? invoice.partnerId : undefined,
-              [invoice.type === 'PURCHASE' ? 'purchasePrice' : 'retailPrice']: item.price
-            },
+        const findInvoice = async () => {
+          const oldInvoice: any = await models.Invoice.findOne({
+            where: { id, userId: user.id },
             transaction
           });
+
+          if (!oldInvoice) throw new Error('Invoice does not exist.');
+          if (oldInvoice.isLocked) throw new Error('This invoice is locked. Unlock to edit.');
+
+          return oldInvoice;
         };
 
-        const createInvoiceItems = async (items, addedInvoice) => {
-          const invoiceItems = items.map(item => ({
-            ...item,
-            itemId: item.id,
-            invoiceId: addedInvoice.id,
-            userId: user.id
-          }));
+        const updateInvoice = async () => {
+          const [isUpdated] = await models.Invoice.update(invoice, {
+            where: { id, userId: user.id }
+          });
 
-          return await models.InvoiceItem.bulkCreate(invoiceItems, { transaction });
+          return isUpdated;
         };
 
-        // business logic
         try {
-          const addedInvoice = await addInvoice();
+          await findInvoice();
+          const isUpdated = await updateInvoice();
 
-          for (const item of items) {
-            const [dbItem] = await findOrCreateNewItem(item);
+          if (isUpdated) {
+            await models.InvoiceItem.destroy({
+              where: { invoiceId: id, userId: user.id },
+              transaction
+            });
 
-            if (dbItem) item.id = dbItem.id;
-            else throw Error('Error adding invoice item.');
+            await createInvoiceItems(invoice.items, { ...invoice, id }, context, transaction);
           }
 
-          await createInvoiceItems(items, addedInvoice);
-
-          await uploadFile(addedInvoice.id);
-
           await transaction.commit();
-
-          return addedInvoice.id;
+          return true;
         } catch (err) {
           await transaction.rollback();
           throw err;
         }
       },
-      validateAddInvoice
+      validateInvoice
     ),
     lockInvoice: authResolver(async ({ id }: { id: number }, context) => {
       return await handleInvoiceLock({ id, isLocked: true }, context);
@@ -195,16 +220,51 @@ const resolver: Resolver = {
   }
 };
 
-const invoiceItemWhere = (item: InvoiceItemInput, userId) => {
-  return item.type === 'PRODUCT'
-    ? {
-        code: item.code,
-        userId
-      }
-    : {
-        name: item.name,
-        userId
-      };
+const createInvoiceItems = async (
+  items,
+  invoice,
+  context: ApolloContext,
+  transaction: Transaction
+) => {
+  const { user, models } = context;
+
+  const findOrCreateNewItem = async item => {
+    return await models.Item.findOrCreate({
+      where:
+        item.type === 'PRODUCT'
+          ? {
+              code: item.code,
+              userId: user.id
+            }
+          : {
+              name: item.name,
+              userId: user.id
+            },
+      defaults: {
+        ...item,
+        userId: user.id,
+        partnerId: item.type === 'PRODUCT' ? invoice.partnerId : undefined,
+        [invoice.type === 'PURCHASE' ? 'purchasePrice' : 'retailPrice']: item.price
+      },
+      transaction
+    });
+  };
+
+  for (const item of items) {
+    const [dbItem] = await findOrCreateNewItem(item);
+
+    if (dbItem) item.id = dbItem.id;
+    else throw Error('Error adding invoice item.');
+  }
+
+  const invoiceItems = items.map(item => ({
+    ...item,
+    itemId: item.id,
+    invoiceId: invoice.id,
+    userId: user.id
+  }));
+
+  await models.InvoiceItem.bulkCreate(invoiceItems, { transaction });
 };
 
 const findInvoices = async ({ models, user }: ApolloContext, filter: InvoiceSearchInput) => {
@@ -246,8 +306,6 @@ const findInvoices = async ({ models, user }: ApolloContext, filter: InvoiceSear
   if (isPaid === false) where.sum = { [Op.gt]: Sequelize.col('paidSum') };
 
   const { partner, ...restWhere } = where;
-
-  console.log(where);
 
   const invoices = await paginate(models.Invoice, {
     cursor,

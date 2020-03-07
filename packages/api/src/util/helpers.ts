@@ -83,5 +83,5 @@ export const formatError = (err: GraphQLError) => {
     }
   }
 
-  return createError('Error executing request.', 'GeneralError');
+  return createError(err.message || 'Error executing request.', 'GeneralError');
 };

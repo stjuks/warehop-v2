@@ -94,6 +94,7 @@ export default gql`
 
   extend type Mutation {
     addInvoice(invoice: InvoiceInput!): ID!
+    editInvoice(id: ID!, invoice: InvoiceInput!): Boolean!
     lockInvoice(id: ID!): Boolean!
     unlockInvoice(id: ID!): Boolean!
   }
