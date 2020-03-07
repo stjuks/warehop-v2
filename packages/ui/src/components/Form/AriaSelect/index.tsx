@@ -71,6 +71,8 @@ const AriaSelectBase: React.FC<AriaSelectProps & Partial<FieldProps>> = observer
     const [searchQuery, setSearchQuery] = useState('');
     const [displayValue, setDisplayValue] = useState('');
 
+    // console.log(field?.value);
+
     const [isLoadingOptions, setLoadingOptions] = useState(false);
     const [isLoadingSearch, setLoadingSearch] = useState(false);
 
@@ -82,7 +84,7 @@ const AriaSelectBase: React.FC<AriaSelectProps & Partial<FieldProps>> = observer
 
         const loadedOptions = await options;
 
-        if (fieldValue) setDisplayValue(mapSelectOption(fieldValue, optionMap).label);
+        // if (fieldValue) setDisplayValue(mapSelectOption(fieldValue, optionMap).label);
 
         setMappedOptions(mapSelectOptions(loadedOptions, optionMap));
         setLoadingOptions(false);
@@ -90,6 +92,10 @@ const AriaSelectBase: React.FC<AriaSelectProps & Partial<FieldProps>> = observer
 
       loadOptions();
     }, [options]);
+
+    useEffect(() => {
+      if (fieldValue) setDisplayValue(mapSelectOption(fieldValue, optionMap).label);
+    }, [fieldValue])
 
     const handleSelect = ({ value, label }) => {
       if (onChange) onChange({ value, label });

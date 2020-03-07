@@ -80,11 +80,20 @@ const ItemForm = ({ type }: { type: ItemType }) => {
 
   // autofill fields on select
   const handleAutosuggestSelect = ({ suggestion, formik }) => {
-    const values = {};
+    const values: any = {};
 
     forms[type].fields.forEach(field => {
       if (suggestion.value[field]) values[field] = suggestion.value[field];
     });
+
+    const { warehouseQuantity, purchasePrice } = suggestion.value;
+
+    if (warehouseQuantity && warehouseQuantity.length > 0) {
+      values.warehouse = warehouseQuantity[0];
+      values.quantity = warehouseQuantity[0].quantity;
+    }
+
+    values.price = purchasePrice;
 
     formik.setValues({ ...formik.values, ...values });
   };
