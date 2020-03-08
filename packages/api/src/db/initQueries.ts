@@ -73,8 +73,8 @@ const createCheckConstraints = async () => {
   await sequelize.query(
     createCheckConstraint({
       table: models.Transaction,
-      name: 'check_sum_date',
-      query: 'sum >= 0 AND date <= Now()'
+      name: 'check_sum',
+      query: 'sum >= 0'
     })
   );
 
@@ -174,17 +174,21 @@ export const createProcedures = async () => {
     RETURNS trigger AS $check_invoice_lock$
       BEGIN
         IF (TG_OP = 'UPDATE') THEN
-          IF (NEW."isLocked" = TRUE AND OLD."isLocked" = TRUE) THEN
+          IF (NEW."isLocked" = TRUE AND OLD."isLocked" = TRUE AND NEW."paidSum" = OLD."paidSum") THEN
             RAISE EXCEPTION 'Can not update a locked invoice. Unlock to update.';
             RETURN NULL;
+          ELSE
+            RETURN NEW;
           END IF;
         ELSIF (TG_OP = 'DELETE') THEN
           IF (OLD."isLocked" = TRUE) THEN
             RAISE EXCEPTION 'Can not delete a locked invoice. Unlock to delete.';
             RETURN NULL;
+          ELSE
+            RETURN OLD;
           END IF;
         END IF;
-        RETURN NEW;
+        RETURN NULL;
       END;
     $check_invoice_lock$ LANGUAGE plpgsql;
 

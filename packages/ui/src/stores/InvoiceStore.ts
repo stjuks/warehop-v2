@@ -95,6 +95,15 @@ class InvoiceStore {
   };
 
   @task
+  deleteInvoice = async (id?: number) => {
+    try {
+      if (id) await api.deleteInvoice(id);
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  @task
   fetchInvoice = async (id: number) => {
     try {
       const invoice: Invoice = await api.fetchInvoice(id);

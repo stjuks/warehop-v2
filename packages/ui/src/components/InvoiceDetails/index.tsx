@@ -101,7 +101,17 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
             <span>Kustuta</span>
           </>
         ),
-        onClick: () => console.log('delete'),
+        onClick: () =>
+          uiStore.openModal(
+            <ConfirmationDialog
+              title="Kas oled kindel, et soovid arvet kustutada?"
+              description="Arve kustutamise kirjeldus..."
+              icon={<FiTrash2 />}
+              type="danger"
+              onConfirm={() => invoiceStore.deleteInvoice(invoice?.id)}
+              callBackRoute={invoice?.type === 'PURCHASE' ? routes.purchases : routes.sales}
+            />
+          ),
         isDisabled: invoice?.isLocked
       }
     );
@@ -131,7 +141,7 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
     });
   }
 
-  if (!invoice?.isLocked) {
+  if (!invoice?.isLocked || !invoice?.isPaid) {
     headerComponents.push(<DropdownMenu button={<FiMoreVertical />} options={dropdownOptions} />);
   }
 

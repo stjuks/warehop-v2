@@ -11,20 +11,31 @@ const detailLabel = theme => `
 
 export const TitleContainer = styled.div`
   ${({ theme }) => `
-        box-shadow: inset 2px 0 0 ${theme.colors.primary};
         padding: 0.5rem 0 0.5rem 1.5rem;
-
+				position: relative;
+				
         .product-name {
             margin-bottom: 0.5rem;
             font-size: 1.5rem;
-            font-weight: 700;
+            font-weight: 500;
             color: ${theme.colors.text};
         }
 
         .product-code {
             color: ${theme.colors.lightText};
-            font-size: 1.25rem;
             font-weight: 500;
+        }
+
+        :before {
+					content: '';
+					position: absolute;
+					left: 0;
+					top: 0;
+					border-top-right-radius: 2px;
+					border-bottom-right-radius: 2px;
+					height: 100%;
+					width: 2px;
+					background: ${theme.colors.primary};
         }
     `}
 `;

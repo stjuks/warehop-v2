@@ -133,6 +133,12 @@ const EDIT_INVOICE = gql`
   }
 `;
 
+const DELETE_INVOICE = gql`
+  mutation deleteInvoice($id: ID!) {
+    deleteInvoice(id: $id)
+  }
+`;
+
 const LOCK_INVOICE = gql`
   mutation lockInvoice($id: ID!) {
     lockInvoice(id: $id)
@@ -164,6 +170,11 @@ export default {
     await mutate<boolean>(
       { mutation: EDIT_INVOICE, variables: { id, invoice } },
       { errorMessageHandler: { TriggerExceptionError: 'Lukustatud arvet ei saa muuta.' } }
+    ),
+  deleteInvoice: async (id: number) =>
+    await mutate<boolean>(
+      { mutation: DELETE_INVOICE, variables: { id } },
+      { errorMessageHandler: { TriggerExceptionError: 'Lukustatud arvet ei saa kustutada.' } }
     ),
   downloadInvoice: async (invoiceId: number) => {
     const config: AxiosRequestConfig = {

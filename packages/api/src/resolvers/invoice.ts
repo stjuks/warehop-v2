@@ -184,6 +184,15 @@ const resolver: Resolver = {
       },
       validateInvoice
     ),
+    deleteInvoice: authResolver(async ({ id }: { id: number }, { user, models }) => {
+      try {
+        const isDeleted = await models.Invoice.destroy({ where: { userId: user.id, id } });
+
+        return isDeleted;
+      } catch (err) {
+        throw err;
+      }
+    }),
     lockInvoice: authResolver(async ({ id }: { id: number }, context) => {
       return await handleInvoiceLock({ id, isLocked: true }, context);
     }),
