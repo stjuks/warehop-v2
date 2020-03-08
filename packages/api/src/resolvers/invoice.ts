@@ -3,22 +3,13 @@ import path from 'path';
 import fs, { unlink } from 'fs';
 import currency from 'currency.js';
 import mkdirp from 'mkdirp';
-import util from 'util';
-import { Op, Model, Utils, Transaction } from 'sequelize';
+import { Op, Model, Transaction } from 'sequelize';
 import Joi from '@hapi/joi';
 
 import { Resolver, authResolver, ApolloContext, paginate } from '.';
 
-import {
-  InvoiceType,
-  InvoiceSearchInput,
-  AddInvoiceInput,
-  InvoiceItemInput,
-  PaginatedQueryInput
-} from '@shared/types';
+import { InvoiceSearchInput, AddInvoiceInput } from '@shared/types';
 import Invoice from '../db/models/Invoice';
-import { GraphQLUpload } from 'apollo-server-express';
-import db from '../db';
 
 const validateInvoice = Joi.object({
   id: Joi.number().optional(),

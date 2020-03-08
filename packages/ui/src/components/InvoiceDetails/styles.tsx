@@ -1,4 +1,4 @@
-import styled from '@ui/util/styled';
+import styled, { Color } from '@ui/util/styled';
 import currency from 'currency.js';
 import ContentContainer from '../util/ContentContainer';
 import { DetailCardContainer } from '../ProductDetails/styles';
@@ -65,6 +65,7 @@ export const InvoiceHero = styled.div<InvoiceHeroProps>`
 
 interface IsPaidStyledProps {
   isPaid: boolean;
+  isLocked: boolean;
 }
 
 export const IsPaidStyled = styled.div<IsPaidStyledProps>`
@@ -73,12 +74,18 @@ export const IsPaidStyled = styled.div<IsPaidStyledProps>`
   border-radius: 1rem;
   font-size: 0.875rem;
 
-  ${({ isPaid, theme }) => `
-    background: ${
-      isPaid ? theme.colors.success.opacity(0.075) : theme.colors.danger.opacity(0.075)
-    };
-    color: ${isPaid ? theme.colors.success : theme.colors.danger};
-  `}
+  ${({ isPaid, theme, isLocked }) => {
+    let color: Color = theme.colors.lightText;
+
+    if (isLocked === false) color = theme.colors.lightText;
+    else if (isPaid) color = theme.colors.success;
+    else color = theme.colors.danger;
+
+    return `
+      background: ${color.opacity(0.075)};
+      color: ${color};
+    `;
+  }}
 `;
 
 export const TransactionItem = styled(DetailCardContainer)`

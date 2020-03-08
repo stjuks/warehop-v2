@@ -16,7 +16,7 @@ interface ErrorOptions {
   errorMessageHandler: {
     [key in ErrorCode]?: {
       [key: string]: string;
-    };
+    } | string;
   };
 }
 
@@ -69,6 +69,10 @@ const handleError = (error, options?: ErrorOptions) => {
       if (code === 'DeletionRestrictedError' && codeMessages) {
         const message = codeMessages[table];
         if (message) messages.push(message);
+      }
+
+      if (code === 'TriggerExceptionError') {
+        messages.push(codeMessages);
       }
 
       if (messages.length === 0) messages.push('Viga');

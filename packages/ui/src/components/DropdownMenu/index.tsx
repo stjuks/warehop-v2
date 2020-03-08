@@ -9,6 +9,7 @@ interface DropdownMenuProps {
 interface DropdownOption {
   label: string | React.ReactElement;
   onClick: () => any;
+  isDisabled?: boolean;
 }
 
 const DropdownMenu: React.FC<DropdownMenuProps> = ({ button, options }) => {

@@ -7,20 +7,21 @@ import { InvoiceItemContainer, DaysLeftStyled } from './styles';
 import { Invoice } from '@shared/types';
 
 const InvoiceItem: React.FC<Invoice> = props => {
-  const { number, sum, partner, id, dueDate, isPaid, type } = props;
+  const { number, sum, partner, id, dueDate, isPaid, type, isLocked } = props;
 
   const getDaysUntilDueDate = () => {
     let text = '';
     let diff: number | undefined = undefined;
 
-    if (isPaid) text = 'Makstud';
+    if (isLocked === false) text = 'Kinnitamata';
+    else if (isPaid) text = 'Makstud';
     else {
       diff = moment(dueDate).diff(moment(), 'days');
       text = `${diff} päeva`;
     }
 
     return (
-      <DaysLeftStyled isPaid={isPaid} diff={diff}>
+      <DaysLeftStyled isPaid={isPaid} diff={diff} isLocked={isLocked}>
         {text}
       </DaysLeftStyled>
     );

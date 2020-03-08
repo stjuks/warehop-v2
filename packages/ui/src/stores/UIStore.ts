@@ -31,6 +31,8 @@ class UIStore {
     let historyFn = history.push;
     if (replace) historyFn = history.replace;
 
+    console.log(historyOptions);
+
     historyFn({ ...historyOptions, pathname: route });
 
     if (replace) this.routeHistory.splice(this.routeHistory.length - 1, 1, route);

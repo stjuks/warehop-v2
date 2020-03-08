@@ -76,28 +76,37 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
 
   const backRoute = invoice && invoice.type === 'PURCHASE' ? routes.purchases : routes.sales;
 
-  const dropdownOptions = [
-    {
-      label: (
-        <>
-          <FiEdit />
-          <span>Muuda</span>
-        </>
-      ),
-      onClick: () => console.log('edit')
-    },
-    {
-      label: (
-        <>
-          <FiTrash2 />
-          <span>Kustuta</span>
-        </>
-      ),
-      onClick: () => console.log('delete')
-    }
-  ];
+  const dropdownOptions: any[] = [];
+  const headerComponents: any[] = [];
 
-  if (invoice && invoice.filePath) {
+  if (!invoice?.isLocked)
+    dropdownOptions.push(
+      {
+        label: (
+          <>
+            <FiEdit />
+            <span>Muuda</span>
+          </>
+        ),
+        onClick: () =>
+          uiStore.goTo(invoice?.type === 'PURCHASE' ? routes.purchaseForm : '', {
+            state: JSON.stringify(invoice)
+          }),
+        isDisabled: invoice?.isLocked
+      },
+      {
+        label: (
+          <>
+            <FiTrash2 />
+            <span>Kustuta</span>
+          </>
+        ),
+        onClick: () => console.log('delete'),
+        isDisabled: invoice?.isLocked
+      }
+    );
+
+  if (invoice?.filePath) {
     dropdownOptions.unshift({
       label: (
         <>
@@ -109,7 +118,7 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
     });
   }
 
-  if (invoice && !invoice.isPaid) {
+  if (!invoice?.isPaid) {
     dropdownOptions.unshift({
       label: (
         <>
@@ -122,7 +131,9 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
     });
   }
 
-  const headerComponents = [<DropdownMenu button={<FiMoreVertical />} options={dropdownOptions} />];
+  if (!invoice?.isLocked) {
+    headerComponents.push(<DropdownMenu button={<FiMoreVertical />} options={dropdownOptions} />);
+  }
 
   const lockIcon = invoice?.isLocked ? <FiUnlock /> : <FiLock />;
 
@@ -171,8 +182,8 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
               </div>
               <div className="row-2">
                 <span className="col-1">#{invoice.number}</span>
-                <IsPaidStyled isPaid={invoice.isPaid}>
-                  {invoice.isPaid ? 'Makstud' : 'Maksmata'}
+                <IsPaidStyled isPaid={invoice.isPaid} isLocked={invoice.isLocked}>
+                  {!invoice.isLocked ? 'Kinnitamata' : invoice.isPaid ? 'Makstud' : 'Maksmata'}
                 </IsPaidStyled>
               </div>
             </InvoiceHero>

@@ -74,26 +74,21 @@ class InvoiceStore {
 
   @task
   addInvoice = async (invoice: Invoice) => {
-    const invoiceInput: AddInvoiceInput = {
-      ...invoice,
-      partnerId: invoice.partner.id || 0
-    };
-
-    invoiceInput.items = invoice.items.map(item => {
-      const result = {
-        ...item,
-        unitId: item.unit ? item.unit.id : undefined,
-        warehouseId: item.warehouse ? item.warehouse.id : undefined
-      };
-
-      delete result.unit;
-      delete result.warehouse;
-
-      return result;
-    });
+    const invoiceInput: AddInvoiceInput = parseInvoiceInput(invoice);
 
     try {
       await api.addInvoice(invoiceInput);
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  @task
+  editInvoice = async (id: number, invoice: Invoice) => {
+    const invoiceInput: AddInvoiceInput = parseInvoiceInput(invoice);
+
+    try {
+      await api.editInvoice(id, invoiceInput);
     } catch (err) {
       throw err;
     }
@@ -160,6 +155,31 @@ class InvoiceStore {
     return this.paginatedSales.data;
   }
 }
+
+const parseInvoiceInput = (invoice: Invoice) => {
+  const { partner, ...restInvoice } = invoice;
+
+  const invoiceInput: AddInvoiceInput = {
+    ...restInvoice,
+    partnerId: invoice.partner.id || 0
+  };
+
+  invoiceInput.items = invoice.items.map(item => {
+    const result = {
+      ...item,
+      unitId: item.unit ? item.unit.id : undefined,
+      warehouseId: item.warehouse ? item.warehouse.id : undefined
+    };
+
+    delete result.unit;
+    delete result.warehouse;
+    delete result.id;
+
+    return result;
+  });
+
+  return invoiceInput;
+};
 
 const ItemStoreContext: React.Context<InvoiceStore> = createContext(new InvoiceStore());
 

@@ -10,7 +10,7 @@ import InvoiceStoreContext from '../../stores/InvoiceStore';
 import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
 import Button from '../Button';
-import { Partner, InvoiceItem, InvoiceType } from '@shared/types';
+import { Partner, InvoiceItem, InvoiceType, Invoice } from '@shared/types';
 import Form from '../Form';
 import FieldArray from '../Form/util/FieldArray';
 import InvoiceItemListItem from '../InvoiceItemListItem';
@@ -22,25 +22,22 @@ import FileInput from '../Form/FileInput';
 import DateInput from '../Form/DateInput';
 import { FormTitle } from '../Form/styles';
 import FormError from '../Form/FormError';
+import { filterObjectProperties } from '@ui/util/helpers';
 import UIStoreContext from '@ui/stores/UIStore';
 import ContentContainer from '../util/ContentContainer';
+import { RouteComponentProps } from 'react-router';
 
-interface PurchaseFormFormValues {
-  type: InvoiceType;
-  partner: Partner | undefined;
-  number: string;
-  file?: File;
-  issueDate: Date;
-  dueDate: Date;
-  description?: string;
-  items: InvoiceItem[];
+interface PurchaseFormProps extends RouteComponentProps {
+  purchase: Invoice;
 }
 
-const PurchaseForm = observer(() => {
+const PurchaseForm: React.FC<PurchaseFormProps> = observer(({ location }) => {
   const invoiceStore = useContext(InvoiceStoreContext);
   const uiStore = useContext(UIStoreContext);
 
-  const initialValues: PurchaseFormFormValues = {
+  const editablePurchase: any = location.state ? JSON.parse(location.state.toString()) : undefined;
+
+  let initialValues: any = {
     type: 'PURCHASE',
     partner: undefined,
     number: '',
@@ -50,6 +47,10 @@ const PurchaseForm = observer(() => {
     description: '',
     items: []
   };
+
+  if (editablePurchase) {
+    initialValues = filterObjectProperties(editablePurchase, Object.keys(initialValues));
+  }
 
   const validationSchema = yup.object({
     partner: yup.object().required('Palun vali tarnija.'),
@@ -64,7 +65,8 @@ const PurchaseForm = observer(() => {
 
   const handleSubmit = async purchase => {
     try {
-      await invoiceStore.addInvoice(purchase);
+      if (location.state) await invoiceStore.editInvoice(editablePurchase.id, purchase);
+      else await invoiceStore.addInvoice(purchase);
       uiStore.goBack(routes.purchases);
     } catch (err) {
       throw err;
@@ -73,7 +75,7 @@ const PurchaseForm = observer(() => {
 
   return (
     <>
-      <Header title="Uus ostuarve" backTo={routes.purchases} />
+      <Header title={editablePurchase ? 'Muuda arvet' : 'Uus ostuarve'} backTo={routes.purchases} />
       <ContentContainer>
         <Form
           validationSchema={validationSchema}
@@ -81,13 +83,17 @@ const PurchaseForm = observer(() => {
           onSubmit={handleSubmit}
           onError={() => console.log('err')}
           id="new-purchase-form"
-          persist
+          persist={editablePurchase === undefined}
         >
           {formikProps => <FormFields formikProps={formikProps} />}
         </Form>
       </ContentContainer>
       <FooterContainer style={{ padding: '0.25rem 1rem' }}>
-        <Button title="Loo arve" form="new-purchase-form" type="submit" />
+        <Button
+          title={editablePurchase ? 'Muuda arve' : 'Loo arve'}
+          form="new-purchase-form"
+          type="submit"
+        />
       </FooterContainer>
     </>
   );

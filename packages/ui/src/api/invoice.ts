@@ -127,6 +127,12 @@ const ADD_INVOICE = gql`
   }
 `;
 
+const EDIT_INVOICE = gql`
+  mutation editInvoice($id: ID!, $invoice: InvoiceInput!) {
+    editInvoice(id: $id, invoice: $invoice)
+  }
+`;
+
 const LOCK_INVOICE = gql`
   mutation lockInvoice($id: ID!) {
     lockInvoice(id: $id)
@@ -154,6 +160,11 @@ export default {
     await query<Invoice>({ query: FETCH_INVOICE, variables: { id } }),
   addInvoice: async (invoice: AddInvoiceInput) =>
     await mutate<number>({ mutation: ADD_INVOICE, variables: invoice }, { errorMessageHandler }),
+  editInvoice: async (id: number, invoice: AddInvoiceInput) =>
+    await mutate<boolean>(
+      { mutation: EDIT_INVOICE, variables: { id, invoice } },
+      { errorMessageHandler: { TriggerExceptionError: 'Lukustatud arvet ei saa muuta.' } }
+    ),
   downloadInvoice: async (invoiceId: number) => {
     const config: AxiosRequestConfig = {
       headers: {
