@@ -38,8 +38,8 @@ const TransactionForm: React.FC<TransactionFormProps & RouteChildrenProps> = ({
   const handleSubmit = async (transaction: AddTransactionInput) => {
     try {
       await transactionStore.addTransaction(transaction);
-      if (onSubmit) onSubmit(transaction);
-      uiStore.closeModal();
+      if (onSubmit) await onSubmit(transaction);
+      uiStore.goBack();
     } catch (err) {
       throw err;
     }

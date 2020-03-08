@@ -34,6 +34,15 @@ const ProductDetails: React.FC<ProductItem & RouteComponentProps> = props => {
     handleItemLoading();
   }, []);
 
+  const handleProductDelete = async () => {
+    try {
+      await itemStore.deleteItem(product?.id);
+      uiStore.goTo(routes.products, { replace: true });
+    } catch (err) {
+      throw err;
+    }
+  };
+
   const dropdownOptions = [
     {
       label: (
@@ -59,7 +68,7 @@ const ProductDetails: React.FC<ProductItem & RouteComponentProps> = props => {
             confirmText="Kustuta"
             title="Kas oled kindel, et soovid kauba kustutada?"
             description="Kaupa saab kustutada vaid siis, kui see ei sisaldu üheski arves."
-            onConfirm={() => (product && product.id ? itemStore.deleteItem(product.id) : null)}
+            onConfirm={handleProductDelete}
             callBackRoute={routes.products}
           />
         )

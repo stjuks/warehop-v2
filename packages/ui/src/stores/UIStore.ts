@@ -7,6 +7,7 @@ import { LocationDescriptorObject } from 'history';
 
 interface HistoryOptions extends LocationDescriptorObject {
   replace?: boolean;
+  isModal?: boolean;
 }
 
 class UIStore {
@@ -27,11 +28,13 @@ class UIStore {
 
   @action
   goTo = (route: string, historyOptions?: HistoryOptions) => {
-    const replace = historyOptions && historyOptions.replace;
+    const replace = historyOptions?.replace;
+    const isModal = historyOptions?.isModal;
+
     let historyFn = history.push;
     if (replace) historyFn = history.replace;
 
-    console.log(historyOptions);
+    if (!isModal) this.modals = [];
 
     historyFn({ ...historyOptions, pathname: route });
 
@@ -41,6 +44,7 @@ class UIStore {
 
   @action
   goBack = (fallbackRoute?: typeof routes[keyof typeof routes]) => {
+    console.log(this.routeHistory);
     if (this.routeHistory.length > 1) {
       this.routeHistory.pop();
       history.goBack();
@@ -64,7 +68,7 @@ class UIStore {
   @action
   openModal = (modal: React.ReactElement) => {
     this.modals.push(modal);
-    this.goTo(history.location.pathname);
+    this.goTo(history.location.pathname, { isModal: true });
   };
 
   @action

@@ -35,8 +35,6 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   const handleConfirm = async () => {
     try {
       await onConfirm();
-      if (callBackRoute) uiStore.goTo(callBackRoute, { replace: true });
-      else uiStore.goBack();
     } catch (err) {
       if (err.messages) setErrorMessages(err.messages);
     }

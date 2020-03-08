@@ -110,9 +110,13 @@ class ItemStore {
   };
 
   @task
-  deleteItem = async (id: number) => {
-    await api.deleteItem(id);
-  }
+  deleteItem = async (id?: number) => {
+    try {
+      if (id) await api.deleteItem(id);
+    } catch (err) {
+      throw err;
+    }
+  };
 
   @computed
   get products() {

@@ -70,6 +70,15 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
     }
   };
 
+  const handleInvoiceDelete = async () => {
+    try {
+      await invoiceStore.deleteInvoice(invoice?.id);
+      uiStore.goTo(invoice?.type === 'PURCHASE' ? routes.purchases : routes.sales, { replace: true });
+    } catch (err) {
+      throw err;
+    }
+  };
+
   const sum = invoice ? currency(invoice.sum).toString() : null;
   const issueDate = invoice ? moment(invoice.issueDate).format('DD.MM.YYYY') : null;
   const dueDate = invoice ? moment(invoice.dueDate).format('DD.MM.YYYY') : null;
@@ -108,8 +117,7 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
               description="Arve kustutamise kirjeldus..."
               icon={<FiTrash2 />}
               type="danger"
-              onConfirm={() => invoiceStore.deleteInvoice(invoice?.id)}
-              callBackRoute={invoice?.type === 'PURCHASE' ? routes.purchases : routes.sales}
+              onConfirm={handleInvoiceDelete}
             />
           ),
         isDisabled: invoice?.isLocked
