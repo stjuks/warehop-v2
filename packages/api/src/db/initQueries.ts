@@ -173,16 +173,23 @@ export const createProcedures = async () => {
     CREATE OR REPLACE FUNCTION check_invoice_lock()
     RETURNS trigger AS $check_invoice_lock$
       BEGIN
-        IF (NEW."isLocked" = TRUE AND OLD."isLocked" = TRUE) THEN
-          RAISE EXCEPTION 'Can not update a locked invoice. Unlock to update.';
-          RETURN NULL;
+        IF (TG_OP = 'UPDATE') THEN
+          IF (NEW."isLocked" = TRUE AND OLD."isLocked" = TRUE) THEN
+            RAISE EXCEPTION 'Can not update a locked invoice. Unlock to update.';
+            RETURN NULL;
+          END IF;
+        ELSIF (TG_OP = 'DELETE') THEN
+          IF (OLD."isLocked" = TRUE) THEN
+            RAISE EXCEPTION 'Can not delete a locked invoice. Unlock to delete.';
+            RETURN NULL;
+          END IF;
         END IF;
         RETURN NEW;
       END;
     $check_invoice_lock$ LANGUAGE plpgsql;
 
     CREATE TRIGGER check_invoice_lock
-    BEFORE UPDATE ON "Invoices"
+    BEFORE UPDATE OR DELETE ON "Invoices"
     FOR EACH ROW EXECUTE PROCEDURE check_invoice_lock();
   `);
 };
