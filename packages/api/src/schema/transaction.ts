@@ -1,9 +1,20 @@
 import gql from 'graphql-tag';
 
 export default gql`
+  type TransactionPartner {
+    id: ID!
+    name: String!
+  }
+
+  type TransactionInvoice {
+    id: ID!
+    number: String!
+    partner: TransactionPartner!
+  }
+
   type Transaction {
     id: ID!
-    invoice: Invoice!
+    invoice: TransactionInvoice!
     sum: String!
     date: Date!
     description: String

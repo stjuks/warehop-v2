@@ -69,7 +69,14 @@ const findTransactions = async (context: ApolloContext, filter: TransactionQuery
     limit,
     paginateBy: 'date',
     where,
-    include: [{ model: models.Invoice, where: { type: invoiceType }, include: [models.Partner] }]
+    include: [
+      {
+        model: models.Invoice,
+        where: { type: invoiceType, isLocked: true },
+        attributes: ['id', 'number'],
+        include: [{ model: models.Partner, attributes: ['id', 'name'] }]
+      }
+    ]
   });
 
   return transactions;
