@@ -90,7 +90,7 @@ export default class Item extends Model<Item> {
   @BelongsToMany(() => Invoice, {
     through: () => InvoiceItem,
     foreignKey: 'itemId',
-    onDelete: 'CASCADE',
+    onDelete: 'RESTRICT',
     as: 'items'
   })
   invoices: Invoice[];

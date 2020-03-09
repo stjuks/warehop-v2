@@ -64,6 +64,8 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
         await invoiceStore.lockInvoice(invoice?.id);
       }
 
+      uiStore.goBack();
+
       if (invoice) setInvoice({ ...invoice, isLocked: !invoice.isLocked });
     } catch (err) {
       throw err;

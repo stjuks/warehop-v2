@@ -13,7 +13,7 @@ import ProductItem from '../ProductItem';
 import HeaderSearch from '../HeaderSearch';
 import Loader from '../Loader';
 import { Formik } from 'formik';
-import { SelectStyled } from '../Purchases/styles';
+import MenuSelect from '../util/inputs/MenuSelect';
 import ItemStoreContext from '../../stores/ItemStore';
 import WarehouseStoreContext from '@ui/stores/WarehouseStore';
 import Form from '../Form';
@@ -54,7 +54,7 @@ const Products = observer(() => {
     <>
       <Header title="Kaubad" components={headerIcons} />
       <SortingContainer>
-        <SelectStyled
+        <MenuSelect
           name="warehouseId"
           options={warehouseOptions}
           value={warehouseFilter}

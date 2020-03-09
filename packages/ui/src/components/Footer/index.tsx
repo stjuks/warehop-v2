@@ -22,7 +22,7 @@ export const Footer = withRouter(
       { label: 'Menüü', icon: <FiMenu />, onClick: () => uiStore.setHamburgerMenuOpen(true) }
     ];
 
-    const footerlessRoutes = [routes.productForm, routes.purchaseForm, routes.partnerForm];
+    const footerlessRoutes = [routes.productForm, routes.purchaseForm, routes.partnerForm, routes.saleForm];
 
     if (footerlessRoutes.find(route => matchPath(props.location.pathname, route))) return null;
 

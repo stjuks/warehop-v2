@@ -12,17 +12,29 @@ export const FormContainer = styled.form`
 
 export const FormTitle = styled.h3`
   ${({ theme }) => `
-        display: flex;
-        align-items: center;
-        padding: 0.25rem 1rem;
-        text-transform: uppercase;
-        box-shadow: inset 2px 0 0 ${theme.colors.primary};
-        color: ${theme.colors.text};
-        font-family: 'Red Hat Display', sans-serif;
-        font-size: 0.875rem;
-        font-weight: 500;
-        margin: 1rem 0 1.5rem 0.25rem;
-    `}
+    display: flex;
+    align-items: center;
+    padding: 0.25rem 1rem;
+    text-transform: uppercase;
+    color: ${theme.colors.text};
+    font-family: 'Red Hat Display', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin: 1rem 0 1.5rem 0.25rem;
+    position: relative;
+
+    :before {
+      content: '';
+      position: absolute;
+      background: ${theme.colors.primary};
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      border-top-right-radius: 2px;
+      border-bottom-right-radius: 2px;
+    }
+  `}
 `;
 
 export const InputContainer = styled.div.attrs({

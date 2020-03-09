@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { FiPlusCircle, FiRefreshCw } from 'react-icons/fi';
+import { FiPlusCircle } from 'react-icons/fi';
 import { observer } from 'mobx-react-lite';
 import { InvoiceSearchInput } from '@shared/types';
 
@@ -12,11 +12,11 @@ import Header from '../Header';
 import HeaderSearch from '../HeaderSearch';
 import Radio from '../Radio';
 import InvoiceItem from '../InvoiceItem';
-import { LoadMoreButton } from './styles';
+import LoadMoreButton from '../util/LoadMoreButton';
 import UIStoreContext from '@ui/stores/UIStore';
 
 const Purchases = observer(() => {
-  const [paidFilter, setPaidFilter] = useState(undefined);
+  const [filter, setFilter] = useState<InvoiceSearchInput | undefined>(undefined);
   const [searchQuery, setSearchQuery] = useState('');
 
   const invoiceStore = useContext(InvoiceStoreContext);
@@ -24,24 +24,19 @@ const Purchases = observer(() => {
 
   const headerIcons = [
     <HeaderSearch onChange={setSearchQuery} placeholder="Otsi arvet" />,
-    <NewItemButtonContainer onClick={() => uiStore.goTo(routes.purchaseForm)}>
+    <NewItemButtonContainer onClick={() => uiStore.goTo(routes.saleForm)}>
       <FiPlusCircle />
     </NewItemButtonContainer>
   ];
 
-  const filter: InvoiceSearchInput = {
-    isPaid: paidFilter,
-    generalQuery: searchQuery
-  };
-
   useEffect(() => {
-    invoiceStore.fetchSales(filter);
-  }, [paidFilter, searchQuery]);
+    if (filter) invoiceStore.fetchSales({ ...filter, generalQuery: searchQuery });
+  }, [filter, searchQuery]);
 
   const paidOptions = [
-    { label: 'Kõik', value: undefined },
-    { label: 'Makstud', value: true },
-    { label: 'Maksmata', value: false }
+    { label: 'Maksmata', value: { isPaid: false } },
+    { label: 'Makstud', value: { isPaid: true } },
+    { label: 'Kinnitamata', value: { isPaid: undefined, isLocked: false } }
   ];
 
   return (
@@ -51,19 +46,16 @@ const Purchases = observer(() => {
         <Radio
           options={paidOptions}
           name="radio-paid"
-          onSelect={value => setPaidFilter(value)}
+          onSelect={value => setFilter({ ...filter, isLocked: true, ...value })}
           defaultValue={paidOptions[0].value}
         />
       </SortingContainer>
       <ContentContainer>
-        {invoiceStore.sales.map(purchase => (
-          <InvoiceItem {...purchase} key={purchase.id} />
+        {invoiceStore.sales.map(sale => (
+          <InvoiceItem {...sale} key={sale.id} />
         ))}
         {invoiceStore.paginatedSales.pageInfo.hasNextPage && (
-          <LoadMoreButton onClick={() => invoiceStore.fetchMoreSales(filter)}>
-            <FiRefreshCw />
-            Lae juurde
-          </LoadMoreButton>
+          <LoadMoreButton onClick={() => invoiceStore.fetchMoreSales(filter)} />
         )}
       </ContentContainer>
     </>

@@ -77,7 +77,7 @@ export const IsPaidStyled = styled.div<IsPaidStyledProps>`
   ${({ isPaid, theme, isLocked }) => {
     let color: Color = theme.colors.lightText;
 
-    if (isLocked === false) color = theme.colors.lightText;
+    if (isLocked === false) color = theme.colors.primary;
     else if (isPaid) color = theme.colors.success;
     else color = theme.colors.danger;
 

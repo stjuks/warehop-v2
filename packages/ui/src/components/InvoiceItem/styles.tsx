@@ -24,7 +24,7 @@ export const DaysLeftStyled = styled.div<DaysLeftStyledProps>`
   ${({ theme, isPaid, diff, isLocked }) => {
     let color: Color = theme.colors.lightText;
 
-    if (isLocked === false) color = theme.colors.lightText;
+    if (isLocked === false) color = theme.colors.primary;
     else if (isPaid) color = theme.colors.success;
     else if (diff !== undefined) {
       if (diff <= 3) color = theme.colors.warning;

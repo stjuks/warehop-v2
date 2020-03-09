@@ -46,13 +46,13 @@ class InvoiceStore {
   };
 
   @task
-  fetchSales = async (filter: InvoiceSearchInput) => {
+  fetchSales = async (filter?: InvoiceSearchInput) => {
     uiStore.setLoading(true);
 
     const safeFilter = filter || {};
 
     const sales = await api.fetchSales({
-      ...filter,
+      ...safeFilter,
       pagination: { limit: this.INVOICE_LIMIT }
     });
 
@@ -62,14 +62,20 @@ class InvoiceStore {
   };
 
   @task
-  fetchMoreSales = async (filter: InvoiceSearchInput) => {
-    const services = await api.fetchSales({
-      ...filter,
+  fetchMoreSales = async (filter?: InvoiceSearchInput) => {
+    uiStore.setLoading(true);
+
+    const safeFilter = filter || {};
+
+    const sales = await api.fetchSales({
+      ...safeFilter,
       pagination: { cursor: this.paginatedSales.pageInfo.cursor, limit: this.INVOICE_LIMIT }
     });
 
-    this.paginatedSales.pageInfo = services.pageInfo;
-    this.paginatedSales.data.push(...services.data);
+    uiStore.setLoading(false);
+
+    this.paginatedSales.pageInfo = sales.pageInfo;
+    this.paginatedSales.data.push(...sales.data);
   };
 
   @task

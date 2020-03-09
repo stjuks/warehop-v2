@@ -6,6 +6,7 @@ const routes = {
   purchaseDetails: '/purchases/:id',
   purchaseForm: '/purchases/new',
   sales: '/sales',
+  saleForm: '/sales/new',
   saleDetails: '/sales/:id',
   expenses: '/expenses',
   incomes: '/incomes',

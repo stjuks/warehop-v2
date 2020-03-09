@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { FiPlusCircle, FiRefreshCw } from 'react-icons/fi';
 import { observer } from 'mobx-react-lite';
-import { LoadMoreButton } from '../Purchases/styles';
+import LoadMoreButton from '../util/LoadMoreButton';
 
 import ContentContainer from '../util/ContentContainer';
 import { SortingContainer, NewItemButtonContainer } from './styles';
