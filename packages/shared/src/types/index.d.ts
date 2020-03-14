@@ -53,6 +53,7 @@ export interface TransactionQueryInput {
   type?: TransactionType;
   startDate?: Date;
   endDate?: Date;
+  generalQuery?: string;
 }
 
 export interface AddItemInput {

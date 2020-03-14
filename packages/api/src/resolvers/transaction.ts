@@ -49,7 +49,8 @@ const findTransactions = async (context: ApolloContext, filter: TransactionQuery
     type,
     pagination: { limit, cursor },
     startDate,
-    endDate
+    endDate,
+    generalQuery
   } = filter;
 
   const { models, user } = context;
@@ -60,6 +61,16 @@ const findTransactions = async (context: ApolloContext, filter: TransactionQuery
     userId: user.id
   };
 
+  if (generalQuery) {
+    const generalLike = { [Op.like]: `%${generalQuery}%` };
+
+    where[Op.or] = [
+      { '$invoice.number$': generalLike },
+      { '$invoice.partner.name$': generalLike },
+      { description: generalLike }
+    ];
+  }
+  
   if (startDate && endDate) where.date = { [Op.between]: [startDate, endDate] };
   else if (startDate) where.date = { [Op.gte]: startDate };
   else if (endDate) where.date = { [Op.lte]: endDate };

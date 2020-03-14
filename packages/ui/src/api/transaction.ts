@@ -33,12 +33,14 @@ export const FETCH_EXPENSES = gql`
     $pagination: PaginatedQueryInput!,
     $startDate: Date,
     $endDate: Date,
+    $generalQuery: String
   ) {
     expenses(
       filter: {
         pagination: $pagination
         startDate: $startDate
         endDate: $endDate
+        generalQuery: $generalQuery
       }
     ) {
       ${transactionSchema}
@@ -51,12 +53,14 @@ export const FETCH_INCOMES = gql`
     $pagination: PaginatedQueryInput!,
     $startDate: Date,
     $endDate: Date,
+    $generalQuery: String
   ) {
     incomes(
       filter: {
         pagination: $pagination
         startDate: $startDate
         endDate: $endDate
+        generalQuery: $generalQuery
       }
     ) {
       ${transactionSchema}

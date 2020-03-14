@@ -36,6 +36,7 @@ export default gql`
     pagination: PaginatedQueryInput!
     startDate: Date
     endDate: Date
+    generalQuery: String
   }
 
   extend type Query {
