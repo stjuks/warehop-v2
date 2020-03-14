@@ -37,13 +37,12 @@ export const FormTitle = styled.h3`
   `}
 `;
 
-export const InputContainer = styled.div.attrs({
-  className: 'input-container'
-})`
+export const InputContainer = styled.div.attrs(({ className }) => ({
+  className: `input-container ${className}`
+}))`
   display: flex;
   margin: 0.25rem;
   flex-direction: column;
-  min-width: 11rem;
 `;
 
 export const LabelContainer = styled.label.attrs({ className: 'label' })`

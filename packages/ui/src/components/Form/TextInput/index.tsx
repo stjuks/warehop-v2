@@ -10,7 +10,7 @@ import {
   InputIndicatorContainer
 } from '../styles';
 
-interface InputProps {
+export interface TextInputBaseProps {
   name: string;
   label?: string;
   onChange?: (
@@ -28,6 +28,8 @@ interface InputProps {
   onFocus?: (isFocused: boolean) => any;
   isTextarea?: boolean;
   validate?: any;
+  className?: string;
+  notClearable?: boolean;
 }
 
 interface InputActionProps {
@@ -51,7 +53,7 @@ export const InputActionButtons: React.FC<InputActionProps> = ({ action, indicat
   );
 };
 
-export const TextInputBase: React.FC<InputProps> = ({
+export const TextInputBase: React.FC<TextInputBaseProps> = ({
   label,
   onChange,
   value,
@@ -65,7 +67,9 @@ export const TextInputBase: React.FC<InputProps> = ({
   inputFieldRef,
   readOnly,
   onFocus,
-  isTextarea
+  isTextarea,
+  className,
+  notClearable
 }) => {
   const [isFocused, setFocused] = useState(false);
   const [isMounted, setMounted] = useState(false);
@@ -87,7 +91,7 @@ export const TextInputBase: React.FC<InputProps> = ({
   }, []);
 
   return (
-    <InputContainer>
+    <InputContainer className={className}>
       {label && <LabelContainer>{label}</LabelContainer>}
       <InputFieldContainer
         onFocus={() => handleFocus(true)}
@@ -121,10 +125,11 @@ export const TextInputBase: React.FC<InputProps> = ({
                 readOnly={readOnly}
               />
             )}
-
             <InputActionButtons
               indicator={indicator}
-              action={value ? { icon: <FiX />, onClick: e => handleClear(e) } : undefined}
+              action={
+                value && !notClearable ? { icon: <FiX />, onClick: e => handleClear(e) } : undefined
+              }
             />
           </>
         )}
@@ -134,7 +139,7 @@ export const TextInputBase: React.FC<InputProps> = ({
   );
 };
 
-const TextInput: React.FC<InputProps> = props => {
+const TextInput: React.FC<TextInputBaseProps> = props => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>,
     form: FormikProps<any>

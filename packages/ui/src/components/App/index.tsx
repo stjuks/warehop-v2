@@ -27,6 +27,7 @@ import InvoiceDetails from '../InvoiceDetails';
 import TransactionForm from '../TransactionForm';
 import Modal from '../Modal';
 import SaleForm from '../SaleForm';
+import Transactions from '../Transactions';
 
 const App = () => {
   const warehouseStore = useContext(WarehouseStoreContext);
@@ -55,6 +56,8 @@ const App = () => {
               <Route path={routes.purchases} component={Purchases} />
               <Route path={routes.sales} component={Sales} />
               <Route path={routes.partners} component={Partners} />
+              <Route path={routes.incomes} render={() => <Transactions type="INCOME" />} />
+              <Route path={routes.expenses} render={() => <Transactions type="EXPENSE" />} />
             </Switch>
             <Footer />
             <HamburgerMenu />

@@ -11,8 +11,10 @@ interface MainListItemProps {
 const MainListItem: React.FC<MainListItemProps> = ({ children, to, className }) => {
   return (
     <MainListItemContainer to={to} className={className}>
-      {children}
-      <div className="col-2">
+      <div className="content">
+        {children}
+      </div>
+      <div className="chevron">
         <FiChevronRight />
       </div>
     </MainListItemContainer>
