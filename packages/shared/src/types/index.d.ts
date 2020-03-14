@@ -49,7 +49,7 @@ export interface WarehouseQuantityInput {
 }
 
 export interface TransactionQueryInput {
-  pagination: PaginatedQueryInput;
+  pagination?: PaginatedQueryInput;
   type?: TransactionType;
   startDate?: Date;
   endDate?: Date;

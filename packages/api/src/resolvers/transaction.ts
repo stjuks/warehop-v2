@@ -67,7 +67,7 @@ const findTransactions = async (context: ApolloContext, filter: TransactionQuery
   const transactions = await paginate(models.Transaction, {
     cursor,
     limit,
-    paginateBy: 'date',
+    order: [['date', 'DESC']],
     where,
     include: [
       {

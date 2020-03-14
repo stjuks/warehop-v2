@@ -78,18 +78,18 @@ interface PaginateOptions extends FindOptions {
   cursor: string;
   limit: number;
   paginateBy?: string;
+  paginationFn?: (cursor) => any;
 }
 
 export const paginate = async (model: ModelCtor, opts: PaginateOptions) => {
-  const { cursor, limit, paginateBy, ...restOpts } = opts;
+  const { cursor, limit, paginateBy, paginationFn, ...restOpts } = opts;
   const where: any = opts.where || {};
 
   if (cursor) {
     const decryptedHash: any = fromCursorHash(cursor);
-    if (paginateBy) {
-      where[paginateBy] = {
-        [Op.gte]: decryptedHash
-      };
+    console.log('decryptedHash', decryptedHash);
+    if (paginateBy && paginationFn) {
+      where[paginateBy] = paginationFn(decryptedHash);
     } else {
       where.id = {
         [Op.gte]: isNaN(decryptedHash) ? decryptedHash : Number(decryptedHash)
@@ -114,7 +114,7 @@ export const paginate = async (model: ModelCtor, opts: PaginateOptions) => {
 
   if (data.length > 0) {
     const { hasNextPage } = result.pageInfo;
-    const lastDataObject = data[data.length - 1];
+    const lastDataObject: any = data[data.length - 1];
 
     if (hasNextPage) {
       result.data.pop();

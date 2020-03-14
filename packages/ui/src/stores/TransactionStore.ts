@@ -7,7 +7,7 @@ import { paginatedData } from '../util/helpers';
 import { uiStore } from './UIStore';
 
 class TransactionStore {
-  private TRANSACTION_LIMIT = 10;
+  private TRANSACTION_LIMIT = 25;
 
   @observable paginatedIncomes = paginatedData<Transaction>();
   @observable paginatedExpenses = paginatedData<Transaction>();
@@ -103,7 +103,7 @@ class TransactionStore {
     try {
       const expenses = await api.fetchExpenses({
         ...safeFilter,
-        pagination: { cursor: this.paginatedIncomes.pageInfo.cursor, limit: this.TRANSACTION_LIMIT }
+        pagination: { cursor: this.paginatedExpenses.pageInfo.cursor, limit: this.TRANSACTION_LIMIT }
       });
 
       uiStore.setLoading(false);
