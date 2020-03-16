@@ -12,6 +12,7 @@ const transactionSchema = `
   invoice {
     id
     number
+    isLocked
     partner {
       id
       name
@@ -21,6 +22,14 @@ const transactionSchema = `
   type
   date
   description
+`;
+
+const addTransactionQuery = (queryName: string) => gql`
+  mutation ${queryName}($invoiceId: ID!, $sum: String!, $date: Date!, $description: String) {
+    ${queryName}(
+      transaction: { invoiceId: $invoiceId, sum: $sum, date: $date, description: $description }
+    )
+  }
 `;
 
 export const FETCH_EXPENSES = gql`
@@ -75,16 +84,20 @@ export const FETCH_INCOMES = gql`
   }
 `;
 
-const addTransactionQuery = (queryName: string) => gql`
-  mutation ${queryName}($invoiceId: ID!, $sum: String!, $date: Date!, $description: String) {
-    ${queryName}(
-      transaction: { invoiceId: $invoiceId, sum: $sum, date: $date, description: $description }
-    )
+export const ADD_INCOME = addTransactionQuery('addIncome');
+export const ADD_EXPENSE = addTransactionQuery('addExpense');
+
+export const DELETE_TRANSACTION = gql`
+  mutation deleteTransaction($id: ID!) {
+    deleteTransaction(id: $id)
   }
 `;
 
-export const ADD_INCOME = addTransactionQuery('addIncome');
-export const ADD_EXPENSE = addTransactionQuery('addExpense');
+export const EDIT_TRANSACTION = gql`
+  mutation editTransaction($id: ID!, $transaction: TransactionInput!) {
+    editTransaction(id: $id, transaction: $transaction)
+  }
+`;
 
 export const FETCH_TRANSACTION = gql`
   query transaction($id: ID!) {
@@ -101,6 +114,10 @@ export default {
     await query<PaginatedData<Transaction>>({ query: FETCH_EXPENSES, variables: filter }),
   fetchTransaction: async (id: number) =>
     await query<Transaction>({ query: FETCH_TRANSACTION, variables: { id } }),
+  deleteTransaction: async (id: number) =>
+    await mutate<boolean>({ mutation: DELETE_TRANSACTION, variables: { id } }),
+  editTransaction: async (id: number, transaction: AddTransactionInput) =>
+    await mutate<boolean>({ mutation: EDIT_TRANSACTION, variables: { id, transaction } }),
   addIncome: async (transaction: AddTransactionInput) =>
     await mutate<number>({ mutation: ADD_INCOME, variables: transaction }),
   addExpense: async (transaction: AddTransactionInput) =>

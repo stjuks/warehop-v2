@@ -4,18 +4,14 @@ import moment from 'moment';
 import currency from 'currency.js';
 
 import ContentContainer from '../util/ContentContainer';
-import { SortingContainer, NewItemButtonContainer, TransactionItemContainer } from './styles';
+import { SortingContainer, TransactionItemContainer } from './styles';
 import LoadMoreButton from '../util/LoadMoreButton';
 
 import Header from '../Header';
-import Form from '../Form';
-import UIStoreContext from '@ui/stores/UIStore';
 import routes from '@ui/util/routes';
-import WarehouseForm from '../WarehouseForm';
 import MenuDateInput from '../util/inputs/MenuDateInput';
 import TransactionStoreContext from '@ui/stores/TransactionStore';
 import { TransactionType, Transaction, TransactionQueryInput } from '@shared/types';
-import { FiChevronDown, FiArrowDown } from 'react-icons/fi';
 import HeaderSearch from '../HeaderSearch';
 
 interface TransactionsProps {

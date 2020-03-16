@@ -90,7 +90,10 @@ class TransactionStore {
     try {
       const expenses = await api.fetchExpenses({
         ...safeFilter,
-        pagination: { cursor: this.paginatedExpenses.pageInfo.cursor, limit: this.TRANSACTION_LIMIT }
+        pagination: {
+          cursor: this.paginatedExpenses.pageInfo.cursor,
+          limit: this.TRANSACTION_LIMIT
+        }
       });
 
       this.paginatedExpenses.pageInfo = expenses.pageInfo;
@@ -115,7 +118,33 @@ class TransactionStore {
     } finally {
       uiStore.setLoading(false);
     }
-  }
+  };
+
+  @task
+  editTransaction = async (id: number, transaction: AddTransactionInput) => {
+    uiStore.setLoading(true);
+
+    try {
+      await api.editTransaction(id, transaction);
+    } catch (err) {
+      throw err;
+    } finally {
+      uiStore.setLoading(false);
+    }
+  };
+
+  @task
+  deleteTransaction = async (id?: number) => {
+    uiStore.setLoading(true);
+
+    try {
+      if (id) await api.deleteTransaction(id);
+    } catch (err) {
+      throw err;
+    } finally {
+      uiStore.setLoading(false);
+    }
+  };
 
   @task
   addIncome = async (transaction: AddTransactionInput) => {

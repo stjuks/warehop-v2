@@ -7,7 +7,7 @@ import * as yup from 'yup';
 
 import TextInput from '../Form/TextInput';
 import DateInput from '../Form/DateInput';
-import { Invoice, AddTransactionInput } from '@shared/types';
+import { Invoice, AddTransactionInput, Transaction } from '@shared/types';
 import Header from '../Header';
 import { ContentContainer } from '../App/styles';
 import { FooterContainer } from '../Footer/styles';
@@ -17,30 +17,40 @@ import TransactionStoreContext from '@ui/stores/TransactionStore';
 import UIStoreContext from '@ui/stores/UIStore';
 
 interface TransactionFormProps {
-  invoice: Invoice;
+  invoice?: Invoice;
+  transaction?: Transaction;
   onSubmit?: (transaction: AddTransactionInput) => any;
 }
 
 const TransactionForm: React.FC<TransactionFormProps & RouteChildrenProps> = ({
   invoice,
+  transaction,
   onSubmit
 }) => {
   const transactionStore = useContext(TransactionStoreContext);
   const uiStore = useContext(UIStoreContext);
 
-  const initialValues = {
-    invoiceId: invoice.id,
-    sum: currency(Number(invoice.sum) - Number(invoice.paidSum)).toString(),
-    date: new Date(),
-    description: ''
-  };
+  const initialValues = invoice
+    ? {
+        invoiceId: invoice.id,
+        sum: currency(Number(invoice.sum) - Number(invoice.paidSum)).toString(),
+        date: new Date(),
+        description: ''
+      }
+    : transaction && {
+        invoiceId: transaction.invoice.id,
+        sum: currency(transaction.sum).toString(),
+        date: new Date(transaction.date),
+        description: transaction.description
+      };
 
-  const handleSubmit = async (transaction: AddTransactionInput) => {
+  const handleSubmit = async (newTransaction: AddTransactionInput) => {
     try {
-      if (invoice.type === 'PURCHASE') await transactionStore.addExpense(transaction);
-      else if (invoice.type === 'SALE') await transactionStore.addIncome(transaction);
-      
-      if (onSubmit) await onSubmit(transaction);
+      if (transaction) await transactionStore.editTransaction(transaction.id, newTransaction);
+      else if (invoice?.type === 'PURCHASE') await transactionStore.addExpense(newTransaction);
+      else if (invoice?.type === 'SALE') await transactionStore.addIncome(newTransaction);
+
+      if (onSubmit) await onSubmit(newTransaction);
       uiStore.goBack();
     } catch (err) {
       throw err;
@@ -59,7 +69,10 @@ const TransactionForm: React.FC<TransactionFormProps & RouteChildrenProps> = ({
 
   return (
     <>
-      <Header title={`Makse #${invoice.number}`} backTo={`${routes.purchases}/${invoice.id}`} />
+      <Header
+        title={`Makse #${invoice?.number || transaction?.invoice.number}`}
+        backTo={`${routes.purchases}/${invoice?.id || transaction?.invoice.id}`}
+      />
       <ContentContainer>
         <Form
           id="new-transaction-form"
@@ -73,7 +86,11 @@ const TransactionForm: React.FC<TransactionFormProps & RouteChildrenProps> = ({
         </Form>
       </ContentContainer>
       <FooterContainer style={{ padding: '0.25rem 1rem' }}>
-        <Button title="Lisa makse" form="new-transaction-form" type="submit" />
+        <Button
+          title={transaction ? 'Muuda makset' : 'Lisa makse'}
+          form="new-transaction-form"
+          type="submit"
+        />
       </FooterContainer>
     </>
   );

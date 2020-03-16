@@ -124,5 +124,14 @@ export const TransactionItem = styled(Link)`
       font-size: 0.875rem;
       color: ${theme.colors.lightText};
     }
+
+    transition: all .2s;
+
+    :hover,
+    :focus {
+      outline: none;
+      transform: translateY(5%);
+      box-shadow: 0 0 0 rgba(0, 0, 0, .05);
+    }
   `}
 `;

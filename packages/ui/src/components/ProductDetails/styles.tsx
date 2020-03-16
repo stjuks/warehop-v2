@@ -38,6 +38,10 @@ export const detailCardStyles = theme => `
     color: ${theme.colors.text};
     font-weight: 500;
   }
+
+  a.detail-value {
+    text-decoration: underline;
+  }
 `;
 
 export const TitleContainer = styled.div`

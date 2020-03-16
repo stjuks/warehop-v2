@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useContext, useState, useCallback } from 'react';
 import { Invoice, AddTransactionInput } from '@shared/types';
 import routes from '@ui/util/routes';
 import InvoiceStoreContext from '@ui/stores/InvoiceStore';
@@ -36,23 +36,23 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
   const uiStore = useContext(UIStoreContext);
   const [invoice, setInvoice] = useState<Invoice | undefined>(undefined);
 
-  useEffect(() => {
-    const handleInvoiceLoading = async () => {
-      const location: any = props.location;
+  const handleInvoiceLoading = useCallback(async () => {
+    const location: any = props.location;
 
-      if (location.invoice) {
-        setInvoice(location.invoice);
-      } else {
-        const match: any = props.match;
-        const { id } = match.params;
+    if (location.invoice) {
+      setInvoice(location.invoice);
+    } else {
+      const match: any = props.match;
+      const { id } = match.params;
 
-        if (id !== undefined) {
-          const invoice = await invoiceStore.fetchInvoice(id);
-          setInvoice(invoice);
-        }
+      if (id !== undefined) {
+        const invoice = await invoiceStore.fetchInvoice(id);
+        setInvoice(invoice);
       }
-    };
+    }
+  }, []);
 
+  useEffect(() => {
     handleInvoiceLoading();
   }, []);
 
@@ -149,7 +149,7 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
         </>
       ),
       onClick: () =>
-        uiStore.openModal(<TransactionForm invoice={invoice} onSubmit={handleTransactionSubmit} />)
+        uiStore.openModal(<TransactionForm invoice={invoice} onSubmit={handleInvoiceLoading} />)
     });
   }
 
@@ -178,18 +178,6 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
       {lockIcon}
     </button>
   );
-
-  const handleTransactionSubmit = (transaction: AddTransactionInput) => {
-    if (invoice) {
-      const paidSum = Number(invoice.paidSum) + Number(transaction.sum);
-      const newValues = {
-        paidSum: paidSum.toString(),
-        isPaid: paidSum >= Number(invoice.sum)
-      };
-
-      setInvoice({ ...invoice, ...newValues });
-    }
-  };
 
   return (
     <>
