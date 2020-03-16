@@ -91,6 +91,7 @@ const createStaticData = async () => {
   await models.InvoiceType.bulkCreate([{ id: 'SALE' }, { id: 'PURCHASE' }]);
   await models.PartnerType.bulkCreate([{ id: 'VENDOR' }, { id: 'CLIENT' }]);
   await models.ItemType.bulkCreate([{ id: 'PRODUCT' }, { id: 'SERVICE' }, { id: 'EXPENSE' }]);
+  await models.TransactionType.bulkCreate([{ id: 'INCOME' }, { id: 'EXPENSE' }]);
 };
 
 const createTestData = async () => {

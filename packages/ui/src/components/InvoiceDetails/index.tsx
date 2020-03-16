@@ -75,7 +75,9 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
   const handleInvoiceDelete = async () => {
     try {
       await invoiceStore.deleteInvoice(invoice?.id);
-      uiStore.goTo(invoice?.type === 'PURCHASE' ? routes.purchases : routes.sales, { replace: true });
+      uiStore.goTo(invoice?.type === 'PURCHASE' ? routes.purchases : routes.sales, {
+        replace: true
+      });
     } catch (err) {
       throw err;
     }
@@ -231,7 +233,12 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
             ))}
             <DetailLabel>Tehingud</DetailLabel>
             {invoice.transactions.map(transaction => (
-              <TransactionItem key={transaction.id}>
+              <TransactionItem
+                key={transaction.id}
+                to={`${invoice.type === 'PURCHASE' ? routes.expenses : routes.incomes}/${
+                  transaction.id
+                }`}
+              >
                 {invoice.type === 'PURCHASE' ? (
                   <FiArrowDown className="expense-arrow" />
                 ) : (

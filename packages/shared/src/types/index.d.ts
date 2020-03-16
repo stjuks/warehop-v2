@@ -96,6 +96,7 @@ export interface AddTransactionInput {
   invoiceId: number;
   sum: string;
   date: Date;
+  type?: TransactionType;
   description?: string;
 }
 
@@ -165,6 +166,7 @@ export interface Transaction {
   sum: string;
   date: Date;
   description?: string;
+  type: TransactionType;
 }
 
 export interface InvoiceItem {

@@ -24,7 +24,7 @@ import Partners from '../Partners';
 import PartnerForm from '../PartnerForm';
 import HamburgerMenu from '../HamburgerMenu';
 import InvoiceDetails from '../InvoiceDetails';
-import TransactionForm from '../TransactionForm';
+import TransactionDetails from '../TransactionDetails';
 import Modal from '../Modal';
 import SaleForm from '../SaleForm';
 import Transactions from '../Transactions';
@@ -50,6 +50,8 @@ const App = () => {
               <Route path={routes.saleForm} component={SaleForm} />
               <Route path={routes.productDetails} component={ProductDetails} />
               <Route path={routes.purchaseDetails} component={InvoiceDetails} />
+              <Route path={routes.incomeDetails} component={TransactionDetails} />
+              <Route path={routes.expenseDetails} component={TransactionDetails} />
               <Route path={routes.saleDetails} component={InvoiceDetails} />
               <Route path={routes.partnerDetails} component={Purchases} />
               <Route path={routes.products} component={Products} />

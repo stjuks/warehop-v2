@@ -36,6 +36,7 @@ export const theme = {
     black: new Color('#000')
   },
   devices: {
+    mobileS: '320px',
     mobileL: '425px'
   }
 };

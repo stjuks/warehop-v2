@@ -13,19 +13,6 @@ class TransactionStore {
   @observable paginatedExpenses = paginatedData<Transaction>();
 
   @task
-  addTransaction = async (transaction: AddTransactionInput) => {
-    uiStore.setLoading(true);
-
-    try {
-      await api.addTransaction(transaction);
-    } catch (err) {
-      throw err;
-    } finally {
-      uiStore.setLoading(false);
-    }
-  };
-
-  @task
   fetchIncomes = async (filter?: TransactionQueryInput) => {
     uiStore.setLoading(true);
 
@@ -106,10 +93,51 @@ class TransactionStore {
         pagination: { cursor: this.paginatedExpenses.pageInfo.cursor, limit: this.TRANSACTION_LIMIT }
       });
 
-      uiStore.setLoading(false);
-
       this.paginatedExpenses.pageInfo = expenses.pageInfo;
       this.paginatedExpenses.data.push(...expenses.data);
+    } catch (err) {
+      throw err;
+    } finally {
+      uiStore.setLoading(false);
+    }
+  };
+
+  @task
+  fetchTransaction = async (id: number) => {
+    uiStore.setLoading(true);
+
+    try {
+      const transaction = await api.fetchTransaction(id);
+
+      console.log(transaction);
+
+      return transaction;
+    } catch (err) {
+      throw err;
+    } finally {
+      uiStore.setLoading(false);
+    }
+  }
+
+  @task
+  addIncome = async (transaction: AddTransactionInput) => {
+    uiStore.setLoading(true);
+
+    try {
+      await api.addIncome(transaction);
+    } catch (err) {
+      throw err;
+    } finally {
+      uiStore.setLoading(false);
+    }
+  };
+
+  @task
+  addExpense = async (transaction: AddTransactionInput) => {
+    uiStore.setLoading(true);
+
+    try {
+      await api.addExpense(transaction);
     } catch (err) {
       throw err;
     } finally {

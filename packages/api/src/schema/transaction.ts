@@ -10,6 +10,7 @@ export default gql`
     id: ID!
     number: String!
     partner: TransactionPartner!
+    isLocked: Boolean!
   }
 
   type Transaction {
@@ -17,6 +18,7 @@ export default gql`
     invoice: TransactionInvoice!
     sum: String!
     date: Date!
+    type: TransactionType!
     description: String
   }
 
@@ -24,6 +26,7 @@ export default gql`
     invoiceId: ID!
     sum: String!
     date: Date!
+    type: TransactionType
     description: String
   }
 
@@ -42,10 +45,13 @@ export default gql`
   extend type Query {
     incomes(filter: TransactionQueryInput): PaginatedTransaction!
     expenses(filter: TransactionQueryInput): PaginatedTransaction!
+    transaction(id: ID!): Transaction
   }
 
   extend type Mutation {
     addTransaction(transaction: TransactionInput!): ID!
+    addIncome(transaction: TransactionInput!): ID!
+    addExpense(transaction: TransactionInput!): ID!
     deleteTransaction(id: ID!): Boolean!
     editTransaction(id: ID!, transaction: TransactionInput!): Boolean!
   }

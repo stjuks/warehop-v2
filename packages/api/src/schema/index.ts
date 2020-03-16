@@ -33,6 +33,11 @@ const baseSchema = gql`
     EXPENSE
   }
 
+  enum TransactionType {
+    INCOME
+    EXPENSE
+  }
+
   type PageInfo {
     hasNextPage: Boolean!
     cursor: String

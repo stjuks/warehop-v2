@@ -12,13 +12,18 @@ export const ModalContainer = styled(ReactModal)`
       outline: none;
       overflow: hidden;
       max-height: 95%;
+      min-width: ${theme.devices.mobileS};
 
       @media only screen and (max-width: ${theme.devices.mobileL}) {
         height: 100%;
         width: 100%;
         border-radius: 0;
         max-height: 100%;
-      } 
+      }
+
+      @media only screen and (min-width: ${theme.devices.mobileL}) {
+        min-width: calc(${theme.devices.mobileL} - 1rem);
+      }
     }
   `}
 `;

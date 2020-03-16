@@ -37,7 +37,9 @@ const TransactionForm: React.FC<TransactionFormProps & RouteChildrenProps> = ({
 
   const handleSubmit = async (transaction: AddTransactionInput) => {
     try {
-      await transactionStore.addTransaction(transaction);
+      if (invoice.type === 'PURCHASE') await transactionStore.addExpense(transaction);
+      else if (invoice.type === 'SALE') await transactionStore.addIncome(transaction);
+      
       if (onSubmit) await onSubmit(transaction);
       uiStore.goBack();
     } catch (err) {

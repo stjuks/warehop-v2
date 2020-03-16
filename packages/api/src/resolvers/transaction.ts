@@ -1,5 +1,10 @@
 import { Resolver, authResolver, ApolloContext, paginate } from '.';
-import { InvoiceType, TransactionQueryInput, AddTransactionInput } from '@shared/types';
+import {
+  InvoiceType,
+  TransactionQueryInput,
+  AddTransactionInput,
+  Transaction
+} from '@shared/types';
 import { Op } from 'sequelize';
 
 const resolver: Resolver = {
@@ -9,6 +14,21 @@ const resolver: Resolver = {
     }),
     expenses: authResolver(async ({ filter }: { filter: TransactionQueryInput }, context) => {
       return await findTransactions(context, { ...filter, type: 'EXPENSE' });
+    }),
+    transaction: authResolver(async ({ id }: { id: number }, { models, user }) => {
+      return await models.Transaction.findOne({
+        where: {
+          id,
+          userId: user.id
+        },
+        include: [
+          {
+            model: models.Invoice,
+            attributes: ['id', 'number', 'isLocked'],
+            include: [{ model: models.Partner, attributes: ['id', 'name'] }]
+          }
+        ]
+      });
     })
   },
   Mutation: {
@@ -26,6 +46,12 @@ const resolver: Resolver = {
         }
       }
     ),
+    addIncome: authResolver(async ({ transaction }: { transaction: AddTransactionInput }, context) => {
+      return await addTransaction({ ...transaction, type: 'INCOME' }, context);
+    }),
+    addExpense: authResolver(async ({ transaction }: { transaction: AddTransactionInput }, context) => {
+      return await addTransaction({ ...transaction, type: 'EXPENSE' }, context);
+    }),
     deleteTransaction: authResolver(async ({ id }, { models, user }) => {
       return await models.Transaction.destroy({ where: { id, userId: user.id } });
     }),
@@ -41,6 +67,19 @@ const resolver: Resolver = {
         return isUpdated;
       }
     )
+  }
+};
+
+const addTransaction = async (transaction: AddTransactionInput, { models, user }: ApolloContext) => {
+  try {
+    const addedTransaction = await models.Transaction.create({
+      ...transaction,
+      userId: user.id
+    });
+
+    return addedTransaction.id;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -70,7 +109,7 @@ const findTransactions = async (context: ApolloContext, filter: TransactionQuery
       { description: generalLike }
     ];
   }
-  
+
   if (startDate && endDate) where.date = { [Op.between]: [startDate, endDate] };
   else if (startDate) where.date = { [Op.gte]: startDate };
   else if (endDate) where.date = { [Op.lte]: endDate };
@@ -84,7 +123,7 @@ const findTransactions = async (context: ApolloContext, filter: TransactionQuery
       {
         model: models.Invoice,
         where: { type: invoiceType, isLocked: true },
-        attributes: ['id', 'number'],
+        attributes: ['id', 'number', 'isLocked'],
         include: [{ model: models.Partner, attributes: ['id', 'name'] }]
       }
     ]

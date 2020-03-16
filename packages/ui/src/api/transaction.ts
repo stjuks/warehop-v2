@@ -8,24 +8,19 @@ import {
 } from '@shared/types';
 
 const transactionSchema = `
-    pageInfo {
-      hasNextPage
-      cursor
-    }
-    data {
+  id
+  invoice {
+    id
+    number
+    partner {
       id
-      invoice {
-        id
-        number
-        partner {
-          id
-          name
-        }
-      }
-      sum
-      date
-      description
+      name
     }
+  }
+  sum
+  type
+  date
+  description
 `;
 
 export const FETCH_EXPENSES = gql`
@@ -43,7 +38,13 @@ export const FETCH_EXPENSES = gql`
         generalQuery: $generalQuery
       }
     ) {
-      ${transactionSchema}
+      pageInfo {
+        hasNextPage
+        cursor
+      }
+      data {
+        ${transactionSchema}
+      }
     }
   }
 `;
@@ -63,16 +64,33 @@ export const FETCH_INCOMES = gql`
         generalQuery: $generalQuery
       }
     ) {
-      ${transactionSchema}
+      pageInfo {
+        hasNextPage
+        cursor
+      }
+      data {
+        ${transactionSchema}
+      }
     }
   }
 `;
 
-export const ADD_TRANSACTION = gql`
-  mutation addTransaction($invoiceId: ID!, $sum: String!, $date: Date!, $description: String) {
-    addTransaction(
+const addTransactionQuery = (queryName: string) => gql`
+  mutation ${queryName}($invoiceId: ID!, $sum: String!, $date: Date!, $description: String) {
+    ${queryName}(
       transaction: { invoiceId: $invoiceId, sum: $sum, date: $date, description: $description }
     )
+  }
+`;
+
+export const ADD_INCOME = addTransactionQuery('addIncome');
+export const ADD_EXPENSE = addTransactionQuery('addExpense');
+
+export const FETCH_TRANSACTION = gql`
+  query transaction($id: ID!) {
+    transaction(id: $id) {
+      ${transactionSchema}
+    }
   }
 `;
 
@@ -81,6 +99,10 @@ export default {
     await query<PaginatedData<Transaction>>({ query: FETCH_INCOMES, variables: filter }),
   fetchExpenses: async (filter: TransactionQueryInput) =>
     await query<PaginatedData<Transaction>>({ query: FETCH_EXPENSES, variables: filter }),
-  addTransaction: async (transaction: AddTransactionInput) =>
-    await mutate<number>({ mutation: ADD_TRANSACTION, variables: transaction })
+  fetchTransaction: async (id: number) =>
+    await query<Transaction>({ query: FETCH_TRANSACTION, variables: { id } }),
+  addIncome: async (transaction: AddTransactionInput) =>
+    await mutate<number>({ mutation: ADD_INCOME, variables: transaction }),
+  addExpense: async (transaction: AddTransactionInput) =>
+    await mutate<number>({ mutation: ADD_EXPENSE, variables: transaction })
 };

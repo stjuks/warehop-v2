@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
 import { MenuItemContainer } from './styles';
 
 export interface IMenuItemProps {
   label: string;
   icon: React.ReactElement;
-  onClick?: () => void;
-  to?: string;
+  onClick?: () => any;
+  to: string;
 }
 
 const MenuItem: React.FC<IMenuItemProps> = ({ label, icon, to, onClick }) => {

@@ -1,7 +1,8 @@
 import styled, { Color } from '@ui/util/styled';
+import { Link } from 'react-router-dom';
 import currency from 'currency.js';
 import ContentContainer from '../util/ContentContainer';
-import { DetailCardContainer } from '../ProductDetails/styles';
+import { detailCardStyles } from '../ProductDetails/styles';
 
 interface InvoiceHeroProps {
   paidSum: number;
@@ -88,8 +89,10 @@ export const IsPaidStyled = styled.div<IsPaidStyledProps>`
   }}
 `;
 
-export const TransactionItem = styled(DetailCardContainer)`
+export const TransactionItem = styled(Link)`
   ${({ theme }) => `
+    ${detailCardStyles(theme)}
+
     display: flex;
     align-items: center;
 

@@ -10,6 +10,7 @@ import {
   Index
 } from 'sequelize-typescript';
 
+import TransactionType from './TransactionType';
 import User from './User';
 import Invoice from './Invoice';
 
@@ -30,6 +31,11 @@ export default class Transaction extends Model<Transaction> {
   invoiceId: number;
 
   @AllowNull(false)
+  @Index
+  @Column
+  type: string;
+
+  @AllowNull(false)
   @Column(DataType.DECIMAL(12, 4))
   sum: object;
 
@@ -45,4 +51,7 @@ export default class Transaction extends Model<Transaction> {
 
   @BelongsTo(() => Invoice, { foreignKey: 'invoiceId', onDelete: 'CASCADE' })
   invoice: Invoice;
+
+  @BelongsTo(() => TransactionType, { foreignKey: 'type', onDelete: 'RESTRICT' })
+  transactionType: TransactionType;
 }
