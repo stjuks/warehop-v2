@@ -1,5 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import moment from 'moment';
+import currency from 'currency.js';
+
 import Link from '../util/Link';
 import Header from '../Header';
 import { Transaction } from '@shared/types';
@@ -13,6 +15,8 @@ import TransactionForm from '../TransactionForm';
 import { FiEdit, FiMoreVertical, FiTrash2 } from 'react-icons/fi';
 import DropdownMenu from '../DropdownMenu';
 import ConfirmationDialog from '../ConfirmationDialog';
+import { TransactionTitle } from './styles';
+import { IsPaidStyled } from '../InvoiceDetails/styles';
 
 const TransactionDetails: React.FC<Transaction & RouteComponentProps> = props => {
   const transactionStore = useContext(TransactionStoreContext);
@@ -38,7 +42,9 @@ const TransactionDetails: React.FC<Transaction & RouteComponentProps> = props =>
     try {
       await transactionStore.deleteTransaction(transaction?.id);
       uiStore.goTo(
-        `${transaction?.type === 'EXPENSE' ? routes.purchases : routes.sales}/${transaction?.invoice.id}`
+        `${transaction?.type === 'EXPENSE' ? routes.purchases : routes.sales}/${
+          transaction?.invoice.id
+        }`
       );
     } catch (err) {
       throw err;
@@ -47,7 +53,7 @@ const TransactionDetails: React.FC<Transaction & RouteComponentProps> = props =>
 
   const dropdownOptions: any[] = [];
   const headerIcons: React.ReactElement[] = [];
-  
+
   if (transaction && !transaction.invoice.isLocked) {
     dropdownOptions.push(
       {
@@ -98,6 +104,19 @@ const TransactionDetails: React.FC<Transaction & RouteComponentProps> = props =>
       <ContentContainer padded>
         {transaction && (
           <>
+            <TransactionTitle type={transaction.type}>
+              <div className="col-1">
+                <span className="partner-name">{transaction.invoice.partner.name}</span>
+                <div className="row">
+                  <span className="sum">{currency(transaction.sum).toString()}€</span>
+                  <div className="status">
+                    <IsPaidStyled isPaid={true} isLocked={transaction.invoice.isLocked}>
+                      {transaction.invoice.isLocked ? 'Kinnitatud' : 'Kinnitamata'}
+                    </IsPaidStyled>
+                  </div>
+                </div>
+              </div>
+            </TransactionTitle>
             <DetailCardContainer>
               <div className="row">
                 <div className="detail">

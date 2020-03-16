@@ -61,10 +61,11 @@ const TransactionForm: React.FC<TransactionFormProps & RouteChildrenProps> = ({
     invoiceId: yup.number().required(),
     sum: yup
       .string()
+      .nullable()
       .typeError('Summa peab olema number.')
       .required('Palun sisesta makse summa.'),
     date: yup.date().typeError('Vale kuupäevaformaat.'),
-    description: yup.string()
+    description: yup.string().nullable()
   });
 
   return (

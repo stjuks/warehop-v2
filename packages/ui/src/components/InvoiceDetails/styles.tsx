@@ -74,6 +74,7 @@ export const IsPaidStyled = styled.div<IsPaidStyledProps>`
   margin-left: auto;
   border-radius: 1rem;
   font-size: 0.875rem;
+  display: inline-block;
 
   ${({ isPaid, theme, isLocked }) => {
     let color: Color = theme.colors.lightText;
