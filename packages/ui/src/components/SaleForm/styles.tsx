@@ -1,5 +1,5 @@
 import styled from '@ui/util/styled';
-import { Link } from 'react-router-dom';
+import Link from '../util/Link';
 
 export const AddPurchaseItemBtn = styled.button`
   ${({ theme }) => `

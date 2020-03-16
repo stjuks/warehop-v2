@@ -45,7 +45,6 @@ const Products = observer(() => {
 
   useEffect(() => {
     itemStore.fetchProducts(filter);
-    console.log('ay');
   }, [itemStore, searchQuery, warehouseFilter]);
 
   const warehouseOptions = [{ id: undefined, name: 'Kõik laod' }, ...warehouseStore.warehouses];

@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import Link from '../util/Link';
 
 import { FooterItemContainer, IconContainer, LabelContainer } from './styles';
 
@@ -21,9 +21,9 @@ function FooterItem({ icon, label, onClick, to }: IFooterItemProps) {
   return (
     <FooterItemContainer>
       {to ? (
-        <NavLink to={to} activeClassName="footer-item__active">
+        <Link to={to} activeClassName="footer-item__active" isNavLink>
           <ItemComponent />
-        </NavLink>
+        </Link>
       ) : (
         <button type="button" onClick={onClick}>
           <ItemComponent />

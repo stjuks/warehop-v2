@@ -44,7 +44,6 @@ class UIStore {
 
   @action
   goBack = (fallbackRoute?: typeof routes[keyof typeof routes]) => {
-    console.log(this.routeHistory);
     if (this.routeHistory.length > 1) {
       this.routeHistory.pop();
       history.goBack();

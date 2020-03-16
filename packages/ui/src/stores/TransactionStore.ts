@@ -109,8 +109,6 @@ class TransactionStore {
     try {
       const transaction = await api.fetchTransaction(id);
 
-      console.log(transaction);
-
       return transaction;
     } catch (err) {
       throw err;

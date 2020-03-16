@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { FiChevronLeft } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
 
 import { HeaderContainer, IconsContainer, TitleContainer } from './styles';
 import { observer } from 'mobx-react-lite';

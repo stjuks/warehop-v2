@@ -1,6 +1,5 @@
 import styled from '@ui/util/styled';
 import { keyframes } from 'styled-components';
-// import { Link } from 'react-router-dom';
 import Link from '../Link';
 
 const fadeIn = keyframes`

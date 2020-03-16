@@ -81,7 +81,6 @@ const PurchaseForm: React.FC<PurchaseFormProps> = observer(({ location }) => {
           validationSchema={validationSchema}
           initialValues={initialValues}
           onSubmit={handleSubmit}
-          onError={() => console.log('err')}
           id="new-purchase-form"
           persist={editablePurchase === undefined}
         >

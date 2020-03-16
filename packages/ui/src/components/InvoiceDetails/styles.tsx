@@ -1,5 +1,5 @@
 import styled, { Color } from '@ui/util/styled';
-import { Link } from 'react-router-dom';
+import Link from '../util/Link';
 import currency from 'currency.js';
 import ContentContainer from '../util/ContentContainer';
 import { detailCardStyles } from '../ProductDetails/styles';

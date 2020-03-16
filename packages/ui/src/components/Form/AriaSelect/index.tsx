@@ -71,8 +71,6 @@ const AriaSelectBase: React.FC<AriaSelectProps & Partial<FieldProps>> = observer
     const [searchQuery, setSearchQuery] = useState('');
     const [displayValue, setDisplayValue] = useState('');
 
-    // console.log(field?.value);
-
     const [isLoadingOptions, setLoadingOptions] = useState(false);
     const [isLoadingSearch, setLoadingSearch] = useState(false);
 
