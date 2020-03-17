@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export function useDebounce<A extends any[]>(callback: (...args: A) => void, wait: number) {
   // track args & timeout handle between calls
@@ -30,3 +30,28 @@ export function useDebounce<A extends any[]>(callback: (...args: A) => void, wai
     }, wait);
   };
 }
+
+export const useLocalSetting = (defaultValue: any, settingName: string) => {
+  const [setting, setSetting] = useState(defaultValue);
+
+  const settings = JSON.parse(localStorage.getItem('settings') || '{}');
+
+  useEffect(() => {
+
+    if (settings[settingName]) {
+      setSetting(settings[settingName]);
+    } else {
+      settings[settingName] = defaultValue;
+      localStorage.setItem('settings', JSON.stringify(settings));
+    }
+
+    console.log(settings);
+
+  }, [setting]);
+
+  if (settings[settingName]) {
+    return [settings[settingName], setSetting];
+  }
+
+  return [setting, setSetting];
+};

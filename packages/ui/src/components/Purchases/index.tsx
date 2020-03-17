@@ -14,9 +14,14 @@ import Radio from '../Radio';
 import InvoiceItem from '../InvoiceItem';
 import LoadMoreButton from '../util/LoadMoreButton';
 import UIStoreContext from '@ui/stores/UIStore';
+import { useLocalStorage } from 'react-use';
 
 const Purchases = observer(() => {
-  const [filter, setFilter] = useState<InvoiceSearchInput | undefined>(undefined);
+  const [filter, setFilter] = useLocalStorage<InvoiceSearchInput | undefined>(
+    'purchasesFilter',
+    undefined
+  );
+
   const [searchQuery, setSearchQuery] = useState('');
 
   const invoiceStore = useContext(InvoiceStoreContext);
@@ -34,8 +39,8 @@ const Purchases = observer(() => {
   }, [filter, searchQuery]);
 
   const paidOptions = [
-    { label: 'Maksmata', value: { isPaid: false } },
-    { label: 'Makstud', value: { isPaid: true } },
+    { label: 'Maksmata', value: { isPaid: false, isLocked: true } },
+    { label: 'Makstud', value: { isPaid: true, isLocked: true } },
     { label: 'Kinnitamata', value: { isPaid: undefined, isLocked: false } }
   ];
 
@@ -47,7 +52,9 @@ const Purchases = observer(() => {
           options={paidOptions}
           name="radio-paid"
           onSelect={value => setFilter({ ...filter, isLocked: true, ...value })}
-          defaultValue={paidOptions[0].value}
+          defaultValue={
+            filter ? { isPaid: filter?.isPaid, isLocked: filter?.isLocked } : paidOptions[0].value
+          }
         />
       </SortingContainer>
       <ContentContainer>

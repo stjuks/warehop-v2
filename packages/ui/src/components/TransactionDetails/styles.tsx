@@ -56,7 +56,7 @@ export const TransactionTitle = styled.div<TransactionTitleProps>`
     }
 
     .sum {
-      color: ${theme.colors.danger};
+      color: ${type === 'INCOME' ? theme.colors.success : theme.colors.danger};
       font-size: 1.25rem;
       font-weight: 500;
 
