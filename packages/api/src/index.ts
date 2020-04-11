@@ -16,7 +16,7 @@ app.use(passport.session());
 app.use('/rest', router);
 
 apollo.initialize({ app, path: '/graphql' });
-db.initialize({ force: true });
+db.initialize();
 
 const PORT = process.env.PORT || 5000;
 

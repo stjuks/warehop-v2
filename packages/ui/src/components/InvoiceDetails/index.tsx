@@ -23,7 +23,7 @@ import {
   FiArrowUp,
   FiArrowDown,
   FiUnlock,
-  FiLock
+  FiLock,
 } from 'react-icons/fi';
 import ConfirmationDialog from '../ConfirmationDialog';
 
@@ -31,7 +31,7 @@ interface InvoiceDetailsProps {
   invoice?: Invoice;
 }
 
-const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = props => {
+const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = (props) => {
   const invoiceStore = useContext(InvoiceStoreContext);
   const uiStore = useContext(UIStoreContext);
   const [invoice, setInvoice] = useState<Invoice | undefined>(undefined);
@@ -76,7 +76,7 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
     try {
       await invoiceStore.deleteInvoice(invoice?.id);
       uiStore.goTo(invoice?.type === 'PURCHASE' ? routes.purchases : routes.sales, {
-        replace: true
+        replace: true,
       });
     } catch (err) {
       throw err;
@@ -102,10 +102,10 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
           </>
         ),
         onClick: () =>
-          uiStore.goTo(invoice?.type === 'PURCHASE' ? routes.purchaseForm : '', {
-            state: JSON.stringify(invoice)
+          uiStore.goTo(invoice?.type === 'PURCHASE' ? routes.purchaseForm : routes.saleForm, {
+            state: JSON.stringify(invoice),
           }),
-        isDisabled: invoice?.isLocked
+        isDisabled: invoice?.isLocked,
       },
       {
         label: (
@@ -124,11 +124,11 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
               onConfirm={handleInvoiceDelete}
             />
           ),
-        isDisabled: invoice?.isLocked
+        isDisabled: invoice?.isLocked,
       }
     );
 
-  if (invoice?.filePath) {
+  if (invoice?.filePath || invoice?.type === 'SALE') {
     dropdownOptions.unshift({
       label: (
         <>
@@ -136,7 +136,7 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
           <span>Lae alla</span>
         </>
       ),
-      onClick: () => invoiceStore.downloadInvoice(invoice?.id || -1)
+      onClick: () => invoiceStore.downloadInvoice(invoice?.id || -1),
     });
   }
 
@@ -149,11 +149,11 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
         </>
       ),
       onClick: () =>
-        uiStore.openModal(<TransactionForm invoice={invoice} onSubmit={handleInvoiceLoading} />)
+        uiStore.openModal(<TransactionForm invoice={invoice} onSubmit={handleInvoiceLoading} />),
     });
   }
 
-  if (!invoice?.isLocked || !invoice?.isPaid) {
+  if (dropdownOptions.length > 0) {
     headerComponents.push(<DropdownMenu button={<FiMoreVertical />} options={dropdownOptions} />);
   }
 
@@ -216,11 +216,11 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = prop
               </div>
             </DetailCardContainer>
             <DetailLabel>Kaubad</DetailLabel>
-            {invoice.items.map(item => (
+            {invoice.items.map((item) => (
               <InvoiceItemListItem item={item} key={item.id} />
             ))}
             <DetailLabel>Tehingud</DetailLabel>
-            {invoice.transactions.map(transaction => (
+            {invoice.transactions.map((transaction) => (
               <TransactionItem
                 key={transaction.id}
                 to={`${invoice.type === 'PURCHASE' ? routes.expenses : routes.incomes}/${

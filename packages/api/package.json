@@ -50,6 +50,7 @@
     "jsonwebtoken": "^8.5.1",
     "kill-port": "^1.6.0",
     "mkdirp": "^1.0.3",
+    "moment": "^2.24.0",
     "moneysafe": "^2.2.1",
     "passport": "^0.4.1",
     "passport-google-token": "^0.1.2",

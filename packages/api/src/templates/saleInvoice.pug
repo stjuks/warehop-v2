@@ -1,0 +1,89 @@
+doctype html
+html
+    head
+        meta(charset="utf-8")
+        style 
+            include saleInvoice.css
+    body
+        div.page
+            div.row-1
+                div.sender-details
+                    h3 #{user.name}
+                    div #{user.street}, #{user.city}
+                    div #{user.postalCode} #{user.county}
+                    if user.regNr
+                        div Reg nr: #{user.regNr}
+            div.row-2
+                div.client-details
+                    h3 Klient
+                    div.client-details__address
+                        div #{partner.name}
+                        div #{partner.street}, #{partner.city}
+                        div #{partner.postalCode} #{partner.county}
+                    div.client-details__contacts
+                        if partner.email
+                            div E-post: #{partner.email}
+                        if partner.VATnr
+                            div KMKR nr: #{partner.VATnr}
+                        if partner.phoneNr
+                            div Tel: #{partner.phoneNr}
+                        if partner.regNr
+                            div Reg nr: #{partner.regNr}
+                div.invoice-details
+                    div.invoice-details__row.invoice-details__header
+                        h3 Arve nr
+                        h3 #{number}
+                    div.invoice-details__row
+                        div Väljastatud
+                        div #{issueDate}
+                    div.invoice-details__row
+                        div Maksetähtaeg
+                        div #{dueDate}
+                    if user.settings
+                        div.invoice-details__row
+                            div Viivis
+                            div #{user.settings.overdueCharge}% päevas
+                    div.invoice_details__footer
+                        if user.bankAccounts
+                            each bankAccount in user.bankAccounts
+                                div.invoice-details__row
+                                    div= bankAccount.bankName
+                                    div= bankAccount.accountNumber
+            div.row-3
+                table.item-table(width="100%" cellpadding="0" cellspacing="0")
+                    thead
+                        th(width="55%") Toode/teenus
+                        th Hind
+                        th Kogus
+                        th Ühik
+                        th Kokku
+                    tbody
+                        each item in items
+                            tr
+                                td= item.name
+                                td= item.price
+                                td= item.quantity
+                                if item.unit
+                                    td= item.unit.abbreviation
+                                else
+                                    td= '-'
+                                td= item.extendedPrice
+            div.row-4
+                div.vat-info 
+                    p #{user.name} ei ole käibemaksukohustuslane.
+                div.table-sum
+                    div.table-sum__row
+                        div Summa käibemaksuta
+                        div #{sum}
+                    div.table-sum__row.table-sum__footer
+                        div KOKKU
+                        div #{sum} EUR
+            div.row-5
+                if description
+                    strong Märkused:
+                    p.description #{description}
+            div.footer
+                if user.phoneNr
+                    div Tel #{user.phoneNr}
+                div #{user.email}
+                    
