@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react-lite';
+import { animateScroll } from 'react-scroll';
 import moment from 'moment';
 import * as yup from 'yup';
 
@@ -45,7 +46,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = observer(({ location }) => {
     issueDate: moment().toDate(),
     dueDate: moment().toDate(),
     description: '',
-    items: []
+    items: [],
   };
 
   if (editablePurchase) {
@@ -54,16 +55,13 @@ const PurchaseForm: React.FC<PurchaseFormProps> = observer(({ location }) => {
 
   const validationSchema = yup.object({
     partner: yup.object().required('Palun vali tarnija.'),
-    number: yup
-      .string()
-      .nullable()
-      .required('Palun sisesta arve number.'),
+    number: yup.string().nullable().required('Palun sisesta arve number.'),
     issueDate: yup.mixed().required('Palun sisesta ostukuupäev.'),
     dueDate: yup.mixed().required('Palun sisesta maksetähtaeg.'),
-    items: yup.array().required('Palun lisa arvele kaubad.')
+    items: yup.array().required('Palun lisa arvele kaubad.'),
   });
 
-  const handleSubmit = async purchase => {
+  const handleSubmit = async (purchase) => {
     try {
       if (location.state) await invoiceStore.editInvoice(editablePurchase.id, purchase);
       else await invoiceStore.addInvoice(purchase);
@@ -81,10 +79,13 @@ const PurchaseForm: React.FC<PurchaseFormProps> = observer(({ location }) => {
           validationSchema={validationSchema}
           initialValues={initialValues}
           onSubmit={handleSubmit}
+          onError={() =>
+            animateScroll.scrollToTop({ containerId: 'content-container', duration: 200 })
+          }
           id="new-purchase-form"
           persist={editablePurchase === undefined}
         >
-          {formikProps => <FormFields formikProps={formikProps} />}
+          {(formikProps) => <FormFields formikProps={formikProps} />}
         </Form>
       </ContentContainer>
       <FooterContainer style={{ padding: '0.25rem 1rem' }}>
@@ -115,7 +116,7 @@ const FormFields: React.FC<any> = observer(({ formikProps }) => {
       <FileInput name="file" accept=".pdf" label="Arve fail (PDF)" />
       <TextInput name="description" label="Märkused" isTextarea />
       <FieldArray name="items">
-        {arrayHelpers => (
+        {(arrayHelpers) => (
           <>
             <FormTitle>
               Kaubad{' '}

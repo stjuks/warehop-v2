@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { observer } from 'mobx-react-lite';
 import Form from '../Form';
 import * as yup from 'yup';
+import { animateScroll } from 'react-scroll';
 
 import AriaSelect from '../Form/AriaSelect';
 import TextInput from '../Form/TextInput';
@@ -33,14 +34,14 @@ const serviceAndExpenseForm = {
     name: '',
     quantity: '',
     unit: undefined,
-    purchasePrice: ''
+    purchasePrice: '',
   },
   fields: ['type', 'name', 'quantity', 'unit', 'price'],
   validationSchema: yup.object({
     name: yup.string().required('Palun sisesta artikli nimetus.'),
     quantity: yup.number('Kogus peab olema number.').required('Palun sisesta artikli kogus.'),
-    price: yup.number('Hind peab olema number.').required('Palun sisesta kauba ostuhind.')
-  })
+    price: yup.number('Hind peab olema number.').required('Palun sisesta kauba ostuhind.'),
+  }),
 };
 
 const forms = {
@@ -52,7 +53,7 @@ const forms = {
       unit: undefined,
       warehouse: undefined,
       purchasePrice: '',
-      retailPrice: ''
+      retailPrice: '',
     },
     fields: ['type', 'name', 'code', 'quantity', 'unit', 'warehouse', 'price'],
     validationSchema: yup.object({
@@ -67,11 +68,11 @@ const forms = {
       price: yup
         .number()
         .typeError('Hind peab olema number.')
-        .required('Palun sisesta kauba ostuhind.')
-    })
+        .required('Palun sisesta kauba ostuhind.'),
+    }),
   },
   SERVICE: serviceAndExpenseForm,
-  EXPENSE: serviceAndExpenseForm
+  EXPENSE: serviceAndExpenseForm,
 };
 
 const ItemForm = ({ type }: { type: ItemType }) => {
@@ -82,7 +83,7 @@ const ItemForm = ({ type }: { type: ItemType }) => {
   const handleAutosuggestSelect = ({ suggestion, formik }) => {
     const values: any = {};
 
-    forms[type].fields.forEach(field => {
+    forms[type].fields.forEach((field) => {
       if (suggestion.value[field]) values[field] = suggestion.value[field];
     });
 
@@ -104,15 +105,15 @@ const ItemForm = ({ type }: { type: ItemType }) => {
         <AutosuggestInput
           name="code"
           label="Kood"
-          getSuggestions={query => itemStore.fetchProducts({ code: query })}
-          suggestionMap={{ label: item => item.code }}
+          getSuggestions={(query) => itemStore.fetchProducts({ code: query })}
+          suggestionMap={{ label: (item) => item.code }}
           onSelect={handleAutosuggestSelect}
         />
         <AutosuggestInput
           name="name"
           label="Nimetus"
-          getSuggestions={query => itemStore.fetchProducts({ name: query })}
-          suggestionMap={{ label: item => item.name }}
+          getSuggestions={(query) => itemStore.fetchProducts({ name: query })}
+          suggestionMap={{ label: (item) => item.name }}
           onSelect={handleAutosuggestSelect}
         />
         <Row flex={[1, 1]}>
@@ -123,7 +124,7 @@ const ItemForm = ({ type }: { type: ItemType }) => {
           name="warehouse"
           label="Ladu"
           options={warehouseStore.warehouses}
-          optionMap={{ label: warehouse => warehouse.name }}
+          optionMap={{ label: (warehouse) => warehouse.name }}
         />
         <TextInput name="price" label="Ostuhind" indicator={'€'} />
       </>
@@ -153,10 +154,10 @@ const PurchaseItemForm: React.FC<PurchaseItemFormProps> = observer(
 
     const initialValues = item || {
       type: DEFAULT_ITEM_TYPE,
-      ...forms[activeItemType].initialValues
+      ...forms[activeItemType].initialValues,
     };
 
-    const handleSubmit = values => {
+    const handleSubmit = (values) => {
       const filteredValues = filterObjectProperties(values, forms[values.type].fields);
 
       if (index !== undefined) {
@@ -190,13 +191,16 @@ const PurchaseItemForm: React.FC<PurchaseItemFormProps> = observer(
             initialValues={initialValues}
             onSubmit={handleSubmit}
             onChange={handleTypeSelect}
+            onError={() =>
+              animateScroll.scrollToTop({ containerId: 'content-container', duration: 200 })
+            }
             persist
           >
             <AriaSelect
               name="type"
               label="Kauba tüüp"
               options={commonStore.itemTypes}
-              optionMap={{ label: type => itemTypeTranslations[type] }}
+              optionMap={{ label: (type) => itemTypeTranslations[type] }}
             />
             <ItemForm type={activeItemType} />
           </Form>

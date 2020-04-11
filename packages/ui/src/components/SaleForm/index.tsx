@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react-lite';
 import moment from 'moment';
+import { animateScroll } from 'react-scroll';
 import * as yup from 'yup';
 
 import routes from '../../util/routes';
@@ -10,7 +11,7 @@ import InvoiceStoreContext from '../../stores/InvoiceStore';
 import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
 import Button from '../Button';
-import { Partner, InvoiceItem, InvoiceType, Invoice } from '@shared/types';
+import { Invoice } from '@shared/types';
 import Form from '../Form';
 import FieldArray from '../Form/util/FieldArray';
 import InvoiceItemListItem from '../InvoiceItemListItem';
@@ -18,7 +19,6 @@ import PurchaseItemForm from '../PurchaseItemForm';
 import TextInput from '../Form/TextInput';
 import PartnerSelect from '../util/inputs/PartnerSelect';
 import { Row } from '../Layout/styles';
-import FileInput from '../Form/FileInput';
 import DateInput from '../Form/DateInput';
 import { FormTitle } from '../Form/styles';
 import FormError from '../Form/FormError';
@@ -45,7 +45,7 @@ const SaleForm: React.FC<SaleFormProps> = observer(({ location }) => {
     issueDate: moment().toDate(),
     dueDate: moment().toDate(),
     description: '',
-    items: []
+    items: [],
   };
 
   if (editablePurchase) {
@@ -54,16 +54,13 @@ const SaleForm: React.FC<SaleFormProps> = observer(({ location }) => {
 
   const validationSchema = yup.object({
     partner: yup.object().required('Palun vali tarnija.'),
-    number: yup
-      .string()
-      .nullable()
-      .required('Palun sisesta arve number.'),
+    number: yup.string().nullable().required('Palun sisesta arve number.'),
     issueDate: yup.mixed().required('Palun sisesta ostukuupäev.'),
     dueDate: yup.mixed().required('Palun sisesta maksetähtaeg.'),
-    items: yup.array().required('Palun lisa arvele kaubad.')
+    items: yup.array().required('Palun lisa arvele kaubad.'),
   });
 
-  const handleSubmit = async purchase => {
+  const handleSubmit = async (purchase) => {
     try {
       if (location.state) await invoiceStore.editInvoice(editablePurchase.id, purchase);
       else await invoiceStore.addInvoice(purchase);
@@ -82,9 +79,12 @@ const SaleForm: React.FC<SaleFormProps> = observer(({ location }) => {
           initialValues={initialValues}
           onSubmit={handleSubmit}
           id="new-purchase-form"
+          onError={() =>
+            animateScroll.scrollToTop({ containerId: 'content-container', duration: 200 })
+          }
           persist={editablePurchase === undefined}
         >
-          {formikProps => <FormFields formikProps={formikProps} />}
+          {(formikProps) => <FormFields formikProps={formikProps} />}
         </Form>
       </ContentContainer>
       <FooterContainer style={{ padding: '0.25rem 1rem' }}>
@@ -114,7 +114,7 @@ const FormFields: React.FC<any> = observer(({ formikProps }) => {
       <FormTitle>Lisaandmed</FormTitle>
       <TextInput name="description" label="Märkused" isTextarea />
       <FieldArray name="items">
-        {arrayHelpers => (
+        {(arrayHelpers) => (
           <>
             <FormTitle>
               Kaubad{' '}

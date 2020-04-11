@@ -27,7 +27,7 @@ const ContentContainer: React.FC<ContentContainerProps> = ({ children, padded })
   };
 
   return useObserver(() => (
-    <ContentContainerStyled padded={padded} ref={containerRef}>
+    <ContentContainerStyled padded={padded} ref={containerRef} id="content-container">
       {handleChildren(children)}
       {uiStore.isLoading && (
         <LoadingOverlay>

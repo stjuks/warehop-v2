@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDebounce } from 'react-use';
-import { Formik, FormikBag } from 'formik';
+import { Formik } from 'formik';
+import * as yup from 'yup';
 
 import { FormContainer } from './styles';
 
@@ -12,7 +13,7 @@ interface FormProps {
   persist?: boolean;
   onSubmit: (values: any) => any;
   id: string;
-  validationSchema?: any;
+  validationSchema?: yup.object;
   onChange?: (values: any) => any;
   onError?: () => any;
   style?: React.CSSProperties;
@@ -28,11 +29,11 @@ const Form: React.FC<React.PropsWithChildren<FormProps>> = observer(
     onChange,
     style,
     onError,
-    persist
+    persist,
   }) => {
     const [values, setValues] = useState({});
 
-    const handleChildren = formikProps => {
+    const handleChildren = (formikProps) => {
       if (children instanceof Function) return children(formikProps);
       else return children;
     };
@@ -44,11 +45,12 @@ const Form: React.FC<React.PropsWithChildren<FormProps>> = observer(
         await onSubmit(values);
         localStorage.removeItem(id);
       } catch (err) {
+        if (onError) onError();
         setErrors({ ...errors, __thrownError: err });
       }
     };
 
-    const handleChange = values => {
+    const handleChange = (values) => {
       if (onChange) onChange(values);
       setValues(values.nextValues);
     };
@@ -73,16 +75,30 @@ const Form: React.FC<React.PropsWithChildren<FormProps>> = observer(
       [persist ? values : undefined]
     );
 
+    const validate = async (values) => {
+      try {
+        if (validationSchema) {
+          await validationSchema.validate(values, { abortEarly: false });
+        }
+        return true;
+      } catch (err) {
+        const errorMap = {};
+        err.inner.forEach((error) => (errorMap[error.path] = error.message));
+        if (onError) onError();
+        return errorMap;
+      }
+    };
+
     return (
       <Formik
         initialValues={handleInitialValues()}
         onSubmit={async (values, formikBag) => await handleSubmit(values, formikBag)}
-        validationSchema={validationSchema}
         validateOnChange={false}
         validateOnBlur={false}
         validateOnMount={false}
+        validate={validate}
       >
-        {formikProps => (
+        {(formikProps) => (
           <>
             <FormContainer id={id} onSubmit={formikProps.handleSubmit} style={style}>
               {(onChange || persist) && <FormikOnChange onChange={handleChange} />}

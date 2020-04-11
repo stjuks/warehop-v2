@@ -1,12 +1,18 @@
 import React, { useContext, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
+import { animateScroll } from 'react-scroll';
 import * as yup from 'yup';
 import { FiTrash2, FiPlusCircle } from 'react-icons/fi';
 
 import routes from '../../util/routes';
 import WarehouseStoreContext from '../../stores/WarehouseStore';
 import ItemStoreContext from '../../stores/ItemStore';
-import { ProductFormContainer, AddWarehouseButton, TrashButtonContainer, WarehouseFieldsContainer } from './styles';
+import {
+  ProductFormContainer,
+  AddWarehouseButton,
+  TrashButtonContainer,
+  WarehouseFieldsContainer,
+} from './styles';
 
 import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
@@ -91,6 +97,9 @@ const ProductForm: React.FC<ProductFormProps> = observer((props) => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
           persist={!isEditing}
+          onError={() =>
+            animateScroll.scrollToTop({ containerId: 'content-container', duration: 200 })
+          }
         >
           {(formikProps) => (
             <>
@@ -157,7 +166,7 @@ const WarehouseFields: React.FC<any> = observer(({ formikProps, arrayHelpers }) 
   return (
     <WarehouseFieldsContainer>
       {warehouseQuantity.map((wh, i) => (
-        <div className="warehouse-row">
+        <div className="warehouse-row" key={wh.id}>
           <AriaSelect
             name={`warehouseQuantity[${i}]`}
             label={i === 0 ? 'Ladu' : undefined}

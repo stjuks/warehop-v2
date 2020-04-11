@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react-lite';
+import { animateScroll } from 'react-scroll';
 import * as yup from 'yup';
 
 import routes from '@ui/util/routes';
@@ -33,12 +34,12 @@ const PartnerForm = observer(() => {
     street: '',
     postalCode: '',
     county: '',
-    country: ''
+    country: '',
   };
 
   const validationSchema = yup.object({
     type: yup.string().required('Palun vali partneri tüüp.'),
-    name: yup.string().required('Palun sisesta partneri nimi.')
+    name: yup.string().required('Palun sisesta partneri nimi.'),
   });
 
   const handleSubmit = async (partner: Partner) => {
@@ -59,12 +60,15 @@ const PartnerForm = observer(() => {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
+          onError={() =>
+            animateScroll.scrollToTop({ containerId: 'content-container', duration: 200 })
+          }
           persist
         >
           <FormError />
           <AriaSelect
             options={commonStore.partnerTypes}
-            optionMap={{ label: value => partnerTypeTranslations[value] }}
+            optionMap={{ label: (value) => partnerTypeTranslations[value] }}
             name="type"
             label="Partneri tüüp"
           />
