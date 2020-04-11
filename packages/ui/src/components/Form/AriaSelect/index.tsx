@@ -18,7 +18,6 @@ import {
   mapSelectOption,
   MapSelectOptionAttributes
 } from '../../../util/helpers';
-import { DropdownMenu } from '../util/DropdownMenu';
 import { observer } from 'mobx-react-lite';
 import Loader from '../util/Loader';
 

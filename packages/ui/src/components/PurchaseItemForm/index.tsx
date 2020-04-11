@@ -7,7 +7,7 @@ import AriaSelect from '../Form/AriaSelect';
 import TextInput from '../Form/TextInput';
 import { Row } from '../Layout/styles';
 import AutosuggestInput from '../Form/AutosuggestInput';
-import { ItemType, InvoiceItem } from '@shared/types';
+import { ItemType, InvoiceItem, ProductItem } from '@shared/types';
 import Header from '../Header';
 import { ContentContainer } from '../App/styles';
 import { FooterContainer } from '../Footer/styles';

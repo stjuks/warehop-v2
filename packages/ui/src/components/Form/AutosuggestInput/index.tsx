@@ -15,6 +15,7 @@ interface AutosuggestInputProps {
   suggestionMap: MapSelectOptionAttributes;
   getSuggestions: (query: string) => Promise<any[]> | any[];
   onSelect?: (...args: any) => any;
+  onChange?: (value: string) => any;
 }
 
 const AutosuggestInputBase: React.FC<AutosuggestInputProps & FieldProps> = ({
@@ -23,7 +24,8 @@ const AutosuggestInputBase: React.FC<AutosuggestInputProps & FieldProps> = ({
   label,
   onSelect,
   suggestionMap,
-  getSuggestions
+  getSuggestions,
+  onChange
 }) => {
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [isLoadingSuggestions, setLoadingSuggestions] = useState(false);
@@ -45,6 +47,7 @@ const AutosuggestInputBase: React.FC<AutosuggestInputProps & FieldProps> = ({
   }, 500);
 
   const handleChange = (e, { newValue }) => {
+    if (onChange) onChange(newValue);
     form.setFieldValue(field.name, newValue);
   };
 

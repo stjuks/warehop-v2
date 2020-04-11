@@ -1,5 +1,6 @@
 import { ModelCtor, Model } from 'sequelize-typescript';
 import util from 'util';
+import puppeteer from 'puppeteer';
 import { ApolloError } from 'apollo-server-express';
 import { ErrorCode } from '@shared/types';
 import { GraphQLError } from 'graphql';
@@ -18,20 +19,20 @@ export const createCompositeForeignKeys = (optsArray: ForeignKeyOpts[]) => {
     const { table, cols, ref, onDelete, onUpdate } = opts;
 
     return `
-            ALTER TABLE "${table.tableName}" 
-            ADD CONSTRAINT "${table.tableName}_${cols.join('_')}_fkey" 
-            FOREIGN KEY ("${cols.join('","')}")
-            REFERENCES "${ref.table.tableName}"("${ref.cols.join('","')}")
-            ON DELETE ${onDelete || 'NO ACTION'}
-            ON UPDATE ${onUpdate || 'NO ACTION'};
-        `;
+      ALTER TABLE "${table.tableName}" 
+      ADD CONSTRAINT "${table.tableName}_${cols.join('_')}_fkey" 
+      FOREIGN KEY ("${cols.join('","')}")
+      REFERENCES "${ref.table.tableName}"("${ref.cols.join('","')}")
+      ON DELETE ${onDelete || 'NO ACTION'}
+      ON UPDATE ${onUpdate || 'NO ACTION'};
+    `;
   };
 
   return `
-        START TRANSACTION;
-        ${optsArray.map(createQuery).join('')}
-        COMMIT;
-    `;
+    START TRANSACTION;
+    ${optsArray.map(createQuery).join('')}
+    COMMIT;
+  `;
 };
 
 export const createCheckConstraint = (opts: {
@@ -86,7 +87,7 @@ export const formatError = (err: GraphQLError) => {
       const routine = exception?.parent?.routine;
 
       if (routine === 'exec_stmt_raise') {
-        return createError(err.message, 'TriggerExceptionError')
+        return createError(err.message, 'TriggerExceptionError');
       }
     }
   }

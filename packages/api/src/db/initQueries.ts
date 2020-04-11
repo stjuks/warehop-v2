@@ -146,18 +146,18 @@ export const createProcedures = async () => {
                 AND "WarehouseItems"."warehouseId" = EXCLUDED."warehouseId";
             ELSIF (NEW.type = 'SALE') THEN
               UPDATE "WarehouseItems" SET quantity = "WarehouseItems".quantity - items.quantity
-              FROM (SELECT quantity, "itemId" FROM "InvoiceItems" WHERE "invoiceId" = NEW.id ) AS items
-              WHERE "WarehouseItems"."itemId" = items."itemId";
+              FROM (SELECT quantity, "itemId", "warehouseId" FROM "InvoiceItems" WHERE "invoiceId" = NEW.id ) AS items
+              WHERE "WarehouseItems"."itemId" = items."itemId" AND "WarehouseItems"."warehouseId" = items."warehouseId";
             END IF;
           ELSIF (NEW."isLocked" = FALSE) THEN
             IF (NEW.type = 'PURCHASE') THEN
               UPDATE "WarehouseItems" SET quantity = "WarehouseItems".quantity - items.quantity
-              FROM (SELECT quantity, "itemId" FROM "InvoiceItems" WHERE "invoiceId" = NEW.id ) AS items
-              WHERE "WarehouseItems"."itemId" = items."itemId";
+              FROM (SELECT quantity, "itemId", "warehouseId" FROM "InvoiceItems" WHERE "invoiceId" = NEW.id ) AS items
+              WHERE "WarehouseItems"."itemId" = items."itemId" AND "WarehouseItems"."warehouseId" = items."warehouseId";
             ELSIF (NEW.type = 'SALE') THEN
               UPDATE "WarehouseItems" SET quantity = "WarehouseItems".quantity + items.quantity
-              FROM (SELECT quantity, "itemId" FROM "InvoiceItems" WHERE "invoiceId" = NEW.id ) AS items
-              WHERE "WarehouseItems"."itemId" = items."itemId";
+              FROM (SELECT quantity, "itemId", "warehouseId" FROM "InvoiceItems" WHERE "invoiceId" = NEW.id ) AS items
+              WHERE "WarehouseItems"."itemId" = items."itemId" AND "WarehouseItems"."warehouseId" = items."warehouseId"; 
             END IF;
           END IF;
         END IF;

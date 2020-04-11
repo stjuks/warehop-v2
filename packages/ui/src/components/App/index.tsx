@@ -58,8 +58,8 @@ const App = () => {
               <Route path={routes.purchases} component={Purchases} />
               <Route path={routes.sales} component={Sales} />
               <Route path={routes.partners} component={Partners} />
-              <Route path={routes.incomes} render={() => <Transactions type="INCOME" />} />
-              <Route path={routes.expenses} render={() => <Transactions type="EXPENSE" />} />
+              <Route path={routes.incomes} render={() => <Transactions type="INCOME" key="INCOME" />} />
+              <Route path={routes.expenses} render={() => <Transactions type="EXPENSE" key="EXPENSE" />} />
             </Switch>
             <Footer />
             <HamburgerMenu />

@@ -29,7 +29,6 @@ interface TransactionsConfig {
 
 const Transactions: React.FC<TransactionsProps> = observer(({ type }) => {
   const transactionStore = useContext(TransactionStoreContext);
-
   const [startDate, setStartDate] = useState(new Date('2020-01-01'));
   const [endDate, setEndDate] = useState(new Date('2020-12-31'));
   const [generalQuery, setGeneralQuery] = useState('');

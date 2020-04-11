@@ -120,13 +120,13 @@ const resolver: Resolver = {
         }
       };
 
-      const addInvoice = async () => {
+      const createInvoice = async () => {
         return await models.Invoice.create({ ...restInvoice, userId: user.id }, { transaction });
       };
 
       // business logic
       try {
-        const addedInvoice = await addInvoice();
+        const addedInvoice = await createInvoice();
 
         await createInvoiceItems(items, addedInvoice, context, transaction);
 
@@ -339,7 +339,7 @@ const findInvoices = async ({ models, user }: ApolloContext, filter: InvoiceSear
   return invoices;
 };
 
-const parseInvoice = (dbInvoice: Model<Invoice>) => {
+export const parseInvoice = (dbInvoice: Model<Invoice>) => {
   if (dbInvoice) {
     const plainInvoice: any = dbInvoice.get({ plain: true });
 
@@ -359,7 +359,7 @@ const parseInvoice = (dbInvoice: Model<Invoice>) => {
   return null;
 };
 
-const findInvoice = async ({ models, user }: ApolloContext, id: number) => {
+export const findInvoice = async ({ models, user }: ApolloContext, id: number) => {
   const invoice = await models.Invoice.findOne({
     where: {
       id,
@@ -368,9 +368,7 @@ const findInvoice = async ({ models, user }: ApolloContext, id: number) => {
     // order transactions by date
     order: [[{ model: models.Transaction, as: 'transactions' }, 'date', 'DESC']],
     include: [
-      {
-        model: models.Partner
-      },
+      models.Partner,
       {
         model: models.InvoiceItem,
         as: 'items',

@@ -21,6 +21,20 @@ export const ProductFormContainer = styled(ContentContainer)`
   `}
 `;
 
+export const WarehouseFieldsContainer = styled.div`
+    .warehouse-row {
+      display: flex;
+
+      .warehouse-select {
+        flex: 1;
+      }
+
+      .warehouse-quantity-input {
+        width: 6rem;
+      }
+    }
+`;
+
 const createFlex = (flex: number[]) => {
   let styles = '';
 
@@ -61,11 +75,11 @@ export const FormRowContainer = styled.div<IFormRowContainerProps>`
 export const AddWarehouseButton = styled.button`
   ${({ theme }) => `
         padding: 0.5rem;
-        border-radius: 0.25rem;
+        border-radius: 2rem;
         font-weight: 500;
-        border: 1px dashed ${theme.colors.text};
+        border: 1px solid ${theme.colors.primary};
         width: 100%;
-        color: ${theme.colors.text};
+        color: ${theme.colors.primary};
         margin: 0.5rem 0;
         display: flex;
         align-items: center;
@@ -88,7 +102,7 @@ export const TrashButtonContainer = styled.div`
         
         && {
             padding: 0;
-            padding-bottom: 1.75rem;
+            padding-bottom: 2.375rem;
         }
 
         button {

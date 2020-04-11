@@ -23,7 +23,7 @@ export const theme = {
   colors: {
     lightGrey: new Color('#FAFAFA'),
     danger: new Color('#F53D3D'),
-    success: new Color('#24DF20'),
+    success: new Color('#24C020'),
     warning: new Color('#FFBF1A'),
     white: new Color('#FDFDFD'),
     primary: new Color('#0668F9'),
