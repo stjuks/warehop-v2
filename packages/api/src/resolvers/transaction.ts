@@ -3,8 +3,9 @@ import {
   InvoiceType,
   TransactionQueryInput,
   AddTransactionInput,
-  Transaction
+  Transaction,
 } from '@shared/types';
+import moment from 'moment';
 import { Op } from 'sequelize';
 
 const resolver: Resolver = {
@@ -19,17 +20,17 @@ const resolver: Resolver = {
       return await models.Transaction.findOne({
         where: {
           id,
-          userId: user.id
+          userId: user.id,
         },
         include: [
           {
             model: models.Invoice,
             attributes: ['id', 'number', 'isLocked'],
-            include: [{ model: models.Partner, attributes: ['id', 'name'] }]
-          }
-        ]
+            include: [{ model: models.Partner, attributes: ['id', 'name'] }],
+          },
+        ],
       });
-    })
+    }),
   },
   Mutation: {
     addTransaction: authResolver(
@@ -37,7 +38,7 @@ const resolver: Resolver = {
         try {
           const addedTransaction = await models.Transaction.create({
             ...transaction,
-            userId: user.id
+            userId: user.id,
           });
 
           return addedTransaction.id;
@@ -46,12 +47,16 @@ const resolver: Resolver = {
         }
       }
     ),
-    addIncome: authResolver(async ({ transaction }: { transaction: AddTransactionInput }, context) => {
-      return await addTransaction({ ...transaction, type: 'INCOME' }, context);
-    }),
-    addExpense: authResolver(async ({ transaction }: { transaction: AddTransactionInput }, context) => {
-      return await addTransaction({ ...transaction, type: 'EXPENSE' }, context);
-    }),
+    addIncome: authResolver(
+      async ({ transaction }: { transaction: AddTransactionInput }, context) => {
+        return await addTransaction({ ...transaction, type: 'INCOME' }, context);
+      }
+    ),
+    addExpense: authResolver(
+      async ({ transaction }: { transaction: AddTransactionInput }, context) => {
+        return await addTransaction({ ...transaction, type: 'EXPENSE' }, context);
+      }
+    ),
     deleteTransaction: authResolver(async ({ id }, { models, user }) => {
       return await models.Transaction.destroy({ where: { id, userId: user.id } });
     }),
@@ -61,20 +66,23 @@ const resolver: Resolver = {
         { models, user }
       ) => {
         const [isUpdated] = await models.Transaction.update(transaction, {
-          where: { userId: user.id, id }
+          where: { userId: user.id, id },
         });
 
         return isUpdated;
       }
-    )
-  }
+    ),
+  },
 };
 
-const addTransaction = async (transaction: AddTransactionInput, { models, user }: ApolloContext) => {
+const addTransaction = async (
+  transaction: AddTransactionInput,
+  { models, user }: ApolloContext
+) => {
   try {
     const addedTransaction = await models.Transaction.create({
       ...transaction,
-      userId: user.id
+      userId: user.id,
     });
 
     return addedTransaction.id;
@@ -89,7 +97,7 @@ const findTransactions = async (context: ApolloContext, filter: TransactionQuery
     pagination: { limit, cursor },
     startDate,
     endDate,
-    generalQuery
+    generalQuery,
   } = filter;
 
   const { models, user } = context;
@@ -97,7 +105,7 @@ const findTransactions = async (context: ApolloContext, filter: TransactionQuery
   const invoiceType: InvoiceType = type === 'EXPENSE' ? 'PURCHASE' : 'SALE';
 
   const where: any = {
-    userId: user.id
+    userId: user.id,
   };
 
   if (generalQuery) {
@@ -106,7 +114,7 @@ const findTransactions = async (context: ApolloContext, filter: TransactionQuery
     where[Op.or] = [
       { '$invoice.number$': generalLike },
       { '$invoice.partner.name$': generalLike },
-      { description: generalLike }
+      { description: generalLike },
     ];
   }
 
@@ -117,16 +125,23 @@ const findTransactions = async (context: ApolloContext, filter: TransactionQuery
   const transactions = await paginate(models.Transaction, {
     cursor,
     limit,
-    order: [['date', 'DESC']],
+    order: [
+      ['date', 'DESC'],
+      ['id', 'ASC'],
+    ],
+    paginateBy: 'date',
+    paginationFn: (cursor) => ({
+      [Op.lte]: moment(new Date(cursor)).subtract(new Date(cursor).getTimezoneOffset(), 'm').toDate(),
+    }),
     where,
     include: [
       {
         model: models.Invoice,
         where: { type: invoiceType, isLocked: true },
         attributes: ['id', 'number', 'isLocked'],
-        include: [{ model: models.Partner, attributes: ['id', 'name'] }]
-      }
-    ]
+        include: [{ model: models.Partner, attributes: ['id', 'name'] }],
+      },
+    ],
   });
 
   return transactions;

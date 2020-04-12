@@ -85,10 +85,12 @@ export const paginate = async (model: ModelCtor, opts: PaginateOptions) => {
   const { cursor, limit, paginateBy, paginationFn, ...restOpts } = opts;
   const where: any = opts.where || {};
 
+  delete opts.where;
+
   if (cursor) {
     const decryptedHash: any = fromCursorHash(cursor);
-    console.log('decryptedHash', decryptedHash);
-    if (paginateBy && paginationFn) {
+    console.log('decryptedHashXXX', decryptedHash);
+    if (paginationFn) {
       where[paginateBy] = paginationFn(decryptedHash);
     } else {
       where.id = {

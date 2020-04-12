@@ -77,7 +77,7 @@ const searchInputArgs = `
     isLocked: $isLocked
 `;
 
-const FETCH_PURCHASES = gql`
+export const FETCH_PURCHASES = gql`
     query purchases(${searchInputArgTypes}) {
         purchases(filter: { ${searchInputArgs} }) {
             ${invoiceListSchema}
@@ -85,7 +85,7 @@ const FETCH_PURCHASES = gql`
     }
 `;
 
-const FETCH_SALES = gql`
+export const FETCH_SALES = gql`
     query sales(${searchInputArgTypes}) {
         sales(filter: { ${searchInputArgs} }) {
             ${invoiceListSchema}
@@ -93,7 +93,7 @@ const FETCH_SALES = gql`
     }
 `;
 
-const FETCH_INVOICE = gql`
+export const FETCH_INVOICE = gql`
     query invoice($id: ID!) {
         invoice(id: $id) {
             ${invoiceSchema}
@@ -101,7 +101,7 @@ const FETCH_INVOICE = gql`
     }
 `;
 
-const ADD_INVOICE = gql`
+export const ADD_INVOICE = gql`
   mutation addInvoice(
     $partnerId: ID!
     $type: InvoiceType!
@@ -127,25 +127,25 @@ const ADD_INVOICE = gql`
   }
 `;
 
-const EDIT_INVOICE = gql`
+export const EDIT_INVOICE = gql`
   mutation editInvoice($id: ID!, $invoice: InvoiceInput!) {
     editInvoice(id: $id, invoice: $invoice)
   }
 `;
 
-const DELETE_INVOICE = gql`
+export const DELETE_INVOICE = gql`
   mutation deleteInvoice($id: ID!) {
     deleteInvoice(id: $id)
   }
 `;
 
-const LOCK_INVOICE = gql`
+export const LOCK_INVOICE = gql`
   mutation lockInvoice($id: ID!) {
     lockInvoice(id: $id)
   }
 `;
 
-const UNLOCK_INVOICE = gql`
+export const UNLOCK_INVOICE = gql`
   mutation unlockInvoice($id: ID!) {
     unlockInvoice(id: $id)
   }

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState, useMemo } from 'react';
 import { observer } from 'mobx-react-lite';
 import moment from 'moment';
 import currency from 'currency.js';
+import { useQuery } from '@apollo/react-hooks';
 
 import ContentContainer from '../util/ContentContainer';
 import { SortingContainer, TransactionItemContainer } from './styles';
@@ -13,72 +14,59 @@ import MenuDateInput from '../util/inputs/MenuDateInput';
 import TransactionStoreContext from '@ui/stores/TransactionStore';
 import { TransactionType, Transaction, TransactionQueryInput } from '@shared/types';
 import HeaderSearch from '../HeaderSearch';
+import { FETCH_EXPENSES, FETCH_INCOMES } from '@ui/api/transaction';
+import { useGraphQLQuery } from '@ui/util/hooks';
 
 interface TransactionsProps {
   type: TransactionType;
 }
 
-interface TransactionsConfig {
-  headerTitle: string;
-  transactions: Transaction[];
-  fetchTransactions: (filter?: TransactionQueryInput) => any;
-  fetchMoreTransactions: (filter?: TransactionQueryInput) => any;
-  route: string;
-  hasNextPage: boolean;
-}
+type TransactionsConfig = {
+  [key in TransactionType]: {
+    headerTitle: string;
+    route: string;
+  };
+};
 
 const Transactions: React.FC<TransactionsProps> = observer(({ type }) => {
-  const transactionStore = useContext(TransactionStoreContext);
   const [startDate, setStartDate] = useState(new Date('2020-01-01'));
   const [endDate, setEndDate] = useState(new Date('2020-12-31'));
   const [generalQuery, setGeneralQuery] = useState('');
 
-  const filter = useMemo(() => ({ startDate, endDate, generalQuery }), [
-    startDate,
-    endDate,
-    generalQuery
-  ]);
+  const FETCH_QUERY = type === 'EXPENSE' ? FETCH_EXPENSES : FETCH_INCOMES;
 
-  const config: TransactionsConfig =
-    type === 'EXPENSE'
-      ? {
-          headerTitle: 'Kulud',
-          transactions: transactionStore.expenses,
-          fetchTransactions: transactionStore.fetchExpenses,
-          fetchMoreTransactions: transactionStore.fetchMoreExpenses,
-          route: routes.expenses,
-          hasNextPage: transactionStore.paginatedExpenses.pageInfo.hasNextPage
-        }
-      : {
-          headerTitle: 'Tulud',
-          transactions: transactionStore.incomes,
-          fetchTransactions: transactionStore.fetchIncomes,
-          fetchMoreTransactions: transactionStore.fetchMoreIncomes,
-          route: routes.incomes,
-          hasNextPage: transactionStore.paginatedIncomes.pageInfo.hasNextPage
-        };
+  const [, transactions, { fetchMore }] = useGraphQLQuery(FETCH_QUERY, {
+    variables: { pagination: { limit: 5 }, startDate, endDate, generalQuery },
+    loadOnMount: true,
+    isPaginated: true,
+  });
+
+  const config: TransactionsConfig = {
+    EXPENSE: {
+      headerTitle: 'Kulud',
+      route: routes.expenses,
+    },
+    INCOME: {
+      headerTitle: 'Tulud',
+      route: routes.incomes,
+    },
+  };
 
   const headerIcons = [<HeaderSearch onChange={setGeneralQuery} placeholder="Otsi kulu" />];
 
-  useEffect(() => {
-    config.fetchTransactions(filter);
-  }, [filter]);
-
   return (
     <>
-      <Header title={config.headerTitle} components={headerIcons} />
+      <Header title={config[type].headerTitle} components={headerIcons} />
       <SortingContainer>
-        <MenuDateInput noFormik name="startDate" onChange={setStartDate} value={filter.startDate} />
+        <MenuDateInput noFormik name="startDate" onChange={setStartDate} value={startDate} />
         -
-        <MenuDateInput noFormik name="endDate" onChange={setEndDate} value={filter.endDate} />
+        <MenuDateInput noFormik name="endDate" onChange={setEndDate} value={endDate} />
       </SortingContainer>
       <ContentContainer>
-        {config.transactions.map(transaction => (
-          <TransactionItem {...transaction} key={transaction.id} route={config.route} />
+        {transactions?.data.map((transaction) => (
+          <TransactionItem {...transaction} key={transaction.id} route={config[type].route} />
         ))}
-        {config.hasNextPage && (
-          <LoadMoreButton onClick={() => config.fetchMoreTransactions(filter)} />
-        )}
+        {transactions?.pageInfo.hasNextPage && <LoadMoreButton onClick={() => fetchMore()} />}
       </ContentContainer>
     </>
   );

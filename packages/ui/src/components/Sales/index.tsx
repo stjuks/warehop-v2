@@ -2,7 +2,9 @@ import React, { useContext, useEffect, useState } from 'react';
 import { FiPlusCircle } from 'react-icons/fi';
 import { observer } from 'mobx-react-lite';
 import { InvoiceSearchInput } from '@shared/types';
+import { FETCH_SALES } from '@ui/api/invoice';
 
+import { useGraphQLQuery } from '@ui/util/hooks';
 import ContentContainer from '@ui/components/util/ContentContainer';
 import { SortingContainer, NewItemButtonContainer } from '../Products/styles';
 import routes from '../../util/routes';
@@ -16,6 +18,12 @@ import LoadMoreButton from '../util/LoadMoreButton';
 import UIStoreContext from '@ui/stores/UIStore';
 import { useLocalStorage } from 'react-use';
 
+const paidOptions = [
+  { label: 'Maksmata', value: { isPaid: false, isLocked: true } },
+  { label: 'Makstud', value: { isPaid: true, isLocked: true } },
+  { label: 'Kinnitamata', value: { isPaid: undefined, isLocked: false } },
+];
+
 const Sales = observer(() => {
   const [filter, setFilter] = useLocalStorage<InvoiceSearchInput | undefined>(
     'salesFilter',
@@ -24,24 +32,19 @@ const Sales = observer(() => {
 
   const [searchQuery, setSearchQuery] = useState('');
 
-  const invoiceStore = useContext(InvoiceStoreContext);
   const uiStore = useContext(UIStoreContext);
+
+  const [, sales, { fetchMore }] = useGraphQLQuery(FETCH_SALES, {
+    variables: { ...filter, pagination: { limit: 5 }, generalQuery: searchQuery },
+    loadOnMount: true,
+    isPaginated: true,
+  });
 
   const headerIcons = [
     <HeaderSearch onChange={setSearchQuery} placeholder="Otsi arvet" />,
     <NewItemButtonContainer onClick={() => uiStore.goTo(routes.saleForm)}>
       <FiPlusCircle />
-    </NewItemButtonContainer>
-  ];
-
-  useEffect(() => {
-    if (filter) invoiceStore.fetchSales({ ...filter, generalQuery: searchQuery });
-  }, [filter, searchQuery]);
-
-  const paidOptions = [
-    { label: 'Maksmata', value: { isPaid: false, isLocked: true } },
-    { label: 'Makstud', value: { isPaid: true, isLocked: true } },
-    { label: 'Kinnitamata', value: { isPaid: undefined, isLocked: false } }
+    </NewItemButtonContainer>,
   ];
 
   return (
@@ -51,19 +54,15 @@ const Sales = observer(() => {
         <Radio
           options={paidOptions}
           name="radio-paid"
-          onSelect={value => setFilter({ ...filter, isLocked: true, ...value })}
-          defaultValue={
-            filter ? { isPaid: filter?.isPaid, isLocked: filter?.isLocked } : paidOptions[0].value
-          }
+          onSelect={(value) => setFilter({ ...filter, isLocked: true, ...value })}
+          defaultValue={filter || paidOptions[0].value}
         />
       </SortingContainer>
       <ContentContainer>
-        {invoiceStore.sales.map(sale => (
+        {sales?.data.map((sale) => (
           <InvoiceItem {...sale} key={sale.id} />
         ))}
-        {invoiceStore.paginatedSales.pageInfo.hasNextPage && (
-          <LoadMoreButton onClick={() => invoiceStore.fetchMoreSales(filter)} />
-        )}
+        {sales?.pageInfo.hasNextPage && <LoadMoreButton onClick={() => fetchMore()} />}
       </ContentContainer>
     </>
   );

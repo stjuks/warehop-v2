@@ -1,11 +1,12 @@
 import { gql } from 'apollo-boost-upload';
 import { query, mutate } from '.';
 import {
-  PaginatedData,
   TransactionQueryInput,
   Transaction,
-  AddTransactionInput
+  AddTransactionInput,
+  PaginatedData
 } from '@shared/types';
+import Query from './Query';
 
 const transactionSchema = `
   id
@@ -107,6 +108,16 @@ export const FETCH_TRANSACTION = gql`
   }
 `;
 
+export const FETCH_EXPENZES = new Query<PaginatedData<Transaction>>({
+  query: `lololol`,
+  onFetchMore: (oldData, newData) => {
+    return {
+      ...newData,
+      data: [...oldData.data, ...newData.data],
+    };
+  },
+});
+
 export default {
   fetchIncomes: async (filter: TransactionQueryInput) =>
     await query<PaginatedData<Transaction>>({ query: FETCH_INCOMES, variables: filter }),
@@ -121,5 +132,5 @@ export default {
   addIncome: async (transaction: AddTransactionInput) =>
     await mutate<number>({ mutation: ADD_INCOME, variables: transaction }),
   addExpense: async (transaction: AddTransactionInput) =>
-    await mutate<number>({ mutation: ADD_EXPENSE, variables: transaction })
+    await mutate<number>({ mutation: ADD_EXPENSE, variables: transaction }),
 };

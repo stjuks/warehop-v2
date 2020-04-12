@@ -11,6 +11,10 @@ class CommonStore {
   @observable partnerTypes: PartnerType[] = [];
   @observable invoiceTypes: InvoiceType[] = [];
 
+  constructor() {
+    this.initialize();
+  }
+
   @task
   initialize = async () => {
     this.fetchUnits();

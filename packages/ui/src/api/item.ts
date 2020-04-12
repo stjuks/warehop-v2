@@ -84,8 +84,6 @@ export const FETCH_SERVICES = gql`
   }
 `;
 
-export const SEARCH_ITEMS = ``;
-
 export const ADD_ITEM = gql`
   mutation addItem(
     $type: ItemType!

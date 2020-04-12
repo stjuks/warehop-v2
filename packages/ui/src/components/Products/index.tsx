@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { FiPlusCircle } from 'react-icons/fi';
 import { observer } from 'mobx-react-lite';
 
@@ -11,41 +11,43 @@ import { ItemQueryInput, Warehouse } from '@shared/types';
 import Header from '../Header';
 import ProductItem from '../ProductItem';
 import HeaderSearch from '../HeaderSearch';
-import Loader from '../Loader';
-import { Formik } from 'formik';
+import { useGraphQLQuery } from '@ui/util/hooks';
 import MenuSelect from '../util/inputs/MenuSelect';
-import ItemStoreContext from '../../stores/ItemStore';
 import WarehouseStoreContext from '@ui/stores/WarehouseStore';
-import Form from '../Form';
 import UIStoreContext from '@ui/stores/UIStore';
 import WarehouseForm from '../WarehouseForm';
+import { FETCH_PRODUCTS } from '@ui/api/item';
 
 const Products = observer(() => {
-  const itemStore = useContext(ItemStoreContext);
   const warehouseStore = useContext(WarehouseStoreContext);
   const uiStore = useContext(UIStoreContext);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [warehouseFilter, setWarehouseFilter] = useState<Warehouse>({
     id: undefined,
-    name: 'Kõik laod'
+    name: 'Kõik laod',
   });
 
   const filter: ItemQueryInput = {
     generalQuery: searchQuery,
-    warehouseId: warehouseFilter.id
+    warehouseId: warehouseFilter.id,
   };
+
+  const [, products, { fetchMore }] = useGraphQLQuery(FETCH_PRODUCTS, {
+    variables: {
+      ...filter,
+      pagination: { limit: 5 },
+    },
+    loadOnMount: true,
+    isPaginated: true,
+  });
 
   const headerIcons = [
     <HeaderSearch onChange={setSearchQuery} placeholder="Otsi kaupa" />,
     <NewItemButtonContainer onClick={() => uiStore.goTo(routes.productForm)}>
       <FiPlusCircle />
-    </NewItemButtonContainer>
+    </NewItemButtonContainer>,
   ];
-
-  useEffect(() => {
-    itemStore.fetchProducts(filter);
-  }, [itemStore, searchQuery, warehouseFilter]);
 
   const warehouseOptions = [{ id: undefined, name: 'Kõik laod' }, ...warehouseStore.warehouses];
 
@@ -58,24 +60,24 @@ const Products = observer(() => {
           options={warehouseOptions}
           value={warehouseFilter}
           onChange={({ value }) => setWarehouseFilter(value)}
-          optionMap={{ label: wh => wh.name, value: wh => wh }}
+          optionMap={{ label: (wh) => wh.name, value: (wh) => wh }}
           action={{
             label: (
               <>
                 <FiPlusCircle style={{ marginRight: '0.25rem' }} /> Lisa ladu
               </>
             ),
-            onClick: () => uiStore.openModal(<WarehouseForm />)
+            onClick: () => uiStore.openModal(<WarehouseForm />),
           }}
           noFormik
         />
       </SortingContainer>
       <ContentContainer>
-        {itemStore.products.map(product => (
+        {products?.data.map((product) => (
           <ProductItem {...product} key={product.id} />
         ))}
-        {itemStore.paginatedProducts.pageInfo.hasNextPage && (
-          <LoadMoreButton onClick={() => itemStore.fetchMoreProducts(filter)}>
+        {products?.pageInfo.hasNextPage && (
+          <LoadMoreButton onClick={() => fetchMore()}>
             Lae veel
           </LoadMoreButton>
         )}
