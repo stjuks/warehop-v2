@@ -105,7 +105,7 @@ const FormFields: React.FC<any> = observer(({ formikProps }) => {
     <>
       <FormError fields={['items']} />
       <FormTitle>Põhiandmed</FormTitle>
-      <PartnerSelect name="partner" label="Tarnija" partnerType="CLIENT" />
+      <PartnerSelect name="partner" label="Klient" partnerType="CLIENT" />
       <TextInput name="number" label="Arve nr" />
       <Row flex={[1, 1]}>
         <DateInput name="issueDate" label="Ostukuupäev" />

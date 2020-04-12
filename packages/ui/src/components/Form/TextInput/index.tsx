@@ -91,7 +91,7 @@ export const TextInputBase: React.FC<TextInputBaseProps> = ({
   }, []);
 
   return (
-    <InputContainer className={className}>
+    <InputContainer className={className || ''}>
       {label && <LabelContainer>{label}</LabelContainer>}
       <InputFieldContainer
         onFocus={() => handleFocus(true)}

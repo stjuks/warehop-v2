@@ -20,7 +20,7 @@ class InvoiceStore {
 
     const purchases = await api.fetchPurchases({
       ...safeFilter,
-      pagination: { limit: this.INVOICE_LIMIT }
+      pagination: { limit: this.INVOICE_LIMIT },
     });
 
     uiStore.setLoading(false);
@@ -36,7 +36,7 @@ class InvoiceStore {
 
     const purchases = await api.fetchPurchases({
       ...safeFilter,
-      pagination: { cursor: this.paginatedPurchases.pageInfo.cursor, limit: this.INVOICE_LIMIT }
+      pagination: { cursor: this.paginatedPurchases.pageInfo.cursor, limit: this.INVOICE_LIMIT },
     });
 
     uiStore.setLoading(false);
@@ -53,7 +53,7 @@ class InvoiceStore {
 
     const sales = await api.fetchSales({
       ...safeFilter,
-      pagination: { limit: this.INVOICE_LIMIT }
+      pagination: { limit: this.INVOICE_LIMIT },
     });
 
     uiStore.setLoading(false);
@@ -69,7 +69,7 @@ class InvoiceStore {
 
     const sales = await api.fetchSales({
       ...safeFilter,
-      pagination: { cursor: this.paginatedSales.pageInfo.cursor, limit: this.INVOICE_LIMIT }
+      pagination: { cursor: this.paginatedSales.pageInfo.cursor, limit: this.INVOICE_LIMIT },
     });
 
     uiStore.setLoading(false);
@@ -121,22 +121,24 @@ class InvoiceStore {
   };
 
   @task
-  downloadInvoice = async (invoiceId: number) => {
+  downloadInvoice = async (invoice?: Invoice) => {
     try {
-      const file = await api.downloadInvoice(invoiceId);
+      if (invoice) {
+        const file = await api.downloadInvoice(invoice.id);
 
-      const pdf = new Blob([file.data], { type: 'application/pdf' });
+        const pdf = new Blob([file.data], { type: 'application/pdf' });
 
-      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-        window.navigator.msSaveOrOpenBlob(pdf);
-        return;
+        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+          window.navigator.msSaveOrOpenBlob(pdf);
+          return;
+        }
+
+        const data = window.URL.createObjectURL(pdf);
+        const link = document.createElement('a');
+        link.href = data;
+        link.download = `ARVE ${invoice.number}`;
+        link.click();
       }
-
-      const data = window.URL.createObjectURL(pdf);
-      const link = document.createElement('a');
-      link.href = data;
-      link.download = 'Arve';
-      link.click();
     } catch (err) {
       throw err;
     }
@@ -176,14 +178,14 @@ const parseInvoiceInput = (invoice: Invoice) => {
 
   const invoiceInput: AddInvoiceInput = {
     ...restInvoice,
-    partnerId: invoice.partner.id || 0
+    partnerId: invoice.partner.id || 0,
   };
 
-  invoiceInput.items = invoice.items.map(item => {
+  invoiceInput.items = invoice.items.map((item) => {
     const result = {
       ...item,
       unitId: item.unit ? item.unit.id : undefined,
-      warehouseId: item.warehouse ? item.warehouse.id : undefined
+      warehouseId: item.warehouse ? item.warehouse.id : undefined,
     };
 
     delete result.unit;

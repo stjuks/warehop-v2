@@ -136,7 +136,7 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = (pro
           <span>Lae alla</span>
         </>
       ),
-      onClick: () => invoiceStore.downloadInvoice(invoice?.id || -1),
+      onClick: () => invoiceStore.downloadInvoice(invoice),
     });
   }
 

@@ -1,6 +1,7 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { animateScroll } from 'react-scroll';
+import currency from 'currency.js';
 import moment from 'moment';
 import * as yup from 'yup';
 
@@ -36,6 +37,8 @@ const PurchaseForm: React.FC<PurchaseFormProps> = observer(({ location }) => {
   const invoiceStore = useContext(InvoiceStoreContext);
   const uiStore = useContext(UIStoreContext);
 
+  const [sum, setSum] = useState<string>(currency(0).toString());
+
   const editablePurchase: any = location.state ? JSON.parse(location.state.toString()) : undefined;
 
   let initialValues: any = {
@@ -63,7 +66,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = observer(({ location }) => {
 
   const handleSubmit = async (purchase) => {
     try {
-      if (location.state) await invoiceStore.editInvoice(editablePurchase.id, purchase);
+      if (editablePurchase) await invoiceStore.editInvoice(editablePurchase.id, purchase);
       else await invoiceStore.addInvoice(purchase);
       uiStore.goBack(routes.purchases);
     } catch (err) {

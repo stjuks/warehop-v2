@@ -133,7 +133,7 @@ const AriaSelectBase: React.FC<AriaSelectProps & Partial<FieldProps>> = observer
 
     return (
       <WrapperContainer
-        className={className}
+        className={className || ''}
         onSelection={handleSelect}
         onMenuToggle={handleMenuToggle}
       >
