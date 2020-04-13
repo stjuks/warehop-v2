@@ -14,7 +14,7 @@ class TransactionStore {
 
   @task
   fetchIncomes = async (filter?: TransactionQueryInput) => {
-    uiStore.setLoading(true);
+    /* uiStore.setLoading(true);
 
     const safeFilter = filter || {};
 
@@ -32,12 +32,12 @@ class TransactionStore {
       throw err;
     } finally {
       uiStore.setLoading(false);
-    }
+    } */
   };
 
   @task
   fetchMoreIncomes = async (filter?: TransactionQueryInput) => {
-    uiStore.setLoading(true);
+    /* uiStore.setLoading(true);
 
     const safeFilter = filter || {};
 
@@ -55,12 +55,12 @@ class TransactionStore {
       throw err;
     } finally {
       uiStore.setLoading(false);
-    }
+    } */
   };
 
   @task
   fetchExpenses = async (filter?: TransactionQueryInput) => {
-    uiStore.setLoading(true);
+    /* uiStore.setLoading(true);
 
     const safeFilter = filter || {};
 
@@ -78,12 +78,12 @@ class TransactionStore {
       throw err;
     } finally {
       uiStore.setLoading(false);
-    }
+    } */
   };
 
   @task
   fetchMoreExpenses = async (filter?: TransactionQueryInput) => {
-    uiStore.setLoading(true);
+    /* uiStore.setLoading(true);
 
     const safeFilter = filter || {};
 
@@ -102,12 +102,12 @@ class TransactionStore {
       throw err;
     } finally {
       uiStore.setLoading(false);
-    }
+    } */
   };
 
   @task
   fetchTransaction = async (id: number) => {
-    uiStore.setLoading(true);
+    /* uiStore.setLoading(true);
 
     try {
       const transaction = await api.fetchTransaction(id);
@@ -117,12 +117,12 @@ class TransactionStore {
       throw err;
     } finally {
       uiStore.setLoading(false);
-    }
+    } */
   };
 
   @task
   editTransaction = async (id: number, transaction: AddTransactionInput) => {
-    uiStore.setLoading(true);
+    /* uiStore.setLoading(true);
 
     try {
       await api.editTransaction(id, transaction);
@@ -130,12 +130,12 @@ class TransactionStore {
       throw err;
     } finally {
       uiStore.setLoading(false);
-    }
+    } */
   };
 
   @task
   deleteTransaction = async (id?: number) => {
-    uiStore.setLoading(true);
+    /* uiStore.setLoading(true);
 
     try {
       if (id) await api.deleteTransaction(id);
@@ -143,12 +143,12 @@ class TransactionStore {
       throw err;
     } finally {
       uiStore.setLoading(false);
-    }
+    } */
   };
 
   @task
   addIncome = async (transaction: AddTransactionInput) => {
-    uiStore.setLoading(true);
+    /* uiStore.setLoading(true);
 
     try {
       await api.addIncome(transaction);
@@ -156,12 +156,12 @@ class TransactionStore {
       throw err;
     } finally {
       uiStore.setLoading(false);
-    }
+    } */
   };
 
   @task
   addExpense = async (transaction: AddTransactionInput) => {
-    uiStore.setLoading(true);
+    /* uiStore.setLoading(true);
 
     try {
       await api.addExpense(transaction);
@@ -169,7 +169,7 @@ class TransactionStore {
       throw err;
     } finally {
       uiStore.setLoading(false);
-    }
+    } */
   };
 
   @computed

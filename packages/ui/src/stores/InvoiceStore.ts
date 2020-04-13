@@ -14,7 +14,7 @@ class InvoiceStore {
 
   @task
   fetchPurchases = async (filter?: InvoiceSearchInput) => {
-    uiStore.setLoading(true);
+    /* uiStore.setLoading(true);
 
     const safeFilter = filter || {};
 
@@ -25,12 +25,12 @@ class InvoiceStore {
 
     uiStore.setLoading(false);
 
-    this.paginatedPurchases = purchases;
+    this.paginatedPurchases = purchases; */
   };
 
   @task
   fetchMorePurchases = async (filter?: InvoiceSearchInput) => {
-    uiStore.setLoading(true);
+    /* uiStore.setLoading(true);
 
     const safeFilter = filter || {};
 
@@ -42,12 +42,12 @@ class InvoiceStore {
     uiStore.setLoading(false);
 
     this.paginatedPurchases.pageInfo = purchases.pageInfo;
-    this.paginatedPurchases.data.push(...purchases.data);
+    this.paginatedPurchases.data.push(...purchases.data); */
   };
 
   @task
   fetchSales = async (filter?: InvoiceSearchInput) => {
-    uiStore.setLoading(true);
+    /* uiStore.setLoading(true);
 
     const safeFilter = filter || {};
 
@@ -58,12 +58,12 @@ class InvoiceStore {
 
     uiStore.setLoading(false);
 
-    this.paginatedSales = sales;
+    this.paginatedSales = sales; */
   };
 
   @task
   fetchMoreSales = async (filter?: InvoiceSearchInput) => {
-    uiStore.setLoading(true);
+    /* uiStore.setLoading(true);
 
     const safeFilter = filter || {};
 
@@ -75,54 +75,54 @@ class InvoiceStore {
     uiStore.setLoading(false);
 
     this.paginatedSales.pageInfo = sales.pageInfo;
-    this.paginatedSales.data.push(...sales.data);
+    this.paginatedSales.data.push(...sales.data); */
   };
 
   @task
   addInvoice = async (invoice: Invoice) => {
-    const invoiceInput: AddInvoiceInput = parseInvoiceInput(invoice);
+    /* const invoiceInput: AddInvoiceInput = parseInvoiceInput(invoice);
 
     try {
       await api.addInvoice(invoiceInput);
     } catch (err) {
       throw err;
-    }
+    } */
   };
 
   @task
   editInvoice = async (id: number, invoice: Invoice) => {
-    const invoiceInput: AddInvoiceInput = parseInvoiceInput(invoice);
+    /* const invoiceInput: AddInvoiceInput = parseInvoiceInput(invoice);
 
     try {
       await api.editInvoice(id, invoiceInput);
     } catch (err) {
       throw err;
-    }
+    } */
   };
 
   @task
   deleteInvoice = async (id?: number) => {
-    try {
+    /* try {
       if (id) await api.deleteInvoice(id);
     } catch (err) {
       throw err;
-    }
+    } */
   };
 
   @task
   fetchInvoice = async (id: number) => {
-    try {
+    /* try {
       const invoice: Invoice = await api.fetchInvoice(id);
 
       return invoice;
     } catch (err) {
       throw err;
-    }
+    } */
   };
 
   @task
   downloadInvoice = async (invoice?: Invoice) => {
-    try {
+    /* try {
       if (invoice) {
         const file = await api.downloadInvoice(invoice.id);
 
@@ -141,25 +141,25 @@ class InvoiceStore {
       }
     } catch (err) {
       throw err;
-    }
+    } */
   };
 
   @task
   lockInvoice = async (invoiceId?: number) => {
-    try {
+    /* try {
       if (invoiceId) await api.lockInvoice(invoiceId);
     } catch (err) {
       throw err;
-    }
+    } */
   };
 
   @task
   unlockInvoice = async (invoiceId?: number) => {
-    try {
+    /* try {
       if (invoiceId) await api.unlockInvoice(invoiceId);
     } catch (err) {
       throw err;
-    }
+    } */
   };
 
   @computed

@@ -34,10 +34,9 @@ const Purchases = observer(() => {
 
   const uiStore = useContext(UIStoreContext);
 
-  const [, purchases, { fetchMore }] = useGraphQLQuery(FETCH_PURCHASES, {
+  const [purchases, [fetchMorePurchases]] = useGraphQLQuery(FETCH_PURCHASES, {
     variables: { ...filter, pagination: { limit: 5 }, generalQuery: searchQuery },
     loadOnMount: true,
-    isPaginated: true,
   });
 
   const headerIcons = [
@@ -62,9 +61,7 @@ const Purchases = observer(() => {
         {purchases?.data.map((purchase) => (
           <InvoiceItem {...purchase} key={purchase.id} />
         ))}
-        {purchases?.pageInfo.hasNextPage && (
-          <LoadMoreButton onClick={() => fetchMore()} />
-        )}
+        {purchases?.pageInfo.hasNextPage && <LoadMoreButton onClick={() => fetchMorePurchases()} />}
       </ContentContainer>
     </>
   );

@@ -105,14 +105,14 @@ const ItemForm = ({ type }: { type: ItemType }) => {
         <AutosuggestInput
           name="code"
           label="Kood"
-          getSuggestions={(query) => itemStore.fetchProducts({ code: query })}
+          getSuggestions={(query) => [] /* itemStore.fetchProducts({ code: query }) */}
           suggestionMap={{ label: (item) => item.code }}
           onSelect={handleAutosuggestSelect}
         />
         <AutosuggestInput
           name="name"
           label="Nimetus"
-          getSuggestions={(query) => itemStore.fetchProducts({ name: query })}
+          getSuggestions={(query) => [] /* itemStore.fetchProducts({ name: query }) */}
           suggestionMap={{ label: (item) => item.name }}
           onSelect={handleAutosuggestSelect}
         />

@@ -1,8 +1,7 @@
 import { gql } from 'apollo-boost-upload';
-import axios, { AxiosRequestConfig } from 'axios';
-import { query, mutate } from '.';
-import { Invoice, PaginatedData, AddInvoiceInput, InvoiceSearchInput } from '@shared/types';
-import { API_URL, JWT_ACCESS_TOKEN } from '@ui/util/constants';
+import { Invoice, PaginatedData, InvoiceType } from '@shared/types';
+import Query from './Query';
+import Mutation from './Mutation';
 
 const invoiceSchema = `
     id
@@ -77,87 +76,131 @@ const searchInputArgs = `
     isLocked: $isLocked
 `;
 
-export const FETCH_PURCHASES = gql`
-    query purchases(${searchInputArgTypes}) {
-        purchases(filter: { ${searchInputArgs} }) {
-            ${invoiceListSchema}
-        }
-    }
-`;
-
-export const FETCH_SALES = gql`
-    query sales(${searchInputArgTypes}) {
-        sales(filter: { ${searchInputArgs} }) {
-            ${invoiceListSchema}
-        }
-    }
-`;
-
-export const FETCH_INVOICE = gql`
+export const FETCH_INVOICE = new Query({
+  query: `
     query invoice($id: ID!) {
-        invoice(id: $id) {
-            ${invoiceSchema}
-        }
-    }
-`;
-
-export const ADD_INVOICE = gql`
-  mutation addInvoice(
-    $partnerId: ID!
-    $type: InvoiceType!
-    $number: String!
-    $items: [InvoiceItemInput!]!
-    $dueDate: Date!
-    $issueDate: Date!
-    $description: String
-    $file: Upload
-  ) {
-    addInvoice(
-      invoice: {
-        partnerId: $partnerId
-        type: $type
-        number: $number
-        items: $items
-        dueDate: $dueDate
-        issueDate: $issueDate
-        description: $description
-        file: $file
+      invoice(id: $id) {
+        ${invoiceSchema}
       }
-    )
-  }
-`;
+    }
+  `,
+  transformResult: (result) => result.invoice,
+});
 
-export const EDIT_INVOICE = gql`
-  mutation editInvoice($id: ID!, $invoice: InvoiceInput!) {
-    editInvoice(id: $id, invoice: $invoice)
-  }
-`;
+const FETCH_INVOICES = (type: InvoiceType) => {
+  const name = type === 'PURCHASE' ? 'purchases' : 'sales';
 
-export const DELETE_INVOICE = gql`
-  mutation deleteInvoice($id: ID!) {
-    deleteInvoice(id: $id)
-  }
-`;
+  return new Query<PaginatedData<Invoice>>({
+    query: `
+      query ${name}(${searchInputArgTypes}) {
+        ${name}(filter: { ${searchInputArgs} }) {
+          ${invoiceListSchema}
+        }
+      }
+  `,
+    transformResult: (result) => result ? result[name] : result,
+    onFetchMore: (oldData, newData) => {
+      return {
+        [name]: {
+          ...newData,
+          data: [...oldData.data, ...newData.data],
+        },
+      };
+    },
+    fetchMoreOptions: (data, variables) => ({
+      variables: {
+        ...variables,
+        pagination: { ...variables.pagination, cursor: data.pageInfo.cursor },
+      },
+    }),
+  });
+};
 
-export const LOCK_INVOICE = gql`
-  mutation lockInvoice($id: ID!) {
-    lockInvoice(id: $id)
-  }
-`;
+export const FETCH_PURCHASES = FETCH_INVOICES('PURCHASE');
+export const FETCH_SALES = FETCH_INVOICES('SALE');
 
-export const UNLOCK_INVOICE = gql`
-  mutation unlockInvoice($id: ID!) {
-    unlockInvoice(id: $id)
-  }
-`;
+export const ADD_INVOICE = new Mutation({
+  mutation: `
+    mutation addInvoice(
+      $partnerId: ID!
+      $type: InvoiceType!
+      $number: String!
+      $items: [InvoiceItemInput!]!
+      $dueDate: Date!
+      $issueDate: Date!
+      $description: String
+      $file: Upload
+    ) {
+      addInvoice(
+        invoice: {
+          partnerId: $partnerId
+          type: $type
+          number: $number
+          items: $items
+          dueDate: $dueDate
+          issueDate: $issueDate
+          description: $description
+          file: $file
+        }
+      )
+    }
+  `,
+  updateCache: (cache, result) => {
+    console.log(cache, result);
+  },
+});
+
+export const EDIT_INVOICE = new Mutation({
+  mutation: `
+    mutation editInvoice($id: ID!, $invoice: InvoiceInput!) {
+      editInvoice(id: $id, invoice: $invoice)
+    }
+  `,
+  updateCache: (cache, result) => {
+    console.log(cache, result);
+  },
+});
+
+export const DELETE_INVOICE = new Mutation({
+  mutation: `
+    mutation deleteInvoice($id: ID!) {
+      deleteInvoice(id: $id)
+    }
+  `,
+  updateCache: (cache, result) => {
+    console.log(cache, result);
+  },
+});
+
+export const LOCK_INVOICE = new Mutation({
+  mutation: `
+    mutation lockInvoice($id: ID!) {
+      lockInvoice(id: $id)
+    }
+  `,
+  updateCache: (cache, result) => {
+    console.log(cache, result);
+  },
+});
+
+export const UNLOCK_INVOICE = new Mutation({
+  mutation: `
+    mutation unlockInvoice($id: ID!) {
+      unlockInvoice(id: $id)
+    }
+  `,
+  updateCache: (cache, result) => {
+    console.log(cache, result);
+  },
+});
 
 const errorMessageHandler = {
   EntityAlreadyExistsError: {
-    number: 'Sellise numbriga arve juba eksisteerib.'
-  }
+    number: 'Sellise numbriga arve juba eksisteerib.',
+  },
 };
 
-export default {
+/* export default {
   fetchPurchases: async (variables: InvoiceSearchInput) =>
     await query<PaginatedData<Invoice>>({ query: FETCH_PURCHASES, variables }),
   fetchSales: async (variables: InvoiceSearchInput) =>
@@ -179,12 +222,12 @@ export default {
   downloadInvoice: async (invoiceId: number) => {
     const config: AxiosRequestConfig = {
       headers: {
-        Authorization: `Bearer ${JWT_ACCESS_TOKEN}`
+        Authorization: `Bearer ${JWT_ACCESS_TOKEN}`,
       },
       params: {
-        invoiceId
+        invoiceId,
       },
-      responseType: 'arraybuffer'
+      responseType: 'arraybuffer',
     };
 
     return await axios.get(`${API_URL}/rest/files/invoice`, config);
@@ -192,5 +235,5 @@ export default {
   lockInvoice: async (id: number) =>
     await mutate<boolean>({ mutation: LOCK_INVOICE, variables: { id } }),
   unlockInvoice: async (id: number) =>
-    await mutate<boolean>({ mutation: UNLOCK_INVOICE, variables: { id } })
-};
+    await mutate<boolean>({ mutation: UNLOCK_INVOICE, variables: { id } }),
+}; */

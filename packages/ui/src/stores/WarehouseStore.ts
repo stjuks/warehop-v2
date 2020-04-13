@@ -14,20 +14,20 @@ class WarehouseStore {
 
   @task
   fetchWarehouses = async () => {
-    const warehouses = await api.fetchWarehouses();
+    /* const warehouses = await api.fetchWarehouses();
 
-    this.warehouses = warehouses;
+    this.warehouses = warehouses; */
   };
 
   @task
   addWarehouse = async (warehouse: AddWarehouseInput) => {
-    const id = await api.addWarehouse(warehouse);
+    /* const id = await api.addWarehouse(warehouse);
     const newWarehouse: Warehouse = {
       ...warehouse,
       id,
     };
 
-    this.warehouses.push(newWarehouse);
+    this.warehouses.push(newWarehouse); */
   };
 }
 

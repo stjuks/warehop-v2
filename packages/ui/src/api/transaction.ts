@@ -4,9 +4,11 @@ import {
   TransactionQueryInput,
   Transaction,
   AddTransactionInput,
-  PaginatedData
+  PaginatedData,
+  TransactionType,
 } from '@shared/types';
 import Query from './Query';
+import Mutation from './Mutation';
 
 const transactionSchema = `
   id
@@ -25,100 +27,110 @@ const transactionSchema = `
   description
 `;
 
-const addTransactionQuery = (queryName: string) => gql`
-  mutation ${queryName}($invoiceId: ID!, $sum: String!, $date: Date!, $description: String) {
-    ${queryName}(
-      transaction: { invoiceId: $invoiceId, sum: $sum, date: $date, description: $description }
-    )
-  }
-`;
+const ADD_TRANSACTION = (type: TransactionType) => {
+  const name = type === 'EXPENSE' ? 'addExpense' : 'addIncome';
 
-export const FETCH_EXPENSES = gql`
-  query expenses(
-    $pagination: PaginatedQueryInput!,
-    $startDate: Date,
-    $endDate: Date,
-    $generalQuery: String
-  ) {
-    expenses(
-      filter: {
-        pagination: $pagination
-        startDate: $startDate
-        endDate: $endDate
-        generalQuery: $generalQuery
+  return new Mutation({
+    mutation: `
+      mutation ${name}($invoiceId: ID!, $sum: String!, $date: Date!, $description: String) {
+        ${name}(
+          transaction: { invoiceId: $invoiceId, sum: $sum, date: $date, description: $description }
+        )
       }
-    ) {
-      pageInfo {
-        hasNextPage
-        cursor
-      }
-      data {
-        ${transactionSchema}
-      }
+    `,
+    updateCache: (cache, result) => {
+      console.log(cache, result);
+    },
+  });
+};
+
+export const ADD_INCOME = ADD_TRANSACTION('INCOME');
+export const ADD_EXPENSE = ADD_TRANSACTION('EXPENSE');
+
+export const DELETE_TRANSACTION = new Mutation({
+  mutation: `
+    mutation deleteTransaction($id: ID!) {
+      deleteTransaction(id: $id)
     }
-  }
-`;
-
-export const FETCH_INCOMES = gql`
-  query incomes(
-    $pagination: PaginatedQueryInput!,
-    $startDate: Date,
-    $endDate: Date,
-    $generalQuery: String
-  ) {
-    incomes(
-      filter: {
-        pagination: $pagination
-        startDate: $startDate
-        endDate: $endDate
-        generalQuery: $generalQuery
-      }
-    ) {
-      pageInfo {
-        hasNextPage
-        cursor
-      }
-      data {
-        ${transactionSchema}
-      }
-    }
-  }
-`;
-
-export const ADD_INCOME = addTransactionQuery('addIncome');
-export const ADD_EXPENSE = addTransactionQuery('addExpense');
-
-export const DELETE_TRANSACTION = gql`
-  mutation deleteTransaction($id: ID!) {
-    deleteTransaction(id: $id)
-  }
-`;
-
-export const EDIT_TRANSACTION = gql`
-  mutation editTransaction($id: ID!, $transaction: TransactionInput!) {
-    editTransaction(id: $id, transaction: $transaction)
-  }
-`;
-
-export const FETCH_TRANSACTION = gql`
-  query transaction($id: ID!) {
-    transaction(id: $id) {
-      ${transactionSchema}
-    }
-  }
-`;
-
-export const FETCH_EXPENZES = new Query<PaginatedData<Transaction>>({
-  query: `lololol`,
-  onFetchMore: (oldData, newData) => {
-    return {
-      ...newData,
-      data: [...oldData.data, ...newData.data],
-    };
+  `,
+  updateCache: (cache, result) => {
+    console.log(cache, result);
   },
 });
 
-export default {
+export const EDIT_TRANSACTION = new Mutation({
+  mutation: `
+    mutation editTransaction($id: ID!, $transaction: TransactionInput!) {
+      editTransaction(id: $id, transaction: $transaction)
+    }
+  `,
+  updateCache: (cache, result) => {
+    console.log(cache, result);
+  },
+});
+
+export const FETCH_TRANSACTION = new Query<Transaction>({
+  query: `
+    query transaction($id: ID!) {
+      transaction(id: $id) {
+        ${transactionSchema}
+      }
+    }
+  `,
+  transformResult: (result) => result.transaction,
+});
+
+const FETCH_TRANSACTIONS = (type: TransactionType) => {
+  const name = type === 'INCOME' ? 'incomes' : 'expenses';
+
+  return new Query<PaginatedData<Transaction>>({
+    query: `
+      query ${name}(
+        $pagination: PaginatedQueryInput!,
+        $startDate: Date,
+        $endDate: Date,
+        $generalQuery: String
+      ) {
+        ${name}(
+          filter: {
+            pagination: $pagination
+            startDate: $startDate
+            endDate: $endDate
+            generalQuery: $generalQuery
+          }
+        ) {
+          pageInfo {
+            hasNextPage
+            cursor
+          }
+          data {
+            ${transactionSchema}
+          }
+        }
+      }
+    `,
+    transformResult: (result) => (result ? result[name] : result),
+    onFetchMore: (oldData, newData) => {
+      return {
+        [name]: {
+          ...newData,
+          data: [...oldData.data, ...newData.data],
+        },
+      };
+    },
+    fetchMoreOptions: (data, variables) => ({
+      variables: {
+        ...variables,
+        pagination: { ...variables.pagination, cursor: data.pageInfo.cursor },
+      },
+    }),
+  });
+};
+
+export const FETCH_EXPENSES = FETCH_TRANSACTIONS('EXPENSE');
+export const FETCH_INCOMES = FETCH_TRANSACTIONS('INCOME');
+
+/* export default {
   fetchIncomes: async (filter: TransactionQueryInput) =>
     await query<PaginatedData<Transaction>>({ query: FETCH_INCOMES, variables: filter }),
   fetchExpenses: async (filter: TransactionQueryInput) =>
@@ -133,4 +145,4 @@ export default {
     await mutate<number>({ mutation: ADD_INCOME, variables: transaction }),
   addExpense: async (transaction: AddTransactionInput) =>
     await mutate<number>({ mutation: ADD_EXPENSE, variables: transaction }),
-};
+}; */

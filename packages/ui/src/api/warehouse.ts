@@ -1,44 +1,62 @@
 import { gql } from 'apollo-boost-upload';
-import { query, mutate } from '.';
-import { Warehouse } from '@shared/types';
+import Query from './Query';
+import Mutation from './Mutation';
 
-export const FETCH_WAREHOUSES = gql`
-  query warehouses {
-    warehouses {
-      id
-      name
+export const FETCH_WAREHOUSES = new Query({
+  query: `
+    query warehouses {
+      warehouses {
+        id
+        name
+      }
     }
-  }
-`;
+  `,
+  transformResult: (result) => result.warehouses,
+});
 
-export const ADD_WAREHOUSE = gql`
-  mutation addWarehouse($name: String!) {
-    addWarehouse(name: $name)
-  }
-`;
+export const ADD_WAREHOUSE = new Mutation({
+  mutation: `
+    mutation addWarehouse($name: String!) {
+      addWarehouse(name: $name)
+    }
+  `,
+  updateCache: (cache, result) => {
+    console.log(cache, result);
+  },
+});
 
-export const DELETE_WAREHOUSE = gql`
-  mutation deleteWarehouse($id: ID!) {
-    deleteWarehouse(id: $id)
-  }
-`;
+export const DELETE_WAREHOUSE = new Mutation({
+  mutation: `
+    mutation deleteWarehouse($id: ID!) {
+      deleteWarehouse(id: $id)
+    }
+  `,
+  updateCache: (cache, result) => {
+    console.log(cache, result);
+  },
+});
 
-export const EDIT_WAREHOUSE = gql`
-  mutation editWarehouse($id: ID!, $name: String, $abbreviation: String) {
-    editWarehouse(id: $id, name: $name, abbreviation: $abbreviation)
-  }
-`;
+export const EDIT_WAREHOUSE = new Mutation({
+  mutation: `
+    mutation editWarehouse($id: ID!, $name: String, $abbreviation: String) {
+      editWarehouse(id: $id, name: $name, abbreviation: $abbreviation)
+    }
+  `,
+  updateCache: (cache, result) => {
+    console.log(cache, result);
+  },
+});
 
 const errorMessageHandler = {
   EntityAlreadyExistsError: {
-    name: 'Sellise nimega ladu juba eksiteerib.'
+    name: 'Sellise nimega ladu juba eksiteerib.',
   },
   DeletionRestrictedError: {
-    WarehouseItems: 'Ladu ei saa kustutada, kuna selles on kaubad.'
-  }
+    WarehouseItems: 'Ladu ei saa kustutada, kuna selles on kaubad.',
+  },
 };
 
-export default {
+/* export default {
   fetchWarehouses: async () => await query<Warehouse[]>({ query: FETCH_WAREHOUSES }),
   addWarehouse: async (warehouse: Warehouse) =>
     await mutate<number>(
@@ -54,5 +72,5 @@ export default {
     await mutate<boolean>(
       { mutation: EDIT_WAREHOUSE, variables: { id, ...editedWarehouse } },
       { errorMessageHandler }
-    )
-};
+    ),
+}; */

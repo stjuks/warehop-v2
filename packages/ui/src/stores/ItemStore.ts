@@ -14,7 +14,7 @@ class ItemStore {
 
   @task
   fetchProducts = async (filter?: ItemQueryInput) => {
-    uiStore.setLoading(true);
+    /* uiStore.setLoading(true);
 
     const safeFilter = filter || {};
 
@@ -29,12 +29,12 @@ class ItemStore {
 
     this.paginatedProducts = products;
 
-    return products.data;
+    return products.data; */
   };
 
   @task
   fetchMoreProducts = async (filter?: ItemQueryInput) => {
-    uiStore.setLoading(true);
+    /* uiStore.setLoading(true);
 
     const safeFilter = filter || {};
 
@@ -46,23 +46,23 @@ class ItemStore {
     uiStore.setLoading(false);
 
     this.paginatedProducts.pageInfo = products.pageInfo;
-    this.paginatedProducts.data.push(...products.data);
+    this.paginatedProducts.data.push(...products.data); */
   };
 
   @task
   fetchProduct = async (id: number) => {
-    uiStore.setLoading(true);
+    /* uiStore.setLoading(true);
 
     const product = await api.fetchProduct(id);
 
     uiStore.setLoading(false);
 
-    return product;
+    return product; */
   };
 
   @task
   editProduct = async (item: ProductItem) => {
-    const itemInput = {
+    /* const itemInput = {
       ...item,
       partnerId: item.partner?.id,
       unitId: item.unit.id
@@ -72,32 +72,32 @@ class ItemStore {
     delete itemInput.partner;
     delete itemInput.id;
 
-    if (item.id) await api.editItem(item.id, itemInput);
+    if (item.id) await api.editItem(item.id, itemInput); */
   };
 
   @task
   fetchServices = async () => {
-    const services = await api.fetchServices({
+    /* const services = await api.fetchServices({
       limit: this.ITEM_LIMIT
     });
 
-    this.paginatedServices = services;
+    this.paginatedServices = services; */
   };
 
   @task
   fetchMoreServices = async () => {
-    const services = await api.fetchServices({
+    /* const services = await api.fetchServices({
       limit: this.ITEM_LIMIT,
       cursor: this.paginatedServices.pageInfo.cursor
     });
 
     this.paginatedServices.pageInfo = services.pageInfo;
-    this.paginatedServices.data.push(...services.data);
+    this.paginatedServices.data.push(...services.data); */
   };
 
   @task
   addProduct = async (product: ProductItem) => {
-    const itemInput: AddItemInput = {
+    /* const itemInput: AddItemInput = {
       ...product,
       partnerId: product.partner && product.partner.id,
       unitId: product.unit.id
@@ -106,16 +106,16 @@ class ItemStore {
     const id = await api.addItem(itemInput);
     product.id = id;
 
-    this.paginatedProducts.data.push(product);
+    this.paginatedProducts.data.push(product); */
   };
 
   @task
   deleteItem = async (id?: number) => {
-    try {
+    /* try {
       if (id) await api.deleteItem(id);
     } catch (err) {
       throw err;
-    }
+    } */
   };
 
   @computed

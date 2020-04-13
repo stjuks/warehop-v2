@@ -1,12 +1,12 @@
 import apollo from '../util/apollo';
 import { QueryBaseOptions, MutationOptions, ApolloError, gql } from 'apollo-boost-upload';
 
-import commonApi from './common';
+/* import commonApi from './common';
 import partnerApi from './partner';
 import warehouseApi from './warehouse';
 import itemApi from './item';
 import invoiceApi from './invoice';
-import transactionApi from './transaction';
+import transactionApi from './transaction'; */
 import { omitDeep } from '@ui/util/helpers';
 
 import { GraphQLError } from 'graphql';
@@ -105,10 +105,10 @@ const getResult = (data, opts) => {
 };
 
 export default {
-  ...commonApi,
+  /* ...commonApi,
   ...partnerApi,
   ...warehouseApi,
   ...itemApi,
   ...invoiceApi,
-  ...transactionApi
+  ...transactionApi */
 };

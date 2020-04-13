@@ -1,6 +1,7 @@
 import { gql } from 'apollo-boost-upload';
-import { query, mutate } from '.';
-import { ItemInput, ProductItem, ExpenseItem, PaginatedData, ItemQueryInput } from '@shared/types';
+import { ProductItem, PaginatedData } from '@shared/types';
+import Query from './Query';
+import Mutation from './Mutation';
 
 const itemSchema = `
   id
@@ -28,43 +29,63 @@ const itemSchema = `
   }
 `;
 
-export const FETCH_PRODUCT = gql`
-  query product($id: ID!) {
-    product(id: $id) {
-      ${itemSchema}
-    }
-  }
-`;
-
-export const FETCH_PRODUCTS = gql`
-  query products(
-    $name: String
-    $code: String
-    $description: String
-    $generalQuery: String
-    $pagination: PaginatedQueryInput
-    $warehouseId: ID
-  ) {
-    products(
-      filter: {
-        name: $name
-        code: $code
-        description: $description
-        generalQuery: $generalQuery
-        pagination: $pagination
-        warehouseId: $warehouseId
-      }
-    ) {
-      pageInfo {
-        hasNextPage
-        cursor
-      }
-      data {
+export const FETCH_PRODUCT = new Query<ProductItem>({
+  query: ` 
+    query product($id: ID!) {
+      product(id: $id) {
         ${itemSchema}
       }
     }
-  }
-`;
+  `,
+  transformResult: (result) => result.product,
+});
+
+export const FETCH_PRODUCTS = new Query<PaginatedData<ProductItem>>({
+  query: `
+    query products(
+      $name: String
+      $code: String
+      $description: String
+      $generalQuery: String
+      $pagination: PaginatedQueryInput
+      $warehouseId: ID
+    ) {
+      products(
+        filter: {
+          name: $name
+          code: $code
+          description: $description
+          generalQuery: $generalQuery
+          pagination: $pagination
+          warehouseId: $warehouseId
+        }
+      ) {
+        pageInfo {
+          hasNextPage
+          cursor
+        }
+        data {
+          ${itemSchema}
+        }
+      }
+    }
+  `,
+  transformResult: (result) => result?.products,
+  onFetchMore: (oldData, newData) => {
+    return {
+      products: {
+        ...newData,
+        data: [...oldData.data, ...newData.data],
+      },
+    };
+  },
+  fetchMoreOptions: (data, variables) => ({
+    variables: {
+      ...variables,
+      pagination: { ...variables.pagination, cursor: data.pageInfo.cursor },
+    },
+  }),
+});
 
 export const FETCH_SERVICES = gql`
   query services($cursor: String, $limit: Int!) {
@@ -84,57 +105,72 @@ export const FETCH_SERVICES = gql`
   }
 `;
 
-export const ADD_ITEM = gql`
-  mutation addItem(
-    $type: ItemType!
-    $name: String!
-    $partnerId: ID
-    $unitId: ID
-    $code: String
-    $purchasePrice: String
-    $retailPrice: String
-    $description: String
-    $warehouseQuantity: [WarehouseQuantityInput!]!
-  ) {
-    addItem(
-      item: {
-        type: $type
-        name: $name
-        partnerId: $partnerId
-        unitId: $unitId
-        code: $code
-        purchasePrice: $purchasePrice
-        retailPrice: $retailPrice
-        description: $description
-        warehouseQuantity: $warehouseQuantity
-      }
-    )
-  }
-`;
+export const ADD_ITEM = new Mutation({
+  mutation: `
+    mutation addItem(
+      $type: ItemType!
+      $name: String!
+      $partnerId: ID
+      $unitId: ID
+      $code: String
+      $purchasePrice: String
+      $retailPrice: String
+      $description: String
+      $warehouseQuantity: [WarehouseQuantityInput!]!
+    ) {
+      addItem(
+        item: {
+          type: $type
+          name: $name
+          partnerId: $partnerId
+          unitId: $unitId
+          code: $code
+          purchasePrice: $purchasePrice
+          retailPrice: $retailPrice
+          description: $description
+          warehouseQuantity: $warehouseQuantity
+        }
+      )
+    }
+  `,
+  updateCache: (cache, result) => {
+    console.log(cache, result);
+  },
+});
 
-export const DELETE_ITEM = gql`
-  mutation deleteItem($id: ID!) {
-    deleteItem(id: $id)
-  }
-`;
+export const DELETE_ITEM = new Mutation({
+  mutation: `
+    mutation deleteItem($id: ID!) {
+      deleteItem(id: $id)
+    }
+  `,
+  updateCache: (cache, result) => {
+    console.log(cache, result);
+  },
+});
 
-export const EDIT_ITEM = gql`
-  mutation editItem($id: ID!, $item: ItemInput!) {
-    editItem(id: $id, item: $item)
-  }
-`;
+export const EDIT_ITEM = new Mutation({
+  mutation: `
+    mutation editItem($id: ID!, $item: ItemInput!) {
+      editItem(id: $id, item: $item)
+    }
+  `,
+  updateCache: (cache, result) => {
+    console.log(cache, result);
+  },
+});
 
 const errorMessageHandler = {
   EntityAlreadyExistsError: {
     name: 'Sellise nimega kaup juba eksisteerib.',
-    code: 'Sellise koodiga kaup juba eksisteerib.'
+    code: 'Sellise koodiga kaup juba eksisteerib.',
   },
   DeletionRestrictedError: {
-    InvoiceItems: 'Kaupa ei saa kustutada, kuna see on arvega seotud.'
-  }
+    InvoiceItems: 'Kaupa ei saa kustutada, kuna see on arvega seotud.',
+  },
 };
 
-export default {
+/* export default {
   fetchProduct: async (id: number) =>
     await query<ProductItem>({ query: FETCH_PRODUCT, variables: { id } }),
   fetchProducts: async (filter: ItemQueryInput) =>
@@ -147,5 +183,8 @@ export default {
   deleteItem: async (id: number) =>
     await mutate<boolean>({ mutation: DELETE_ITEM, variables: { id } }, { errorMessageHandler }),
   editItem: async (id: number, item: ItemInput) =>
-    await mutate<boolean>({ mutation: EDIT_ITEM, variables: { id, item } }, { errorMessageHandler })
-};
+    await mutate<boolean>(
+      { mutation: EDIT_ITEM, variables: { id, item } },
+      { errorMessageHandler }
+    ),
+}; */

@@ -6,6 +6,8 @@ import { FiPlusCircle } from 'react-icons/fi';
 import { PartnerType, Partner } from '@shared/types';
 import UIStoreContext from '@ui/stores/UIStore';
 import routes from '@ui/util/routes';
+import { FETCH_PARTNERS } from '@ui/api/partner';
+import { useGraphQLQuery } from '@ui/util/hooks';
 
 interface PartnerSelectProps {
   name: string;
@@ -20,7 +22,12 @@ const PartnerSelect: React.FC<PartnerSelectProps> = observer(({ name, label, par
   const [options, setOptions] = useState<Partner[]>([]);
   const [loadOptions, setLoadOptions] = useState<boolean>(false);
 
-  useEffect(() => {
+  const [partners] = useGraphQLQuery(FETCH_PARTNERS, {
+    variables: { type: partnerType },
+    loadOnMount: true,
+  });
+
+  /* useEffect(() => {
     const fetchPartners = async () => {
       const partners = await partnerStore.fetchPartners(
         { type: partnerType },
@@ -30,15 +37,15 @@ const PartnerSelect: React.FC<PartnerSelectProps> = observer(({ name, label, par
     };
 
     if (loadOptions) fetchPartners();
-  }, [loadOptions]);
+  }, [loadOptions]); */
 
   return (
     <AriaSelect
       name={name}
       label={label}
-      optionMap={{ label: partner => partner.name }}
+      optionMap={{ label: (partner) => partner.name }}
       options={options}
-      onSearch={query =>
+      onSearch={(query) =>
         partnerStore.fetchPartners(
           { type: partnerType, generalQuery: query },
           { keepStoreValue: true }
@@ -52,7 +59,7 @@ const PartnerSelect: React.FC<PartnerSelectProps> = observer(({ name, label, par
             Lisa partner
           </>
         ),
-        onClick: () => uiStore.goTo(routes.partnerForm)
+        onClick: () => uiStore.goTo(routes.partnerForm),
       }}
       onMenuOpen={() => setLoadOptions(true)}
     />

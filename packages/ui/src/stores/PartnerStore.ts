@@ -18,7 +18,7 @@ class PartnerStore {
 
   @task
   fetchPartners = async (filter?: SearchPartnerInput, opts?: FetchOptions) => {
-    const safeFilter = filter || {};
+    /* const safeFilter = filter || {};
     const safeOpts = opts || {};
     const { keepStoreValue, globalLoader } = safeOpts;
 
@@ -35,12 +35,12 @@ class PartnerStore {
       this.paginatedPartners = partners;
     }
 
-    return partners.data;
+    return partners.data; */
   };
 
   @task
   fetchMorePartners = async (filter?: SearchPartnerInput) => {
-    uiStore.setLoading(true);
+    /* uiStore.setLoading(true);
 
     const safeFilter = filter || {};
     const partners = await api.fetchPartners({
@@ -51,12 +51,12 @@ class PartnerStore {
     uiStore.setLoading(false);
 
     this.paginatedPartners.pageInfo = partners.pageInfo;
-    this.paginatedPartners.data.push(...partners.data);
+    this.paginatedPartners.data.push(...partners.data); */
   };
 
   @task
   addPartner = async (partner: Partner) => {
-    uiStore.setLoading(true);
+    /* uiStore.setLoading(true);
 
     try {
       await api.addPartner(partner);
@@ -64,7 +64,7 @@ class PartnerStore {
       throw err;
     } finally {
       uiStore.setLoading(false);
-    }
+    } */
   };
 
   @computed

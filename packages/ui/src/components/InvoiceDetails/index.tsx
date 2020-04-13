@@ -4,10 +4,12 @@ import routes from '@ui/util/routes';
 import InvoiceStoreContext from '@ui/stores/InvoiceStore';
 import UIStoreContext from '@ui/stores/UIStore';
 import currency from 'currency.js';
+import { useGraphQLQuery, useGraphQLMutation } from '@ui/util/hooks';
+import { FETCH_INVOICE, DELETE_INVOICE, LOCK_INVOICE, UNLOCK_INVOICE } from '@ui/api/invoice';
 
 import { InvoiceHero, IsPaidStyled, InvoiceDetailsContainer, TransactionItem } from './styles';
 import Header from '../Header';
-import { RouteComponentProps, Route } from 'react-router';
+import { RouteComponentProps, Route, useParams } from 'react-router';
 import { DetailCardContainer, DetailLabel } from '../ProductDetails/styles';
 import moment from 'moment';
 import InvoiceItemListItem from '../InvoiceItemListItem';
@@ -34,9 +36,15 @@ interface InvoiceDetailsProps {
 const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = (props) => {
   const invoiceStore = useContext(InvoiceStoreContext);
   const uiStore = useContext(UIStoreContext);
-  const [invoice, setInvoice] = useState<Invoice | undefined>(undefined);
+  // const [invoice, setInvoice] = useState<Invoice | undefined>(undefined);
 
-  const handleInvoiceLoading = useCallback(async () => {
+  const { id } = useParams();
+  const [invoice] = useGraphQLQuery(FETCH_INVOICE, { variables: { id }, loadOnMount: true });
+  const [lockInvoice] = useGraphQLMutation(LOCK_INVOICE);
+  const [unlockInvoice] = useGraphQLMutation(UNLOCK_INVOICE);
+  const [deleteInvoice] = useGraphQLMutation(DELETE_INVOICE);
+
+  /* const handleInvoiceLoading = useCallback(async () => {
     const location: any = props.location;
 
     if (location.invoice) {
@@ -50,14 +58,22 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = (pro
         setInvoice(invoice);
       }
     }
-  }, []);
+  }, []); 
 
   useEffect(() => {
     handleInvoiceLoading();
-  }, []);
+  }, []); */
 
   const handleInvoiceLock = async () => {
     try {
+      if (invoice?.isLocked) await unlockInvoice({ id: invoice?.id });
+      else await lockInvoice({ id: invoice?.id });
+      uiStore.goBack();
+    } catch (err) {
+      throw err;
+    }
+    
+    /* try {
       if (invoice?.isLocked) {
         await invoiceStore.unlockInvoice(invoice?.id);
       } else {
@@ -69,18 +85,18 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = (pro
       if (invoice) setInvoice({ ...invoice, isLocked: !invoice.isLocked });
     } catch (err) {
       throw err;
-    }
+    } */
   };
 
   const handleInvoiceDelete = async () => {
-    try {
+    /* try {
       await invoiceStore.deleteInvoice(invoice?.id);
       uiStore.goTo(invoice?.type === 'PURCHASE' ? routes.purchases : routes.sales, {
         replace: true,
       });
     } catch (err) {
       throw err;
-    }
+    } */
   };
 
   const sum = invoice ? currency(invoice.sum).toString() : null;
@@ -149,7 +165,7 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = (pro
         </>
       ),
       onClick: () =>
-        uiStore.openModal(<TransactionForm invoice={invoice} onSubmit={handleInvoiceLoading} />),
+        uiStore.openModal(<TransactionForm invoice={invoice} onSubmit={console.log} />),
     });
   }
 

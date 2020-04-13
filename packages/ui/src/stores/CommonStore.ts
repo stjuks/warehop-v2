@@ -23,26 +23,26 @@ class CommonStore {
 
   @task
   fetchUnits = async () => {
-    const units = await api.fetchUnits();
+    /* const units = await api.fetchUnits();
 
-    this.units = units;
+    this.units = units; */
   };
 
   @task
   addUnit = async (unit: Unit) => {
-    const unitId = await api.addUnit(unit);
+    /* const unitId = await api.addUnit(unit);
     unit.id = unitId;
 
-    this.units.push(unit);
+    this.units.push(unit); */
   };
 
   @task
   fetchTypes = async () => {
-    const types = await api.fetchTypes();
+    /* const types = await api.fetchTypes();
 
     this.itemTypes = types.itemTypes;
     this.partnerTypes = types.partnerTypes;
-    this.invoiceTypes = types.invoiceTypes;
+    this.invoiceTypes = types.invoiceTypes; */
   };
 }
 

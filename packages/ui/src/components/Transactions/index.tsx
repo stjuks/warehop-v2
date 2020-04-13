@@ -11,7 +11,6 @@ import LoadMoreButton from '../util/LoadMoreButton';
 import Header from '../Header';
 import routes from '@ui/util/routes';
 import MenuDateInput from '../util/inputs/MenuDateInput';
-import TransactionStoreContext from '@ui/stores/TransactionStore';
 import { TransactionType, Transaction, TransactionQueryInput } from '@shared/types';
 import HeaderSearch from '../HeaderSearch';
 import { FETCH_EXPENSES, FETCH_INCOMES } from '@ui/api/transaction';
@@ -35,10 +34,9 @@ const Transactions: React.FC<TransactionsProps> = observer(({ type }) => {
 
   const FETCH_QUERY = type === 'EXPENSE' ? FETCH_EXPENSES : FETCH_INCOMES;
 
-  const [, transactions, { fetchMore }] = useGraphQLQuery(FETCH_QUERY, {
-    variables: { pagination: { limit: 5 }, startDate, endDate, generalQuery },
+  const [transactions, [fetchMoreTransactions]] = useGraphQLQuery(FETCH_QUERY, {
+    variables: { pagination: { limit: 1 }, startDate, endDate, generalQuery },
     loadOnMount: true,
-    isPaginated: true,
   });
 
   const config: TransactionsConfig = {
@@ -66,7 +64,7 @@ const Transactions: React.FC<TransactionsProps> = observer(({ type }) => {
         {transactions?.data.map((transaction) => (
           <TransactionItem {...transaction} key={transaction.id} route={config[type].route} />
         ))}
-        {transactions?.pageInfo.hasNextPage && <LoadMoreButton onClick={() => fetchMore()} />}
+        {transactions?.pageInfo.hasNextPage && <LoadMoreButton onClick={() => fetchMoreTransactions()} />}
       </ContentContainer>
     </>
   );

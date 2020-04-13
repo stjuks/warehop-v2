@@ -34,10 +34,9 @@ const Sales = observer(() => {
 
   const uiStore = useContext(UIStoreContext);
 
-  const [, sales, { fetchMore }] = useGraphQLQuery(FETCH_SALES, {
+  const [sales, [fetchMoreSales]] = useGraphQLQuery(FETCH_SALES, {
     variables: { ...filter, pagination: { limit: 5 }, generalQuery: searchQuery },
     loadOnMount: true,
-    isPaginated: true,
   });
 
   const headerIcons = [
@@ -46,6 +45,8 @@ const Sales = observer(() => {
       <FiPlusCircle />
     </NewItemButtonContainer>,
   ];
+
+  console.log(sales);
 
   return (
     <>
@@ -62,7 +63,7 @@ const Sales = observer(() => {
         {sales?.data.map((sale) => (
           <InvoiceItem {...sale} key={sale.id} />
         ))}
-        {sales?.pageInfo.hasNextPage && <LoadMoreButton onClick={() => fetchMore()} />}
+        {sales?.pageInfo.hasNextPage && <LoadMoreButton onClick={() => fetchMoreSales()} />}
       </ContentContainer>
     </>
   );

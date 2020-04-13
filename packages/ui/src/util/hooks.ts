@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { DocumentNode } from 'graphql';
-import { useLazyQuery, LazyQueryHookOptions } from '@apollo/react-hooks';
+import { useLazyQuery, LazyQueryHookOptions, useMutation } from '@apollo/react-hooks';
 import Query from '@ui/api/Query';
+import Mutation from '@ui/api/Mutation';
 
 export function useDebounce<A extends any[]>(callback: (...args: A) => void, wait: number) {
   // track args & timeout handle between calls
@@ -62,7 +63,7 @@ interface GraphQLQueryOptions extends LazyQueryHookOptions<any, any> {
   isPaginated?: boolean;
 }
 
-export const useGraphQLQuery = (query: DocumentNode, options?: GraphQLQueryOptions) => {
+/* export const useGraphQLQuery = (query: DocumentNode, options?: GraphQLQueryOptions) => {
   const [fetchData, { data, fetchMore }] = useLazyQuery(query, options);
 
   const anyQuery: any = query;
@@ -112,15 +113,62 @@ export const useGraphQLQuery = (query: DocumentNode, options?: GraphQLQueryOptio
   ];
 
   return result;
+}; */
+
+export const useGraphQLQuery = <T>(query: Query<T>, options?: GraphQLQueryOptions) => {
+  const [fetchData, { data, fetchMore, ...restTuple }] = useLazyQuery(query.query, options);
+
+  let transformedData: any = undefined;
+
+  if (data && query.transformResult) {
+    transformedData = query.transformResult(data);
+  }
+
+  useEffect(() => {
+    if (options?.loadOnMount) {
+      fetchData();
+    }
+  }, []);
+
+  const fetchMoreData = () => {
+    if (query.onFetchMore && query.fetchMoreOptions) {
+      if (transformedData)
+      return fetchMore({
+        query: query.query,
+        variables: options?.variables,
+        ...query.fetchMoreOptions(transformedData, options?.variables),
+        updateQuery: (prevResult, { fetchMoreResult }) => {
+          const transformedPrev = query.transformResult
+            ? query.transformResult(prevResult)
+            : prevResult;
+
+          const transformedNew = query.transformResult
+            ? query.transformResult(fetchMoreResult)
+            : fetchMoreResult;
+
+          return query.onFetchMore
+            ? query.onFetchMore(transformedPrev, transformedNew)
+            : fetchMoreResult;
+        },
+      });
+    }
+    return () => undefined;
+  };
+
+  return [transformedData, [fetchMoreData, fetchData], { restTuple }];
 };
 
-/* export const useQuery = <T>(query: Query<T>, options?: GraphQLQueryOptions) => {
-  const [fetchData, { data, fetchMore }] = useLazyQuery(query.query);
+export const useGraphQLMutation = <T>(mutation: Mutation<T>) => {
+  const [mutate, restTuple] = useMutation(mutation.mutation, {
+    update: (cache, result) => {
+      if (mutation.updateCache) mutation.updateCache(cache, result);
+    },
+  });
 
-  if (query.onFetchMore) {
-    return fetchMore({
-      query,
-      variables
-    })
-  }
-}; */
+  const customMutate = (variables) => {
+    console.log(variables);
+    mutate({ variables });
+  };
+
+  return [customMutate];
+};

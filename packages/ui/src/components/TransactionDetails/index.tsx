@@ -17,14 +17,21 @@ import DropdownMenu from '../DropdownMenu';
 import ConfirmationDialog from '../ConfirmationDialog';
 import { TransactionTitle } from './styles';
 import { IsPaidStyled } from '../InvoiceDetails/styles';
+import { useParams } from 'react-router';
+import { useGraphQLQuery } from '@ui/util/hooks';
+import { FETCH_TRANSACTION } from '@ui/api/transaction';
 
-const TransactionDetails: React.FC<Transaction & RouteComponentProps> = props => {
+const TransactionDetails: React.FC<Transaction & RouteComponentProps> = (props) => {
   const transactionStore = useContext(TransactionStoreContext);
   const uiStore = useContext(UIStoreContext);
 
-  const [transaction, setTransaction] = useState<Transaction>();
+  const { id } = useParams();
 
-  useEffect(() => {
+  // const [transaction, setTransaction] = useState<Transaction>();
+
+  const [transaction] = useGraphQLQuery(FETCH_TRANSACTION, { variables: { id }, loadOnMount: true });
+
+  /* useEffect(() => {
     const fetchTransaction = async () => {
       const { id }: any = props.match.params;
 
@@ -36,7 +43,7 @@ const TransactionDetails: React.FC<Transaction & RouteComponentProps> = props =>
     };
 
     fetchTransaction();
-  }, []);
+  }, []); */
 
   const handleTransactionDelete = async () => {
     try {
@@ -67,9 +74,9 @@ const TransactionDetails: React.FC<Transaction & RouteComponentProps> = props =>
           uiStore.openModal(
             <TransactionForm
               transaction={transaction}
-              onSubmit={newTransaction => setTransaction({ ...transaction, ...newTransaction })}
+              onSubmit={(newTransaction) => null/* setTransaction({ ...transaction, ...newTransaction }) */}
             />
-          )
+          ),
       },
       {
         label: (
@@ -88,7 +95,7 @@ const TransactionDetails: React.FC<Transaction & RouteComponentProps> = props =>
               onConfirm={handleTransactionDelete}
               callBackRoute={routes.incomes}
             />
-          )
+          ),
       }
     );
     headerIcons.push(<DropdownMenu button={<FiMoreVertical />} options={dropdownOptions} />);

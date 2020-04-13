@@ -9,18 +9,24 @@ import { ProductItem } from '@shared/types';
 import routes from '../../util/routes';
 import { ContentContainer } from '../App/styles';
 import ItemStoreContext from '@ui/stores/ItemStore';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, useParams } from 'react-router';
 import DropdownMenu from '../DropdownMenu';
 import UIStoreContext from '@ui/stores/UIStore';
 import ConfirmationDialog from '../ConfirmationDialog';
+import { useGraphQLQuery } from '@ui/util/hooks';
+import { FETCH_PRODUCT } from '@ui/api/item';
 
-const ProductDetails: React.FC<ProductItem & RouteComponentProps> = props => {
+const ProductDetails: React.FC<ProductItem & RouteComponentProps> = (props) => {
   const itemStore = useContext(ItemStoreContext);
   const uiStore = useContext(UIStoreContext);
 
-  const [product, setProduct] = useState<ProductItem>();
+  const { id } = useParams();
 
-  useEffect(() => {
+  // const [product, setProduct] = useState<ProductItem>();
+
+  const [product] = useGraphQLQuery(FETCH_PRODUCT, { variables: { id }, loadOnMount: true });
+
+  /* useEffect(() => {
     const handleItemLoading = async () => {
       const match: any = props.match;
       const { id } = match.params;
@@ -32,7 +38,7 @@ const ProductDetails: React.FC<ProductItem & RouteComponentProps> = props => {
     };
 
     handleItemLoading();
-  }, []);
+  }, []); */
 
   const handleProductDelete = async () => {
     try {
@@ -51,7 +57,7 @@ const ProductDetails: React.FC<ProductItem & RouteComponentProps> = props => {
           <span>Muuda</span>
         </>
       ),
-      onClick: () => uiStore.goTo(routes.productForm, { state: product })
+      onClick: () => uiStore.goTo(routes.productForm, { state: product }),
     },
     {
       label: (
@@ -71,8 +77,8 @@ const ProductDetails: React.FC<ProductItem & RouteComponentProps> = props => {
             onConfirm={handleProductDelete}
             callBackRoute={routes.products}
           />
-        )
-    }
+        ),
+    },
   ];
 
   const headerIcons = [<DropdownMenu button={<FiMoreVertical />} options={dropdownOptions} />];
