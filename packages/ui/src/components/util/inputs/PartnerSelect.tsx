@@ -16,41 +16,21 @@ interface PartnerSelectProps {
 }
 
 const PartnerSelect: React.FC<PartnerSelectProps> = observer(({ name, label, partnerType }) => {
-  const partnerStore = useContext(PartnerStoreContext);
   const uiStore = useContext(UIStoreContext);
 
-  const [options, setOptions] = useState<Partner[]>([]);
-  const [loadOptions, setLoadOptions] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const [partners] = useGraphQLQuery(FETCH_PARTNERS, {
-    variables: { type: partnerType },
+    variables: { type: partnerType, generalQuery: searchQuery },
     loadOnMount: true,
   });
-
-  /* useEffect(() => {
-    const fetchPartners = async () => {
-      const partners = await partnerStore.fetchPartners(
-        { type: partnerType },
-        { keepStoreValue: true }
-      );
-      setOptions(partners);
-    };
-
-    if (loadOptions) fetchPartners();
-  }, [loadOptions]); */
 
   return (
     <AriaSelect
       name={name}
       label={label}
       optionMap={{ label: (partner) => partner.name }}
-      options={options}
-      onSearch={(query) =>
-        partnerStore.fetchPartners(
-          { type: partnerType, generalQuery: query },
-          { keepStoreValue: true }
-        )
-      }
+      options={partners ? partners.data : []}
       searchPlaceholder="Otsi partnerit"
       action={{
         label: (
@@ -61,7 +41,7 @@ const PartnerSelect: React.FC<PartnerSelectProps> = observer(({ name, label, par
         ),
         onClick: () => uiStore.goTo(routes.partnerForm),
       }}
-      onMenuOpen={() => setLoadOptions(true)}
+      onSearch={query => setSearchQuery(query)}
     />
   );
 });

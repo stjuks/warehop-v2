@@ -52,7 +52,7 @@ const validateSchema = (args: any, validationSchema?: Schema) => {
 };
 
 export function resolver(cb: ResolverCallback, validationSchema?: Schema): ResolverFunction {
-  return function(_parent, args, context) {
+  return function (_parent, args, context) {
     validateSchema(args, validationSchema);
 
     return cb(args, context);
@@ -60,7 +60,7 @@ export function resolver(cb: ResolverCallback, validationSchema?: Schema): Resol
 }
 
 export function authResolver(cb: ResolverCallback, validationSchema?: Schema): ResolverFunction {
-  return async function(_parent, args, context) {
+  return async function (_parent, args, context) {
     const user: any = await authenticateJWT(context.req, context.res);
 
     validateSchema(args, validationSchema);
@@ -77,24 +77,22 @@ export function authResolver(cb: ResolverCallback, validationSchema?: Schema): R
 interface PaginateOptions extends FindOptions {
   cursor: string;
   limit: number;
-  paginateBy?: string;
+  paginateBy?: (lastObject) => object;
   paginationFn?: (cursor) => any;
 }
 
 export const paginate = async (model: ModelCtor, opts: PaginateOptions) => {
   const { cursor, limit, paginateBy, paginationFn, ...restOpts } = opts;
-  const where: any = opts.where || {};
-
-  delete opts.where;
+  let where: any = Object.assign({}, opts.where) || {};
 
   if (cursor) {
     const decryptedHash: any = fromCursorHash(cursor);
-    console.log('decryptedHashXXX', decryptedHash);
+
     if (paginationFn) {
-      where[paginateBy] = paginationFn(decryptedHash);
+      where = { ...where, ...paginationFn(JSON.parse(decryptedHash)) };
     } else {
       where.id = {
-        [Op.gte]: isNaN(decryptedHash) ? decryptedHash : Number(decryptedHash)
+        [Op.gte]: isNaN(decryptedHash) ? decryptedHash : Number(decryptedHash),
       };
     }
   }
@@ -102,25 +100,27 @@ export const paginate = async (model: ModelCtor, opts: PaginateOptions) => {
   const data = await model.findAll({
     order: [['id', 'ASC']],
     limit: limit ? limit + 1 : null,
+    ...restOpts,
     where,
-    ...restOpts
   });
 
   const result: PaginatedData<Model> = {
     pageInfo: {
       hasNextPage: data.length > limit,
-      cursor: null
+      cursor: null,
     },
-    data
+    data,
   };
 
   if (data.length > 0) {
     const { hasNextPage } = result.pageInfo;
     const lastDataObject: any = data[data.length - 1];
 
+    const cursorObj = paginateBy ? paginateBy(lastDataObject) : lastDataObject.id;
+
     if (hasNextPage) {
       result.data.pop();
-      result.pageInfo.cursor = toCursorHash(lastDataObject[paginateBy || 'id']);
+      result.pageInfo.cursor = toCursorHash(cursorObj);
     }
   }
 
@@ -128,7 +128,7 @@ export const paginate = async (model: ModelCtor, opts: PaginateOptions) => {
 };
 
 const customScalarResolver = {
-  Date: GraphQLDateTime
+  Date: GraphQLDateTime,
 };
 
 export default [
@@ -139,5 +139,5 @@ export default [
   partnerResolvers,
   itemResolvers,
   invoiceResolvers,
-  transactionResolver
+  transactionResolver,
 ];

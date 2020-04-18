@@ -81,8 +81,6 @@ const AriaSelectBase: React.FC<AriaSelectProps & Partial<FieldProps>> = observer
 
         const loadedOptions = await options;
 
-        // if (fieldValue) setDisplayValue(mapSelectOption(fieldValue, optionMap).label);
-
         setMappedOptions(mapSelectOptions(loadedOptions, optionMap));
         setLoadingOptions(false);
       };
@@ -111,10 +109,9 @@ const AriaSelectBase: React.FC<AriaSelectProps & Partial<FieldProps>> = observer
 
     useDebounce(
       async () => {
-        if (onSearch && searchQuery) {
+        if (onSearch) {
           setLoadingSearch(true);
-          const searchedOptions = await onSearch(searchQuery, mappedOptions);
-          setSearchOptions(mapSelectOptions(searchedOptions, optionMap));
+          await onSearch(searchQuery, mappedOptions);
           setLoadingSearch(false);
         }
       },
@@ -125,7 +122,6 @@ const AriaSelectBase: React.FC<AriaSelectProps & Partial<FieldProps>> = observer
     const handleMenuToggle = ({ isOpen }) => {
       if (!isOpen) {
         setSearchQuery('');
-        setSearchOptions([]);
       } else {
         if (onMenuOpen) onMenuOpen();
       }
@@ -145,7 +141,7 @@ const AriaSelectBase: React.FC<AriaSelectProps & Partial<FieldProps>> = observer
               displayValue={displayValue}
               placeholder={placeholder}
               isClearable={isClearable}
-              options={searchQuery ? searchOptions : mappedOptions}
+              options={mappedOptions}
               handleSearch={e => setSearchQuery(e.target.value)}
               handleClear={handleClear}
               searchQuery={searchQuery}

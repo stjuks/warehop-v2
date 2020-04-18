@@ -10,83 +10,81 @@ import { convertHTMLToPDF } from './util/puppeteer';
 
 const router = express.Router();
 
-router.get(
-  '/files/invoice', passport.authenticate('jwt', { session: false }),
-  async (req, res) => {
-    const { user }: any = req;
-    const { invoiceId } = req.query;
+router.get('/files/invoice', passport.authenticate('jwt', { session: false }), async (req, res) => {
+  const { user }: any = req;
+  const { invoiceId } = req.query;
 
-    let pdf = null;
+  let pdf = null;
 
-    try {
-      let invoice = await models.Invoice.findOne({
-        where: {
-          id: invoiceId,
-          userId: user.id,
+  try {
+    let invoice = await models.Invoice.findOne({
+      where: {
+        id: invoiceId,
+        userId: user.id,
+      },
+      attributes: ['filePath', 'issueDate', 'dueDate', 'type', 'number', 'sum'],
+      include: [
+        models.Partner,
+        {
+          model: models.InvoiceItem,
+          as: 'items',
+          include: [models.Unit, models.Item],
+          attributes: ['name', 'quantity', 'price'],
         },
-        attributes: ['filePath', 'issueDate', 'dueDate', 'type', 'number', 'sum'],
-        include: [
-          models.Partner,
-          {
-            model: models.InvoiceItem,
-            as: 'items',
-            include: [models.Unit, models.Item],
-            attributes: ['name', 'quantity', 'price'],
-          },
-          {
-            model: models.User,
-            attributes: [
-              'name',
-              'regNr',
-              'email',
-              'phoneNr',
-              'county',
-              'city',
-              'street',
-              'postalCode',
-            ],
-          },
-        ],
-      });
+        {
+          model: models.User,
+          attributes: [
+            'name',
+            'regNr',
+            'email',
+            'phoneNr',
+            'county',
+            'city',
+            'street',
+            'postalCode',
+          ],
+        },
+      ],
+    });
 
-      if (invoice) {
-        if (invoice.type === 'PURCHASE' && invoice.filePath) {
-          pdf = fs.readFileSync(path.join('..', '..', 'purchaseUploads', invoice.filePath));
-        } else if (invoice.type === 'SALE') {
-          const plainInvoice: any = invoice.get({ plain: true });
+    if (invoice) {
+      if (invoice.type === 'PURCHASE' && invoice.filePath) {
+        pdf = fs.readFileSync(path.join('..', '..', 'purchaseUploads', invoice.filePath));
+      } else if (invoice.type === 'SALE') {
+        const plainInvoice: any = invoice.get({ plain: true });
 
-          const formatDate = (date) => moment(date).format('DD.MM.YYYY');
-          const formatCurrency = (value) => currency(value).toString();
+        const formatDate = (date) => moment(date).format('DD.MM.YYYY');
+        const formatCurrency = (value) => currency(value).toString();
 
-          plainInvoice.issueDate = formatDate(plainInvoice.issueDate);
-          plainInvoice.dueDate = formatDate(plainInvoice.dueDate);
+        plainInvoice.issueDate = formatDate(plainInvoice.issueDate);
+        plainInvoice.dueDate = formatDate(plainInvoice.dueDate);
 
-          plainInvoice.sum = formatCurrency(plainInvoice.sum);
+        plainInvoice.sum = formatCurrency(plainInvoice.sum);
 
-          plainInvoice.items.forEach((item) => {
-            item.price = currency(item.price).toString();
-            item.extendedPrice = currency(item.price).multiply(item.quantity).toString();
-          });
+        plainInvoice.items.forEach((item) => {
+          item.price = currency(item.price).toString();
+          item.extendedPrice = currency(item.price).multiply(item.quantity).toString();
+        });
 
-          const invoiceTemplate = pug.compileFile('./src/templates/saleInvoice.pug');
+        const invoiceTemplate = pug.compileFile('./src/templates/saleInvoice.pug');
 
-          pdf = await convertHTMLToPDF(invoiceTemplate(plainInvoice));
-        }
+        pdf = await convertHTMLToPDF(invoiceTemplate(plainInvoice));
       }
-
-      if (pdf) {
-        res.setHeader('Content-Type', 'application/pdf');
-        return res.send(pdf);
-      }
-
-      res.status(404);
-      return res.send('Invoice not found.');
-    } catch (err) {
-      res.status(404);
-      res.send('Error retrieving file.');
     }
+
+    if (pdf) {
+      res.setHeader('Content-Type', 'application/pdf');
+      return res.send(pdf);
+    }
+
+    res.status(404);
+    return res.send('Invoice not found.');
+  } catch (err) {
+    res.status(404);
+    res.send('Error retrieving file.');
+    throw err;
   }
-);
+});
 
 router.get('/files/test', async (req, res) => {
   try {

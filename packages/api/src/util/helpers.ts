@@ -50,10 +50,10 @@ export const createCheckConstraint = (opts: {
     `;
 };
 
-export const toCursorHash = string =>
-  string ? Buffer.from(string.toString()).toString('base64') : null;
-export const fromCursorHash = string =>
-  string ? Buffer.from(string.toString(), 'base64').toString('ascii') : null;
+export const toCursorHash = (string) =>
+  string ? Buffer.from(JSON.stringify(string)).toString('base64') : null;
+export const fromCursorHash = (string) =>
+  string ? Buffer.from(JSON.stringify(string), 'base64').toString('ascii') : null;
 
 export const createError = (message: string, code: ErrorCode, extensions?: any) => {
   return new ApolloError(message, code, extensions);
@@ -69,7 +69,7 @@ export const formatError = (err: GraphQLError) => {
       const validationError: SequelizeValidationError = exception;
 
       return createError('Entity with these fields already exists.', 'EntityAlreadyExistsError', {
-        fields: validationError.errors.map((error: ValidationErrorItem) => error.path)
+        fields: validationError.errors.map((error: ValidationErrorItem) => error.path),
       });
     }
 
@@ -78,7 +78,7 @@ export const formatError = (err: GraphQLError) => {
         'Entity is strictly related to another entity and cannot be deleted.',
         'DeletionRestrictedError',
         {
-          table: exception.parent.table
+          table: exception.parent.table,
         }
       );
     }

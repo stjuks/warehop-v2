@@ -29,7 +29,7 @@ const itemSchema = `
   }
 `;
 
-export const FETCH_PRODUCT = new Query<ProductItem>({
+export const FETCH_PRODUCT = new Query({
   query: ` 
     query product($id: ID!) {
       product(id: $id) {
@@ -40,7 +40,7 @@ export const FETCH_PRODUCT = new Query<ProductItem>({
   transformResult: (result) => result.product,
 });
 
-export const FETCH_PRODUCTS = new Query<PaginatedData<ProductItem>>({
+export const FETCH_PRODUCTS = new Query({
   query: `
     query products(
       $name: String

@@ -85,6 +85,11 @@ export default gql`
     data: [Invoice!]!
   }
 
+  type LockReturn {
+    id: ID!
+    isLocked: Boolean!
+  }
+
   extend type Query {
     purchases(filter: InvoiceSearchInput): PaginatedInvoice!
     sales(filter: InvoiceSearchInput): PaginatedInvoice!
@@ -94,9 +99,9 @@ export default gql`
 
   extend type Mutation {
     addInvoice(invoice: InvoiceInput!): ID!
-    editInvoice(id: ID!, invoice: InvoiceInput!): Boolean!
-    deleteInvoice(id: ID!): Boolean!
-    lockInvoice(id: ID!): Boolean!
-    unlockInvoice(id: ID!): Boolean!
+    editInvoice(id: ID!, invoice: InvoiceInput!): Invoice!
+    deleteInvoice(id: ID!): Invoice!
+    lockInvoice(id: ID!): Invoice!
+    unlockInvoice(id: ID!): Invoice!
   }
 `;

@@ -1,12 +1,12 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react-lite';
 import moment from 'moment';
-import { animateScroll } from 'react-scroll';
+import { animateScroll } from 'react-scroll';
 import * as yup from 'yup';
 
 import routes from '../../util/routes';
 import { AddPurchaseItemBtn } from './styles';
-import InvoiceStoreContext from '../../stores/InvoiceStore';
+import InvoiceStoreContext, { parseInvoiceInput } from '../../stores/InvoiceStore';
 
 import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
@@ -26,6 +26,8 @@ import { filterObjectProperties } from '@ui/util/helpers';
 import UIStoreContext from '@ui/stores/UIStore';
 import ContentContainer from '../util/ContentContainer';
 import { RouteComponentProps } from 'react-router';
+import { useGraphQLMutation } from '@ui/util/hooks';
+import { EDIT_INVOICE } from '@ui/api/invoice';
 
 interface SaleFormProps extends RouteComponentProps {
   purchase: Invoice;
@@ -35,7 +37,9 @@ const SaleForm: React.FC<SaleFormProps> = observer(({ location }) => {
   const invoiceStore = useContext(InvoiceStoreContext);
   const uiStore = useContext(UIStoreContext);
 
-  const editablePurchase: any = location.state ? JSON.parse(location.state.toString()) : undefined;
+  const [editInvoice] = useGraphQLMutation(EDIT_INVOICE);
+
+  const editableSale: any = location.state ? JSON.parse(location.state.toString()) : undefined;
 
   let initialValues: any = {
     type: 'SALE',
@@ -48,8 +52,8 @@ const SaleForm: React.FC<SaleFormProps> = observer(({ location }) => {
     items: [],
   };
 
-  if (editablePurchase) {
-    initialValues = filterObjectProperties(editablePurchase, Object.keys(initialValues));
+  if (editableSale) {
+    initialValues = filterObjectProperties(editableSale, Object.keys(initialValues));
   }
 
   const validationSchema = yup.object({
@@ -60,10 +64,13 @@ const SaleForm: React.FC<SaleFormProps> = observer(({ location }) => {
     items: yup.array().required('Palun lisa arvele kaubad.'),
   });
 
-  const handleSubmit = async (purchase) => {
+  const handleSubmit = async (sale) => {
     try {
-      if (location.state) await invoiceStore.editInvoice(editablePurchase.id, purchase);
-      else await invoiceStore.addInvoice(purchase);
+      const parsedSale = parseInvoiceInput(sale);
+      console.log(parsedSale);
+      if (location.state)
+        await editInvoice({ id: editableSale?.id, invoice: parsedSale }, sale);
+      else await invoiceStore.addInvoice(sale);
       uiStore.goBack(routes.purchases);
     } catch (err) {
       throw err;
@@ -72,7 +79,7 @@ const SaleForm: React.FC<SaleFormProps> = observer(({ location }) => {
 
   return (
     <>
-      <Header title={editablePurchase ? 'Muuda arvet' : 'Uus müügiarve'} backTo={routes.sales} />
+      <Header title={editableSale ? 'Muuda arvet' : 'Uus müügiarve'} backTo={routes.sales} />
       <ContentContainer>
         <Form
           validationSchema={validationSchema}
@@ -82,14 +89,14 @@ const SaleForm: React.FC<SaleFormProps> = observer(({ location }) => {
           onError={() =>
             animateScroll.scrollToTop({ containerId: 'content-container', duration: 200 })
           }
-          persist={editablePurchase === undefined}
+          persist={editableSale === undefined}
         >
           {(formikProps) => <FormFields formikProps={formikProps} />}
         </Form>
       </ContentContainer>
       <FooterContainer style={{ padding: '0.25rem 1rem' }}>
         <Button
-          title={editablePurchase ? 'Muuda arve' : 'Loo arve'}
+          title={editableSale ? 'Muuda arve' : 'Loo arve'}
           form="new-purchase-form"
           type="submit"
         />

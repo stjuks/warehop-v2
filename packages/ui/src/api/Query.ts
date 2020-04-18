@@ -1,23 +1,23 @@
 import { DocumentNode } from 'graphql';
 import { gql, FetchMoreQueryOptions } from 'apollo-boost-upload';
 
-interface QueryConfig<T> {
+interface QueryConfig {
   query: string;
-  onFetchMore?: (prevResult: T, newResult: T) => any;
-  transformResult?: (result: any) => any;
-  fetchMoreOptions?: (data: T, variables: any) => Partial<FetchMoreQueryOptions<any, any>>;
+  onFetchMore?: (prevResult, newResult) => any;
+  transformResult?: (result) => any;
+  fetchMoreOptions?: (data, variables: any) => Partial<FetchMoreQueryOptions<any, any>>;
 }
 
-export default class Query<T> {
+export default class Query {
   query: DocumentNode;
 
-  onFetchMore?: (prevResult: T, newResult: T) => void;
+  onFetchMore?: (prevResult, newResult) => void;
 
   transformResult?: (result: any) => any;
 
-  fetchMoreOptions?: (data: T, variables: any) => Partial<FetchMoreQueryOptions<any, any>>;
+  fetchMoreOptions?: (data, variables: any) => Partial<FetchMoreQueryOptions<any, any>>;
 
-  constructor(config: QueryConfig<T>) {
+  constructor(config: QueryConfig) {
     this.query = gql`
       ${config.query}
     `;

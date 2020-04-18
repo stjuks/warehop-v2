@@ -5,7 +5,13 @@ import InvoiceStoreContext from '@ui/stores/InvoiceStore';
 import UIStoreContext from '@ui/stores/UIStore';
 import currency from 'currency.js';
 import { useGraphQLQuery, useGraphQLMutation } from '@ui/util/hooks';
-import { FETCH_INVOICE, DELETE_INVOICE, LOCK_INVOICE, UNLOCK_INVOICE } from '@ui/api/invoice';
+import {
+  FETCH_INVOICE,
+  DELETE_INVOICE,
+  LOCK_INVOICE,
+  UNLOCK_INVOICE,
+  downloadInvoice,
+} from '@ui/api/invoice';
 
 import { InvoiceHero, IsPaidStyled, InvoiceDetailsContainer, TransactionItem } from './styles';
 import Header from '../Header';
@@ -34,35 +40,18 @@ interface InvoiceDetailsProps {
 }
 
 const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = (props) => {
-  const invoiceStore = useContext(InvoiceStoreContext);
   const uiStore = useContext(UIStoreContext);
-  // const [invoice, setInvoice] = useState<Invoice | undefined>(undefined);
 
   const { id } = useParams();
-  const [invoice] = useGraphQLQuery(FETCH_INVOICE, { variables: { id }, loadOnMount: true });
-  const [lockInvoice] = useGraphQLMutation(LOCK_INVOICE);
-  const [unlockInvoice] = useGraphQLMutation(UNLOCK_INVOICE);
-  const [deleteInvoice] = useGraphQLMutation(DELETE_INVOICE);
 
-  /* const handleInvoiceLoading = useCallback(async () => {
-    const location: any = props.location;
+  const [invoice, , { loading }] = useGraphQLQuery(FETCH_INVOICE, {
+    variables: { id },
+    loadOnMount: true,
+  });
 
-    if (location.invoice) {
-      setInvoice(location.invoice);
-    } else {
-      const match: any = props.match;
-      const { id } = match.params;
-
-      if (id !== undefined) {
-        const invoice = await invoiceStore.fetchInvoice(id);
-        setInvoice(invoice);
-      }
-    }
-  }, []); 
-
-  useEffect(() => {
-    handleInvoiceLoading();
-  }, []); */
+  const [lockInvoice] = useGraphQLMutation<{ id: number }>(LOCK_INVOICE);
+  const [unlockInvoice] = useGraphQLMutation<{ id: number }>(UNLOCK_INVOICE);
+  const [deleteInvoice] = useGraphQLMutation<{ id: number }>(DELETE_INVOICE);
 
   const handleInvoiceLock = async () => {
     try {
@@ -72,38 +61,22 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = (pro
     } catch (err) {
       throw err;
     }
-    
-    /* try {
-      if (invoice?.isLocked) {
-        await invoiceStore.unlockInvoice(invoice?.id);
-      } else {
-        await invoiceStore.lockInvoice(invoice?.id);
-      }
-
-      uiStore.goBack();
-
-      if (invoice) setInvoice({ ...invoice, isLocked: !invoice.isLocked });
-    } catch (err) {
-      throw err;
-    } */
   };
 
   const handleInvoiceDelete = async () => {
-    /* try {
-      await invoiceStore.deleteInvoice(invoice?.id);
-      uiStore.goTo(invoice?.type === 'PURCHASE' ? routes.purchases : routes.sales, {
-        replace: true,
-      });
+    try {
+      await deleteInvoice({ id: invoice?.id });
+      uiStore.goTo(routes.purchases);
     } catch (err) {
       throw err;
-    } */
+    }
   };
 
   const sum = invoice ? currency(invoice.sum).toString() : null;
   const issueDate = invoice ? moment(invoice.issueDate).format('DD.MM.YYYY') : null;
   const dueDate = invoice ? moment(invoice.dueDate).format('DD.MM.YYYY') : null;
 
-  const backRoute = invoice && invoice.type === 'PURCHASE' ? routes.purchases : routes.sales;
+  const backRoute = invoice?.type === 'PURCHASE' ? routes.purchases : routes.sales;
 
   const dropdownOptions: any[] = [];
   const headerComponents: any[] = [];
@@ -152,7 +125,7 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = (pro
           <span>Lae alla</span>
         </>
       ),
-      onClick: () => invoiceStore.downloadInvoice(invoice),
+      onClick: () => downloadInvoice(invoice),
     });
   }
 
@@ -199,62 +172,64 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = (pro
     <>
       <Header title="Arve detailid" backTo={backRoute} components={headerComponents} />
       <InvoiceDetailsContainer padded>
-        {invoice && (
-          <>
-            <InvoiceHero paidSum={Number(invoice.paidSum)}>
-              <div className="row-1">
-                <span className="col-1">{invoice.partner.name}</span>
-                <span className="col-2">{sum}€</span>
-              </div>
-              <div className="row-2">
-                <span className="col-1">#{invoice.number}</span>
-                <IsPaidStyled isPaid={invoice.isPaid} isLocked={invoice.isLocked}>
-                  {!invoice.isLocked ? 'Kinnitamata' : invoice.isPaid ? 'Makstud' : 'Maksmata'}
-                </IsPaidStyled>
-              </div>
-            </InvoiceHero>
-            <DetailCardContainer>
-              <div className="row">
-                <div className="detail">
-                  <div className="detail-label">Ostukuupäev</div>
-                  <div className="detail-value">{issueDate}</div>
-                </div>
-                <div className="detail">
-                  <div className="detail-label">Maksetähtaeg</div>
-                  <div className="detail-value">{dueDate}</div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="detail">
-                  <div className="detail-label">Märkused</div>
-                  <div className="detail-value">{invoice.description || '-'}</div>
-                </div>
-              </div>
-            </DetailCardContainer>
-            <DetailLabel>Kaubad</DetailLabel>
-            {invoice.items.map((item) => (
-              <InvoiceItemListItem item={item} key={item.id} />
-            ))}
-            <DetailLabel>Tehingud</DetailLabel>
-            {invoice.transactions.map((transaction) => (
-              <TransactionItem
-                key={transaction.id}
-                to={`${invoice.type === 'PURCHASE' ? routes.expenses : routes.incomes}/${
-                  transaction.id
-                }`}
-              >
-                {invoice.type === 'PURCHASE' ? (
-                  <FiArrowDown className="expense-arrow" />
-                ) : (
-                  <FiArrowUp className="income-arrow" />
-                )}
-                <div className="sum">{currency(transaction.sum).toString()}€</div>
-                <div className="date">{moment(transaction.date).format('DD.MM.YYYY')}</div>
-                <FiChevronRight className="indicator" />
-              </TransactionItem>
-            ))}
-          </>
-        )}
+        {loading
+          ? 'Loading...'
+          : invoice && (
+              <>
+                <InvoiceHero paidSum={Number(invoice.paidSum)}>
+                  <div className="row-1">
+                    <span className="col-1">{invoice.partner.name}</span>
+                    <span className="col-2">{sum}€</span>
+                  </div>
+                  <div className="row-2">
+                    <span className="col-1">#{invoice.number}</span>
+                    <IsPaidStyled isPaid={invoice.isPaid} isLocked={invoice.isLocked}>
+                      {!invoice.isLocked ? 'Kinnitamata' : invoice.isPaid ? 'Makstud' : 'Maksmata'}
+                    </IsPaidStyled>
+                  </div>
+                </InvoiceHero>
+                <DetailCardContainer>
+                  <div className="row">
+                    <div className="detail">
+                      <div className="detail-label">Ostukuupäev</div>
+                      <div className="detail-value">{issueDate}</div>
+                    </div>
+                    <div className="detail">
+                      <div className="detail-label">Maksetähtaeg</div>
+                      <div className="detail-value">{dueDate}</div>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="detail">
+                      <div className="detail-label">Märkused</div>
+                      <div className="detail-value">{invoice.description || '-'}</div>
+                    </div>
+                  </div>
+                </DetailCardContainer>
+                <DetailLabel>Kaubad</DetailLabel>
+                {invoice.items.map((item) => (
+                  <InvoiceItemListItem item={item} key={item.id} />
+                ))}
+                <DetailLabel>Tehingud</DetailLabel>
+                {invoice.transactions.map((transaction) => (
+                  <TransactionItem
+                    key={transaction.id}
+                    to={`${invoice.type === 'PURCHASE' ? routes.expenses : routes.incomes}/${
+                      transaction.id
+                    }`}
+                  >
+                    {invoice.type === 'PURCHASE' ? (
+                      <FiArrowDown className="expense-arrow" />
+                    ) : (
+                      <FiArrowUp className="income-arrow" />
+                    )}
+                    <div className="sum">{currency(transaction.sum).toString()}€</div>
+                    <div className="date">{moment(transaction.date).format('DD.MM.YYYY')}</div>
+                    <FiChevronRight className="indicator" />
+                  </TransactionItem>
+                ))}
+              </>
+            )}
       </InvoiceDetailsContainer>
     </>
   );

@@ -20,6 +20,7 @@ import UIStoreContext from '@ui/stores/UIStore';
 import WarehouseStoreContext from '../../stores/WarehouseStore';
 import UnitSelect from '../util/inputs/UnitSelect';
 import ItemStoreContext from '@ui/stores/ItemStore';
+import WarehouseSelect from '../util/inputs/WarehouseSelect';
 
 interface PurchaseItemFormProps {
   arrayHelpers: any;
@@ -120,12 +121,7 @@ const ItemForm = ({ type }: { type: ItemType }) => {
           <TextInput name="quantity" label="Kogus" type="number" />
           <UnitSelect name="unit" label="Ühik" />
         </Row>
-        <AriaSelect
-          name="warehouse"
-          label="Ladu"
-          options={warehouseStore.warehouses}
-          optionMap={{ label: (warehouse) => warehouse.name }}
-        />
+        <WarehouseSelect name="warehouse" label="Ladu" />
         <TextInput name="price" label="Ostuhind" indicator={'€'} />
       </>
     );

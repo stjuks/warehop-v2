@@ -1,20 +1,30 @@
 import { DocumentNode } from 'graphql';
-import { gql } from 'apollo-boost-upload';
+import { gql, ApolloClient } from 'apollo-boost-upload';
 
-interface MutationConfig<T> {
-  mutation: string;
-  updateCache: (cache, result) => void;
+interface OnMutateOptions {
+  client?: ApolloClient<object>;
+  customValues?: any;
+  result?: any;
 }
 
-export default class Mutation<T> {
+interface MutationConfig {
+  mutation: string;
+  updateCache?: (cache, result) => void;
+  onMutate?: (args: OnMutateOptions) => void;
+}
+
+export default class Mutation {
   mutation: DocumentNode;
 
-  updateCache: (cache, result) => void;
+  updateCache?: (cache, result) => void;
 
-  constructor(config: MutationConfig<T>) {
+  onMutate?: (args: OnMutateOptions) => void;
+
+  constructor(config: MutationConfig) {
     this.mutation = gql`
       ${config.mutation}
     `;
     this.updateCache = config.updateCache;
+    this.onMutate = config.onMutate;
   }
 }

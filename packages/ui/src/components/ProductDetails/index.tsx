@@ -22,23 +22,7 @@ const ProductDetails: React.FC<ProductItem & RouteComponentProps> = (props) => {
 
   const { id } = useParams();
 
-  // const [product, setProduct] = useState<ProductItem>();
-
   const [product] = useGraphQLQuery(FETCH_PRODUCT, { variables: { id }, loadOnMount: true });
-
-  /* useEffect(() => {
-    const handleItemLoading = async () => {
-      const match: any = props.match;
-      const { id } = match.params;
-
-      if (id !== undefined) {
-        const product = await itemStore.fetchProduct(id);
-        setProduct(product);
-      }
-    };
-
-    handleItemLoading();
-  }, []); */
 
   const handleProductDelete = async () => {
     try {
@@ -119,7 +103,7 @@ const ProductDetails: React.FC<ProductItem & RouteComponentProps> = (props) => {
               <div className="row">
                 <div className="detail">
                   <div className="detail-label">Märkused</div>
-                  <div className="detail-value">{product.description}</div>
+                  <div className="detail-value">{product.description || '-'}</div>
                 </div>
               </div>
             </DetailCardContainer>

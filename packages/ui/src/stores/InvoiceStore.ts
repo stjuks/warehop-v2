@@ -173,7 +173,7 @@ class InvoiceStore {
   }
 }
 
-const parseInvoiceInput = (invoice: Invoice) => {
+export const parseInvoiceInput = (invoice: Invoice) => {
   const { partner, ...restInvoice } = invoice;
 
   const invoiceInput: AddInvoiceInput = {

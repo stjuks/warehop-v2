@@ -13,26 +13,26 @@ import { RouteChildrenProps } from 'react-router';
 import WarehouseStoreContext from '@ui/stores/WarehouseStore';
 import UIStoreContext from '@ui/stores/UIStore';
 import FormError from '../Form/FormError';
+import { useGraphQLMutation } from '@ui/util/hooks';
+import { ADD_WAREHOUSE } from '@ui/api/warehouse';
 
 interface WarehouseFormProps {
-  warehouse: Warehouse;
   onSubmit?: (Warehouse: AddWarehouseInput) => any;
 }
 
-const WarehouseForm: React.FC<WarehouseFormProps & RouteChildrenProps> = ({
-  warehouse,
-  onSubmit
-}) => {
+const WarehouseForm: React.FC<WarehouseFormProps & RouteChildrenProps> = ({ onSubmit }) => {
   const warehouseStore = useContext(WarehouseStoreContext);
   const uiStore = useContext(UIStoreContext);
 
+  const [addWarehouse] = useGraphQLMutation(ADD_WAREHOUSE);
+
   const initialValues = {
-    name: ''
+    name: '',
   };
 
   const handleSubmit = async (warehouse: AddWarehouseInput) => {
     try {
-      await warehouseStore.addWarehouse(warehouse);
+      await addWarehouse(warehouse);
       if (onSubmit) onSubmit(warehouse);
       uiStore.closeModal();
     } catch (err) {
@@ -41,7 +41,7 @@ const WarehouseForm: React.FC<WarehouseFormProps & RouteChildrenProps> = ({
   };
 
   const validationSchema = yup.object({
-    name: yup.string().required('Palun sisesta lao nimetus.')
+    name: yup.string().required('Palun sisesta lao nimetus.'),
   });
 
   return (

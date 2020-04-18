@@ -10,6 +10,7 @@ import { Resolver, authResolver, ApolloContext, paginate } from '.';
 
 import { InvoiceSearchInput, AddInvoiceInput } from '@shared/types';
 import Invoice from '../db/models/Invoice';
+import moment from 'moment';
 
 const validateInvoice = Joi.object({
   id: Joi.number().optional(),
@@ -17,27 +18,25 @@ const validateInvoice = Joi.object({
     items: Joi.array()
       .items(
         Joi.object({
-          type: Joi.string()
-            .valid('PRODUCT', 'SERVICE', 'EXPENSE')
-            .required(),
+          type: Joi.string().valid('PRODUCT', 'SERVICE', 'EXPENSE').required(),
           quantity: Joi.number().required(),
           price: Joi.string().required(),
           name: Joi.string().required(),
           warehouseId: Joi.when('type', {
             is: 'PRODUCT',
             then: Joi.number().required(),
-            otherwise: Joi.forbidden()
+            otherwise: Joi.forbidden(),
           }),
           unitId: Joi.number().when('type', { is: 'PRODUCT', then: Joi.required() }),
           code: Joi.when('type', {
             is: 'PRODUCT',
             then: Joi.string().required(),
-            otherwise: Joi.forbidden()
-          })
+            otherwise: Joi.forbidden(),
+          }),
         })
       )
-      .required()
-  }).unknown()
+      .required(),
+  }).unknown(),
 }).required();
 
 const resolver: Resolver = {
@@ -56,27 +55,27 @@ const resolver: Resolver = {
       const invoiceItems = await models.InvoiceItem.findAll({
         where: {
           userId: user.id,
-          invoiceId
+          invoiceId,
         },
         include: [
           { model: models.Item, attributes: ['id', 'code', 'type'] },
           models.Unit,
-          models.Warehouse
+          models.Warehouse,
         ],
-        attributes: ['name', 'quantity', 'price']
+        attributes: ['name', 'quantity', 'price'],
       });
 
-      const parsedItems = invoiceItems.map(item => {
+      const parsedItems = invoiceItems.map((item) => {
         const plainItem: any = item.get({ plain: true });
 
         return {
           ...plainItem,
-          ...plainItem.item
+          ...plainItem.item,
         };
       });
 
       return parsedItems;
-    })
+    }),
   },
   Mutation: {
     addInvoice: authResolver(async ({ invoice }: { invoice: AddInvoiceInput }, context) => {
@@ -92,7 +91,7 @@ const resolver: Resolver = {
 
       const transaction = await sequelize.transaction();
 
-      const uploadFile = async invoiceId => {
+      const uploadFile = async (invoiceId) => {
         if (file && invoice.type === 'PURCHASE') {
           const { createReadStream, filename }: any = await file;
           const stream = createReadStream();
@@ -107,9 +106,9 @@ const resolver: Resolver = {
             const wStream = fs.createWriteStream(filePath);
 
             wStream.on('finish', resolve);
-            wStream.on('error', error => fs.unlink(filePath, () => reject(error)));
+            wStream.on('error', (error) => fs.unlink(filePath, () => reject(error)));
 
-            stream.on('error', error => wStream.destroy(error));
+            stream.on('error', (error) => wStream.destroy(error));
             stream.pipe(wStream);
           });
 
@@ -157,7 +156,7 @@ const resolver: Resolver = {
 
         const updateInvoice = async () => {
           const [isUpdated] = await models.Invoice.update(invoice, {
-            where: { id, userId: user.id }
+            where: { id, userId: user.id },
           });
 
           return isUpdated;
@@ -169,14 +168,14 @@ const resolver: Resolver = {
           if (isUpdated) {
             await models.InvoiceItem.destroy({
               where: { invoiceId: id, userId: user.id },
-              transaction
+              transaction,
             });
 
             await createInvoiceItems(invoice.items, { ...invoice, id }, context, transaction);
           }
 
           await transaction.commit();
-          return true;
+          return { id };
         } catch (err) {
           await transaction.rollback();
           throw err;
@@ -186,9 +185,9 @@ const resolver: Resolver = {
     ),
     deleteInvoice: authResolver(async ({ id }: { id: number }, { user, models }) => {
       try {
-        const isDeleted = await models.Invoice.destroy({ where: { userId: user.id, id } });
+        await models.Invoice.destroy({ where: { userId: user.id, id } });
 
-        return isDeleted;
+        return { id };
       } catch (err) {
         throw err;
       }
@@ -198,13 +197,13 @@ const resolver: Resolver = {
     }),
     unlockInvoice: authResolver(async ({ id }: { id: number }, context) => {
       return await handleInvoiceLock({ id, isLocked: false }, context);
-    })
+    }),
   },
   InvoiceItem: {
-    __resolveType: invoiceItem => {
+    __resolveType: (invoiceItem) => {
       return invoiceItem.code ? 'ProductInvoiceItem' : 'ExpenseInvoiceItem';
-    }
-  }
+    },
+  },
 };
 
 const createInvoiceItems = async (
@@ -215,25 +214,25 @@ const createInvoiceItems = async (
 ) => {
   const { user, models } = context;
 
-  const findOrCreateNewItem = async item => {
+  const findOrCreateNewItem = async (item) => {
     return await models.Item.findOrCreate({
       where:
         item.type === 'PRODUCT'
           ? {
               code: item.code,
-              userId: user.id
+              userId: user.id,
             }
           : {
               name: item.name,
-              userId: user.id
+              userId: user.id,
             },
       defaults: {
         ...item,
         userId: user.id,
         partnerId: item.type === 'PRODUCT' ? invoice.partnerId : undefined,
-        [invoice.type === 'PURCHASE' ? 'purchasePrice' : 'retailPrice']: item.price
+        [invoice.type === 'PURCHASE' ? 'purchasePrice' : 'retailPrice']: item.price,
       },
-      transaction
+      transaction,
     });
   };
 
@@ -244,11 +243,11 @@ const createInvoiceItems = async (
     else throw Error('Error adding invoice item.');
   }
 
-  const invoiceItems = items.map(item => ({
+  const invoiceItems = items.map((item) => ({
     ...item,
     itemId: item.id,
     invoiceId: invoice.id,
-    userId: user.id
+    userId: user.id,
   }));
 
   await models.InvoiceItem.bulkCreate(invoiceItems, { transaction });
@@ -263,14 +262,14 @@ const findInvoices = async ({ models, user }: ApolloContext, filter: InvoiceSear
     description,
     partnerName,
     generalQuery,
-    isLocked
+    isLocked,
   } = filter;
 
   const where: any = {
     userId: user.id,
     type,
     isLocked: isLocked === false ? false : true,
-    partner: {}
+    partner: {},
   };
 
   const cursor = pagination && pagination.cursor;
@@ -281,7 +280,7 @@ const findInvoices = async ({ models, user }: ApolloContext, filter: InvoiceSear
     where[Op.or] = [
       { number: generalLike },
       { description: generalLike },
-      { '$partner.name$': generalLike }
+      { '$partner.name$': generalLike },
     ];
   } else {
     if (number) where.number = { [Op.like]: `%${number}%` };
@@ -297,28 +296,48 @@ const findInvoices = async ({ models, user }: ApolloContext, filter: InvoiceSear
   const invoices = await paginate(models.Invoice, {
     cursor,
     limit,
-    paginateBy: 'dueDate',
+    order: [
+      ['dueDate', 'ASC'],
+      ['id', 'ASC'],
+      [{ model: models.Transaction, as: 'transactions' }, 'date', 'DESC'],
+    ],
+    paginateBy: (obj) => ({
+      id: obj.id,
+      dueDate: obj.dueDate,
+    }),
+    paginationFn: ({ id, dueDate }) => ({
+      [Op.or]: [
+        {
+          dueDate: {
+            [Op.gte]: moment(new Date(dueDate))
+              .subtract(new Date(dueDate).getTimezoneOffset(), 'm')
+              .toDate(),
+          },
+        },
+        {
+          id: {
+            [Op.gte]: id,
+          },
+        },
+      ],
+    }),
     where: restWhere,
     include: [
       {
         model: models.Partner,
-        where: where.partner
+        where: where.partner,
       },
       {
         model: models.InvoiceItem,
         as: 'items',
         include: [models.Warehouse, models.Unit, models.Item],
-        attributes: ['itemId', 'name', 'quantity', 'price']
+        attributes: ['itemId', 'name', 'quantity', 'price'],
       },
       {
         model: models.Transaction,
         as: 'transactions',
-        attributes: ['id', 'sum', 'date', 'description']
-      }
-    ],
-    order: [
-      ['dueDate', 'ASC'],
-      [{ model: models.Transaction, as: 'transactions' }, 'date', 'DESC']
+        attributes: ['id', 'sum', 'date', 'description'],
+      },
     ],
     attributes: [
       'id',
@@ -330,8 +349,8 @@ const findInvoices = async ({ models, user }: ApolloContext, filter: InvoiceSear
       'description',
       'filePath',
       'paidSum',
-      'isLocked'
-    ]
+      'isLocked',
+    ],
   });
 
   invoices.data = invoices.data.map(parseInvoice);
@@ -343,11 +362,11 @@ export const parseInvoice = (dbInvoice: Model<Invoice>) => {
   if (dbInvoice) {
     const plainInvoice: any = dbInvoice.get({ plain: true });
 
-    plainInvoice.items = plainInvoice.items.map(item => {
+    plainInvoice.items = plainInvoice.items.map((item) => {
       return {
         ...item.item,
         ...item,
-        id: item.itemId
+        id: item.itemId,
       };
     });
 
@@ -363,7 +382,7 @@ export const findInvoice = async ({ models, user }: ApolloContext, id: number) =
   const invoice = await models.Invoice.findOne({
     where: {
       id,
-      userId: user.id
+      userId: user.id,
     },
     // order transactions by date
     order: [[{ model: models.Transaction, as: 'transactions' }, 'date', 'DESC']],
@@ -373,13 +392,13 @@ export const findInvoice = async ({ models, user }: ApolloContext, id: number) =
         model: models.InvoiceItem,
         as: 'items',
         include: [models.Warehouse, models.Unit, models.Item],
-        attributes: ['itemId', 'name', 'quantity', 'price']
+        attributes: ['itemId', 'name', 'quantity', 'price'],
       },
       {
         model: models.Transaction,
         as: 'transactions',
-        attributes: ['id', 'sum', 'date', 'description']
-      }
+        attributes: ['id', 'sum', 'date', 'description'],
+      },
     ],
     attributes: [
       'id',
@@ -391,8 +410,8 @@ export const findInvoice = async ({ models, user }: ApolloContext, id: number) =
       'description',
       'filePath',
       'paidSum',
-      'isLocked'
-    ]
+      'isLocked',
+    ],
   });
 
   return parseInvoice(invoice);
@@ -403,12 +422,9 @@ const handleInvoiceLock = async (
   { models, user }: ApolloContext
 ) => {
   const updateInvoice = async () => {
-    const [updatedRows] = await models.Invoice.update(
-      { isLocked },
-      { where: { userId: user.id, id }, returning: true }
-    );
+    await models.Invoice.update({ isLocked }, { where: { userId: user.id, id }, returning: true });
 
-    return updatedRows;
+    return { id, isLocked };
   };
 
   try {

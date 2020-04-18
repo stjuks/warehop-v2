@@ -7,7 +7,7 @@ import * as yup from 'yup';
 
 import routes from '../../util/routes';
 import { AddPurchaseItemBtn } from './styles';
-import InvoiceStoreContext from '../../stores/InvoiceStore';
+import InvoiceStoreContext, { parseInvoiceInput } from '../../stores/InvoiceStore';
 
 import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
@@ -28,6 +28,8 @@ import { filterObjectProperties } from '@ui/util/helpers';
 import UIStoreContext from '@ui/stores/UIStore';
 import ContentContainer from '../util/ContentContainer';
 import { RouteComponentProps } from 'react-router';
+import { useGraphQLMutation } from '@ui/util/hooks';
+import { EDIT_INVOICE, ADD_INVOICE } from '@ui/api/invoice';
 
 interface PurchaseFormProps extends RouteComponentProps {
   purchase: Invoice;
@@ -36,6 +38,9 @@ interface PurchaseFormProps extends RouteComponentProps {
 const PurchaseForm: React.FC<PurchaseFormProps> = observer(({ location }) => {
   const invoiceStore = useContext(InvoiceStoreContext);
   const uiStore = useContext(UIStoreContext);
+
+  const [editInvoice] = useGraphQLMutation(EDIT_INVOICE);
+  const [addInvoice] = useGraphQLMutation(ADD_INVOICE);
 
   const [sum, setSum] = useState<string>(currency(0).toString());
 
@@ -66,8 +71,9 @@ const PurchaseForm: React.FC<PurchaseFormProps> = observer(({ location }) => {
 
   const handleSubmit = async (purchase) => {
     try {
-      if (editablePurchase) await invoiceStore.editInvoice(editablePurchase.id, purchase);
-      else await invoiceStore.addInvoice(purchase);
+      const parsedPurchase = parseInvoiceInput(purchase);
+      if (editablePurchase) await editInvoice({ id: editablePurchase.id, ...parsedPurchase });
+      else await addInvoice(purchase);
       uiStore.goBack(routes.purchases);
     } catch (err) {
       throw err;

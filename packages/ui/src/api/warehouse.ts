@@ -17,11 +17,23 @@ export const FETCH_WAREHOUSES = new Query({
 export const ADD_WAREHOUSE = new Mutation({
   mutation: `
     mutation addWarehouse($name: String!) {
-      addWarehouse(name: $name)
+      addWarehouse(name: $name) {
+        id
+        name
+      }
     }
   `,
-  updateCache: (cache, result) => {
-    console.log(cache, result);
+  onMutate: ({ client, result }) => {
+    const cacheValue = client?.readQuery({ query: FETCH_WAREHOUSES.query });
+
+    const newValue = {
+      warehouses: [...cacheValue.warehouses, result.data.addWarehouse],
+    };
+
+    client?.writeQuery({
+      query: FETCH_WAREHOUSES.query,
+      data: newValue,
+    });
   },
 });
 
@@ -41,10 +53,7 @@ export const EDIT_WAREHOUSE = new Mutation({
     mutation editWarehouse($id: ID!, $name: String, $abbreviation: String) {
       editWarehouse(id: $id, name: $name, abbreviation: $abbreviation)
     }
-  `,
-  updateCache: (cache, result) => {
-    console.log(cache, result);
-  },
+  `
 });
 
 const errorMessageHandler = {

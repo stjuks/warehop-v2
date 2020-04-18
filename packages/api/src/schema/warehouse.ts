@@ -11,7 +11,7 @@ export default gql`
   }
 
   extend type Mutation {
-    addWarehouse(name: String!): ID!
+    addWarehouse(name: String!): Warehouse!
     deleteWarehouse(id: ID!): Boolean!
     editWarehouse(id: ID!, name: String!): Boolean!
   }

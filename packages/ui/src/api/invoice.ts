@@ -1,7 +1,9 @@
 import { gql } from 'apollo-boost-upload';
-import { Invoice, PaginatedData, InvoiceType } from '@shared/types';
+import axios, { AxiosRequestConfig } from 'axios';
+import { Invoice, PaginatedData, InvoiceType, AddInvoiceInput } from '@shared/types';
 import Query from './Query';
 import Mutation from './Mutation';
+import { JWT_ACCESS_TOKEN, API_URL } from '@ui/util/constants';
 
 const invoiceSchema = `
     id
@@ -90,7 +92,7 @@ export const FETCH_INVOICE = new Query({
 const FETCH_INVOICES = (type: InvoiceType) => {
   const name = type === 'PURCHASE' ? 'purchases' : 'sales';
 
-  return new Query<PaginatedData<Invoice>>({
+  return new Query({
     query: `
       query ${name}(${searchInputArgTypes}) {
         ${name}(filter: { ${searchInputArgs} }) {
@@ -98,7 +100,7 @@ const FETCH_INVOICES = (type: InvoiceType) => {
         }
       }
   `,
-    transformResult: (result) => result ? result[name] : result,
+    transformResult: (result) => (result ? result[name] : result),
     onFetchMore: (oldData, newData) => {
       return {
         [name]: {
@@ -145,54 +147,108 @@ export const ADD_INVOICE = new Mutation({
       )
     }
   `,
-  updateCache: (cache, result) => {
-    console.log(cache, result);
-  },
+  onMutate: ({ client }) => client?.cache.reset(),
 });
 
 export const EDIT_INVOICE = new Mutation({
   mutation: `
     mutation editInvoice($id: ID!, $invoice: InvoiceInput!) {
-      editInvoice(id: $id, invoice: $invoice)
+      editInvoice(id: $id, invoice: $invoice) {
+        id
+      }
     }
   `,
-  updateCache: (cache, result) => {
-    console.log(cache, result);
+  onMutate: ({ client, result, customValues }) => {
+    if (client && result && customValues) {
+      const { id } = result.data.editInvoice;
+      const cacheValue = client.readQuery({ query: FETCH_INVOICE.query, variables: { id } });
+
+      const newValue = {
+        invoice: {
+          id,
+          ...cacheValue.invoice,
+          ...customValues,
+        },
+      };
+
+      client.writeQuery({
+        query: FETCH_INVOICE.query,
+        variables: { id },
+        data: newValue,
+      });
+    }
   },
 });
 
 export const DELETE_INVOICE = new Mutation({
   mutation: `
     mutation deleteInvoice($id: ID!) {
-      deleteInvoice(id: $id)
+      deleteInvoice(id: $id) {
+        id
+      }
     }
   `,
-  updateCache: (cache, result) => {
-    console.log(cache, result);
+  onMutate: ({ client }) => {
+    client?.cache.reset();
   },
 });
 
 export const LOCK_INVOICE = new Mutation({
   mutation: `
     mutation lockInvoice($id: ID!) {
-      lockInvoice(id: $id)
+      lockInvoice(id: $id) {
+        id
+        isLocked
+      }
     }
   `,
-  updateCache: (cache, result) => {
-    console.log(cache, result);
-  },
 });
 
 export const UNLOCK_INVOICE = new Mutation({
   mutation: `
     mutation unlockInvoice($id: ID!) {
-      unlockInvoice(id: $id)
+      unlockInvoice(id: $id) {
+        id
+        isLocked
+      }
     }
   `,
-  updateCache: (cache, result) => {
-    console.log(cache, result);
-  },
 });
+
+export const downloadInvoice = async (invoice: Invoice) => {
+  try {
+    if (invoice) {
+      const config: AxiosRequestConfig = {
+        headers: {
+          Authorization: `Bearer ${JWT_ACCESS_TOKEN}`,
+        },
+        params: {
+          invoiceId: invoice.id,
+        },
+        responseType: 'arraybuffer',
+      };
+
+      const file = await axios.get(`${API_URL}/rest/files/invoice`, config);
+
+      if (file) {
+        const pdf = new Blob([file.data], { type: 'application/pdf' });
+
+        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+          window.navigator.msSaveOrOpenBlob(pdf);
+          return;
+        }
+
+        const data = window.URL.createObjectURL(pdf);
+        const link = document.createElement('a');
+        link.href = data;
+        link.download = `ARVE ${invoice.number}`;
+        link.click();
+      }
+    }
+  } catch (err) {
+    throw err;
+  }
+};
 
 const errorMessageHandler = {
   EntityAlreadyExistsError: {

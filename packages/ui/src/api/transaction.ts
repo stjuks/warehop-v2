@@ -53,8 +53,8 @@ export const DELETE_TRANSACTION = new Mutation({
       deleteTransaction(id: $id)
     }
   `,
-  updateCache: (cache, result) => {
-    console.log(cache, result);
+  onMutate: ({ client }) => {
+    client?.cache.reset();
   },
 });
 
@@ -69,7 +69,7 @@ export const EDIT_TRANSACTION = new Mutation({
   },
 });
 
-export const FETCH_TRANSACTION = new Query<Transaction>({
+export const FETCH_TRANSACTION = new Query({
   query: `
     query transaction($id: ID!) {
       transaction(id: $id) {
@@ -83,7 +83,7 @@ export const FETCH_TRANSACTION = new Query<Transaction>({
 const FETCH_TRANSACTIONS = (type: TransactionType) => {
   const name = type === 'INCOME' ? 'incomes' : 'expenses';
 
-  return new Query<PaginatedData<Transaction>>({
+  return new Query({
     query: `
       query ${name}(
         $pagination: PaginatedQueryInput!,

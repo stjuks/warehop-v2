@@ -40,7 +40,7 @@ export const EDIT_UNIT = new Mutation({
   },
 });
 
-export const FETCH_UNITS = new Query<Unit[]>({
+export const FETCH_UNITS = new Query({
   query: `
     query units {
       units {
@@ -53,11 +53,7 @@ export const FETCH_UNITS = new Query<Unit[]>({
   transformResult: (result) => result.units,
 });
 
-export const FETCH_TYPES = new Query<{
-  itemTypes: ItemType[];
-  partnerTypes: PartnerType[];
-  invoiceTypes: InvoiceType[];
-}>({
+export const FETCH_TYPES = new Query({
   query: `
     query types {
       types {

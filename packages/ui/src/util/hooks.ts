@@ -47,8 +47,6 @@ export const useLocalSetting = (defaultValue: any, settingName: string) => {
       settings[settingName] = defaultValue;
       localStorage.setItem('settings', JSON.stringify(settings));
     }
-
-    console.log(settings);
   }, [setting]);
 
   if (settings[settingName]) {
@@ -58,64 +56,12 @@ export const useLocalSetting = (defaultValue: any, settingName: string) => {
   return [setting, setSetting];
 };
 
-interface GraphQLQueryOptions extends LazyQueryHookOptions<any, any> {
+interface GraphQLQueryOptions extends LazyQueryHookOptions {
   loadOnMount?: boolean;
   isPaginated?: boolean;
 }
 
-/* export const useGraphQLQuery = (query: DocumentNode, options?: GraphQLQueryOptions) => {
-  const [fetchData, { data, fetchMore }] = useLazyQuery(query, options);
-
-  const anyQuery: any = query;
-
-  const queryName = anyQuery.definitions[0].name.value;
-
-  const formattedData = data ? Object.assign({}, data[queryName]) : undefined;
-
-  useEffect(() => {
-    if (options?.loadOnMount) {
-      fetchData();
-    }
-  }, []);
-
-  const fetchMoreData = (vars?: any) => {
-    const variables = vars || options?.variables;
-
-    if (options?.isPaginated && variables && formattedData) {
-      variables.pagination = { ...variables.pagination, cursor: formattedData.pageInfo.cursor };
-
-      if (variables.pagination.cursor) {
-        return fetchMore({
-          query,
-          variables,
-          updateQuery: (previousResult, { fetchMoreResult }) => {
-            const prevData = previousResult[queryName].data;
-            const newData = fetchMoreResult[queryName].data;
-
-            return {
-              [queryName]: {
-                ...fetchMoreResult[queryName],
-                data: [...prevData, ...newData],
-              },
-            };
-          },
-        });
-      }
-    }
-
-    return () => undefined;
-  };
-
-  const result: [() => void, any, { fetchMore: () => any }] = [
-    fetchData,
-    formattedData,
-    { fetchMore: fetchMoreData },
-  ];
-
-  return result;
-}; */
-
-export const useGraphQLQuery = <T>(query: Query<T>, options?: GraphQLQueryOptions) => {
+export const useGraphQLQuery = (query: Query, options?: GraphQLQueryOptions) => {
   const [fetchData, { data, fetchMore, ...restTuple }] = useLazyQuery(query.query, options);
 
   let transformedData: any = undefined;
@@ -130,44 +76,62 @@ export const useGraphQLQuery = <T>(query: Query<T>, options?: GraphQLQueryOption
     }
   }, []);
 
-  const fetchMoreData = () => {
+  const fetchMoreData = (variables) => {
     if (query.onFetchMore && query.fetchMoreOptions) {
       if (transformedData)
-      return fetchMore({
-        query: query.query,
-        variables: options?.variables,
-        ...query.fetchMoreOptions(transformedData, options?.variables),
-        updateQuery: (prevResult, { fetchMoreResult }) => {
-          const transformedPrev = query.transformResult
-            ? query.transformResult(prevResult)
-            : prevResult;
+        return fetchMore({
+          query: query.query,
+          variables: variables || options?.variables,
+          ...query.fetchMoreOptions(transformedData, options?.variables),
+          updateQuery: (prevResult, { fetchMoreResult }) => {
+            const transformedPrev = query.transformResult
+              ? query.transformResult(prevResult)
+              : prevResult;
 
-          const transformedNew = query.transformResult
-            ? query.transformResult(fetchMoreResult)
-            : fetchMoreResult;
+            const transformedNew = query.transformResult
+              ? query.transformResult(fetchMoreResult)
+              : fetchMoreResult;
 
-          return query.onFetchMore
-            ? query.onFetchMore(transformedPrev, transformedNew)
-            : fetchMoreResult;
-        },
-      });
+            return query.onFetchMore
+              ? query.onFetchMore(transformedPrev, transformedNew)
+              : fetchMoreResult;
+          },
+        });
     }
+
     return () => undefined;
   };
 
-  return [transformedData, [fetchMoreData, fetchData], { restTuple }];
+  const customFetchData = async (variables) => {
+    await fetchData({ variables });
+  };
+
+  const result: [any, [any, any], typeof restTuple] = [
+    transformedData,
+    [fetchMoreData, customFetchData],
+    restTuple,
+  ];
+
+  return result;
 };
 
-export const useGraphQLMutation = <T>(mutation: Mutation<T>) => {
-  const [mutate, restTuple] = useMutation(mutation.mutation, {
+export const useGraphQLMutation = <InputValues>(mutation: Mutation) => {
+  const [mutate, { client }] = useMutation(mutation.mutation, {
     update: (cache, result) => {
       if (mutation.updateCache) mutation.updateCache(cache, result);
     },
   });
 
-  const customMutate = (variables) => {
-    console.log(variables);
-    mutate({ variables });
+  const customMutate = async (variables: InputValues, customValues?: any) => {
+    const omitTypename = (key, value) => (key === '__typename' ? undefined : value);
+    const newVariables = JSON.parse(JSON.stringify(variables), omitTypename);
+    const result = await mutate({
+      variables: newVariables,
+      refetchQueries: ['purchases', 'invoices'],
+    });
+    if (mutation.onMutate) mutation.onMutate({ client, customValues, result });
+
+    return result;
   };
 
   return [customMutate];

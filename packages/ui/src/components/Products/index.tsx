@@ -17,6 +17,7 @@ import WarehouseStoreContext from '@ui/stores/WarehouseStore';
 import UIStoreContext from '@ui/stores/UIStore';
 import WarehouseForm from '../WarehouseForm';
 import { FETCH_PRODUCTS } from '@ui/api/item';
+import { FETCH_WAREHOUSES } from '@ui/api/warehouse';
 
 const Products = observer(() => {
   const warehouseStore = useContext(WarehouseStoreContext);
@@ -28,18 +29,19 @@ const Products = observer(() => {
     name: 'Kõik laod',
   });
 
+  const [warehouses] = useGraphQLQuery(FETCH_WAREHOUSES, { loadOnMount: true });
+
   const filter: ItemQueryInput = {
     generalQuery: searchQuery,
     warehouseId: warehouseFilter.id,
   };
 
-  const [, products, { fetchMore }] = useGraphQLQuery(FETCH_PRODUCTS, {
+  const [products, [fetchMoreProducts], { loading }] = useGraphQLQuery(FETCH_PRODUCTS, {
     variables: {
       ...filter,
-      pagination: { limit: 5 },
+      pagination: { limit: 25 },
     },
     loadOnMount: true,
-    isPaginated: true,
   });
 
   const headerIcons = [
@@ -49,7 +51,9 @@ const Products = observer(() => {
     </NewItemButtonContainer>,
   ];
 
-  const warehouseOptions = [{ id: undefined, name: 'Kõik laod' }, ...warehouseStore.warehouses];
+  const warehouseOptions = [{ id: undefined, name: 'Kõik laod' }];
+
+  if (warehouses) warehouseOptions.push(...warehouses);
 
   return (
     <>
@@ -60,7 +64,7 @@ const Products = observer(() => {
           options={warehouseOptions}
           value={warehouseFilter}
           onChange={({ value }) => setWarehouseFilter(value)}
-          optionMap={{ label: (wh) => wh.name, value: (wh) => wh }}
+          optionMap={{ label: (wh) => wh.name }}
           action={{
             label: (
               <>
@@ -73,13 +77,17 @@ const Products = observer(() => {
         />
       </SortingContainer>
       <ContentContainer>
-        {products?.data.map((product) => (
-          <ProductItem {...product} key={product.id} />
-        ))}
-        {products?.pageInfo.hasNextPage && (
-          <LoadMoreButton onClick={() => fetchMore()}>
-            Lae veel
-          </LoadMoreButton>
+        {loading ? (
+          'Loading...'
+        ) : (
+          <>
+            {products?.data.map((product) => (
+              <ProductItem {...product} key={product.id} />
+            ))}
+            {products?.pageInfo.hasNextPage && (
+              <LoadMoreButton onClick={() => fetchMoreProducts()}>Lae veel</LoadMoreButton>
+            )}
+          </>
         )}
       </ContentContainer>
     </>

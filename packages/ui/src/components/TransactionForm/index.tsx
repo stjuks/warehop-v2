@@ -15,6 +15,8 @@ import Button from '../Button';
 import { RouteChildrenProps } from 'react-router';
 import TransactionStoreContext from '@ui/stores/TransactionStore';
 import UIStoreContext from '@ui/stores/UIStore';
+import { useGraphQLMutation } from '@ui/util/hooks';
+import { ADD_EXPENSE, ADD_INCOME, EDIT_TRANSACTION } from '@ui/api/transaction';
 
 interface TransactionFormProps {
   invoice?: Invoice;
@@ -25,30 +27,36 @@ interface TransactionFormProps {
 const TransactionForm: React.FC<TransactionFormProps & RouteChildrenProps> = ({
   invoice,
   transaction,
-  onSubmit
+  onSubmit,
 }) => {
   const transactionStore = useContext(TransactionStoreContext);
   const uiStore = useContext(UIStoreContext);
+
+  const [addExpense] = useGraphQLMutation<AddTransactionInput>(ADD_EXPENSE);
+  const [addIncome] = useGraphQLMutation<AddTransactionInput>(ADD_INCOME);
+  const [editTransaction] = useGraphQLMutation<{ id: number; transaction: AddTransactionInput }>(
+    EDIT_TRANSACTION
+  );
 
   const initialValues = invoice
     ? {
         invoiceId: invoice.id,
         sum: currency(Number(invoice.sum) - Number(invoice.paidSum)).toString(),
         date: new Date(),
-        description: ''
+        description: '',
       }
     : transaction && {
         invoiceId: transaction.invoice.id,
         sum: currency(transaction.sum).toString(),
         date: new Date(transaction.date),
-        description: transaction.description
+        description: transaction.description,
       };
 
   const handleSubmit = async (newTransaction: AddTransactionInput) => {
     try {
-      if (transaction) await transactionStore.editTransaction(transaction.id, newTransaction);
-      else if (invoice?.type === 'PURCHASE') await transactionStore.addExpense(newTransaction);
-      else if (invoice?.type === 'SALE') await transactionStore.addIncome(newTransaction);
+      if (transaction) await editTransaction({ id: transaction.id, transaction: newTransaction });
+      else if (invoice?.type === 'PURCHASE') await addExpense(newTransaction);
+      else if (invoice?.type === 'SALE') await addIncome(newTransaction);
 
       if (onSubmit) await onSubmit(newTransaction);
       uiStore.goBack();
@@ -65,7 +73,7 @@ const TransactionForm: React.FC<TransactionFormProps & RouteChildrenProps> = ({
       .typeError('Summa peab olema number.')
       .required('Palun sisesta makse summa.'),
     date: yup.date().typeError('Vale kuupäevaformaat.'),
-    description: yup.string().nullable()
+    description: yup.string().nullable(),
   });
 
   return (

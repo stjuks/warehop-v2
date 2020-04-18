@@ -19,7 +19,7 @@ const partnerSchema = `
     postalCode
 `;
 
-export const FETCH_PARTNERS = new Query<PaginatedData<Partner>>({
+export const FETCH_PARTNERS = new Query({
   query: `
     query partners(
       $type: PartnerType, 

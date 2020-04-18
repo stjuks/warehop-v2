@@ -35,7 +35,7 @@ const Purchases = observer(() => {
   const uiStore = useContext(UIStoreContext);
 
   const [purchases, [fetchMorePurchases]] = useGraphQLQuery(FETCH_PURCHASES, {
-    variables: { ...filter, pagination: { limit: 5 }, generalQuery: searchQuery },
+    variables: { ...filter, pagination: { limit: 25 }, generalQuery: searchQuery },
     loadOnMount: true,
   });
 

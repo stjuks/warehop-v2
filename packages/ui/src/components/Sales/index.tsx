@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { FiPlusCircle } from 'react-icons/fi';
 import { observer } from 'mobx-react-lite';
 import { InvoiceSearchInput } from '@shared/types';
@@ -8,7 +8,6 @@ import { useGraphQLQuery } from '@ui/util/hooks';
 import ContentContainer from '@ui/components/util/ContentContainer';
 import { SortingContainer, NewItemButtonContainer } from '../Products/styles';
 import routes from '../../util/routes';
-import InvoiceStoreContext from '../../stores/InvoiceStore';
 
 import Header from '../Header';
 import HeaderSearch from '../HeaderSearch';
@@ -35,7 +34,7 @@ const Sales = observer(() => {
   const uiStore = useContext(UIStoreContext);
 
   const [sales, [fetchMoreSales]] = useGraphQLQuery(FETCH_SALES, {
-    variables: { ...filter, pagination: { limit: 5 }, generalQuery: searchQuery },
+    variables: { ...filter, pagination: { limit: 25 }, generalQuery: searchQuery },
     loadOnMount: true,
   });
 
@@ -46,7 +45,7 @@ const Sales = observer(() => {
     </NewItemButtonContainer>,
   ];
 
-  console.log(sales);
+  console.log(filter);
 
   return (
     <>
