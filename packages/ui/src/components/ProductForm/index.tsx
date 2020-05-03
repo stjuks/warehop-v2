@@ -28,6 +28,9 @@ import { Row } from '../Layout/styles';
 import FieldArray from '../Form/util/FieldArray';
 import FormError from '../Form/FormError';
 import UIStoreContext from '@ui/stores/UIStore';
+import { useGraphQLQuery, useGraphQLMutation } from '@ui/util/hooks';
+import { FETCH_WAREHOUSES } from '@ui/api/warehouse';
+import { ADD_ITEM, EDIT_ITEM } from '@ui/api/item';
 
 interface ProductFormProps {
   location: {
@@ -36,8 +39,9 @@ interface ProductFormProps {
 }
 
 const ProductForm: React.FC<ProductFormProps> = observer((props) => {
-  const itemStore = useContext(ItemStoreContext);
   const uiStore = useContext(UIStoreContext);
+  const [addItem] = useGraphQLMutation(ADD_ITEM);
+  const [editItem] = useGraphQLMutation(EDIT_ITEM);
 
   const isEditing = props.location.state !== undefined;
 
@@ -78,9 +82,13 @@ const ProductForm: React.FC<ProductFormProps> = observer((props) => {
   });
 
   const handleSubmit = async (item: ProductItem) => {
+    const { partner, unit, id, ...itemInput }: any = item;
+    itemInput.partnerId = partner?.id;
+    itemInput.unitId = unit?.id;
+
     try {
-      if (isEditing) await itemStore.editProduct(item);
-      else await itemStore.addProduct(item);
+      if (isEditing) await editItem({ id, item: itemInput });
+      else await addItem(itemInput);
       uiStore.goBack(routes.products);
     } catch (err) {
       throw err;
@@ -159,11 +167,10 @@ const findFirstNonChosenWarehouse = (formValues: WarehouseQuantity[], warehouses
 };
 
 const WarehouseFields: React.FC<any> = observer(({ formikProps, arrayHelpers }) => {
-  const warehouseStore = useContext(WarehouseStoreContext);
   const { warehouseQuantity } = formikProps.values;
-  const { warehouses } = warehouseStore;
+  const [warehouses] = useGraphQLQuery(FETCH_WAREHOUSES, { loadOnMount: true });
 
-  return (
+  return warehouses ? (
     <WarehouseFieldsContainer>
       {warehouseQuantity.map((wh, i) => (
         <div className="warehouse-row" key={wh.id}>
@@ -199,7 +206,7 @@ const WarehouseFields: React.FC<any> = observer(({ formikProps, arrayHelpers }) 
         </AddWarehouseButton>
       )}
     </WarehouseFieldsContainer>
-  );
+  ) : null;
 });
 
 export default ProductForm;

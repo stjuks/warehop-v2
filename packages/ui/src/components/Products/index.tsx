@@ -36,13 +36,16 @@ const Products = observer(() => {
     warehouseId: warehouseFilter.id,
   };
 
-  const [products, [fetchMoreProducts], { loading }] = useGraphQLQuery(FETCH_PRODUCTS, {
-    variables: {
-      ...filter,
-      pagination: { limit: 25 },
-    },
-    loadOnMount: true,
-  });
+  const [products, [fetchMoreProducts], { loading: isLoadingProducts }] = useGraphQLQuery(
+    FETCH_PRODUCTS,
+    {
+      variables: {
+        ...filter,
+        pagination: { limit: 25 },
+      },
+      loadOnMount: true,
+    }
+  );
 
   const headerIcons = [
     <HeaderSearch onChange={setSearchQuery} placeholder="Otsi kaupa" />,
@@ -76,18 +79,12 @@ const Products = observer(() => {
           noFormik
         />
       </SortingContainer>
-      <ContentContainer>
-        {loading ? (
-          'Loading...'
-        ) : (
-          <>
-            {products?.data.map((product) => (
-              <ProductItem {...product} key={product.id} />
-            ))}
-            {products?.pageInfo.hasNextPage && (
-              <LoadMoreButton onClick={() => fetchMoreProducts()}>Lae veel</LoadMoreButton>
-            )}
-          </>
+      <ContentContainer isLoading={isLoadingProducts}>
+        {products?.data.map((product) => (
+          <ProductItem {...product} key={product.id} />
+        ))}
+        {products?.pageInfo.hasNextPage && (
+          <LoadMoreButton onClick={() => fetchMoreProducts()}>Lae veel</LoadMoreButton>
         )}
       </ContentContainer>
     </>

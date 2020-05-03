@@ -62,7 +62,10 @@ interface GraphQLQueryOptions extends LazyQueryHookOptions {
 }
 
 export const useGraphQLQuery = (query: Query, options?: GraphQLQueryOptions) => {
-  const [fetchData, { data, fetchMore, ...restTuple }] = useLazyQuery(query.query, options);
+  const [fetchData, { data, fetchMore, ...restTuple }] = useLazyQuery(query.query, {
+    fetchPolicy: 'cache-and-network',
+    ...options,
+  });
 
   let transformedData: any = undefined;
 

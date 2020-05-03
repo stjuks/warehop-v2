@@ -5,12 +5,19 @@ interface ContentContainerStyledProps {
   padded?: boolean;
 }
 
+export const ContentContainerWrapper = styled.div`
+  display: flex;
+  flex: 1;
+  position: relative;
+  min-height: 0;
+`;
+
 export const ContentContainerStyled = styled.div<ContentContainerStyledProps>`
   ${({ theme, padded }) => `
     background: ${theme.colors.lightGrey};
     flex: 1;
     overflow: auto;
-    position: relative;
+    
     ${padded ? 'padding: 1rem;' : ''}
   `}
 `;

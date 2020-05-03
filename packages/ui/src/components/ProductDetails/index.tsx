@@ -7,7 +7,7 @@ import { TitleContainer, DetailCardContainer, DetailLabel, WarehouseRowContainer
 import Header from '../Header';
 import { ProductItem } from '@shared/types';
 import routes from '../../util/routes';
-import { ContentContainer } from '../App/styles';
+import ContentContainer from '../util/ContentContainer';
 import ItemStoreContext from '@ui/stores/ItemStore';
 import { RouteComponentProps, useParams } from 'react-router';
 import DropdownMenu from '../DropdownMenu';
@@ -22,7 +22,10 @@ const ProductDetails: React.FC<ProductItem & RouteComponentProps> = (props) => {
 
   const { id } = useParams();
 
-  const [product] = useGraphQLQuery(FETCH_PRODUCT, { variables: { id }, loadOnMount: true });
+  const [product, , { loading: isLoadingProduct }] = useGraphQLQuery(FETCH_PRODUCT, {
+    variables: { id },
+    loadOnMount: true,
+  });
 
   const handleProductDelete = async () => {
     try {
@@ -70,7 +73,7 @@ const ProductDetails: React.FC<ProductItem & RouteComponentProps> = (props) => {
   return (
     <>
       <Header title="Kauba detailid" components={headerIcons} backTo={routes.products} />
-      <ContentContainer padded>
+      <ContentContainer padded isLoading={isLoadingProduct}>
         {product && (
           <>
             <TitleContainer>
