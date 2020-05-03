@@ -129,20 +129,3 @@ const FETCH_TRANSACTIONS = (type: TransactionType) => {
 
 export const FETCH_EXPENSES = FETCH_TRANSACTIONS('EXPENSE');
 export const FETCH_INCOMES = FETCH_TRANSACTIONS('INCOME');
-
-/* export default {
-  fetchIncomes: async (filter: TransactionQueryInput) =>
-    await query<PaginatedData<Transaction>>({ query: FETCH_INCOMES, variables: filter }),
-  fetchExpenses: async (filter: TransactionQueryInput) =>
-    await query<PaginatedData<Transaction>>({ query: FETCH_EXPENSES, variables: filter }),
-  fetchTransaction: async (id: number) =>
-    await query<Transaction>({ query: FETCH_TRANSACTION, variables: { id } }),
-  deleteTransaction: async (id: number) =>
-    await mutate<boolean>({ mutation: DELETE_TRANSACTION, variables: { id } }),
-  editTransaction: async (id: number, transaction: AddTransactionInput) =>
-    await mutate<boolean>({ mutation: EDIT_TRANSACTION, variables: { id, transaction } }),
-  addIncome: async (transaction: AddTransactionInput) =>
-    await mutate<number>({ mutation: ADD_INCOME, variables: transaction }),
-  addExpense: async (transaction: AddTransactionInput) =>
-    await mutate<number>({ mutation: ADD_EXPENSE, variables: transaction }),
-}; */

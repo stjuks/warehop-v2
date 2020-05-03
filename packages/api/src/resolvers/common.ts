@@ -20,7 +20,7 @@ const resolver: Resolver = {
   Mutation: {
     addUnit: authResolver(async ({ name, abbreviation }, { models, user }) => {
       const addedUnit = await models.Unit.create({ name, abbreviation, userId: user.id });
-      return addedUnit.id;
+      return addedUnit;
     }),
     deleteUnit: authResolver(async ({ id }, { models, user }) => {
       return await models.Unit.destroy({ where: { id, userId: user.id } });

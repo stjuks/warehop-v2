@@ -12,10 +12,13 @@ import CommonStoreContext from '@ui/stores/CommonStore';
 import TextInput from '../Form/TextInput';
 import FormError from '../Form/FormError';
 import UIStoreContext from '@ui/stores/UIStore';
+import { useGraphQLMutation } from '@ui/util/hooks';
+import { ADD_UNIT } from '@ui/api/common';
 
 const UnitForm = observer(() => {
-  const commonStore = useContext(CommonStoreContext);
   const uiStore = useContext(UIStoreContext);
+
+  const [addUnit] = useGraphQLMutation(ADD_UNIT);
 
   const initialValues: Unit = {
     name: '',
@@ -29,7 +32,7 @@ const UnitForm = observer(() => {
 
   const handleSubmit = async (unit: Unit) => {
     try {
-      await commonStore.addUnit(unit);
+      await addUnit(unit);
       uiStore.goBack();
     } catch (err) {
       throw err;

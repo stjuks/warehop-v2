@@ -12,13 +12,14 @@ export interface ContentContainerProps {
 
 const ContentContainer: React.FC<ContentContainerProps> = ({ children, padded, isLoading }) => (
   <ContentContainerWrapper>
-    <ContentContainerStyled padded={padded} id="content-container">
-      {children}
-    </ContentContainerStyled>
-    {isLoading && (
+    {isLoading ? (
       <LoadingOverlay>
         <Loader />
       </LoadingOverlay>
+    ) : (
+      <ContentContainerStyled padded={padded} id="content-container">
+        {children}
+      </ContentContainerStyled>
     )}
   </ContentContainerWrapper>
 );

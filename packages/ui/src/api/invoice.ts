@@ -148,6 +148,11 @@ export const ADD_INVOICE = new Mutation({
     }
   `,
   onMutate: ({ client }) => client?.cache.reset(),
+  errorHandler: {
+    EntityAlreadyExistsError: {
+      number: 'Sellise numbriga arve juba eksisteerib.',
+    },
+  },
 });
 
 export const EDIT_INVOICE = new Mutation({
@@ -178,6 +183,11 @@ export const EDIT_INVOICE = new Mutation({
       });
     }
   },
+  errorHandler: {
+    EntityAlreadyExistsError: {
+      number: 'Sellise numbriga arve juba eksisteerib.'
+    }
+  }
 });
 
 export const DELETE_INVOICE = new Mutation({
@@ -249,47 +259,3 @@ export const downloadInvoice = async (invoice: Invoice) => {
     throw err;
   }
 };
-
-const errorMessageHandler = {
-  EntityAlreadyExistsError: {
-    number: 'Sellise numbriga arve juba eksisteerib.',
-  },
-};
-
-/* export default {
-  fetchPurchases: async (variables: InvoiceSearchInput) =>
-    await query<PaginatedData<Invoice>>({ query: FETCH_PURCHASES, variables }),
-  fetchSales: async (variables: InvoiceSearchInput) =>
-    await query<PaginatedData<Invoice>>({ query: FETCH_SALES, variables }),
-  fetchInvoice: async (id: number) =>
-    await query<Invoice>({ query: FETCH_INVOICE, variables: { id } }),
-  addInvoice: async (invoice: AddInvoiceInput) =>
-    await mutate<number>({ mutation: ADD_INVOICE, variables: invoice }, { errorMessageHandler }),
-  editInvoice: async (id: number, invoice: AddInvoiceInput) =>
-    await mutate<boolean>(
-      { mutation: EDIT_INVOICE, variables: { id, invoice } },
-      { errorMessageHandler: { TriggerExceptionError: 'Lukustatud arvet ei saa muuta.' } }
-    ),
-  deleteInvoice: async (id: number) =>
-    await mutate<boolean>(
-      { mutation: DELETE_INVOICE, variables: { id } },
-      { errorMessageHandler: { TriggerExceptionError: 'Lukustatud arvet ei saa kustutada.' } }
-    ),
-  downloadInvoice: async (invoiceId: number) => {
-    const config: AxiosRequestConfig = {
-      headers: {
-        Authorization: `Bearer ${JWT_ACCESS_TOKEN}`,
-      },
-      params: {
-        invoiceId,
-      },
-      responseType: 'arraybuffer',
-    };
-
-    return await axios.get(`${API_URL}/rest/files/invoice`, config);
-  },
-  lockInvoice: async (id: number) =>
-    await mutate<boolean>({ mutation: LOCK_INVOICE, variables: { id } }),
-  unlockInvoice: async (id: number) =>
-    await mutate<boolean>({ mutation: UNLOCK_INVOICE, variables: { id } }),
-}; */

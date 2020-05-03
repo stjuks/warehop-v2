@@ -101,6 +101,11 @@ export const ADD_PARTNER = new Mutation({
   updateCache: (cache, result) => {
     console.log(cache, result);
   },
+  errorHandler: {
+    EntityAlreadyExistsError: {
+      name: 'Sellise nimega partner juba eksisteerib.',
+    },
+  },
 });
 
 export const DELETE_PARTNER = new Mutation({
@@ -111,6 +116,12 @@ export const DELETE_PARTNER = new Mutation({
   `,
   updateCache: (cache, result) => {
     console.log(cache, result);
+  },
+  errorHandler: {
+    DeletionRestrictedError: {
+      InvoiceItems: 'Partnerit ei saa kustutada, kuna ta on arvega seotud.',
+      Items: 'Partnerit ei saa kustutada, kuna ta on kaubaga seotud.',
+    },
   },
 });
 
@@ -151,6 +162,11 @@ export const EDIT_PARTNER = new Mutation({
   updateCache: (cache, result) => {
     console.log(cache, result);
   },
+  errorHandler: {
+    EntityAlreadyExistsError: {
+      name: 'Sellise nimega partner juba eksisteerib.',
+    },
+  },
 });
 
 export const SEARCH_PARTNERS = gql`
@@ -166,27 +182,3 @@ export const SEARCH_PARTNERS = gql`
         }
     }
 `;
-
-const errorMessageHandler = {
-  EntityAlreadyExistsError: {
-    name: 'Sellise nimega partner juba eksisteerib.'
-  },
-  DeletionRestrictedError: {
-    InvoiceItems: 'Partnerit ei saa kustutada, kuna ta on seotud arvega.',
-    Items: 'Partnerit ei saa kustutada, kuna ta on seotud kaubaga.'
-  }
-};
-
-/* export default {
-  fetchPartners: async (filter: SearchPartnerInput) =>
-    await query<PaginatedData<Partner>>({ query: FETCH_PARTNERS, variables: filter }),
-  addPartner: async (partner: Partner) =>
-    await mutate<number>({ mutation: ADD_PARTNER, variables: partner }, { errorMessageHandler }),
-  deletePartner: async (id: number) =>
-    await mutate<boolean>({ mutation: DELETE_PARTNER, variables: { id } }, { errorMessageHandler }),
-  editPartner: async (id: number, editedPartner: Partner) =>
-    await mutate<boolean>(
-      { mutation: EDIT_PARTNER, variables: { id, ...editedPartner } },
-      { errorMessageHandler }
-    )
-}; */

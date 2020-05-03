@@ -1,16 +1,33 @@
-import { gql } from 'apollo-boost-upload';
-import { Unit, ItemType, PartnerType, InvoiceType } from '@shared/types';
 import Query from './Query';
 import Mutation from './Mutation';
 
 export const ADD_UNIT = new Mutation({
   mutation: `
     mutation addUnit($name: String!, $abbreviation: String!) {
-      addUnit(name: $name, abbreviation: $abbreviation)
+      addUnit(name: $name, abbreviation: $abbreviation) {
+        id
+        name
+        abbreviation
+      }
     }
   `,
-  updateCache: (cache, result) => {
-    console.log(cache, result);
+  onMutate: ({ client, result }) => {
+    const cacheValue = client?.readQuery({ query: FETCH_UNITS.query });
+
+    const newValue = {
+      units: [...cacheValue.units, result.data.addUnit],
+    };
+
+    client?.writeQuery({
+      query: FETCH_UNITS.query,
+      data: newValue,
+    });
+  },
+  errorHandler: {
+    EntityAlreadyExistsError: {
+      name: 'Sellise nimega ühik juba eksisteerib',
+      abbreviation: 'Sellise lühendiga ühik juba eksisteerib.',
+    },
   },
 });
 
@@ -22,6 +39,11 @@ export const DELETE_UNIT = new Mutation({
   `,
   updateCache: (cache, result) => {
     console.log(cache, result);
+  },
+  errorHandler: {
+    DeletionRestrictedError: {
+      Items: 'Ühikut ei saa kustutada, kuna see on kaubaga seotud.',
+    },
   },
 });
 
@@ -37,6 +59,12 @@ export const EDIT_UNIT = new Mutation({
   `,
   updateCache: (cache, result) => {
     console.log(cache, result);
+  },
+  errorHandler: {
+    EntityAlreadyExistsError: {
+      name: 'Sellise nimega ühik juba eksisteerib',
+      abbreviation: 'Sellise lühendiga ühik juba eksisteerib.',
+    },
   },
 });
 
@@ -65,34 +93,3 @@ export const FETCH_TYPES = new Query({
   `,
   transformResult: (result) => result.types,
 });
-
-const errorMessageHandler = {
-  EntityAlreadyExistsError: {
-    name: 'Sellise nimega ühik juba eksisteerib',
-    abbreviation: 'Sellise lühendiga ühik juba eksisteerib.',
-  },
-  DeletionRestrictedError: {
-    Items: 'Ühikut ei saa kustutada, kuna see on kaubaga seotud.',
-  },
-};
-
-/* export default {
-  fetchUnits: async () => await query<Unit[]>({ query: FETCH_UNITS }),
-  addUnit: async (unit: Unit) =>
-    await mutate<number>({ mutation: ADD_UNIT, variables: unit }, { errorMessageHandler }),
-  deleteUnit: async (id: number) =>
-    await mutate<boolean>({ mutation: DELETE_UNIT, variables: { id } }, { errorMessageHandler }),
-  editUnit: async (id: number, editedUnit: Unit) =>
-    await mutate<boolean>(
-      { mutation: EDIT_UNIT, variables: { id, ...editedUnit } },
-      { errorMessageHandler }
-    ),
-  fetchTypes: async () =>
-    await query<{
-      itemTypes: ItemType[];
-      partnerTypes: PartnerType[];
-      invoiceTypes: InvoiceType[];
-    }>({
-      query: FETCH_TYPES,
-    }),
-}; */

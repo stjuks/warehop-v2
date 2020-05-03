@@ -126,15 +126,19 @@ export const useGraphQLMutation = <InputValues>(mutation: Mutation) => {
   });
 
   const customMutate = async (variables: InputValues, customValues?: any) => {
-    const omitTypename = (key, value) => (key === '__typename' ? undefined : value);
-    const newVariables = JSON.parse(JSON.stringify(variables), omitTypename);
-    const result = await mutate({
-      variables: newVariables,
-      refetchQueries: ['purchases', 'invoices'],
-    });
-    if (mutation.onMutate) mutation.onMutate({ client, customValues, result });
+    try {
+      const omitTypename = (key, value) => (key === '__typename' ? undefined : value);
+      const newVariables = JSON.parse(JSON.stringify(variables), omitTypename);
+      const result = await mutate({
+        variables: newVariables,
+      });
 
-    return result;
+      if (mutation.onMutate) mutation.onMutate({ client, customValues, result });
+
+      return result;
+    } catch (err) {
+      throw mutation.parseError(err);
+    }
   };
 
   return [customMutate];

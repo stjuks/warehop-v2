@@ -5,6 +5,16 @@ interface ContentContainerStyledProps {
   padded?: boolean;
 }
 
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+`;
+
 export const ContentContainerWrapper = styled.div`
   display: flex;
   flex: 1;
@@ -13,6 +23,8 @@ export const ContentContainerWrapper = styled.div`
 `;
 
 export const ContentContainerStyled = styled.div<ContentContainerStyledProps>`
+  animation: 0.3s ${fadeIn} ease-in-out;
+
   ${({ theme, padded }) => `
     background: ${theme.colors.lightGrey};
     flex: 1;

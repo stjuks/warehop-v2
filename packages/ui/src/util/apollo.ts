@@ -18,7 +18,7 @@ const apollo = new ApolloClient({
         Authorization: `Bearer ${JWT_ACCESS_TOKEN}`
       }
     });
-  }
+  },
 });
 
 export default apollo;

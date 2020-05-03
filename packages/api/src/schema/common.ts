@@ -19,7 +19,7 @@ export default gql`
   }
 
   extend type Mutation {
-    addUnit(name: String!, abbreviation: String!): ID!
+    addUnit(name: String!, abbreviation: String!): Unit!
     deleteUnit(id: ID!): Boolean!
     editUnit(id: ID!, name: String, abbreviation: String): Unit
   }
