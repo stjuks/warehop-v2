@@ -20,7 +20,6 @@ import { FETCH_PRODUCTS } from '@ui/api/item';
 import { FETCH_WAREHOUSES } from '@ui/api/warehouse';
 
 const Products = observer(() => {
-  const warehouseStore = useContext(WarehouseStoreContext);
   const uiStore = useContext(UIStoreContext);
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -79,7 +78,7 @@ const Products = observer(() => {
           noFormik
         />
       </SortingContainer>
-      <ContentContainer isLoading={isLoadingProducts}>
+      <ContentContainer isLoading={isLoadingProducts} key={JSON.stringify(filter)}>
         {products?.data.map((product) => (
           <ProductItem {...product} key={product.id} />
         ))}

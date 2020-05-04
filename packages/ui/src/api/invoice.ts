@@ -185,9 +185,9 @@ export const EDIT_INVOICE = new Mutation({
   },
   errorHandler: {
     EntityAlreadyExistsError: {
-      number: 'Sellise numbriga arve juba eksisteerib.'
-    }
-  }
+      number: 'Sellise numbriga arve juba eksisteerib.',
+    },
+  },
 });
 
 export const DELETE_INVOICE = new Mutation({
@@ -212,6 +212,20 @@ export const LOCK_INVOICE = new Mutation({
       }
     }
   `,
+  onMutate: ({ client, result, customValues }) => {
+    const { id } = result.data.lockInvoice;
+
+    client?.cache.writeQuery({
+      query: FETCH_INVOICE.query,
+      variables: { id },
+      data: {
+        invoice: {
+          ...customValues,
+          isLocked: true,
+        },
+      },
+    });
+  },
 });
 
 export const UNLOCK_INVOICE = new Mutation({
@@ -223,6 +237,20 @@ export const UNLOCK_INVOICE = new Mutation({
       }
     }
   `,
+  onMutate: ({ client, result, customValues }) => {
+    const { id } = result.data.unlockInvoice;
+
+    client?.cache.writeQuery({
+      query: FETCH_INVOICE.query,
+      variables: { id },
+      data: {
+        invoice: {
+          ...customValues,
+          isLocked: false,
+        },
+      },
+    });
+  },
 });
 
 export const downloadInvoice = async (invoice: Invoice) => {

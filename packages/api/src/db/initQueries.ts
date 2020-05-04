@@ -9,38 +9,44 @@ const createForeignKeys = async () => {
         table: models.Invoice,
         cols: ['partnerId', 'userId'],
         ref: { table: models.Partner, cols: ['id', 'userId'] },
-        onDelete: 'RESTRICT'
+        onDelete: 'RESTRICT',
       },
       {
         table: models.Item,
         cols: ['unitId', 'userId'],
         ref: { table: models.Unit, cols: ['id', 'userId'] },
-        onDelete: 'RESTRICT'
+        onDelete: 'RESTRICT',
       },
       {
         table: models.Item,
         cols: ['partnerId', 'userId'],
         ref: { table: models.Partner, cols: ['id', 'userId'] },
-        onDelete: 'RESTRICT'
+        onDelete: 'RESTRICT',
       },
       {
         table: models.Transaction,
         cols: ['invoiceId', 'userId'],
         ref: { table: models.Invoice, cols: ['id', 'userId'] },
-        onDelete: 'CASCADE'
+        onDelete: 'CASCADE',
       },
       {
         table: models.WarehouseItem,
         cols: ['warehouseId', 'userId'],
         ref: { table: models.Warehouse, cols: ['id', 'userId'] },
-        onDelete: 'RESTRICT'
+        onDelete: 'RESTRICT',
       },
       {
         table: models.WarehouseItem,
         cols: ['itemId', 'userId'],
         ref: { table: models.Item, cols: ['id', 'userId'] },
-        onDelete: 'CASCADE'
-      }
+        onDelete: 'RESTRICT',
+      },
+      {
+        table: models.InvoiceItem,
+        cols: ['itemId', 'userId'],
+        ref: { table: models.Item, cols: ['id', 'userId'] },
+        onDelete: 'RESTRICT',
+      },
     ])
   );
 };
@@ -50,7 +56,7 @@ const createCheckConstraints = async () => {
     createCheckConstraint({
       table: models.Invoice,
       name: 'check_sum_date',
-      query: 'sum >= 0 AND "dueDate" >= "issueDate"'
+      query: 'sum >= 0 AND "dueDate" >= "issueDate"',
     })
   );
 
@@ -58,7 +64,7 @@ const createCheckConstraints = async () => {
     createCheckConstraint({
       table: models.InvoiceItem,
       name: 'check_quantity_price',
-      query: 'quantity >= 0 AND price >= 0'
+      query: 'quantity >= 0 AND price >= 0',
     })
   );
 
@@ -66,7 +72,7 @@ const createCheckConstraints = async () => {
     createCheckConstraint({
       table: models.Item,
       name: 'check_price',
-      query: '"purchasePrice" >= 0 AND "retailPrice" >= 0'
+      query: '"purchasePrice" >= 0 AND "retailPrice" >= 0',
     })
   );
 
@@ -74,7 +80,7 @@ const createCheckConstraints = async () => {
     createCheckConstraint({
       table: models.Transaction,
       name: 'check_sum',
-      query: 'sum >= 0'
+      query: 'sum >= 0',
     })
   );
 
@@ -82,7 +88,7 @@ const createCheckConstraints = async () => {
     createCheckConstraint({
       table: models.WarehouseItem,
       name: 'check_quantity',
-      query: 'quantity >= 0'
+      query: 'quantity >= 0',
     })
   );
 };

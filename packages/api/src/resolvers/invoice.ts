@@ -6,7 +6,7 @@ import mkdirp from 'mkdirp';
 import { Op, Model, Transaction } from 'sequelize';
 import Joi from '@hapi/joi';
 
-import { Resolver, authResolver, ApolloContext, paginate } from '.';
+import { Resolver, authResolver, ApolloContext, paginate, findOrCreate } from '.';
 
 import { InvoiceSearchInput, AddInvoiceInput } from '@shared/types';
 import Invoice from '../db/models/Invoice';
@@ -33,7 +33,7 @@ const validateInvoice = Joi.object({
             then: Joi.string().required(),
             otherwise: Joi.forbidden(),
           }),
-        })
+        }).unknown()
       )
       .required(),
   }).unknown(),
@@ -157,6 +157,7 @@ const resolver: Resolver = {
         const updateInvoice = async () => {
           const [isUpdated] = await models.Invoice.update(invoice, {
             where: { id, userId: user.id },
+            transaction,
           });
 
           return isUpdated;
@@ -214,8 +215,10 @@ const createInvoiceItems = async (
 ) => {
   const { user, models } = context;
 
+  console.log('JOU1');
+
   const findOrCreateNewItem = async (item) => {
-    return await models.Item.findOrCreate({
+    return await findOrCreate(models.Item, {
       where:
         item.type === 'PRODUCT'
           ? {
@@ -232,12 +235,31 @@ const createInvoiceItems = async (
         partnerId: item.type === 'PRODUCT' ? invoice.partnerId : undefined,
         [invoice.type === 'PURCHASE' ? 'purchasePrice' : 'retailPrice']: item.price,
       },
-      transaction,
     });
+    /* return await models.Item.findOrCreate({
+      where:
+        item.type === 'PRODUCT'
+          ? {
+              code: item.code,
+              userId: user.id,
+            }
+          : {
+              name: item.name,
+              userId: user.id,
+            },
+      defaults: {
+        ...item,
+        userId: user.id,
+        partnerId: item.type === 'PRODUCT' ? invoice.partnerId : undefined,
+        [invoice.type === 'PURCHASE' ? 'purchasePrice' : 'retailPrice']: item.price,
+      },
+      transaction, 
+    }); */
   };
 
   for (const item of items) {
-    const [dbItem] = await findOrCreateNewItem(item);
+    const dbItem = await findOrCreateNewItem(item);
+    console.log('JOU2');
 
     if (dbItem) item.id = dbItem.id;
     else throw Error('Error adding invoice item.');

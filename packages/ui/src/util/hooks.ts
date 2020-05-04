@@ -62,10 +62,7 @@ interface GraphQLQueryOptions extends LazyQueryHookOptions {
 }
 
 export const useGraphQLQuery = (query: Query, options?: GraphQLQueryOptions) => {
-  const [fetchData, { data, fetchMore, ...restTuple }] = useLazyQuery(query.query, {
-    fetchPolicy: 'cache-and-network',
-    ...options,
-  });
+  const [fetchData, { data, fetchMore, ...restTuple }] = useLazyQuery(query.query, options);
 
   let transformedData: any = undefined;
 
@@ -132,6 +129,8 @@ export const useGraphQLMutation = <InputValues>(mutation: Mutation) => {
       const result = await mutate({
         variables: newVariables,
       });
+
+      client?.cache.reset();
 
       if (mutation.onMutate) mutation.onMutate({ client, customValues, result });
 

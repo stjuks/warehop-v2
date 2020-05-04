@@ -56,5 +56,24 @@ export const IconsContainer = styled.div`
         cursor: pointer;
         stroke-width: 1.5;
     }
+
+    button {
+      position: relative;
+      outline: none;
+
+      :hover:before,
+      :focus:before {
+        content: '';
+        position: absolute;
+        height: 0.25rem;
+        width: 0.25rem;
+        background: ${theme.colors.primary};
+        transform: translateX(-50%);
+        left: 50%;
+        top: calc(100% + 2px);
+        border-radius: 50%;
+        z-index: -1;
+      }
+    }
   `}
 `;

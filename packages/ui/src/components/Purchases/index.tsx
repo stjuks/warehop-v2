@@ -34,10 +34,13 @@ const Purchases = observer(() => {
 
   const uiStore = useContext(UIStoreContext);
 
-  const [purchases, [fetchMorePurchases]] = useGraphQLQuery(FETCH_PURCHASES, {
-    variables: { ...filter, pagination: { limit: 25 }, generalQuery: searchQuery },
-    loadOnMount: true,
-  });
+  const [purchases, [fetchMorePurchases], { loading: isLoadingPurchases }] = useGraphQLQuery(
+    FETCH_PURCHASES,
+    {
+      variables: { ...filter, pagination: { limit: 25 }, generalQuery: searchQuery },
+      loadOnMount: true,
+    }
+  );
 
   const headerIcons = [
     <HeaderSearch onChange={setSearchQuery} placeholder="Otsi arvet" />,
@@ -57,7 +60,7 @@ const Purchases = observer(() => {
           defaultValue={filter || paidOptions[0].value}
         />
       </SortingContainer>
-      <ContentContainer>
+      <ContentContainer isLoading={isLoadingPurchases} key={JSON.stringify(filter)}>
         {purchases?.data.map((purchase) => (
           <InvoiceItem {...purchase} key={purchase.id} />
         ))}

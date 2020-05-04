@@ -10,7 +10,7 @@ import 'react-dates/lib/css/_datepicker.css';
 import 'flatpickr/dist/themes/material_green.css';
 
 import history from '../../util/history';
-import { AppContainer } from './styles';
+import { AppContainer, GlobalStyle } from './styles';
 import { theme } from '@ui/util/styled';
 import routes from '../../util/routes';
 import Products from '../Products';
@@ -63,6 +63,7 @@ const App = () => {
               <Footer />
               <HamburgerMenu />
               <Modal />
+              <GlobalStyle />
             </AppContainer>
           </Router>
         </IconContext.Provider>

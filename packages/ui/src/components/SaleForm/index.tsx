@@ -67,7 +67,6 @@ const SaleForm: React.FC<SaleFormProps> = observer(({ location }) => {
   const handleSubmit = async (sale) => {
     try {
       const parsedSale = parseInvoiceInput(sale);
-      console.log(parsedSale);
       if (location.state)
         await editInvoice({ id: editableSale?.id, invoice: parsedSale }, sale);
       else await invoiceStore.addInvoice(sale);

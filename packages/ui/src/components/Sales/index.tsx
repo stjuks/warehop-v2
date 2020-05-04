@@ -45,8 +45,6 @@ const Sales = observer(() => {
     </NewItemButtonContainer>,
   ];
 
-  console.log(filter);
-
   return (
     <>
       <Header title="Müügiarved" components={headerIcons} />

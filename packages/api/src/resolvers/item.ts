@@ -51,6 +51,7 @@ const resolver: Resolver = {
       }
     }),
     deleteItem: authResolver(async ({ id }, { models, user }) => {
+      // const transaction = await sequelize.transaction();
       return await models.Item.destroy({ where: { id, userId: user.id } });
     }),
     editItem: authResolver(

@@ -72,6 +72,6 @@ export default class InvoiceItem extends Model<InvoiceItem> {
   @BelongsTo(() => User, { foreignKey: 'userId', onDelete: 'CASCADE' })
   user: User;
 
-  @BelongsTo(() => Item, { foreignKey: 'itemId', onDelete: 'RESTRICT' })
+  @BelongsTo(() => Item, { foreignKey: 'itemId', onDelete: 'CASCADE' })
   item: Item;
 }

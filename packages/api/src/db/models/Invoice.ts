@@ -10,7 +10,8 @@ import {
   Unique,
   Default,
   HasMany,
-  Index
+  Index,
+  BelongsToMany
 } from 'sequelize-typescript';
 
 import User from './User';
@@ -91,7 +92,7 @@ export default class Invoice extends Model<Invoice> {
   @BelongsTo(() => InvoiceType, { foreignKey: 'type', onDelete: 'RESTRICT' })
   invoiceType: InvoiceType;
 
-  @HasMany(() => InvoiceItem, { foreignKey: 'invoiceId', onDelete: 'RESTRICT', as: 'items' })
+  @HasMany(() => InvoiceItem, { foreignKey: 'invoiceId', onDelete: 'CASCADE', as: 'items' })
   items: Item[];
 
   @HasMany(() => Transaction, { foreignKey: 'invoiceId', onDelete: 'RESTRICT', as: 'transactions' })

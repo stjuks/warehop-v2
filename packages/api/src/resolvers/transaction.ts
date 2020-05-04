@@ -85,7 +85,7 @@ const addTransaction = async (
       userId: user.id,
     });
 
-    return addedTransaction.id;
+    return addedTransaction;
   } catch (err) {
     throw err;
   }

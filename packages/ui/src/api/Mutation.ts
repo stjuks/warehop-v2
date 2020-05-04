@@ -49,6 +49,8 @@ export default class Mutation {
 export const handleError = (error?: ApolloError, errorHandler?: ErrorHandler) => {
   const messages: string[] = [];
 
+  console.error(error);
+
   if (error instanceof ApolloError) {
     const err: GraphQLError = error.graphQLErrors[0];
 

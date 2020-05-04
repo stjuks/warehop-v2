@@ -37,9 +37,6 @@ export const DELETE_UNIT = new Mutation({
       deleteUnit(id: $id)
     }
   `,
-  updateCache: (cache, result) => {
-    console.log(cache, result);
-  },
   errorHandler: {
     DeletionRestrictedError: {
       Items: 'Ühikut ei saa kustutada, kuna see on kaubaga seotud.',
@@ -57,9 +54,6 @@ export const EDIT_UNIT = new Mutation({
       }
     }
   `,
-  updateCache: (cache, result) => {
-    console.log(cache, result);
-  },
   errorHandler: {
     EntityAlreadyExistsError: {
       name: 'Sellise nimega ühik juba eksisteerib',

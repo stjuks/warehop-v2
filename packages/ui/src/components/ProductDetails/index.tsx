@@ -13,14 +13,16 @@ import { RouteComponentProps, useParams } from 'react-router';
 import DropdownMenu from '../DropdownMenu';
 import UIStoreContext from '@ui/stores/UIStore';
 import ConfirmationDialog from '../ConfirmationDialog';
-import { useGraphQLQuery } from '@ui/util/hooks';
-import { FETCH_PRODUCT } from '@ui/api/item';
+import { useGraphQLQuery, useGraphQLMutation } from '@ui/util/hooks';
+import { FETCH_PRODUCT, DELETE_ITEM } from '@ui/api/item';
 
 const ProductDetails: React.FC<ProductItem & RouteComponentProps> = (props) => {
   const itemStore = useContext(ItemStoreContext);
   const uiStore = useContext(UIStoreContext);
 
   const { id } = useParams();
+
+  const [deleteProduct] = useGraphQLMutation(DELETE_ITEM);
 
   const [product, , { loading: isLoadingProduct }] = useGraphQLQuery(FETCH_PRODUCT, {
     variables: { id },
@@ -29,7 +31,7 @@ const ProductDetails: React.FC<ProductItem & RouteComponentProps> = (props) => {
 
   const handleProductDelete = async () => {
     try {
-      await itemStore.deleteItem(product?.id);
+      await deleteProduct({ id: product?.id });
       uiStore.goTo(routes.products, { replace: true });
     } catch (err) {
       throw err;

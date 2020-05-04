@@ -9,6 +9,7 @@ import {
 } from '@shared/types';
 import Query from './Query';
 import Mutation from './Mutation';
+import { FETCH_INVOICE } from './invoice';
 
 const transactionSchema = `
   id
@@ -35,12 +36,15 @@ const ADD_TRANSACTION = (type: TransactionType) => {
       mutation ${name}($invoiceId: ID!, $sum: String!, $date: Date!, $description: String) {
         ${name}(
           transaction: { invoiceId: $invoiceId, sum: $sum, date: $date, description: $description }
-        )
+        ) {
+          id
+          sum
+          date
+          type
+          description
+        }
       }
     `,
-    updateCache: (cache, result) => {
-      console.log(cache, result);
-    },
   });
 };
 
@@ -53,9 +57,6 @@ export const DELETE_TRANSACTION = new Mutation({
       deleteTransaction(id: $id)
     }
   `,
-  onMutate: ({ client }) => {
-    client?.cache.reset();
-  },
 });
 
 export const EDIT_TRANSACTION = new Mutation({
@@ -64,9 +65,6 @@ export const EDIT_TRANSACTION = new Mutation({
       editTransaction(id: $id, transaction: $transaction)
     }
   `,
-  updateCache: (cache, result) => {
-    console.log(cache, result);
-  },
 });
 
 export const FETCH_TRANSACTION = new Query({

@@ -49,9 +49,9 @@ export default gql`
   }
 
   extend type Mutation {
-    addTransaction(transaction: TransactionInput!): ID!
-    addIncome(transaction: TransactionInput!): ID!
-    addExpense(transaction: TransactionInput!): ID!
+    addTransaction(transaction: TransactionInput!): Transaction!
+    addIncome(transaction: TransactionInput!): Transaction!
+    addExpense(transaction: TransactionInput!): Transaction!
     deleteTransaction(id: ID!): Boolean!
     editTransaction(id: ID!, transaction: TransactionInput!): Boolean!
   }

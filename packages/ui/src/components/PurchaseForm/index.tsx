@@ -69,11 +69,20 @@ const PurchaseForm: React.FC<PurchaseFormProps> = observer(({ location }) => {
     items: yup.array().required('Palun lisa arvele kaubad.'),
   });
 
-  const handleSubmit = async (purchase) => {
+  const handleSubmit = async (purchase: Invoice) => {
+    const { partner, ...purchaseInput }: any = purchase;
+
+    purchaseInput.partnerId = partner.id;
+
+    purchaseInput.items = purchase.items.map(({ warehouse, unit, ...itemInput }) => ({
+      warehouseId: warehouse?.id,
+      unitId: unit?.id,
+      ...itemInput,
+    }));
+
     try {
-      const parsedPurchase = parseInvoiceInput(purchase);
-      if (editablePurchase) await editInvoice({ id: editablePurchase.id, ...parsedPurchase });
-      else await addInvoice(purchase);
+      if (editablePurchase) await editInvoice({ id: editablePurchase.id, invoice: purchaseInput });
+      else await addInvoice(purchaseInput);
       uiStore.goBack(routes.purchases);
     } catch (err) {
       throw err;

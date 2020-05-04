@@ -44,7 +44,7 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = (pro
 
   const { id } = useParams();
 
-  const [invoice, , { loading }] = useGraphQLQuery(FETCH_INVOICE, {
+  const [invoice, [, fetchInvoice], { loading }] = useGraphQLQuery(FETCH_INVOICE, {
     variables: { id },
     loadOnMount: true,
   });
@@ -55,8 +55,8 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = (pro
 
   const handleInvoiceLock = async () => {
     try {
-      if (invoice?.isLocked) await unlockInvoice({ id: invoice?.id });
-      else await lockInvoice({ id: invoice?.id });
+      if (invoice?.isLocked) await unlockInvoice({ id: invoice?.id }, invoice);
+      else await lockInvoice({ id: invoice?.id }, invoice);
       uiStore.goBack();
     } catch (err) {
       throw err;
@@ -138,7 +138,9 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = (pro
         </>
       ),
       onClick: () =>
-        uiStore.openModal(<TransactionForm invoice={invoice} onSubmit={console.log} />),
+        uiStore.openModal(
+          <TransactionForm invoice={invoice} onSubmit={() => fetchInvoice({ id })} />
+        ),
     });
   }
 

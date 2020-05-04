@@ -14,9 +14,11 @@ import { ErrorCode } from '@shared/types';
 
 interface ErrorOptions {
   errorMessageHandler: {
-    [key in ErrorCode]?: {
-      [key: string]: string;
-    } | string;
+    [key in ErrorCode]?:
+      | {
+          [key: string]: string;
+        }
+      | string;
   };
 }
 
@@ -54,7 +56,7 @@ const handleError = (error, options?: ErrorOptions) => {
       const { errorMessageHandler } = options;
 
       const {
-        extensions: { code, fields, table }
+        extensions: { code, fields, table },
       } = err;
 
       const codeMessages = errorMessageHandler[code];
@@ -80,7 +82,7 @@ const handleError = (error, options?: ErrorOptions) => {
       return {
         messages,
         message: err.message,
-        ...err.extensions
+        ...err.extensions,
       };
     }
   }

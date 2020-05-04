@@ -1,5 +1,5 @@
 import { Model, ModelCtor, Sequelize } from 'sequelize-typescript';
-import { Op } from 'sequelize';
+import { Op, Transaction } from 'sequelize';
 import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
 import express from 'express';
 import util from 'util';
@@ -125,6 +125,24 @@ export const paginate = async (model: ModelCtor, opts: PaginateOptions) => {
   }
 
   return result;
+};
+
+interface FindOrCreateOptions extends FindOptions {
+  defaults: any;
+  transaction?: Transaction;
+}
+
+export const findOrCreate = async (model: ModelCtor, opts: FindOrCreateOptions) => {
+  const { defaults, ...restOpts } = opts;
+  const item = await model.findOne(restOpts);
+
+  if (!item) {
+    await model.create(opts.defaults, { transaction: opts.transaction });
+
+    return await model.findOne(restOpts);
+  }
+
+  return item;
 };
 
 const customScalarResolver = {

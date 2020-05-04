@@ -48,9 +48,6 @@ export const DELETE_WAREHOUSE = new Mutation({
       deleteWarehouse(id: $id)
     }
   `,
-  updateCache: (cache, result) => {
-    console.log(cache, result);
-  },
   errorHandler: {
     DeletionRestrictedError: {
       WarehouseItems: 'Ladu ei saa kustutada, kuna selles on kaubad.',

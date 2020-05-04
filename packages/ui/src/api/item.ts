@@ -133,9 +133,6 @@ export const ADD_ITEM = new Mutation({
       )
     }
   `,
-  updateCache: (cache, result) => {
-    console.log(cache, result);
-  },
   errorHandler: {
     EntityAlreadyExistsError: {
       name: 'Sellise nimega kaup juba eksisteerib.',
@@ -150,9 +147,6 @@ export const DELETE_ITEM = new Mutation({
       deleteItem(id: $id)
     }
   `,
-  updateCache: (cache, result) => {
-    console.log(cache, result);
-  },
   errorHandler: {
     DeletionRestrictedError: {
       InvoiceItems: 'Kaupa ei saa kustutada, kuna see on arvega seotud.',
@@ -166,9 +160,6 @@ export const EDIT_ITEM = new Mutation({
       editItem(id: $id, item: $item)
     }
   `,
-  updateCache: (cache, result) => {
-    console.log(cache, result);
-  },
   errorHandler: {
     EntityAlreadyExistsError: {
       name: 'Sellise nimega kaup juba eksisteerib.',

@@ -98,9 +98,6 @@ export const ADD_PARTNER = new Mutation({
       )
     }
   `,
-  updateCache: (cache, result) => {
-    console.log(cache, result);
-  },
   errorHandler: {
     EntityAlreadyExistsError: {
       name: 'Sellise nimega partner juba eksisteerib.',
@@ -114,9 +111,6 @@ export const DELETE_PARTNER = new Mutation({
       deletePartner(id: $id)
     }
   `,
-  updateCache: (cache, result) => {
-    console.log(cache, result);
-  },
   errorHandler: {
     DeletionRestrictedError: {
       InvoiceItems: 'Partnerit ei saa kustutada, kuna ta on arvega seotud.',
@@ -159,9 +153,6 @@ export const EDIT_PARTNER = new Mutation({
       )
     }
   `,
-  updateCache: (cache, result) => {
-    console.log(cache, result);
-  },
   errorHandler: {
     EntityAlreadyExistsError: {
       name: 'Sellise nimega partner juba eksisteerib.',
