@@ -46,9 +46,18 @@ const Sales = observer(() => {
   ];
 
   const paidOptions = [
-    { label: <RadioLabel count={saleCounts?.unpaid}>Maksmata</RadioLabel>, value: { isPaid: false, isLocked: true } },
-    { label: <RadioLabel count={saleCounts?.paid}>Makstud</RadioLabel>, value: { isPaid: true, isLocked: true } },
-    { label: <RadioLabel count={saleCounts?.unlocked}>Kinnitamata</RadioLabel>, value: { isPaid: undefined, isLocked: false } },
+    {
+      label: <RadioLabel count={saleCounts?.unpaid}>Maksmata</RadioLabel>,
+      value: { isPaid: false, isLocked: true },
+    },
+    {
+      label: <RadioLabel count={saleCounts?.paid}>Makstud</RadioLabel>,
+      value: { isPaid: true, isLocked: true },
+    },
+    {
+      label: <RadioLabel count={saleCounts?.unlocked}>Kinnitamata</RadioLabel>,
+      value: { isLocked: false },
+    },
   ];
 
   return (
@@ -58,7 +67,7 @@ const Sales = observer(() => {
         <Radio
           options={paidOptions}
           name="radio-paid"
-          onSelect={(value) => setFilter({ ...filter, isLocked: true, ...value })}
+          onSelect={setFilter}
           defaultValue={filter || paidOptions[0].value}
         />
       </SortingContainer>

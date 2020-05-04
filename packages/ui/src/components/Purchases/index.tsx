@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { FiPlusCircle } from 'react-icons/fi';
 import { observer } from 'mobx-react-lite';
 import { InvoiceSearchInput } from '@shared/types';
@@ -6,7 +6,6 @@ import { InvoiceSearchInput } from '@shared/types';
 import ContentContainer from '@ui/components/util/ContentContainer';
 import { SortingContainer, NewItemButtonContainer } from '../Products/styles';
 import routes from '../../util/routes';
-import InvoiceStoreContext from '../../stores/InvoiceStore';
 
 import Header from '../Header';
 import HeaderSearch from '../HeaderSearch';
@@ -59,7 +58,7 @@ const Purchases = observer(() => {
     },
     {
       label: <RadioLabel count={purchaseCounts?.unlocked}>Kinnitamata</RadioLabel>,
-      value: { isPaid: undefined, isLocked: false },
+      value: { isLocked: false },
     },
   ];
 
@@ -70,7 +69,7 @@ const Purchases = observer(() => {
         <Radio
           options={paidOptions}
           name="radio-paid"
-          onSelect={(value) => setFilter({ ...filter, isLocked: true, ...value })}
+          onSelect={setFilter}
           defaultValue={filter || paidOptions[0].value}
         />
       </SortingContainer>

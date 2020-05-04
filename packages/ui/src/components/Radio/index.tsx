@@ -16,7 +16,7 @@ export interface RadioProps {
 const Radio: React.FC<RadioProps> = ({ options, name, onSelect, defaultValue }) => {
   const [value, setValue] = useState(undefined);
 
-  const handleSelect = selectedValue => {
+  const handleSelect = (selectedValue) => {
     setValue(selectedValue);
     onSelect(selectedValue);
   };
@@ -30,18 +30,20 @@ const Radio: React.FC<RadioProps> = ({ options, name, onSelect, defaultValue }) 
 
   return (
     <RadioContainer>
-      {options.map((option, i) => (
-        <RadioOptionContainer key={i}>
-          <input
-            type="radio"
-            name={name}
-            id={`${name}${i}`}
-            onChange={() => handleSelect(option.value)}
-            checked={isEqual(value, option.value)}
-          />
-          <label htmlFor={`${name}${i}`}>{option.label}</label>
-        </RadioOptionContainer>
-      ))}
+      {options.map((option, i) => {
+        return (
+          <RadioOptionContainer key={i}>
+            <input
+              type="radio"
+              name={name}
+              id={`${name}${i}`}
+              onChange={() => handleSelect(option.value)}
+              checked={isEqual(value, option.value)}
+            />
+            <label htmlFor={`${name}${i}`}>{option.label}</label>
+          </RadioOptionContainer>
+        );
+      })}
     </RadioContainer>
   );
 };
