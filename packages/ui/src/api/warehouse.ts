@@ -61,6 +61,7 @@ export const EDIT_WAREHOUSE = new Mutation({
       editWarehouse(id: $id, name: $name, abbreviation: $abbreviation)
     }
   `,
+  onMutate: ({ client }) => client?.cache.reset(),
   errorHandler: {
     EntityAlreadyExistsError: {
       name: 'Sellise nimega ladu juba eksisteerib.',

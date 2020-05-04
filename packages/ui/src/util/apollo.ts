@@ -20,11 +20,11 @@ const apollo = new ApolloClient({
       switch (object.__typename) {
         case 'ProductItem': {
           const o: ProductItem = object;
-          return `${o.id} ${o.warehouseQuantity.reduce((acc, curr) => acc + curr.quantity, 0)}`;
+          return `${object.__typename} ${o.id} ${o.warehouseQuantity.reduce((acc, curr) => acc + curr.quantity, 0)}`;
         }
         case 'WarehouseQuantity': {
           const o: WarehouseQuantity = object;
-          return `${o.id} ${o.quantity}`;
+          return `${object.__typename} ${o.id} ${o.quantity}`;
         }
         default:
           return defaultDataIdFromObject(object);

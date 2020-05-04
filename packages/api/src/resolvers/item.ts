@@ -57,7 +57,6 @@ const resolver: Resolver = {
     editItem: authResolver(
       async ({ id, item }: { id: number; item: ItemInput }, { models, user, sequelize }) => {
         const transaction = await sequelize.transaction();
-
         try {
           const [isEdited] = await models.Item.update(item, {
             where: { id, userId: user.id },
@@ -65,12 +64,10 @@ const resolver: Resolver = {
           });
 
           if (isEdited) {
-            console.log('1');
             await models.WarehouseItem.destroy({
               where: { itemId: id, userId: user.id },
               transaction
             });
-            console.log('2');
 
             await models.WarehouseItem.bulkCreate(
               item.warehouseQuantity.map(quantity => ({
@@ -83,7 +80,6 @@ const resolver: Resolver = {
                 transaction
               }
             );
-            console.log('3');
 
             await transaction.commit();
 

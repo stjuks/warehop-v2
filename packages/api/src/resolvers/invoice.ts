@@ -45,7 +45,6 @@ const resolver: Resolver = {
       return await findInvoice(context, id);
     }),
     purchases: authResolver(async ({ filter }: { filter: InvoiceSearchInput }, context) => {
-      console.log(filter);
       return await findInvoices(context, { ...filter, type: 'PURCHASE' });
     }),
     sales: authResolver(async ({ filter }: { filter: InvoiceSearchInput }, context) => {

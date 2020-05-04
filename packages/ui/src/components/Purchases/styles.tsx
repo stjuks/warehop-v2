@@ -14,9 +14,11 @@ export const RadioLabel = styled.span<RadioLabelProps>`
       z-index: 9999;
       background: ${theme.colors.white};
       border: 1px solid ${theme.colors.midGrey};
-      width: 1rem;
+      min-width: 1.5rem;
+      box-sizing: border-box;
+      padding: 0 0.25rem;
       height: 1rem;
-      border-radius: 50%;
+      border-radius: 2rem;
       display: flex;
       align-items: center;
       justify-content: center;

@@ -177,17 +177,20 @@ export const EDIT_INVOICE = new Mutation({
     }
   `,
   onMutate: ({ client, result, customValues }) => {
+    console.log(customValues);
     if (client && result && customValues) {
       const { id } = result.data.editInvoice;
       const cacheValue = client.readQuery({ query: FETCH_INVOICE.query, variables: { id } });
 
       const newValue = {
         invoice: {
-          id,
           ...cacheValue.invoice,
           ...customValues,
+          id,
         },
       };
+
+      client.cache.reset();
 
       client.writeQuery({
         query: FETCH_INVOICE.query,
@@ -228,6 +231,8 @@ export const LOCK_INVOICE = new Mutation({
   onMutate: ({ client, result, customValues }) => {
     const { id } = result.data.lockInvoice;
 
+    client?.cache.reset();
+
     client?.cache.writeQuery({
       query: FETCH_INVOICE.query,
       variables: { id },
@@ -253,6 +258,8 @@ export const UNLOCK_INVOICE = new Mutation({
   onMutate: ({ client, result, customValues }) => {
     const { id } = result.data.unlockInvoice;
 
+    client?.cache.reset();
+    
     client?.cache.writeQuery({
       query: FETCH_INVOICE.query,
       variables: { id },

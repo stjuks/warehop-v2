@@ -44,10 +44,13 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = (pro
 
   const { id } = useParams();
 
-  const [invoice, [, fetchInvoice], { loading }] = useGraphQLQuery(FETCH_INVOICE, {
-    variables: { id },
-    loadOnMount: true,
-  });
+  const [invoice, [, fetchInvoice], { loading: isLoadingInvoice }] = useGraphQLQuery(
+    FETCH_INVOICE,
+    {
+      variables: { id },
+      loadOnMount: true,
+    }
+  );
 
   const [lockInvoice] = useGraphQLMutation<{ id: number }>(LOCK_INVOICE);
   const [unlockInvoice] = useGraphQLMutation<{ id: number }>(UNLOCK_INVOICE);
@@ -173,65 +176,63 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = (pro
   return (
     <>
       <Header title="Arve detailid" backTo={backRoute} components={headerComponents} />
-      <InvoiceDetailsContainer padded>
-        {loading
-          ? 'Loading...'
-          : invoice && (
-              <>
-                <InvoiceHero paidSum={Number(invoice.paidSum)}>
-                  <div className="row-1">
-                    <span className="col-1">{invoice.partner.name}</span>
-                    <span className="col-2">{sum}€</span>
-                  </div>
-                  <div className="row-2">
-                    <span className="col-1">#{invoice.number}</span>
-                    <IsPaidStyled isPaid={invoice.isPaid} isLocked={invoice.isLocked}>
-                      {!invoice.isLocked ? 'Kinnitamata' : invoice.isPaid ? 'Makstud' : 'Maksmata'}
-                    </IsPaidStyled>
-                  </div>
-                </InvoiceHero>
-                <DetailCardContainer>
-                  <div className="row">
-                    <div className="detail">
-                      <div className="detail-label">Ostukuupäev</div>
-                      <div className="detail-value">{issueDate}</div>
-                    </div>
-                    <div className="detail">
-                      <div className="detail-label">Maksetähtaeg</div>
-                      <div className="detail-value">{dueDate}</div>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="detail">
-                      <div className="detail-label">Märkused</div>
-                      <div className="detail-value">{invoice.description || '-'}</div>
-                    </div>
-                  </div>
-                </DetailCardContainer>
-                <DetailLabel>Kaubad</DetailLabel>
-                {invoice.items.map((item) => (
-                  <InvoiceItemListItem item={item} key={item.id} />
-                ))}
-                <DetailLabel>Tehingud</DetailLabel>
-                {invoice.transactions.map((transaction) => (
-                  <TransactionItem
-                    key={transaction.id}
-                    to={`${invoice.type === 'PURCHASE' ? routes.expenses : routes.incomes}/${
-                      transaction.id
-                    }`}
-                  >
-                    {invoice.type === 'PURCHASE' ? (
-                      <FiArrowDown className="expense-arrow" />
-                    ) : (
-                      <FiArrowUp className="income-arrow" />
-                    )}
-                    <div className="sum">{currency(transaction.sum).toString()}€</div>
-                    <div className="date">{moment(transaction.date).format('DD.MM.YYYY')}</div>
-                    <FiChevronRight className="indicator" />
-                  </TransactionItem>
-                ))}
-              </>
-            )}
+      <InvoiceDetailsContainer padded isLoading={isLoadingInvoice}>
+        {invoice && (
+          <>
+            <InvoiceHero paidSum={Number(invoice.paidSum)}>
+              <div className="row-1">
+                <span className="col-1">{invoice.partner.name}</span>
+                <span className="col-2">{sum}€</span>
+              </div>
+              <div className="row-2">
+                <span className="col-1">#{invoice.number}</span>
+                <IsPaidStyled isPaid={invoice.isPaid} isLocked={invoice.isLocked}>
+                  {!invoice.isLocked ? 'Kinnitamata' : invoice.isPaid ? 'Makstud' : 'Maksmata'}
+                </IsPaidStyled>
+              </div>
+            </InvoiceHero>
+            <DetailCardContainer>
+              <div className="row">
+                <div className="detail">
+                  <div className="detail-label">Ostukuupäev</div>
+                  <div className="detail-value">{issueDate}</div>
+                </div>
+                <div className="detail">
+                  <div className="detail-label">Maksetähtaeg</div>
+                  <div className="detail-value">{dueDate}</div>
+                </div>
+              </div>
+              <div className="row">
+                <div className="detail">
+                  <div className="detail-label">Märkused</div>
+                  <div className="detail-value">{invoice.description || '-'}</div>
+                </div>
+              </div>
+            </DetailCardContainer>
+            <DetailLabel>Kaubad</DetailLabel>
+            {invoice.items.map((item) => (
+              <InvoiceItemListItem item={item} key={item.id} />
+            ))}
+            <DetailLabel>Tehingud</DetailLabel>
+            {invoice.transactions.map((transaction) => (
+              <TransactionItem
+                key={transaction.id}
+                to={`${invoice.type === 'PURCHASE' ? routes.expenses : routes.incomes}/${
+                  transaction.id
+                }`}
+              >
+                {invoice.type === 'PURCHASE' ? (
+                  <FiArrowDown className="expense-arrow" />
+                ) : (
+                  <FiArrowUp className="income-arrow" />
+                )}
+                <div className="sum">{currency(transaction.sum).toString()}€</div>
+                <div className="date">{moment(transaction.date).format('DD.MM.YYYY')}</div>
+                <FiChevronRight className="indicator" />
+              </TransactionItem>
+            ))}
+          </>
+        )}
       </InvoiceDetailsContainer>
     </>
   );

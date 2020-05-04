@@ -81,8 +81,8 @@ const PurchaseForm: React.FC<PurchaseFormProps> = observer(({ location }) => {
     }));
 
     try {
-      if (editablePurchase) await editInvoice({ id: editablePurchase.id, invoice: purchaseInput });
-      else await addInvoice(purchaseInput);
+      if (editablePurchase) await editInvoice({ id: editablePurchase.id, invoice: purchaseInput }, purchase);
+      else await addInvoice(purchaseInput, purchase);
       uiStore.goBack(routes.purchases);
     } catch (err) {
       throw err;
