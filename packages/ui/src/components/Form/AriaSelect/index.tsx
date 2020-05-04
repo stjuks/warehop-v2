@@ -10,13 +10,13 @@ import {
   MenuContainer,
   SearchInput,
   ActionButton,
-  SearchContainer
+  SearchContainer,
 } from './styles';
 import { TextInputBase, InputActionButtons } from '../TextInput';
 import {
   mapSelectOptions,
   mapSelectOption,
-  MapSelectOptionAttributes
+  MapSelectOptionAttributes,
 } from '../../../util/helpers';
 import { observer } from 'mobx-react-lite';
 import Loader from '../util/Loader';
@@ -44,7 +44,7 @@ interface AriaSelectProps {
   unregisterOnUnmount?: boolean;
   onChange?: (value: Option) => any;
   onMenuOpen?: () => any;
-  onSearch?: (query: string, mappedOptions: Option[]) => any;
+  onSearch?: (query: string, mappedOptions: Option[]) => void | Option[];
 }
 
 const AriaSelectBase: React.FC<AriaSelectProps & Partial<FieldProps>> = observer(
@@ -63,7 +63,7 @@ const AriaSelectBase: React.FC<AriaSelectProps & Partial<FieldProps>> = observer
     searchPlaceholder,
     value,
     action,
-    onMenuOpen
+    onMenuOpen,
   }) => {
     const [mappedOptions, setMappedOptions] = useState<Option[]>([]);
     const [searchOptions, setSearchOptions] = useState<Option[]>([]);
@@ -90,7 +90,7 @@ const AriaSelectBase: React.FC<AriaSelectProps & Partial<FieldProps>> = observer
 
     useEffect(() => {
       if (fieldValue) setDisplayValue(mapSelectOption(fieldValue, optionMap).label);
-    }, [fieldValue])
+    }, [fieldValue]);
 
     const handleSelect = ({ value, label }) => {
       if (onChange) onChange({ value, label });
@@ -100,7 +100,7 @@ const AriaSelectBase: React.FC<AriaSelectProps & Partial<FieldProps>> = observer
       setDisplayValue(label);
     };
 
-    const handleClear = e => {
+    const handleClear = (e) => {
       e.stopPropagation();
       if (form && field) form.setFieldValue(field.name, undefined);
       if (onChange) onChange({ value: undefined, label: '' });
@@ -111,7 +111,10 @@ const AriaSelectBase: React.FC<AriaSelectProps & Partial<FieldProps>> = observer
       async () => {
         if (onSearch) {
           setLoadingSearch(true);
-          await onSearch(searchQuery, mappedOptions);
+          const searchResults = await onSearch(searchQuery, mappedOptions);
+
+          if (searchResults) setSearchOptions(searchResults);
+
           setLoadingSearch(false);
         }
       },
@@ -141,8 +144,8 @@ const AriaSelectBase: React.FC<AriaSelectProps & Partial<FieldProps>> = observer
               displayValue={displayValue}
               placeholder={placeholder}
               isClearable={isClearable}
-              options={mappedOptions}
-              handleSearch={e => setSearchQuery(e.target.value)}
+              options={searchQuery && searchOptions.length > 0 ? searchOptions : mappedOptions}
+              handleSearch={(e) => setSearchQuery(e.target.value)}
               handleClear={handleClear}
               searchQuery={searchQuery}
               searchPlaceholder={searchPlaceholder}
@@ -171,9 +174,8 @@ const InputComponent: React.FC<any> = observer(
     searchPlaceholder,
     isSearchable,
     isLoadingSearch,
-    action
+    action,
   }) => {
-
     const handleActionKeyDown = (e: KeyboardEvent) => {
       e.preventDefault();
 
@@ -197,9 +199,7 @@ const InputComponent: React.FC<any> = observer(
             <InputActionButtons
               indicator={<FiChevronDown />}
               action={
-                isClearable && displayValue
-                  ? { icon: <FiX />, onClick: e => handleClear(e) }
-                  : undefined
+                isClearable && displayValue && { icon: <FiX />, onClick: (e) => handleClear(e) }
               }
             />
           </div>

@@ -29,6 +29,7 @@ const PartnerSelect: React.FC<PartnerSelectProps> = observer(({ name, label, par
     <AriaSelect
       name={name}
       label={label}
+      isClearable={true}
       optionMap={{ label: (partner) => partner.name }}
       options={partners ? partners.data : []}
       searchPlaceholder="Otsi partnerit"

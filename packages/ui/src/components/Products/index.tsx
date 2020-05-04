@@ -65,8 +65,14 @@ const Products = observer(() => {
           name="warehouseId"
           options={warehouseOptions}
           value={warehouseFilter}
+          searchPlaceholder="Otsi ladu"
           onChange={({ value }) => setWarehouseFilter(value)}
           optionMap={{ label: (wh) => wh.name }}
+          onSearch={(query, options) =>
+            options.filter(
+              (option) => option.value.name.toLowerCase().indexOf(query.toLowerCase()) !== -1
+            )
+          }
           action={{
             label: (
               <>

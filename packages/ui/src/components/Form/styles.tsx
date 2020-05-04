@@ -95,6 +95,7 @@ export const InputFieldContainer = styled.div<InputFieldProps>`
             font-size: 1rem;
             font-weight: 500;
             min-height: 2.5rem;
+            min-width: 0;
         }
 
         textarea {
