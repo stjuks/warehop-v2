@@ -89,12 +89,19 @@ export default gql`
     id: ID!
     isLocked: Boolean!
   }
+  
+  type InvoiceCount {
+    paid: Float!
+    unpaid: Float!
+    unlocked: Float!
+  }
 
   extend type Query {
     purchases(filter: InvoiceSearchInput): PaginatedInvoice!
     sales(filter: InvoiceSearchInput): PaginatedInvoice!
     invoiceItems(invoiceId: ID!): [InvoiceItem!]!
     invoice(id: ID!): Invoice
+    invoiceCounts(type: InvoiceType): InvoiceCount!
   }
 
   extend type Mutation {

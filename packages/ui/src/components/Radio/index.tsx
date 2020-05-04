@@ -5,7 +5,7 @@ import { isEqual } from '@ui/util/helpers';
 
 export interface RadioProps {
   options: {
-    label: string;
+    label: string | React.ReactElement;
     value: any;
   }[];
   name: string;

@@ -15,14 +15,9 @@ import InvoiceItem from '../InvoiceItem';
 import LoadMoreButton from '../util/LoadMoreButton';
 import UIStoreContext from '@ui/stores/UIStore';
 import { useLocalStorage } from 'react-use';
-import { FETCH_PURCHASES } from '@ui/api/invoice';
+import { FETCH_PURCHASES, FETCH_INVOICE_COUNTS } from '@ui/api/invoice';
 import { useGraphQLQuery } from '@ui/util/hooks';
-
-const paidOptions = [
-  { label: 'Maksmata', value: { isPaid: false, isLocked: true } },
-  { label: 'Makstud', value: { isPaid: true, isLocked: true } },
-  { label: 'Kinnitamata', value: { isPaid: undefined, isLocked: false } },
-];
+import { RadioLabel } from './styles';
 
 const Purchases = observer(() => {
   const [filter, setFilter] = useLocalStorage<InvoiceSearchInput | undefined>(
@@ -41,12 +36,31 @@ const Purchases = observer(() => {
       loadOnMount: true,
     }
   );
+  const [purchaseCounts] = useGraphQLQuery(FETCH_INVOICE_COUNTS, {
+    variables: { type: 'PURCHASE' },
+    loadOnMount: true,
+  });
 
   const headerIcons = [
     <HeaderSearch onChange={setSearchQuery} placeholder="Otsi arvet" />,
     <NewItemButtonContainer onClick={() => uiStore.goTo(routes.purchaseForm)}>
       <FiPlusCircle />
     </NewItemButtonContainer>,
+  ];
+
+  const paidOptions = [
+    {
+      label: <RadioLabel count={purchaseCounts?.unpaid}>Maksmata</RadioLabel>,
+      value: { isPaid: false, isLocked: true },
+    },
+    {
+      label: <RadioLabel count={purchaseCounts?.paid}>Makstud</RadioLabel>,
+      value: { isPaid: true, isLocked: true },
+    },
+    {
+      label: <RadioLabel count={purchaseCounts?.unlocked}>Kinnitamata</RadioLabel>,
+      value: { isPaid: undefined, isLocked: false },
+    },
   ];
 
   return (

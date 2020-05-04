@@ -76,6 +76,27 @@ const resolver: Resolver = {
 
       return parsedItems;
     }),
+    invoiceCounts: authResolver(async ({ type }, { models, user }) => {
+      const result = {
+        paid: 0,
+        unpaid: 0,
+        unlocked: 0,
+      };
+
+      const where: any = { userId: user.id };
+
+      if (type) where.type = type;
+
+      const invoices = await models.Invoice.findAll({ where });
+
+      invoices.forEach((invoice: any) => {
+        if (!invoice.isLocked) result.unlocked++;
+        else if (Number(invoice.sum) <= Number(invoice.paidSum)) result.paid++;
+        else result.unpaid++;
+      });
+
+      return result;
+    }),
   },
   Mutation: {
     addInvoice: authResolver(async ({ invoice }: { invoice: AddInvoiceInput }, context) => {
@@ -215,8 +236,6 @@ const createInvoiceItems = async (
 ) => {
   const { user, models } = context;
 
-  console.log('JOU1');
-
   const findOrCreateNewItem = async (item) => {
     return await findOrCreate(models.Item, {
       where:
@@ -236,30 +255,10 @@ const createInvoiceItems = async (
         [invoice.type === 'PURCHASE' ? 'purchasePrice' : 'retailPrice']: item.price,
       },
     });
-    /* return await models.Item.findOrCreate({
-      where:
-        item.type === 'PRODUCT'
-          ? {
-              code: item.code,
-              userId: user.id,
-            }
-          : {
-              name: item.name,
-              userId: user.id,
-            },
-      defaults: {
-        ...item,
-        userId: user.id,
-        partnerId: item.type === 'PRODUCT' ? invoice.partnerId : undefined,
-        [invoice.type === 'PURCHASE' ? 'purchasePrice' : 'retailPrice']: item.price,
-      },
-      transaction, 
-    }); */
   };
 
   for (const item of items) {
     const dbItem = await findOrCreateNewItem(item);
-    console.log('JOU2');
 
     if (dbItem) item.id = dbItem.id;
     else throw Error('Error adding invoice item.');

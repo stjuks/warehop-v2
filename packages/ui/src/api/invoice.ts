@@ -89,6 +89,19 @@ export const FETCH_INVOICE = new Query({
   transformResult: (result) => result.invoice,
 });
 
+export const FETCH_INVOICE_COUNTS = new Query({
+  query: `
+    query invoiceCounts($type: InvoiceType) {
+      invoiceCounts(type: $type) {
+        paid
+        unpaid
+        unlocked
+      }
+    }
+  `,
+  transformResult: (result) => result.invoiceCounts,
+});
+
 const FETCH_INVOICES = (type: InvoiceType) => {
   const name = type === 'PURCHASE' ? 'purchases' : 'sales';
 
