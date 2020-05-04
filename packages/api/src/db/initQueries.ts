@@ -47,6 +47,12 @@ const createForeignKeys = async () => {
         ref: { table: models.Item, cols: ['id', 'userId'] },
         onDelete: 'RESTRICT',
       },
+      {
+        table: models.InvoiceItem,
+        cols: ['invoiceId', 'userId'],
+        ref: { table: models.Invoice, cols: ['id', 'userId'] },
+        onDelete: 'CASCADE',
+      },
     ])
   );
 };
@@ -218,6 +224,9 @@ const createIndexes = async () => {
 };
 
 export default async () => {
+  // because of sequelize foreign key bug
+  await sequelize.query('ALTER TABLE "InvoiceItems" DROP CONSTRAINT "InvoiceItems_invoiceId_fkey"');
+
   try {
     await createForeignKeys();
     await createStaticData();

@@ -32,7 +32,6 @@ export default class InvoiceItem extends Model<InvoiceItem> {
   invoiceId: number;
 
   @PrimaryKey
-  @ForeignKey(() => Item)
   @Column
   itemId: number;
 
@@ -60,7 +59,7 @@ export default class InvoiceItem extends Model<InvoiceItem> {
   @Column(DataType.DECIMAL(12, 4))
   price: object;
 
-  @BelongsTo(() => Invoice, { foreignKey: 'invoiceId', onDelete: 'CASCADE' })
+  @BelongsTo(() => Invoice, { foreignKey: 'invoiceId' })
   invoice: Invoice;
 
   @BelongsTo(() => Warehouse, { foreignKey: 'warehouseId' })
