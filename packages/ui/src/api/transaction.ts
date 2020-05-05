@@ -54,8 +54,14 @@ const ADD_TRANSACTION = (type: TransactionType) => {
         variables: { id: invoiceId },
       });
 
+      console.log('cachedValue', cachedValue);
+      console.log('transaction', transaction);
+
       if (cachedValue && cachedValue.invoice) {
-        cachedValue.invoice.transactions.push(transaction);
+        const { transactions, paidSum } = cachedValue.invoice;
+
+        transactions.push(transaction);
+        cachedValue.invoice.paidSum = Number(paidSum) + Number(transaction.sum);
       }
 
       client?.cache.reset();

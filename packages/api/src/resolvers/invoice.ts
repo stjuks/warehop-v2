@@ -329,12 +329,18 @@ const findInvoices = async ({ models, user }: ApolloContext, filter: InvoiceSear
       return { id: obj.id, dueDate: obj.dueDate };
     },
     paginationFn: ({ id, dueDate }) => ({
-      dueDate: {
-        [Op.gte]: dueDate,
-      },
-      id: {
-        [Op.gte]: id,
-      },
+      [Op.or]: [
+        {
+          dueDate: {
+            [Op.gte]: dueDate,
+          },
+        },
+        {
+          id: {
+            [Op.gte]: id,
+          },
+        },
+      ],
     }),
     where: restWhere,
     include: [

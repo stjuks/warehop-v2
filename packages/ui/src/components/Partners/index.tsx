@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { FiPlusCircle, FiRefreshCw } from 'react-icons/fi';
 import { observer } from 'mobx-react-lite';
 import LoadMoreButton from '../util/LoadMoreButton';
@@ -10,37 +10,43 @@ import routes from '@ui/util/routes';
 import Radio from '../Radio';
 import Header from '../Header';
 import HeaderSearch from '../HeaderSearch';
-import PartnerStoreContext from '@ui/stores/PartnerStore';
 import PartnerListItem from '../PartnerListItem';
 import { PartnerType, SearchPartnerInput } from '@shared/types';
 import UIStoreContext from '@ui/stores/UIStore';
+import { useGraphQLQuery } from '@ui/util/hooks';
+import { FETCH_PARTNERS } from '@ui/api/partner';
+import { useLocalStorage } from 'react-use';
 
 const Partners = observer(() => {
-  const partnerStore = useContext(PartnerStoreContext);
   const uiStore = useContext(UIStoreContext);
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [partnerType, setPartnerType] = useState<PartnerType>('CLIENT');
+  const [partnerType, setPartnerType] = useLocalStorage<PartnerType>('partnerType', 'CLIENT');
+
+  const filter: SearchPartnerInput = {
+    generalQuery: searchQuery,
+    type: partnerType,
+    pagination: { limit: 5 },
+  };
+
+  const [partners, [fetchMorePartners], { loading: isLoadingPartners }] = useGraphQLQuery(
+    FETCH_PARTNERS,
+    {
+      loadOnMount: true,
+      variables: filter,
+    }
+  );
 
   const headerIcons = [
     <HeaderSearch onChange={setSearchQuery} placeholder="Otsi partnerit" />,
     <NewItemButtonContainer onClick={() => uiStore.goTo(routes.partnerForm)}>
       <FiPlusCircle />
-    </NewItemButtonContainer>
+    </NewItemButtonContainer>,
   ];
-
-  const filter: SearchPartnerInput = {
-    generalQuery: searchQuery,
-    type: partnerType
-  };
-
-  useEffect(() => {
-    partnerStore.fetchPartners(filter);
-  }, [partnerStore, searchQuery, partnerType]);
 
   const partnerTypeOptions: { label: string; value: PartnerType }[] = [
     { label: 'Kliendid', value: 'CLIENT' },
-    { label: 'Tarnijad', value: 'VENDOR' }
+    { label: 'Tarnijad', value: 'VENDOR' },
   ];
 
   return (
@@ -51,15 +57,15 @@ const Partners = observer(() => {
           options={partnerTypeOptions}
           name="radio-partner-type"
           onSelect={setPartnerType}
-          defaultValue={partnerTypeOptions[0].value}
+          defaultValue={partnerType}
         />
       </SortingContainer>
-      <ContentContainer>
-        {partnerStore.partners.map(partner => (
+      <ContentContainer isLoading={isLoadingPartners}>
+        {partners?.data.map((partner) => (
           <PartnerListItem {...partner} key={partner.id} />
         ))}
-        {partnerStore.paginatedPartners.pageInfo.hasNextPage && (
-          <LoadMoreButton onClick={() => partnerStore.fetchMorePartners(filter)}>
+        {partners?.pageInfo.hasNextPage && (
+          <LoadMoreButton onClick={() => fetchMorePartners()}>
             <FiRefreshCw />
             Lae juurde
           </LoadMoreButton>

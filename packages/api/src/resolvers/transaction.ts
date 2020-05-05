@@ -140,12 +140,18 @@ const findTransactions = async (context: ApolloContext, filter: TransactionQuery
       };
     },
     paginationFn: ({ id, date }) => ({
-      date: {
-        [Op.lte]: date,
-      },
-      id: {
-        [Op.gte]: id,
-      },
+      [Op.or]: [
+        {
+          date: {
+            [Op.lte]: date,
+          },
+        },
+        {
+          id: {
+            [Op.gte]: id,
+          },
+        },
+      ],
     }),
     where,
     include: [

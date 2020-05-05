@@ -40,7 +40,7 @@ const Products = observer(() => {
     {
       variables: {
         ...filter,
-        pagination: { limit: 1 },
+        pagination: { limit: 25 },
       },
       loadOnMount: true,
     }

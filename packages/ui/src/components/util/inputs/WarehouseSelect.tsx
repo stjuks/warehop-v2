@@ -6,13 +6,16 @@ import AriaSelect from '@ui/components/Form/AriaSelect';
 import { FiPlusCircle } from 'react-icons/fi';
 import UIStoreContext from '@ui/stores/UIStore';
 import WarehouseForm from '@ui/components/WarehouseForm';
+import { Warehouse } from '@shared/types';
 
 interface WarehouseSelectProps {
   name: string;
-  label: string;
+  label?: string;
+  className?: string;
+  options?: Warehouse[];
 }
 
-const WarehouseSelect: React.FC<WarehouseSelectProps> = observer(({ name, label }) => {
+const WarehouseSelect: React.FC<WarehouseSelectProps> = observer(({ name, label, className }) => {
   const uiStore = useContext(UIStoreContext);
 
   const [warehouses] = useGraphQLQuery(FETCH_WAREHOUSES, { loadOnMount: true });
@@ -21,6 +24,7 @@ const WarehouseSelect: React.FC<WarehouseSelectProps> = observer(({ name, label 
     <AriaSelect
       name={name}
       label={label}
+      className={className}
       optionMap={{ label: (warehouse) => warehouse.name }}
       options={warehouses || []}
       searchPlaceholder="Otsi ladu"

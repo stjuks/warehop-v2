@@ -31,6 +31,7 @@ import UIStoreContext from '@ui/stores/UIStore';
 import { useGraphQLQuery, useGraphQLMutation } from '@ui/util/hooks';
 import { FETCH_WAREHOUSES } from '@ui/api/warehouse';
 import { ADD_ITEM, EDIT_ITEM } from '@ui/api/item';
+import WarehouseSelect from '../util/inputs/WarehouseSelect';
 
 interface ProductFormProps {
   location: {
@@ -174,11 +175,10 @@ const WarehouseFields: React.FC<any> = observer(({ formikProps, arrayHelpers }) 
     <WarehouseFieldsContainer>
       {warehouseQuantity.map((wh, i) => (
         <div className="warehouse-row" key={wh.id}>
-          <AriaSelect
+          <WarehouseSelect
             name={`warehouseQuantity[${i}]`}
             label={i === 0 ? 'Ladu' : undefined}
             options={filterChosenWarehouseOptions(warehouseQuantity, warehouses)}
-            optionMap={{ label: (warehouse) => warehouse.name }}
             className="warehouse-select"
           />
           <TextInput
