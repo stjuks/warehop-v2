@@ -130,7 +130,7 @@ export const useGraphQLMutation = <InputValues>(mutation: Mutation) => {
         variables: newVariables,
       });
 
-      if (mutation.onMutate) mutation.onMutate({ client, customValues, result });
+      if (mutation.onMutate) mutation.onMutate({ client, customValues, result, variables });
 
       return result;
     } catch (err) {

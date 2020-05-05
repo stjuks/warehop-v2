@@ -6,6 +6,7 @@ interface OnMutateOptions {
   client?: ApolloClient<object>;
   customValues?: any;
   result?: any;
+  variables?: any;
 }
 
 interface MutationConfig {

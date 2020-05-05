@@ -129,25 +129,23 @@ const findTransactions = async (context: ApolloContext, filter: TransactionQuery
       ['date', 'DESC'],
       ['id', 'ASC'],
     ],
-    paginateBy: (obj) => ({
-      id: obj.id,
-      date: obj.date,
-    }),
+    paginateBy: (obj) => {
+      obj.date.toJSON = function () {
+        return moment(this).format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+      };
+
+      return {
+        id: obj.id,
+        date: obj.date,
+      };
+    },
     paginationFn: ({ id, date }) => ({
-      [Op.or]: [
-        {
-          date: {
-            [Op.lte]: moment(new Date(date))
-              .subtract(new Date(date).getTimezoneOffset(), 'm')
-              .toDate(),
-          },
-        },
-        {
-          id: {
-            [Op.gte]: id,
-          },
-        },
-      ],
+      date: {
+        [Op.lte]: date,
+      },
+      id: {
+        [Op.gte]: id,
+      },
     }),
     where,
     include: [

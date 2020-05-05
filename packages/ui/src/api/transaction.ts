@@ -45,6 +45,27 @@ const ADD_TRANSACTION = (type: TransactionType) => {
         }
       }
     `,
+    onMutate: ({ client, result, variables }) => {
+      const { invoiceId } = variables;
+      const transaction = result.data[name];
+
+      const cachedValue = client?.readQuery({
+        query: FETCH_INVOICE.query,
+        variables: { id: invoiceId },
+      });
+
+      if (cachedValue && cachedValue.invoice) {
+        cachedValue.invoice.transactions.push(transaction);
+      }
+
+      client?.cache.reset();
+
+      client?.writeQuery({
+        query: FETCH_INVOICE.query,
+        variables: { id: invoiceId },
+        data: cachedValue,
+      });
+    },
   });
 };
 

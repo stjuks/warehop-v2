@@ -88,6 +88,8 @@ export const paginate = async (model: ModelCtor, opts: PaginateOptions) => {
   if (cursor) {
     const decryptedHash: any = fromCursorHash(cursor);
 
+    console.log('DEKRÜPTEDHASH', JSON.parse(decryptedHash));
+
     if (paginationFn) {
       where = { ...where, ...paginationFn(JSON.parse(decryptedHash)) };
     } else {
@@ -120,6 +122,7 @@ export const paginate = async (model: ModelCtor, opts: PaginateOptions) => {
 
     if (hasNextPage) {
       result.data.pop();
+      console.log('CURSOROBJ', cursorObj);
       result.pageInfo.cursor = toCursorHash(cursorObj);
     }
   }

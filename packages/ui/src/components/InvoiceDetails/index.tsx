@@ -142,7 +142,7 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = (pro
       ),
       onClick: () =>
         uiStore.openModal(
-          <TransactionForm invoice={invoice} onSubmit={() => fetchInvoice({ id })} />
+          <TransactionForm invoice={invoice} />
         ),
     });
   }

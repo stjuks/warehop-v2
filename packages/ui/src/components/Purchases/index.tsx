@@ -31,7 +31,7 @@ const Purchases = observer(() => {
   const [purchases, [fetchMorePurchases], { loading: isLoadingPurchases }] = useGraphQLQuery(
     FETCH_PURCHASES,
     {
-      variables: { ...filter, pagination: { limit: 25 }, generalQuery: searchQuery },
+      variables: { ...filter, pagination: { limit: 1 }, generalQuery: searchQuery },
       loadOnMount: true,
     }
   );

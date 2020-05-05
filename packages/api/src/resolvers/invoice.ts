@@ -321,25 +321,20 @@ const findInvoices = async ({ models, user }: ApolloContext, filter: InvoiceSear
       ['id', 'ASC'],
       [{ model: models.Transaction, as: 'transactions' }, 'date', 'DESC'],
     ],
-    paginateBy: (obj) => ({
-      id: obj.id,
-      dueDate: obj.dueDate,
-    }),
+    paginateBy: (obj) => {
+      obj.dueDate.toJSON = function () {
+        return moment(this).format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+      };
+
+      return { id: obj.id, dueDate: obj.dueDate };
+    },
     paginationFn: ({ id, dueDate }) => ({
-      [Op.or]: [
-        {
-          dueDate: {
-            [Op.gte]: moment(new Date(dueDate))
-              .subtract(new Date(dueDate).getTimezoneOffset(), 'm')
-              .toDate(),
-          },
-        },
-        {
-          id: {
-            [Op.gte]: id,
-          },
-        },
-      ],
+      dueDate: {
+        [Op.gte]: dueDate,
+      },
+      id: {
+        [Op.gte]: id,
+      },
     }),
     where: restWhere,
     include: [
