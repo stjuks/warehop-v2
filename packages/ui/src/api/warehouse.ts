@@ -48,6 +48,18 @@ export const DELETE_WAREHOUSE = new Mutation({
       deleteWarehouse(id: $id)
     }
   `,
+  onMutate: ({ client, variables }) => {
+    const { id } = variables;
+
+    const { warehouses }: any = client?.readQuery({ query: FETCH_WAREHOUSES.query });
+
+    client?.writeQuery({
+      query: FETCH_WAREHOUSES.query,
+      data: {
+        warehouses: warehouses.filter((wh) => wh.id !== id),
+      },
+    });
+  },
   errorHandler: {
     DeletionRestrictedError: {
       WarehouseItems: 'Ladu ei saa kustutada, kuna selles on kaubad.',

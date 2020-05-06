@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import TextInput from '../Form/TextInput';
 import { AddWarehouseInput, Warehouse } from '@shared/types';
 import Header from '../Header';
-import { ContentContainer } from '../App/styles';
+import ContentContainer from '../util/ContentContainer';
 import { FooterContainer } from '../Footer/styles';
 import Button from '../Button';
 import { RouteChildrenProps } from 'react-router';

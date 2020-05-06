@@ -38,7 +38,7 @@ export const styledInput = {
     general: theme => `
       background: ${theme.colors.white};
       border: 1px solid ${theme.colors.midGrey};
-      border-radius: 1.25rem;
+      border-radius: 21px;
       transition: border-color 0.2s;
     `,
     hover: theme => `

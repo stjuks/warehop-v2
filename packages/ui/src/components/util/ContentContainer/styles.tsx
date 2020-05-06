@@ -7,11 +7,11 @@ interface ContentContainerStyledProps {
 
 const fadeIn = keyframes`
   from {
-    opacity: 0;
+    opacity: 1;
   }
 
   to {
-    opacity: 1;
+    opacity: 0;
   }
 `;
 
@@ -23,12 +23,28 @@ export const ContentContainerWrapper = styled.div`
 `;
 
 export const ContentContainerStyled = styled.div<ContentContainerStyledProps>`
-  animation: 0.3s ${fadeIn} ease-in-out;
+  position: relative;
+
+  :after {
+    animation: 0.3s ${fadeIn} ease-in-out;
+    content: '';
+    position: absolute;
+    pointer-events: none;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    opacity: 0;
+  }
 
   ${({ theme, padded }) => `
     background: ${theme.colors.lightGrey};
     flex: 1;
     overflow: auto;
+    
+    :after {
+      background: ${theme.colors.lightGrey};
+    }
     
     ${padded ? 'padding: 1rem;' : ''}
   `}

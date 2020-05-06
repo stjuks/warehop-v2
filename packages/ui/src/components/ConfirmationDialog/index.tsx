@@ -35,6 +35,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   const handleConfirm = async () => {
     try {
       await onConfirm();
+      uiStore.closeModal();
     } catch (err) {
       if (err.messages) setErrorMessages(err.messages);
     }
