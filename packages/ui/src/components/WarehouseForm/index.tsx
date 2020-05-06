@@ -14,26 +14,33 @@ import WarehouseStoreContext from '@ui/stores/WarehouseStore';
 import UIStoreContext from '@ui/stores/UIStore';
 import FormError from '../Form/FormError';
 import { useGraphQLMutation } from '@ui/util/hooks';
-import { ADD_WAREHOUSE } from '@ui/api/warehouse';
+import { ADD_WAREHOUSE, EDIT_WAREHOUSE } from '@ui/api/warehouse';
 
 interface WarehouseFormProps {
   onSubmit?: (Warehouse: AddWarehouseInput) => any;
+  warehouse?: Warehouse;
 }
 
-const WarehouseForm: React.FC<WarehouseFormProps & RouteChildrenProps> = ({ onSubmit }) => {
-  const warehouseStore = useContext(WarehouseStoreContext);
+const WarehouseForm: React.FC<WarehouseFormProps & RouteChildrenProps> = ({
+  onSubmit,
+  warehouse,
+}) => {
   const uiStore = useContext(UIStoreContext);
 
   const [addWarehouse] = useGraphQLMutation(ADD_WAREHOUSE);
+  const [editWarehouse] = useGraphQLMutation(EDIT_WAREHOUSE);
+
+  const isEditing = warehouse !== undefined;
 
   const initialValues = {
     name: '',
   };
 
-  const handleSubmit = async (warehouse: AddWarehouseInput) => {
+  const handleSubmit = async ({ name }: AddWarehouseInput) => {
     try {
-      await addWarehouse(warehouse);
-      if (onSubmit) onSubmit(warehouse);
+      if (warehouse) await editWarehouse({ name, id: warehouse.id });
+      else await addWarehouse({ name });
+      if (onSubmit) onSubmit({ name });
       uiStore.closeModal();
     } catch (err) {
       throw err;
@@ -46,12 +53,12 @@ const WarehouseForm: React.FC<WarehouseFormProps & RouteChildrenProps> = ({ onSu
 
   return (
     <>
-      <Header title="Uus ladu" backTo />
+      <Header title={isEditing ? 'Muuda ladu' : 'Uus ladu'} backTo />
       <ContentContainer>
         <Form
           id="warehouse-form"
           validationSchema={validationSchema}
-          initialValues={initialValues}
+          initialValues={warehouse || initialValues}
           onSubmit={handleSubmit}
         >
           <FormError />
@@ -59,7 +66,11 @@ const WarehouseForm: React.FC<WarehouseFormProps & RouteChildrenProps> = ({ onSu
         </Form>
       </ContentContainer>
       <FooterContainer style={{ padding: '0.25rem 1rem' }}>
-        <Button title="Lisa ladu" form="warehouse-form" type="submit" />
+        <Button
+          title={isEditing ? 'Muuda ladu' : 'Lisa ladu'}
+          form="warehouse-form"
+          type="submit"
+        />
       </FooterContainer>
     </>
   );

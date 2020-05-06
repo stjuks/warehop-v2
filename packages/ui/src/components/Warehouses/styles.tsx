@@ -36,7 +36,7 @@ export const WarehouseItemContainer = styled.div`
         border-radius: 50%;
         margin-left: 0.5rem;
         color: ${theme.colors.lightText};
-        font-size: 1.25rem;
+        font-size: 1.125rem;
         display: flex;
         justify-content: center;
         align-items: center;

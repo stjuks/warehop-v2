@@ -69,8 +69,11 @@ export const DELETE_WAREHOUSE = new Mutation({
 
 export const EDIT_WAREHOUSE = new Mutation({
   mutation: `
-    mutation editWarehouse($id: ID!, $name: String, $abbreviation: String) {
-      editWarehouse(id: $id, name: $name, abbreviation: $abbreviation)
+    mutation editWarehouse($id: ID!, $name: String!) {
+      editWarehouse(id: $id, name: $name) {
+        id
+        name
+      }
     }
   `,
   onMutate: ({ client }) => client?.cache.reset(),

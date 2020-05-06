@@ -36,13 +36,22 @@ const Warehouses: React.FC<WarehousesProps> = () => {
     );
   };
 
+  const handleEdit = (warehouse: Warehouse) => {
+    uiStore.openModal(<WarehouseForm warehouse={warehouse} />);
+  };
+
   return (
     <>
       <Header title="Laod" backTo />
       <ContentContainer isLoading={isLoadingWarehouses}>
         {warehouses &&
           warehouses.map((warehouse: Warehouse) => (
-            <WarehouseItem key={warehouse.id} warehouse={warehouse} onDelete={handleDelete} />
+            <WarehouseItem
+              key={warehouse.id}
+              warehouse={warehouse}
+              onDelete={handleDelete}
+              onEdit={handleEdit}
+            />
           ))}
       </ContentContainer>
       <AddWarehouseButton onClick={() => uiStore.openModal(<WarehouseForm />)}>

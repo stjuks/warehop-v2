@@ -4,7 +4,7 @@ const warehouseResolver: Resolver = {
   Query: {
     warehouses: authResolver(async (args, { models, user }) => {
       return await models.Warehouse.findAll({ where: { userId: user.id } });
-    })
+    }),
   },
   Mutation: {
     addWarehouse: authResolver(async ({ name }, { models, user }) => {
@@ -14,15 +14,17 @@ const warehouseResolver: Resolver = {
     deleteWarehouse: authResolver(async ({ id }, { models, user }) => {
       return await models.Warehouse.destroy({ where: { userId: user.id, id } });
     }),
-    editWarehouse: authResolver(async ({ id, ...rest }, { models, user }) => {
-      const [editedRows] = await models.Warehouse.update(rest, {
-        where: { userId: user.id, id },
-        returning: true
-      });
+    editWarehouse: authResolver(async ({ id, name }, { models, user }) => {
+      await models.Warehouse.update(
+        { name },
+        {
+          where: { userId: user.id, id },
+        }
+      );
 
-      return editedRows;
-    })
-  }
+      return { id, name };
+    }),
+  },
 };
 
 export default warehouseResolver;
