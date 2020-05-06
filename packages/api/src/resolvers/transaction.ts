@@ -6,7 +6,7 @@ import {
   Transaction,
 } from '@shared/types';
 import moment from 'moment';
-import { Op } from 'sequelize';
+import { Op, literal } from 'sequelize';
 
 const resolver: Resolver = {
   Query: {
@@ -127,7 +127,7 @@ const findTransactions = async (context: ApolloContext, filter: TransactionQuery
     limit,
     order: [
       ['date', 'DESC'],
-      ['id', 'ASC'],
+      ['id', 'DESC'],
     ],
     paginateBy: (obj) => {
       obj.date.toJSON = function () {
@@ -140,17 +140,8 @@ const findTransactions = async (context: ApolloContext, filter: TransactionQuery
       };
     },
     paginationFn: ({ id, date }) => ({
-      [Op.or]: [
-        {
-          date: {
-            [Op.lte]: date,
-          },
-        },
-        {
-          id: {
-            [Op.gte]: id,
-          },
-        },
+      [Op.and]: [
+        literal(`(date, "Transaction"."id") <= ('${date}', '${id}')`)
       ],
     }),
     where,

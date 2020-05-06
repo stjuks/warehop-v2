@@ -35,7 +35,7 @@ const Transactions: React.FC<TransactionsProps> = observer(({ type }) => {
   const FETCH_QUERY = type === 'EXPENSE' ? FETCH_EXPENSES : FETCH_INCOMES;
 
   const [transactions, [fetchMoreTransactions]] = useGraphQLQuery(FETCH_QUERY, {
-    variables: { pagination: { limit: 1 }, startDate, endDate, generalQuery },
+    variables: { pagination: { limit: 25 }, startDate, endDate, generalQuery },
     loadOnMount: true,
   });
 

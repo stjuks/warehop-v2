@@ -18,6 +18,7 @@ import UIStoreContext from '@ui/stores/UIStore';
 import WarehouseForm from '../WarehouseForm';
 import { FETCH_PRODUCTS } from '@ui/api/item';
 import { FETCH_WAREHOUSES } from '@ui/api/warehouse';
+import { FaWarehouse } from 'react-icons/fa';
 
 const Products = observer(() => {
   const uiStore = useContext(UIStoreContext);
@@ -61,28 +62,33 @@ const Products = observer(() => {
     <>
       <Header title="Kaubad" components={headerIcons} />
       <SortingContainer>
-        <MenuSelect
-          name="warehouseId"
-          options={warehouseOptions}
-          value={warehouseFilter}
-          searchPlaceholder="Otsi ladu"
-          onChange={({ value }) => setWarehouseFilter(value)}
-          optionMap={{ label: (wh) => wh.name }}
-          onSearch={(query, options) =>
-            options.filter(
-              (option) => option.value.name.toLowerCase().indexOf(query.toLowerCase()) !== -1
-            )
-          }
-          action={{
-            label: (
-              <>
-                <FiPlusCircle style={{ marginRight: '0.25rem' }} /> Lisa ladu
-              </>
-            ),
-            onClick: () => uiStore.openModal(<WarehouseForm />),
-          }}
-          noFormik
-        />
+        <div className="row">
+          <MenuSelect
+            name="warehouseId"
+            options={warehouseOptions}
+            value={warehouseFilter}
+            searchPlaceholder="Otsi ladu"
+            onChange={({ value }) => setWarehouseFilter(value)}
+            optionMap={{ label: (wh) => wh.name }}
+            onSearch={(query, options) =>
+              options.filter(
+                (option) => option.value.name.toLowerCase().indexOf(query.toLowerCase()) !== -1
+              )
+            }
+            action={{
+              label: (
+                <>
+                  <FiPlusCircle style={{ marginRight: '0.25rem' }} /> Lisa ladu
+                </>
+              ),
+              onClick: () => uiStore.openModal(<WarehouseForm />),
+            }}
+            noFormik
+          />
+          <button className="action-btn warehouse-btn">
+            <FaWarehouse />
+          </button>
+        </div>
       </SortingContainer>
       <ContentContainer isLoading={isLoadingProducts} key={JSON.stringify(filter)}>
         {products?.data.map((product) => (

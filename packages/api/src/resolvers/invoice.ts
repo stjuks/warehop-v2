@@ -329,17 +329,8 @@ const findInvoices = async ({ models, user }: ApolloContext, filter: InvoiceSear
       return { id: obj.id, dueDate: obj.dueDate };
     },
     paginationFn: ({ id, dueDate }) => ({
-      [Op.or]: [
-        {
-          dueDate: {
-            [Op.gte]: dueDate,
-          },
-        },
-        {
-          id: {
-            [Op.gte]: id,
-          },
-        },
+      [Op.and]: [
+        Sequelize.literal(`("Invoice"."dueDate", "Invoice"."id") >= ('${dueDate}', ${id})`)
       ],
     }),
     where: restWhere,
