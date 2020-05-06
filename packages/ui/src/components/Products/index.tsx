@@ -16,6 +16,7 @@ import MenuSelect from '../util/inputs/MenuSelect';
 import WarehouseStoreContext from '@ui/stores/WarehouseStore';
 import UIStoreContext from '@ui/stores/UIStore';
 import WarehouseForm from '../WarehouseForm';
+import Warehouses from '../Warehouses';
 import { FETCH_PRODUCTS } from '@ui/api/item';
 import { FETCH_WAREHOUSES } from '@ui/api/warehouse';
 import { FaWarehouse } from 'react-icons/fa';
@@ -34,15 +35,13 @@ const Products = observer(() => {
   const filter: ItemQueryInput = {
     generalQuery: searchQuery,
     warehouseId: warehouseFilter.id,
+    pagination: { limit: 25 },
   };
 
   const [products, [fetchMoreProducts], { loading: isLoadingProducts }] = useGraphQLQuery(
     FETCH_PRODUCTS,
     {
-      variables: {
-        ...filter,
-        pagination: { limit: 25 },
-      },
+      variables: filter,
       loadOnMount: true,
     }
   );
@@ -62,33 +61,28 @@ const Products = observer(() => {
     <>
       <Header title="Kaubad" components={headerIcons} />
       <SortingContainer>
-        <div className="row">
-          <MenuSelect
-            name="warehouseId"
-            options={warehouseOptions}
-            value={warehouseFilter}
-            searchPlaceholder="Otsi ladu"
-            onChange={({ value }) => setWarehouseFilter(value)}
-            optionMap={{ label: (wh) => wh.name }}
-            onSearch={(query, options) =>
-              options.filter(
-                (option) => option.value.name.toLowerCase().indexOf(query.toLowerCase()) !== -1
-              )
-            }
-            action={{
-              label: (
-                <>
-                  <FiPlusCircle style={{ marginRight: '0.25rem' }} /> Lisa ladu
-                </>
-              ),
-              onClick: () => uiStore.openModal(<WarehouseForm />),
-            }}
-            noFormik
-          />
-          <button className="action-btn warehouse-btn">
-            <FaWarehouse />
-          </button>
-        </div>
+        <MenuSelect
+          name="warehouseId"
+          options={warehouseOptions}
+          value={warehouseFilter}
+          searchPlaceholder="Otsi ladu"
+          onChange={({ value }) => setWarehouseFilter(value)}
+          optionMap={{ label: (wh) => wh.name }}
+          onSearch={(query, options) =>
+            options.filter(
+              (option) => option.value.name.toLowerCase().indexOf(query.toLowerCase()) !== -1
+            )
+          }
+          action={{
+            label: (
+              <>
+                <FiPlusCircle style={{ marginRight: '0.25rem' }} /> Lisa ladu
+              </>
+            ),
+            onClick: () => uiStore.openModal(<Warehouses />),
+          }}
+          noFormik
+        />
       </SortingContainer>
       <ContentContainer isLoading={isLoadingProducts} key={JSON.stringify(filter)}>
         {products?.data.map((product) => (

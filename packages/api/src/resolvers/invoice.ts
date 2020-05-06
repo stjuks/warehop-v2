@@ -75,24 +75,13 @@ const resolver: Resolver = {
 
       return parsedItems;
     }),
-    invoiceCounts: authResolver(async ({ type }, { models, user }) => {
-      const result = {
-        paid: 0,
-        unpaid: 0,
-        unlocked: 0,
-      };
-
-      const where: any = { userId: user.id };
-
-      if (type) where.type = type;
-
-      const invoices = await models.Invoice.findAll({ where });
-
-      invoices.forEach((invoice: any) => {
-        if (!invoice.isLocked) result.unlocked++;
-        else if (Number(invoice.sum) <= Number(invoice.paidSum)) result.paid++;
-        else result.unpaid++;
-      });
+    invoiceCounts: authResolver(async ({ type }, { models, user, sequelize }) => {
+      const [[result]] = await sequelize.query(`SELECT 
+          COUNT(id) FILTER (WHERE "paidSum" >= sum AND "isLocked"=true) AS "paid",
+          COUNT(id) FILTER (WHERE "paidSum" < sum AND "isLocked"=true) AS "unpaid",
+          COUNT(id) FILTER (WHERE "isLocked"=false) AS "unlocked"
+          FROM "Invoices" WHERE "userId"=${user.id} AND type='${type}'
+      `);      
 
       return result;
     }),
@@ -330,7 +319,7 @@ const findInvoices = async ({ models, user }: ApolloContext, filter: InvoiceSear
     },
     paginationFn: ({ id, dueDate }) => ({
       [Op.and]: [
-        Sequelize.literal(`("Invoice"."dueDate", "Invoice"."id") >= ('${dueDate}', ${id})`)
+        Sequelize.literal(`("Invoice"."dueDate", "Invoice"."id") >= ('${dueDate}', ${id})`),
       ],
     }),
     where: restWhere,

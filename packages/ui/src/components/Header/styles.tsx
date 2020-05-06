@@ -15,6 +15,7 @@ export const HeaderContainer = styled.div`
     font-size: 1.25rem;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
     z-index: 2;
+    flex-shrink: 0;
   `}
 `;
 

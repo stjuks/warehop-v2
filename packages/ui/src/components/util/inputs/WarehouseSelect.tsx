@@ -7,6 +7,7 @@ import { FiPlusCircle } from 'react-icons/fi';
 import UIStoreContext from '@ui/stores/UIStore';
 import WarehouseForm from '@ui/components/WarehouseForm';
 import { Warehouse } from '@shared/types';
+import Warehouses from '@ui/components/Warehouses';
 
 interface WarehouseSelectProps {
   name: string;
@@ -15,7 +16,7 @@ interface WarehouseSelectProps {
   options?: Warehouse[];
 }
 
-const WarehouseSelect: React.FC<WarehouseSelectProps> = observer(({ name, label, className }) => {
+const WarehouseSelect: React.FC<WarehouseSelectProps> = observer(({ name, label, className, options }) => {
   const uiStore = useContext(UIStoreContext);
 
   const [warehouses] = useGraphQLQuery(FETCH_WAREHOUSES, { loadOnMount: true });
@@ -26,7 +27,7 @@ const WarehouseSelect: React.FC<WarehouseSelectProps> = observer(({ name, label,
       label={label}
       className={className}
       optionMap={{ label: (warehouse) => warehouse.name }}
-      options={warehouses || []}
+      options={options || warehouses || []}
       searchPlaceholder="Otsi ladu"
       action={{
         label: (
@@ -35,7 +36,7 @@ const WarehouseSelect: React.FC<WarehouseSelectProps> = observer(({ name, label,
             Lisa ladu
           </>
         ),
-        onClick: () => uiStore.openModal(<WarehouseForm />)
+        onClick: () => uiStore.openModal(<Warehouses />)
       }}
     />
   );

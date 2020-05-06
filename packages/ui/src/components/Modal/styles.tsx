@@ -23,6 +23,7 @@ export const ModalContainer = styled(ReactModal)`
 
       @media only screen and (min-width: ${theme.devices.mobileL}) {
         min-width: calc(${theme.devices.mobileL} - 1rem);
+        max-height: 30rem;
       }
     }
   `}
