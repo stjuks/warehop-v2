@@ -74,11 +74,7 @@ const Products = observer(() => {
             )
           }
           action={{
-            label: (
-              <>
-                <FiPlusCircle style={{ marginRight: '0.25rem' }} /> Lisa ladu
-              </>
-            ),
+            label: 'Halda ladusid',
             onClick: () => uiStore.openModal(<Warehouses />),
           }}
           noFormik

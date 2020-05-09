@@ -21,6 +21,8 @@ import WarehouseStoreContext from '../../stores/WarehouseStore';
 import UnitSelect from '../util/inputs/UnitSelect';
 import ItemStoreContext from '@ui/stores/ItemStore';
 import WarehouseSelect from '../util/inputs/WarehouseSelect';
+import { useGraphQLQuery } from '@ui/util/hooks';
+import { FETCH_PRODUCTS } from '@ui/api/item';
 
 interface PurchaseItemFormProps {
   arrayHelpers: any;
@@ -77,8 +79,8 @@ const forms = {
 };
 
 const ItemForm = ({ type }: { type: ItemType }) => {
-  const warehouseStore = useContext(WarehouseStoreContext);
-  const itemStore = useContext(ItemStoreContext);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchedProducts, [, fetchProducts]] = useGraphQLQuery(FETCH_PRODUCTS);
 
   // autofill fields on select
   const handleAutosuggestSelect = ({ suggestion, formik }) => {
@@ -106,7 +108,10 @@ const ItemForm = ({ type }: { type: ItemType }) => {
         <AutosuggestInput
           name="code"
           label="Kood"
-          getSuggestions={(query) => [] /* itemStore.fetchProducts({ code: query }) */}
+          getSuggestions={async (query) => {
+            await fetchProducts({ code: query, pagination: { limit: 5 } });
+            return searchedProducts ? searchedProducts.data : [];
+          }}
           suggestionMap={{ label: (item) => item.code }}
           onSelect={handleAutosuggestSelect}
         />

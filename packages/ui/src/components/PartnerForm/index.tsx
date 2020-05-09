@@ -18,11 +18,17 @@ import { partnerTypeTranslations } from '@ui/util/translations';
 import TextInput from '../Form/TextInput';
 import FormError from '../Form/FormError';
 import UIStoreContext from '@ui/stores/UIStore';
+import { useGraphQLQuery, useGraphQLMutation } from '@ui/util/hooks';
+import { FETCH_TYPES } from '@ui/api/common';
+import { ADD_PARTNER } from '@ui/api/partner';
 
 const PartnerForm = observer(() => {
   const partnerStore = useContext(PartnerStoreContext);
   const commonStore = useContext(CommonStoreContext);
   const uiStore = useContext(UIStoreContext);
+
+  const [types] = useGraphQLQuery(FETCH_TYPES, { loadOnMount: true });
+  const [addPartner] = useGraphQLMutation(ADD_PARTNER);
 
   const initialValues: Partner = {
     name: '',
@@ -44,7 +50,7 @@ const PartnerForm = observer(() => {
 
   const handleSubmit = async (partner: Partner) => {
     try {
-      await partnerStore.addPartner(partner);
+      await addPartner(partner);
       uiStore.goBack(routes.partners);
     } catch (err) {
       throw err;
@@ -67,7 +73,7 @@ const PartnerForm = observer(() => {
         >
           <FormError />
           <AriaSelect
-            options={commonStore.partnerTypes}
+            options={types ? types.partnerTypes : []}
             optionMap={{ label: (value) => partnerTypeTranslations[value] }}
             name="type"
             label="Partneri tüüp"

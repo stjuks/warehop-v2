@@ -62,6 +62,10 @@ const ADD_TRANSACTION = (type: TransactionType) => {
 
         transactions.push(transaction);
         cachedValue.invoice.paidSum = Number(paidSum) + Number(transaction.sum);
+
+        if (Number(cachedValue.invoice.paidSum) >= Number(cachedValue.invoice.sum)) {
+          cachedValue.invoice.isPaid = true;
+        }
       }
 
       client?.cache.reset();

@@ -48,7 +48,7 @@ const WarehouseForm: React.FC<WarehouseFormProps & RouteChildrenProps> = ({
   };
 
   const validationSchema = yup.object({
-    name: yup.string().required('Palun sisesta lao nimetus.'),
+    name: yup.string().typeError('Palun sisesta lao nimetus.').required('Palun sisesta lao nimetus.'),
   });
 
   return (

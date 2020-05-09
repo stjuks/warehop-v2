@@ -11,6 +11,7 @@ import InvoiceItem from './InvoiceItem';
 import Transaction from './Transaction';
 import WarehouseItem from './WarehouseItem';
 import TransactionType from './TransactionType';
+import InvoicePartner from './InvoicePartner';
 
 export default {
   User,
@@ -25,5 +26,6 @@ export default {
   InvoiceItem,
   Transaction,
   TransactionType,
-  WarehouseItem
+  WarehouseItem,
+  InvoicePartner
 };

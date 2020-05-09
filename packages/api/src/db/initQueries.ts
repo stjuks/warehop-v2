@@ -108,7 +108,7 @@ const createStaticData = async () => {
 
 const createTestData = async () => {
   await models.User.create({ name: 'Test user' });
-  await models.Unit.create({ name: 'Tükk', abbreviation: 'tk', userId: 1 });
+  /* await models.Unit.create({ name: 'Tükk', abbreviation: 'tk', userId: 1 });
   await models.Warehouse.create({ name: 'Ladu 1', userId: 1 });
   await models.Partner.create({ name: 'CIRCLE K', type: 'VENDOR', userId: 1 });
   await models.Partner.create({ name: 'Olerex AS', type: 'VENDOR', userId: 1 });
@@ -119,7 +119,7 @@ const createTestData = async () => {
   await models.Partner.create({ name: 'Elisa AS', type: 'VENDOR', userId: 1 });
   await models.Partner.create({ name: 'Philips Eesti AS', type: 'VENDOR', userId: 1 });
   await models.Partner.create({ name: 'Euronics AS', type: 'VENDOR', userId: 1 });
-  await models.Partner.create({ name: 'ON/OFF AS', type: 'VENDOR', userId: 1 });
+  await models.Partner.create({ name: 'ON/OFF AS', type: 'VENDOR', userId: 1 }); */
 };
 
 export const createProcedures = async () => {
