@@ -11,7 +11,8 @@ import {
   Default,
   HasMany,
   Index,
-  BelongsToMany
+  BelongsToMany,
+  HasOne,
 } from 'sequelize-typescript';
 
 import User from './User';
@@ -20,15 +21,16 @@ import InvoiceType from './InvoiceType';
 import Item from './Item';
 import InvoiceItem from './InvoiceItem';
 import Transaction from './Transaction';
+import InvoicePartner from './InvoicePartner';
 
 @Table({
   indexes: [
     {
       name: 'IDX_UQ_Invoices_userId_type_number',
       unique: true,
-      fields: ['userId', 'type', 'number']
-    }
-  ]
+      fields: ['userId', 'type', 'number'],
+    },
+  ],
 })
 export default class Invoice extends Model<Invoice> {
   @PrimaryKey
@@ -40,12 +42,7 @@ export default class Invoice extends Model<Invoice> {
   @PrimaryKey
   @Column
   userId: number;
-
-  @AllowNull(false)
-  @Index
-  @Column
-  partnerId: number;
-
+  
   @AllowNull(false)
   @Index
   @Column
@@ -86,8 +83,8 @@ export default class Invoice extends Model<Invoice> {
   @BelongsTo(() => User, { foreignKey: 'userId', onDelete: 'CASCADE' })
   user: User;
 
-  @BelongsTo(() => Partner, { foreignKey: 'partnerId', onDelete: 'RESTRICT' })
-  partner: Partner;
+  @HasOne(() => InvoicePartner, { foreignKey: 'invoiceId' })
+  partner: InvoicePartner;
 
   @BelongsTo(() => InvoiceType, { foreignKey: 'type', onDelete: 'RESTRICT' })
   invoiceType: InvoiceType;

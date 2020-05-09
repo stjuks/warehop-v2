@@ -9,6 +9,7 @@ import {
   Unique,
   Index,
   DataType,
+  ForeignKey,
 } from 'sequelize-typescript';
 
 import User from './User';
@@ -18,6 +19,7 @@ import Invoice from './Invoice';
 @Table
 export default class InvoicePartner extends Model<InvoicePartner> {
   @PrimaryKey
+  @ForeignKey(() => Invoice)
   @Column
   invoiceId: number;
 

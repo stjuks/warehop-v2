@@ -10,9 +10,22 @@ export interface InvoiceItemInput {
   code?: string;
 }
 
+export interface InvoicePartnerInput {
+  name: string;
+  savePartner: boolean;
+  regNr?: string;
+  VATnr?: string;
+  phoneNr?: string;
+  email?: string;
+  street?: string;
+  postalCode?: string;
+  county?: string;
+  country?: string;
+}
+
 export interface AddInvoiceInput {
-  partnerId: number;
   type: InvoiceType;
+  partner: InvoicePartnerInput;
   number: string;
   sum: string;
   items: InvoiceItemInput[];

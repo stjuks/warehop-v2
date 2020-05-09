@@ -178,7 +178,10 @@ export const parseInvoiceInput = (invoice: Invoice) => {
 
   const invoiceInput: AddInvoiceInput = {
     ...restInvoice,
-    partnerId: invoice.partner.id || 0,
+    partner: {
+      savePartner: false,
+      ...partner
+    }
   };
 
   invoiceInput.items = invoice.items.map((item) => {

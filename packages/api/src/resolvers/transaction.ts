@@ -26,7 +26,7 @@ const resolver: Resolver = {
           {
             model: models.Invoice,
             attributes: ['id', 'number', 'isLocked'],
-            include: [{ model: models.Partner, attributes: ['id', 'name'] }],
+            include: [{ model: models.InvoicePartner, attributes: ['name'] }],
           },
         ],
       });
@@ -150,7 +150,7 @@ const findTransactions = async (context: ApolloContext, filter: TransactionQuery
         model: models.Invoice,
         where: { type: invoiceType, isLocked: true },
         attributes: ['id', 'number', 'isLocked'],
-        include: [{ model: models.Partner, attributes: ['id', 'name'] }],
+        include: [{ model: models.InvoicePartner, attributes: ['name'] }],
       },
     ],
   });

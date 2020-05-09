@@ -86,7 +86,7 @@ const ProductDetails: React.FC<ProductItem & RouteComponentProps> = (props) => {
               <div className="row">
                 <div className="detail">
                   <div className="detail-label">Tarnija</div>
-                  <div className="detail-value">{product.partner && product.partner.name}</div>
+                  <div className="detail-value">{product.partner && product.partner.name || '-'}</div>
                 </div>
               </div>
               <div className="row">

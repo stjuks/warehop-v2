@@ -81,7 +81,7 @@ const resolver: Resolver = {
           COUNT(id) FILTER (WHERE "paidSum" < sum AND "isLocked"=true) AS "unpaid",
           COUNT(id) FILTER (WHERE "isLocked"=false) AS "unlocked"
           FROM "Invoices" WHERE "userId"=${user.id} AND type='${type}'
-      `);      
+      `);
 
       return result;
     }),
@@ -89,7 +89,7 @@ const resolver: Resolver = {
   Mutation: {
     addInvoice: authResolver(async ({ invoice }: { invoice: AddInvoiceInput }, context) => {
       const { models, sequelize, user } = context;
-      const { items, file, ...restInvoice } = invoice;
+      const { items, file, partner, ...restInvoice } = invoice;
 
       restInvoice.sum = items
         .reduce<currency>(
@@ -99,6 +99,27 @@ const resolver: Resolver = {
         .toString();
 
       const transaction = await sequelize.transaction();
+
+      const createPartner = async (invoiceId) => {
+        await models.InvoicePartner.create(
+          {
+            ...partner,
+            invoiceId,
+          },
+          { transaction }
+        );
+
+        if (partner.savePartner) {
+          await models.Partner.upsert(
+            {
+              ...partner,
+              userId: user.id,
+              type: invoice.type === 'PURCHASE' ? 'VENDOR' : 'CLIENT',
+            },
+            { transaction }
+          );
+        }
+      };
 
       const uploadFile = async (invoiceId) => {
         if (file && invoice.type === 'PURCHASE') {
@@ -140,6 +161,8 @@ const resolver: Resolver = {
 
         await uploadFile(addedInvoice.id);
 
+        await createPartner(addedInvoice.id);
+
         await transaction.commit();
 
         return addedInvoice.id;
@@ -151,6 +174,7 @@ const resolver: Resolver = {
     editInvoice: authResolver(
       async ({ id, invoice }: { id: number; invoice: AddInvoiceInput }, context) => {
         const { models, user, sequelize } = context;
+        const { partner } = invoice;
 
         const transaction = await sequelize.transaction();
 
@@ -172,8 +196,14 @@ const resolver: Resolver = {
           return isUpdated;
         };
 
+        const updatePartner = async () => {
+          await models.InvoicePartner.update(partner, { where: { invoiceId: id } });
+        };
+
         try {
           const isUpdated = await updateInvoice();
+
+          await updatePartner();
 
           if (isUpdated) {
             await models.InvoiceItem.destroy({
@@ -325,7 +355,7 @@ const findInvoices = async ({ models, user }: ApolloContext, filter: InvoiceSear
     where: restWhere,
     include: [
       {
-        model: models.Partner,
+        model: models.InvoicePartner,
         where: where.partner,
       },
       {
@@ -388,7 +418,7 @@ export const findInvoice = async ({ models, user }: ApolloContext, id: number) =
     // order transactions by date
     order: [[{ model: models.Transaction, as: 'transactions' }, 'date', 'DESC']],
     include: [
-      models.Partner,
+      models.InvoicePartner,
       {
         model: models.InvoiceItem,
         as: 'items',

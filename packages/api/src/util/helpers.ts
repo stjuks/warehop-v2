@@ -4,7 +4,7 @@ import puppeteer from 'puppeteer';
 import { ApolloError } from 'apollo-server-express';
 import { ErrorCode } from '@shared/types';
 import { GraphQLError } from 'graphql';
-import { ValidationError as SequelizeValidationError, ValidationErrorItem } from 'sequelize';
+import { ValidationError as SequelizeValidationError, ValidationErrorItem, CreateOptions } from 'sequelize';
 
 interface ForeignKeyOpts {
   table: ModelCtor<Model<any, any>>;

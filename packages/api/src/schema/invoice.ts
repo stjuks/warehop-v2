@@ -32,7 +32,7 @@ export default gql`
 
   type Invoice {
     id: ID!
-    partner: Partner!
+    partner: InvoicePartner!
     type: InvoiceType!
     number: String!
     dueDate: Date!
@@ -47,6 +47,31 @@ export default gql`
     filePath: String
   }
 
+  type InvoicePartner {
+    name: String
+    regNr: String
+    VATnr: String
+    phoneNr: String
+    email: String
+    street: String
+    postalCode: String
+    county: String
+    country: String
+  }
+
+  input InvoicePartnerInput {
+    name: String!
+    savePartner: Boolean!
+    regNr: String
+    VATnr: String
+    phoneNr: String
+    email: String
+    street: String
+    postalCode: String
+    county: String
+    country: String
+  }
+
   input InvoiceItemInput {
     type: ItemType!
     quantity: Float!
@@ -59,7 +84,7 @@ export default gql`
   }
 
   input InvoiceInput {
-    partnerId: ID!
+    partner: InvoicePartnerInput!
     type: InvoiceType!
     number: String!
     items: [InvoiceItemInput!]!
@@ -89,7 +114,7 @@ export default gql`
     id: ID!
     isLocked: Boolean!
   }
-  
+
   type InvoiceCount {
     paid: Float!
     unpaid: Float!

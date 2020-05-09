@@ -8,7 +8,6 @@ import { JWT_ACCESS_TOKEN, API_URL } from '@ui/util/constants';
 const invoiceSchema = `
     id
     partner {
-        id
         name
     }
     type

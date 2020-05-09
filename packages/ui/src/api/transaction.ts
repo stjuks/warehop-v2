@@ -1,12 +1,4 @@
-import { gql } from 'apollo-boost-upload';
-import { query, mutate } from '.';
-import {
-  TransactionQueryInput,
-  Transaction,
-  AddTransactionInput,
-  PaginatedData,
-  TransactionType,
-} from '@shared/types';
+import { TransactionType } from '@shared/types';
 import Query from './Query';
 import Mutation from './Mutation';
 import { FETCH_INVOICE } from './invoice';
@@ -18,7 +10,6 @@ const transactionSchema = `
     number
     isLocked
     partner {
-      id
       name
     }
   }

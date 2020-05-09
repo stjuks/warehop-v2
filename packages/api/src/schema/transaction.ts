@@ -2,7 +2,6 @@ import gql from 'graphql-tag';
 
 export default gql`
   type TransactionPartner {
-    id: ID!
     name: String!
   }
 
