@@ -8,7 +8,15 @@ import { JWT_ACCESS_TOKEN, API_URL } from '@ui/util/constants';
 const invoiceSchema = `
     id
     partner {
-        name
+      name
+      regNr
+      VATnr
+      email
+      phoneNr
+      country
+      county
+      street
+      postalCode
     }
     type
     number
@@ -136,7 +144,7 @@ export const FETCH_SALES = FETCH_INVOICES('SALE');
 export const ADD_INVOICE = new Mutation({
   mutation: `
     mutation addInvoice(
-      $partnerId: ID!
+      $partner: InvoicePartnerInput!
       $type: InvoiceType!
       $number: String!
       $items: [InvoiceItemInput!]!
@@ -147,7 +155,7 @@ export const ADD_INVOICE = new Mutation({
     ) {
       addInvoice(
         invoice: {
-          partnerId: $partnerId
+          partner: $partner
           type: $type
           number: $number
           items: $items
@@ -176,7 +184,6 @@ export const EDIT_INVOICE = new Mutation({
     }
   `,
   onMutate: ({ client, result, customValues }) => {
-    console.log(customValues);
     if (client && result && customValues) {
       const { id } = result.data.editInvoice;
       const cacheValue = client.readQuery({ query: FETCH_INVOICE.query, variables: { id } });

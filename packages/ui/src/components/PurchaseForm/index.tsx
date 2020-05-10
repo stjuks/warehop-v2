@@ -12,7 +12,7 @@ import InvoiceStoreContext, { parseInvoiceInput } from '../../stores/InvoiceStor
 import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
 import Button from '../Button';
-import { Partner, InvoiceItem, InvoiceType, Invoice } from '@shared/types';
+import { Partner, InvoiceItem, InvoiceType, Invoice, AddInvoiceInput } from '@shared/types';
 import Form from '../Form';
 import FieldArray from '../Form/util/FieldArray';
 import InvoiceItemListItem from '../InvoiceItemListItem';
@@ -27,24 +27,25 @@ import FormError from '../Form/FormError';
 import { filterObjectProperties } from '@ui/util/helpers';
 import UIStoreContext from '@ui/stores/UIStore';
 import ContentContainer from '../util/ContentContainer';
-import { RouteComponentProps } from 'react-router';
-import { useGraphQLMutation } from '@ui/util/hooks';
-import { EDIT_INVOICE, ADD_INVOICE } from '@ui/api/invoice';
+import { RouteComponentProps, useParams } from 'react-router';
+import { useGraphQLMutation, useGraphQLQuery } from '@ui/util/hooks';
+import { EDIT_INVOICE, ADD_INVOICE, FETCH_INVOICE } from '@ui/api/invoice';
+import InvoicePartnerForm from './InvoicePartnerForm';
+import InvoicePartnerField from './InvoicePartnerField';
+import { useFormikContext } from 'formik';
 
 interface PurchaseFormProps extends RouteComponentProps {
   purchase: Invoice;
+  mode: 'EDIT' | 'ADD';
 }
 
-const PurchaseForm: React.FC<PurchaseFormProps> = observer(({ location }) => {
-  const invoiceStore = useContext(InvoiceStoreContext);
+const PurchaseForm: React.FC<PurchaseFormProps> = observer(({ location, mode }) => {
   const uiStore = useContext(UIStoreContext);
 
   const [editInvoice] = useGraphQLMutation(EDIT_INVOICE);
   const [addInvoice] = useGraphQLMutation(ADD_INVOICE);
 
-  const [sum, setSum] = useState<string>(currency(0).toString());
-
-  const editablePurchase: any = location.state ? JSON.parse(location.state.toString()) : undefined;
+  const { id } = useParams();
 
   let initialValues: any = {
     type: 'PURCHASE',
@@ -57,9 +58,10 @@ const PurchaseForm: React.FC<PurchaseFormProps> = observer(({ location }) => {
     items: [],
   };
 
-  if (editablePurchase) {
-    initialValues = filterObjectProperties(editablePurchase, Object.keys(initialValues));
-  }
+  const config = {
+    title: mode === 'EDIT' ? 'Muuda arvet' : 'Uus ostuarve',
+    buttonTitle: mode === 'EDIT' ? 'Muuda arve' : 'Loo arve',
+  };
 
   const validationSchema = yup.object({
     partner: yup.object().required('Palun vali tarnija.'),
@@ -70,9 +72,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = observer(({ location }) => {
   });
 
   const handleSubmit = async (purchase: Invoice) => {
-    const { partner, ...purchaseInput }: any = purchase;
-
-    purchaseInput.partnerId = partner.id;
+    const purchaseInput = Object.assign({}, purchase);
 
     purchaseInput.items = purchase.items.map(({ warehouse, unit, ...itemInput }) => ({
       warehouseId: warehouse?.id,
@@ -81,7 +81,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = observer(({ location }) => {
     }));
 
     try {
-      if (editablePurchase) await editInvoice({ id: editablePurchase.id, invoice: purchaseInput }, purchase);
+      if (mode === 'EDIT') await editInvoice({ id, invoice: purchaseInput }, purchase);
       else await addInvoice(purchaseInput, purchase);
       uiStore.goBack(routes.purchases);
     } catch (err) {
@@ -91,7 +91,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = observer(({ location }) => {
 
   return (
     <>
-      <Header title={editablePurchase ? 'Muuda arvet' : 'Uus ostuarve'} backTo={routes.purchases} />
+      <Header title={config.title} backTo={routes.purchases} />
       <ContentContainer>
         <Form
           validationSchema={validationSchema}
@@ -100,31 +100,52 @@ const PurchaseForm: React.FC<PurchaseFormProps> = observer(({ location }) => {
           onError={() =>
             animateScroll.scrollToTop({ containerId: 'content-container', duration: 200 })
           }
-          id="new-purchase-form"
-          persist={editablePurchase === undefined}
+          id="purchase-form"
+          persist={mode === 'ADD'}
         >
-          {(formikProps) => <FormFields formikProps={formikProps} />}
+          <FormFields />
         </Form>
       </ContentContainer>
       <FooterContainer style={{ padding: '0.25rem 1rem' }}>
-        <Button
-          title={editablePurchase ? 'Muuda arve' : 'Loo arve'}
-          form="new-purchase-form"
-          type="submit"
-        />
+        <Button title={config.buttonTitle} form="purchase-form" type="submit" />
       </FooterContainer>
     </>
   );
 });
 
-const FormFields: React.FC<any> = observer(({ formikProps }) => {
+const FormFields: React.FC<any> = observer(() => {
   const uiStore = useContext(UIStoreContext);
+  const { values, setValues } = useFormikContext<any>();
+
+  const { id } = useParams();
+
+  const [editableInvoice] = useGraphQLQuery(FETCH_INVOICE, {
+    variables: { id },
+    loadOnMount: id !== undefined,
+  });
+
+  useEffect(() => {
+    if (editableInvoice)
+      setValues(
+        filterObjectProperties(editableInvoice, [
+          'type',
+          'partner',
+          'file',
+          'number',
+          'issueDate',
+          'dueDate',
+          'description',
+          'items',
+        ])
+      );
+  }, [editableInvoice]);
 
   return (
     <>
       <FormError fields={['items']} />
       <FormTitle>Põhiandmed</FormTitle>
-      <PartnerSelect name="partner" label="Tarnija" partnerType="VENDOR" />
+      <InvoicePartnerField partnerType="VENDOR" />
+      {/* <PartnerSelect name="partner" label="Tarnija" partnerType="VENDOR" /> */}
       <TextInput name="number" label="Arve nr" />
       <Row flex={[1, 1]}>
         <DateInput name="issueDate" label="Ostukuupäev" />
@@ -145,7 +166,7 @@ const FormFields: React.FC<any> = observer(({ formikProps }) => {
                 + Lisa kaup
               </AddPurchaseItemBtn>
             </FormTitle>
-            {formikProps.values.items.map((item, index) => (
+            {values.items.map((item, index) => (
               <InvoiceItemListItem
                 key={index}
                 item={item}

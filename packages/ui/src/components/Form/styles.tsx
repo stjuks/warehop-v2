@@ -38,7 +38,7 @@ export const FormTitle = styled.h3`
 `;
 
 export const InputContainer = styled.div.attrs(({ className }) => ({
-  className: `input-container ${className}`
+  className: `input-container ${className}`,
 }))`
   display: flex;
   margin: 0.25rem;
@@ -46,10 +46,13 @@ export const InputContainer = styled.div.attrs(({ className }) => ({
 `;
 
 export const LabelContainer = styled.label.attrs({ className: 'label' })`
-  height: 1.5rem;
-  display: flex;
-  align-items: center;
-  font-size: 0.875rem;
+  ${({ theme }) => `
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    font-size: 0.875rem;
+    color: ${theme.colors.text};
+  `}
 `;
 
 export const InputFieldContainer = styled.div<InputFieldProps>`
@@ -106,7 +109,7 @@ export const InputFieldContainer = styled.div<InputFieldProps>`
 `;
 
 export const ErrorMessageContainer = styled.div.attrs({
-  className: 'error-message'
+  className: 'error-message',
 })`
   ${({ theme }) => `
         height: 1.5rem;
@@ -118,7 +121,7 @@ export const ErrorMessageContainer = styled.div.attrs({
 `;
 
 export const InputIndicatorContainer = styled.div.attrs({
-  className: 'input-indicator'
+  className: 'input-indicator',
 })`
   ${({ theme }) => `
         color: ${theme.colors.lightText};

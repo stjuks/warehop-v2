@@ -4,9 +4,15 @@ const routes = {
   productForm: '/products/new',
   purchases: '/purchases',
   purchaseDetails: '/purchases/:id',
-  purchaseForm: '/purchases/new',
+  purchaseForm: {
+    new: '/purchases/new',
+    edit: '/purchases/edit',
+  },
   sales: '/sales',
-  saleForm: '/sales/new',
+  saleForm: {
+    new: '/sales/new',
+    edit: '/sales/edit',
+  },
   saleDetails: '/sales/:id',
   expenses: '/expenses',
   expenseDetails: '/expenses/:id',
@@ -16,7 +22,7 @@ const routes = {
   partnerDetails: '/partners/:id',
   partnerForm: '/partners/new',
   statistics: '/statistics',
-  settings: '/settings'
+  settings: '/settings',
 };
 
 export default routes;

@@ -40,7 +40,7 @@ const Sales = observer(() => {
 
   const headerIcons = [
     <HeaderSearch onChange={setSearchQuery} placeholder="Otsi arvet" />,
-    <NewItemButtonContainer onClick={() => uiStore.goTo(routes.saleForm)}>
+    <NewItemButtonContainer onClick={() => uiStore.goTo(routes.saleForm.new)}>
       <FiPlusCircle />
     </NewItemButtonContainer>,
   ];

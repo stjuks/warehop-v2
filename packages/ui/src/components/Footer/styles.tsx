@@ -7,6 +7,7 @@ export const FooterContainer = styled.div`
         border-top: 1px solid ${theme.colors.lightColor1};
     `}
 
+    flex-shrink: 0;
     position: relative;
     padding: 0 1rem;
     height: 3.5rem;

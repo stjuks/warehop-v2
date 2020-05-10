@@ -61,7 +61,7 @@ export default gql`
 
   input InvoicePartnerInput {
     name: String!
-    savePartner: Boolean!
+    savePartner: Boolean
     regNr: String
     VATnr: String
     phoneNr: String

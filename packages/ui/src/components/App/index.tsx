@@ -39,8 +39,9 @@ const App = () => {
               <Switch>
                 <Route path={routes.partnerForm} component={PartnerForm} />
                 <Route path={routes.productForm} component={ProductForm} />
-                <Route path={routes.purchaseForm} component={PurchaseForm} />
-                <Route path={routes.saleForm} component={SaleForm} />
+                <Route path={routes.purchaseForm.new} render={props => <PurchaseForm mode="ADD" {...props} />} />
+                <Route path={routes.purchaseForm.edit + "/:id"} render={props => <PurchaseForm mode="EDIT" {...props} />} />
+                {/* <Route path={routes.saleForm} component={SaleForm} /> */}
                 <Route path={routes.productDetails} component={ProductDetails} />
                 <Route path={routes.purchaseDetails} component={InvoiceDetails} />
                 <Route path={routes.incomeDetails} component={TransactionDetails} />

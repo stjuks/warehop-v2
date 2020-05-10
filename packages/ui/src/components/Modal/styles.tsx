@@ -13,6 +13,7 @@ export const ModalContainer = styled(ReactModal)`
       overflow: hidden;
       max-height: 95%;
       min-width: ${theme.devices.mobileS};
+      background: white;
 
       @media only screen and (max-width: ${theme.devices.mobileL}) {
         height: 100%;
@@ -23,7 +24,6 @@ export const ModalContainer = styled(ReactModal)`
 
       @media only screen and (min-width: ${theme.devices.mobileL}) {
         min-width: calc(${theme.devices.mobileL} - 1rem);
-        max-height: 30rem;
       }
     }
   `}

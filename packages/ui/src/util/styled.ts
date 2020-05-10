@@ -18,7 +18,7 @@ export class Color {
 }
 
 export const theme = {
-  lightShadow: '0 0.125rem 0.5rem rgba(0, 0, 0, .05)',
+  lightShadow: '0 0 0.5rem rgba(0, 0, 0, .05)',
   blueShadow: '0 0 0.5rem hsl(216, 100%, 90%)',
   colors: {
     lightGrey: new Color('#FAFAFA'),

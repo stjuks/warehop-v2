@@ -19,12 +19,19 @@ export const Footer = withRouter(
       { label: 'Kaubad', icon: <FaBoxes />, to: routes.products },
       { label: 'Ost', icon: <FaShoppingBasket />, to: routes.purchases },
       { label: 'Müük', icon: <FaMoneyCheck />, to: routes.sales },
-      { label: 'Menüü', icon: <FiMenu />, onClick: () => uiStore.setHamburgerMenuOpen(true) }
+      { label: 'Menüü', icon: <FiMenu />, onClick: () => uiStore.setHamburgerMenuOpen(true) },
     ];
 
-    const footerlessRoutes = [routes.productForm, routes.purchaseForm, routes.partnerForm, routes.saleForm];
+    const footerlessRoutes = [
+      routes.productForm,
+      routes.purchaseForm.new,
+      routes.purchaseForm.edit,
+      routes.saleForm.new,
+      routes.saleForm.edit,
+      routes.partnerForm,
+    ];
 
-    if (footerlessRoutes.find(route => matchPath(props.location.pathname, route))) return null;
+    if (footerlessRoutes.find((route) => matchPath(props.location.pathname, route))) return null;
 
     return (
       <>

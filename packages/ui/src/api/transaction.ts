@@ -45,9 +45,6 @@ const ADD_TRANSACTION = (type: TransactionType) => {
         variables: { id: invoiceId },
       });
 
-      console.log('cachedValue', cachedValue);
-      console.log('transaction', transaction);
-
       if (cachedValue && cachedValue.invoice) {
         const { transactions, paidSum } = cachedValue.invoice;
 

@@ -86,3 +86,54 @@ export const PurchaseItemContainer = styled.div`
     }
   `}
 `;
+
+export const InvoicePartnerFieldContainer = styled.div`
+  ${({ theme }) => `
+    .label {
+      font-size: 0.875rem;
+      height: 1.5rem;
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      color: ${theme.colors.text};
+    }
+
+    .add-btn {
+      padding: 1rem;
+      color: ${theme.colors.lightText};
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      border-radius: 0.25rem;
+      text-align: center;
+      width: 100%;
+      border: 1px dashed ${theme.colors.lightText};
+    }
+
+    .partner-info {
+      text-align: left;
+      font-weight: 400;
+
+      .row {
+        display: flex;
+
+        .postalCode {
+          margin-right: 0.25rem;
+        }
+      }
+
+      .field {
+        :not(:last-child) {
+          margin-bottom: 0.25rem;
+        }
+      }
+
+      .name {
+        font-weight: 700;
+      }
+
+      .county {
+        margin-bottom: 1rem !important;
+      }
+    }
+  `}
+`;

@@ -27,7 +27,7 @@ export const RadioContainer = styled.div`
 
         input:focus ~ label,
         input:hover ~ label {
-            border-color: ${theme.colors.lightText};
+            border-color: ${theme.colors.darkGrey};
         }
 
         input:checked ~ label {

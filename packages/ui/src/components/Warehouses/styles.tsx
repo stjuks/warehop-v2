@@ -58,9 +58,12 @@ export const AddWarehouseButton = styled.button`
     padding: 1rem;
     height: 3.5rem;
     font-weight: 500;
+    transition: all .2s;
     color: ${theme.colors.primary};
     border-top: 1px solid ${theme.colors.midGrey};
     background: ${theme.colors.lightGrey};
+    z-index: 999;
+    box-shadow: ${theme.lightShadow};
 
     :hover,
     :focus {
@@ -71,4 +74,4 @@ export const AddWarehouseButton = styled.button`
       margin-right: 0.5rem;
     }
   `}
-`
+`;

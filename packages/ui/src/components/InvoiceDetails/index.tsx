@@ -94,10 +94,11 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = (pro
           </>
         ),
         onClick: () =>
-          uiStore.goTo(invoice?.type === 'PURCHASE' ? routes.purchaseForm : routes.saleForm, {
-            state: JSON.stringify(invoice),
-          }),
-        isDisabled: invoice?.isLocked,
+          uiStore.goTo(
+            `${invoice?.type === 'PURCHASE' ? routes.purchaseForm.edit : routes.saleForm.edit}/${
+              invoice?.id
+            }`
+          ),
       },
       {
         label: (
@@ -140,10 +141,7 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = (pro
           <span>Maksa</span>
         </>
       ),
-      onClick: () =>
-        uiStore.openModal(
-          <TransactionForm invoice={invoice} />
-        ),
+      onClick: () => uiStore.openModal(<TransactionForm invoice={invoice} />),
     });
   }
 
