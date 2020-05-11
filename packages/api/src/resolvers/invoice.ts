@@ -188,24 +188,38 @@ const resolver: Resolver = {
           .toString();
 
         const updateInvoice = async () => {
-          const [isUpdated] = await models.Invoice.update(invoice, {
+          const [, [result]] = await models.Invoice.update(invoice, {
             where: { id, userId: user.id },
+            returning: true,
             transaction,
           });
 
-          return isUpdated;
+          console.log('INVOICEXYZ', result);
+
+          return result;
         };
 
-        const updatePartner = async () => {
-          await models.InvoicePartner.update(partner, { where: { invoiceId: id } });
+        const updatePartner = async (updatedInvoice) => {
+          await models.InvoicePartner.update(partner, { where: { invoiceId: id }, transaction });
+
+          if (partner.savePartner) {
+            await models.Partner.upsert(
+              {
+                ...partner,
+                userId: user.id,
+                type: updatedInvoice.type === 'PURCHASE' ? 'VENDOR' : 'CLIENT',
+              },
+              { transaction }
+            );
+          }
         };
 
         try {
-          const isUpdated = await updateInvoice();
+          const updatedInvoice = await updateInvoice();
 
-          await updatePartner();
+          await updatePartner(updatedInvoice);
 
-          if (isUpdated) {
+          if (updatedInvoice) {
             await models.InvoiceItem.destroy({
               where: { invoiceId: id, userId: user.id },
               transaction,

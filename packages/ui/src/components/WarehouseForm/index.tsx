@@ -41,7 +41,7 @@ const WarehouseForm: React.FC<WarehouseFormProps & RouteChildrenProps> = ({
       if (warehouse) await editWarehouse({ name, id: warehouse.id });
       else await addWarehouse({ name });
       if (onSubmit) onSubmit({ name });
-      uiStore.closeModal();
+      uiStore.goBack();
     } catch (err) {
       throw err;
     }
