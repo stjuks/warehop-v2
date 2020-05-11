@@ -68,7 +68,7 @@ export default class Invoice extends Model<Invoice> {
   description: string;
 
   @Column
-  filePath: string;
+  file: string;
 
   @AllowNull(false)
   @Default(false)

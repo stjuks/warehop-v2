@@ -52,7 +52,7 @@ const invoiceSchema = `
     paidSum
     sum
     description
-    filePath
+    file
 `;
 
 const invoiceListSchema = `
@@ -183,28 +183,7 @@ export const EDIT_INVOICE = new Mutation({
       }
     }
   `,
-  onMutate: ({ client, result, customValues }) => {
-    if (client && result && customValues) {
-      const { id } = result.data.editInvoice;
-      const cacheValue = client.readQuery({ query: FETCH_INVOICE.query, variables: { id } });
-
-      const newValue = {
-        invoice: {
-          ...cacheValue.invoice,
-          ...customValues,
-          id,
-        },
-      };
-
-      client.cache.reset();
-
-      client.writeQuery({
-        query: FETCH_INVOICE.query,
-        variables: { id },
-        data: newValue,
-      });
-    }
-  },
+  onMutate: ({ client, result, customValues }) => client?.cache.reset(),
   errorHandler: {
     EntityAlreadyExistsError: {
       number: 'Sellise numbriga arve juba eksisteerib.',
@@ -265,7 +244,7 @@ export const UNLOCK_INVOICE = new Mutation({
     const { id } = result.data.unlockInvoice;
 
     client?.cache.reset();
-    
+
     client?.cache.writeQuery({
       query: FETCH_INVOICE.query,
       variables: { id },

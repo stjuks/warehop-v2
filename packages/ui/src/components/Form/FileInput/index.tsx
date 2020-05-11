@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FieldProps, Field } from 'formik';
 
 import { FileInputStyled } from './styles';
@@ -14,21 +14,25 @@ interface FileInputProps {
 const FileInputBase: React.FC<FileInputProps & FieldProps> = ({ form, field, label, accept }) => {
   const [displayValue, setDisplayValue] = useState('');
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      form.setFieldValue(field.name, file);
-      setDisplayValue(file.name);
-    } else {
-      setDisplayValue('');
-    }
+    form.setFieldValue(field.name, file);
   };
 
-  const handleClear = e => {
-    e.stopPropagation();
+  const handleClear = (e?: any) => {
+    e?.stopPropagation();
     form.setFieldValue(field.name, undefined);
     setDisplayValue('');
   };
+
+  useEffect(() => {
+    if (field.value) {
+      if (typeof field.value === 'string') setDisplayValue(field.value);
+      else if (field.value instanceof File) {
+        setDisplayValue(field.value.name);
+      }
+    } else setDisplayValue('');
+  }, [field.value]);
 
   const InputComponent = (
     <>
@@ -42,7 +46,7 @@ const FileInputBase: React.FC<FileInputProps & FieldProps> = ({ form, field, lab
       />
       <InputActionButtons
         indicator={<FiFile />}
-        action={field.value && { icon: <FiX />, onClick: e => handleClear(e) }}
+        action={field.value && { icon: <FiX />, onClick: (e) => handleClear(e) }}
       />
     </>
   );
@@ -59,6 +63,8 @@ const FileInputBase: React.FC<FileInputProps & FieldProps> = ({ form, field, lab
   );
 };
 
-const FileInput: React.FC<FileInputProps> = props => <Field {...props} component={FileInputBase} />;
+const FileInput: React.FC<FileInputProps> = (props) => (
+  <Field {...props} component={FileInputBase} />
+);
 
 export default FileInput;

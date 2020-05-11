@@ -22,9 +22,9 @@ router.get('/files/invoice', passport.authenticate('jwt', { session: false }), a
         id: invoiceId,
         userId: user.id,
       },
-      attributes: ['filePath', 'issueDate', 'dueDate', 'type', 'number', 'sum'],
+      attributes: ['file', 'issueDate', 'dueDate', 'type', 'number', 'sum'],
       include: [
-        models.Partner,
+        models.InvoicePartner,
         {
           model: models.InvoiceItem,
           as: 'items',
@@ -48,8 +48,8 @@ router.get('/files/invoice', passport.authenticate('jwt', { session: false }), a
     });
 
     if (invoice) {
-      if (invoice.type === 'PURCHASE' && invoice.filePath) {
-        pdf = fs.readFileSync(path.join('..', '..', 'purchaseUploads', invoice.filePath));
+      if (invoice.type === 'PURCHASE' && invoice.file) {
+        pdf = fs.readFileSync(path.join('..', '..', 'purchaseUploads', invoice.file));
       } else if (invoice.type === 'SALE') {
         const plainInvoice: any = invoice.get({ plain: true });
 

@@ -44,7 +44,7 @@ export default gql`
     sum: String!
     isLocked: Boolean!
     description: String
-    filePath: String
+    file: String
   }
 
   type InvoicePartner {

@@ -116,18 +116,22 @@ export const useGraphQLQuery = (query: Query, options?: GraphQLQueryOptions) => 
 };
 
 export const useGraphQLMutation = <InputValues>(mutation: Mutation) => {
-  const [mutate, { client }] = useMutation(mutation.mutation, {
-    update: (cache, result) => {
-      if (mutation.updateCache) mutation.updateCache(cache, result);
-    },
-  });
+  const [mutate, { client }] = useMutation(mutation.mutation);
 
   const customMutate = async (variables: InputValues, customValues?: any) => {
     try {
       const omitTypename = (key, value) => (key === '__typename' ? undefined : value);
-      const newVariables = JSON.parse(JSON.stringify(variables), omitTypename);
+
+      console.log(variables);
+      omitKey(variables, '__typename');
+      console.log(variables);
+
+      /*const newVariables = JSON.parse(JSON.stringify(variables), omitTypename);
+
+      console.log(newVariables); */
+
       const result = await mutate({
-        variables: newVariables,
+        variables,
       });
 
       if (mutation.onMutate) mutation.onMutate({ client, customValues, result, variables });
@@ -139,4 +143,18 @@ export const useGraphQLMutation = <InputValues>(mutation: Mutation) => {
   };
 
   return [customMutate];
+};
+
+export const omitKey = (o: any, key: string) => {
+  if (o && typeof o === 'object') {
+    if (o[key]) delete o[key];
+
+    if (Array.isArray(o)) {
+      o.forEach((j) => omitKey(j, key));
+    } else {
+      Object.values(o).forEach((v) => {
+        if (typeof v === 'object') omitKey(v, key);
+      });
+    }
+  }
 };

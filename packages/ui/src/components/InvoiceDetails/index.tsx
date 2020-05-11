@@ -121,7 +121,7 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = (pro
       }
     );
 
-  if (invoice?.filePath || invoice?.type === 'SALE') {
+  if (invoice?.file || invoice?.type === 'SALE') {
     dropdownOptions.unshift({
       label: (
         <>

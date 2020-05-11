@@ -143,7 +143,7 @@ const resolver: Resolver = {
           });
 
           await models.Invoice.update(
-            { filePath: fileName },
+            { file: fileName },
             { where: { id: invoiceId }, transaction }
           );
         }
@@ -159,9 +159,9 @@ const resolver: Resolver = {
 
         await createInvoiceItems(items, addedInvoice, context, transaction);
 
-        await uploadFile(addedInvoice.id);
-
         await createPartner(addedInvoice.id);
+
+        await uploadFile(addedInvoice.id);
 
         await transaction.commit();
 
@@ -392,7 +392,7 @@ const findInvoices = async ({ models, user }: ApolloContext, filter: InvoiceSear
       'issueDate',
       'sum',
       'description',
-      'filePath',
+      'file',
       'paidSum',
       'isLocked',
     ],
@@ -453,7 +453,7 @@ export const findInvoice = async ({ models, user }: ApolloContext, id: number) =
       'issueDate',
       'sum',
       'description',
-      'filePath',
+      'file',
       'paidSum',
       'isLocked',
     ],
