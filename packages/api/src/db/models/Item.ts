@@ -9,7 +9,7 @@ import {
   DataType,
   BelongsToMany,
   Unique,
-  Index
+  Index,
 } from 'sequelize-typescript';
 
 import User from './User';
@@ -24,16 +24,11 @@ import WarehouseItem from './WarehouseItem';
 @Table({
   indexes: [
     {
-      name: 'IDX_UQ_Items_userId_code',
+      name: 'IDX_UQ_Items_userId_code_type',
       unique: true,
-      fields: ['userId', 'code']
+      fields: ['userId', 'code', 'type'],
     },
-    {
-      name: 'IDX_UQ_Items_userId_name_type',
-      unique: true,
-      fields: ['userId', 'name', 'type']
-    }
-  ]
+  ],
 })
 export default class Item extends Model<Item> {
   @PrimaryKey
@@ -91,7 +86,7 @@ export default class Item extends Model<Item> {
     through: () => InvoiceItem,
     foreignKey: 'itemId',
     onDelete: 'RESTRICT',
-    as: 'items'
+    as: 'items',
   })
   invoices: Invoice[];
 
@@ -99,7 +94,7 @@ export default class Item extends Model<Item> {
     through: () => WarehouseItem,
     foreignKey: 'itemId',
     onDelete: 'CASCADE',
-    as: 'warehouseQuantity'
+    as: 'warehouseQuantity',
   })
   warehouses: Warehouse[];
 }
