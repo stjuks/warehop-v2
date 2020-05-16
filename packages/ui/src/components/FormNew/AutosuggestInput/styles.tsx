@@ -16,6 +16,10 @@ export const AutosuggestInputContainer = styled.div`
     padding: 0;
   }
 
+  .react-autosuggest__section-title {
+    padding: 0.25rem 0.5rem;
+}
+
   .react-autosuggest__suggestions-container--open {
     position: absolute;
     overflow: auto;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { FiMoreVertical, FiEdit, FiTrash2 } from 'react-icons/fi';
 import currency from 'currency.js';
 
@@ -8,7 +8,6 @@ import Header from '../Header';
 import { ProductItem } from '@shared/types';
 import routes from '../../util/routes';
 import ContentContainer from '../util/ContentContainer';
-import ItemStoreContext from '@ui/stores/ItemStore';
 import { RouteComponentProps, useParams } from 'react-router';
 import DropdownMenu from '../DropdownMenu';
 import UIStoreContext from '@ui/stores/UIStore';
@@ -17,14 +16,13 @@ import { useGraphQLQuery, useGraphQLMutation } from '@ui/util/hooks';
 import { FETCH_PRODUCT, DELETE_ITEM } from '@ui/api/item';
 
 const ProductDetails: React.FC<ProductItem & RouteComponentProps> = (props) => {
-  const itemStore = useContext(ItemStoreContext);
   const uiStore = useContext(UIStoreContext);
 
   const { id } = useParams();
 
   const [deleteProduct] = useGraphQLMutation(DELETE_ITEM);
 
-  const [product, , { loading: isLoadingProduct }] = useGraphQLQuery(FETCH_PRODUCT, {
+  const [product, { loading: isLoadingProduct }] = useGraphQLQuery(FETCH_PRODUCT, {
     variables: { id },
     loadOnMount: true,
   });
@@ -86,7 +84,9 @@ const ProductDetails: React.FC<ProductItem & RouteComponentProps> = (props) => {
               <div className="row">
                 <div className="detail">
                   <div className="detail-label">Tarnija</div>
-                  <div className="detail-value">{product.partner && product.partner.name || '-'}</div>
+                  <div className="detail-value">
+                    {(product.partner && product.partner.name) || '-'}
+                  </div>
                 </div>
               </div>
               <div className="row">

@@ -18,7 +18,7 @@ interface WarehousesProps {}
 const Warehouses: React.FC<WarehousesProps> = () => {
   const uiStore = useContext(UIStoreContext);
 
-  const [warehouses, , { loading: isLoadingWarehouses }] = useGraphQLQuery(FETCH_WAREHOUSES, {
+  const [warehouses, { loading: isLoadingWarehouses }] = useGraphQLQuery(FETCH_WAREHOUSES, {
     loadOnMount: true,
   });
 

@@ -106,10 +106,16 @@ export const useGraphQLQuery = (query: Query, options?: GraphQLQueryOptions) => 
     await fetchData({ variables });
   };
 
-  const result: [any, [any, any], typeof restTuple ] = [
+  type RestTuple = typeof restTuple;
+
+  interface ResultTuple extends RestTuple {
+    fetchMore: (variables?: any) => void;
+    fetch: (variables: any) => void;
+  }
+
+  const result: [any, ResultTuple] = [
     transformedData,
-    [fetchMoreData, customFetchData],
-    restTuple,
+    { fetchMore: fetchMoreData, fetch: customFetchData, ...restTuple },
   ];
 
   return result;
@@ -120,15 +126,7 @@ export const useGraphQLMutation = <InputValues>(mutation: Mutation) => {
 
   const customMutate = async (variables: InputValues, customValues?: any) => {
     try {
-      const omitTypename = (key, value) => (key === '__typename' ? undefined : value);
-
-      console.log(variables);
       omitKey(variables, '__typename');
-      console.log(variables);
-
-      /*const newVariables = JSON.parse(JSON.stringify(variables), omitTypename);
-
-      console.log(newVariables); */
 
       const result = await mutate({
         variables,

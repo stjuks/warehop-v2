@@ -28,13 +28,13 @@ const Purchases = observer(() => {
 
   const uiStore = useContext(UIStoreContext);
 
-  const [purchases, [fetchMorePurchases], { loading: isLoadingPurchases }] = useGraphQLQuery(
-    FETCH_PURCHASES,
-    {
-      variables: { ...filter, pagination: { limit: 25 }, generalQuery: searchQuery },
-      loadOnMount: true,
-    }
-  );
+  const [
+    purchases,
+    { fetchMore: fetchMorePurchases, loading: isLoadingPurchases },
+  ] = useGraphQLQuery(FETCH_PURCHASES, {
+    variables: { ...filter, pagination: { limit: 25 }, generalQuery: searchQuery },
+    loadOnMount: true,
+  });
   const [purchaseCounts] = useGraphQLQuery(FETCH_INVOICE_COUNTS, {
     variables: { type: 'PURCHASE' },
     loadOnMount: true,

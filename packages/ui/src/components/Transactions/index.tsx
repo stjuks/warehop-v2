@@ -34,7 +34,7 @@ const Transactions: React.FC<TransactionsProps> = observer(({ type }) => {
 
   const FETCH_QUERY = type === 'EXPENSE' ? FETCH_EXPENSES : FETCH_INCOMES;
 
-  const [transactions, [fetchMoreTransactions]] = useGraphQLQuery(FETCH_QUERY, {
+  const [transactions, { fetchMore: fetchMoreTransactions }] = useGraphQLQuery(FETCH_QUERY, {
     variables: { pagination: { limit: 25 }, startDate, endDate, generalQuery },
     loadOnMount: true,
   });
@@ -64,7 +64,9 @@ const Transactions: React.FC<TransactionsProps> = observer(({ type }) => {
         {transactions?.data.map((transaction) => (
           <TransactionItem {...transaction} key={transaction.id} route={config[type].route} />
         ))}
-        {transactions?.pageInfo.hasNextPage && <LoadMoreButton onClick={() => fetchMoreTransactions()} />}
+        {transactions?.pageInfo.hasNextPage && (
+          <LoadMoreButton onClick={() => fetchMoreTransactions()} />
+        )}
       </ContentContainer>
     </>
   );

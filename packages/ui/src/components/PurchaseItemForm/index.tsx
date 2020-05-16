@@ -35,14 +35,14 @@ const serviceAndExpenseForm = {
     name: '',
     quantity: '',
     unit: undefined,
-    purchasePrice: ''
+    purchasePrice: '',
   },
   fields: ['type', 'name', 'quantity', 'unit', 'price'],
   validationSchema: yup.object({
     name: yup.string().required('Palun sisesta artikli nimetus.'),
     quantity: yup.number('Kogus peab olema number.').required('Palun sisesta artikli kogus.'),
-    price: yup.number('Hind peab olema number.').required('Palun sisesta kauba ostuhind.')
-  })
+    price: yup.number('Hind peab olema number.').required('Palun sisesta kauba ostuhind.'),
+  }),
 };
 
 const forms = {
@@ -54,7 +54,7 @@ const forms = {
       unit: undefined,
       warehouse: undefined,
       purchasePrice: '',
-      retailPrice: ''
+      retailPrice: '',
     },
     fields: ['type', 'name', 'code', 'quantity', 'unit', 'warehouse', 'price'],
     validationSchema: yup.object({
@@ -69,22 +69,21 @@ const forms = {
       price: yup
         .number()
         .typeError('Hind peab olema number.')
-        .required('Palun sisesta kauba ostuhind.')
-    })
+        .required('Palun sisesta kauba ostuhind.'),
+    }),
   },
   SERVICE: serviceAndExpenseForm,
-  EXPENSE: serviceAndExpenseForm
+  EXPENSE: serviceAndExpenseForm,
 };
 
 const ItemForm = ({ type }: { type: ItemType }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchedProducts, [, fetchProducts]] = useGraphQLQuery(FETCH_PRODUCTS);
+  const [searchedProducts, { fetch: fetchProducts }] = useGraphQLQuery(FETCH_PRODUCTS);
 
   // autofill fields on select
   const handleAutosuggestSelect = (value, { setValues, values }) => {
     const _values: any = {};
 
-    forms[type].fields.forEach(field => {
+    forms[type].fields.forEach((field) => {
       if (value[field]) _values[field] = value[field];
     });
 
@@ -111,16 +110,16 @@ const ItemForm = ({ type }: { type: ItemType }) => {
           name="code"
           label="Kood"
           suggestions={searchedProducts?.data || []}
-          fetchSuggestions={query => handleProductSuggestion('code', query)}
-          suggestionLabel={suggestion => suggestion.name}
+          fetchSuggestions={(query) => handleProductSuggestion('code', query)}
+          suggestionLabel={(suggestion) => suggestion.name}
           onSelect={handleAutosuggestSelect}
         />
         <AutosuggestInput
           name="name"
           label="Nimetus"
           suggestions={searchedProducts?.data || []}
-          fetchSuggestions={query => handleProductSuggestion('name', query)}
-          suggestionLabel={suggestion => suggestion.name}
+          fetchSuggestions={(query) => handleProductSuggestion('name', query)}
+          suggestionLabel={(suggestion) => suggestion.name}
           onSelect={handleAutosuggestSelect}
         />
         <Row flex={[1, 1]}>
@@ -156,10 +155,10 @@ const PurchaseItemForm: React.FC<PurchaseItemFormProps> = observer(
 
     const initialValues = item || {
       type: DEFAULT_ITEM_TYPE,
-      ...forms[activeItemType].initialValues
+      ...forms[activeItemType].initialValues,
     };
 
-    const handleSubmit = values => {
+    const handleSubmit = (values) => {
       const filteredValues = filterObjectProperties(values, forms[values.type].fields);
 
       if (index !== undefined) {
@@ -202,7 +201,7 @@ const PurchaseItemForm: React.FC<PurchaseItemFormProps> = observer(
               name="type"
               label="Kauba tüüp"
               options={commonStore.itemTypes}
-              optionLabel={type => itemTypeTranslations[type]}
+              optionLabel={(type) => itemTypeTranslations[type]}
             />
             <ItemForm type={activeItemType} />
           </Form>

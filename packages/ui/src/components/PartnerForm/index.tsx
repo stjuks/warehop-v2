@@ -27,14 +27,12 @@ const PartnerForm = observer(() => {
   const uiStore = useContext(UIStoreContext);
 
   const [types] = useGraphQLQuery(FETCH_TYPES, { loadOnMount: true });
-  const [creditInfoPartners, [, fetchCreditInfoPartners]] = useGraphQLQuery(
+  const [creditInfoPartners, { fetch: fetchCreditInfoPartners }] = useGraphQLQuery(
     FETCH_CREDITINFO_PARTNERS
   );
-  const [partners, [, fetchPartners]] = useGraphQLQuery(FETCH_PARTNERS);
+  const [partners, { fetch: fetchPartners }] = useGraphQLQuery(FETCH_PARTNERS);
 
   const [addPartner] = useGraphQLMutation(ADD_PARTNER);
-
-  console.log(creditInfoPartners);
 
   const initialValues: Partner = {
     name: '',
@@ -106,7 +104,6 @@ const PartnerForm = observer(() => {
             }}
             onSelect={handleAutosuggestSelect}
           />
-          {/* <TextInput name="name" label="Nimi" /> */}
           <TextInput name="regNr" label="Registrikood" />
           <TextInput name="VATnr" label="KMK nr" />
           <TextInput name="phoneNr" label="Telefoni number" type="tel" />

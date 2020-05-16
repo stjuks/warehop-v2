@@ -29,7 +29,7 @@ const Partners = observer(() => {
     pagination: { limit: 5 },
   };
 
-  const [partners, [fetchMorePartners], { loading: isLoadingPartners }] = useGraphQLQuery(
+  const [partners, { fetchMore: fetchMorePartners, loading: isLoadingPartners }] = useGraphQLQuery(
     FETCH_PARTNERS,
     {
       loadOnMount: true,

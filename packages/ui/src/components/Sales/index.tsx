@@ -28,7 +28,7 @@ const Sales = observer(() => {
 
   const uiStore = useContext(UIStoreContext);
 
-  const [sales, [fetchMoreSales]] = useGraphQLQuery(FETCH_SALES, {
+  const [sales, { fetchMore: fetchMoreSales}] = useGraphQLQuery(FETCH_SALES, {
     variables: { ...filter, pagination: { limit: 25 }, generalQuery: searchQuery },
     loadOnMount: true,
   });

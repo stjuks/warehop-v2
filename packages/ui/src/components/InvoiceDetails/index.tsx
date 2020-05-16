@@ -44,13 +44,10 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps & RouteComponentProps> = (pro
 
   const { id } = useParams();
 
-  const [invoice, [, fetchInvoice], { loading: isLoadingInvoice }] = useGraphQLQuery(
-    FETCH_INVOICE,
-    {
-      variables: { id },
-      loadOnMount: true,
-    }
-  );
+  const [invoice, { loading: isLoadingInvoice }] = useGraphQLQuery(FETCH_INVOICE, {
+    variables: { id },
+    loadOnMount: true,
+  });
 
   const [lockInvoice] = useGraphQLMutation<{ id: number }>(LOCK_INVOICE);
   const [unlockInvoice] = useGraphQLMutation<{ id: number }>(UNLOCK_INVOICE);

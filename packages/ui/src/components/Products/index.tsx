@@ -13,13 +13,10 @@ import ProductItem from '../ProductItem';
 import HeaderSearch from '../HeaderSearch';
 import { useGraphQLQuery } from '@ui/util/hooks';
 import MenuSelect from '../util/inputs/MenuSelect';
-import WarehouseStoreContext from '@ui/stores/WarehouseStore';
 import UIStoreContext from '@ui/stores/UIStore';
-import WarehouseForm from '../WarehouseForm';
 import Warehouses from '../Warehouses';
 import { FETCH_PRODUCTS } from '@ui/api/item';
 import { FETCH_WAREHOUSES } from '@ui/api/warehouse';
-import { FaWarehouse } from 'react-icons/fa';
 
 const Products = observer(() => {
   const uiStore = useContext(UIStoreContext);
@@ -38,7 +35,7 @@ const Products = observer(() => {
     pagination: { limit: 25 },
   };
 
-  const [products, [fetchMoreProducts], { loading: isLoadingProducts }] = useGraphQLQuery(
+  const [products, { fetchMore: fetchMoreProducts, loading: isLoadingProducts }] = useGraphQLQuery(
     FETCH_PRODUCTS,
     {
       variables: filter,
