@@ -10,7 +10,7 @@ import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
 import Button from '../Button';
 import { Partner } from '@shared/types';
-import Form from '../FormNew';
+import Form, { AutosuggestInput } from '../FormNew';
 import ContentContainer from '../util/ContentContainer';
 import CommonStoreContext from '@ui/stores/CommonStore';
 // import AriaSelect from '../Form/AriaSelect';
@@ -20,14 +20,21 @@ import { partnerTypeTranslations } from '@ui/util/translations';
 import UIStoreContext from '@ui/stores/UIStore';
 import { useGraphQLQuery, useGraphQLMutation } from '@ui/util/hooks';
 import { FETCH_TYPES } from '@ui/api/common';
-import { ADD_PARTNER } from '@ui/api/partner';
+import { ADD_PARTNER, FETCH_CREDITINFO_PARTNERS, FETCH_PARTNERS } from '@ui/api/partner';
 import { SelectInput, TextInput } from '../FormNew';
 
 const PartnerForm = observer(() => {
   const uiStore = useContext(UIStoreContext);
 
   const [types] = useGraphQLQuery(FETCH_TYPES, { loadOnMount: true });
+  const [creditInfoPartners, [, fetchCreditInfoPartners]] = useGraphQLQuery(
+    FETCH_CREDITINFO_PARTNERS
+  );
+  const [partners, [, fetchPartners]] = useGraphQLQuery(FETCH_PARTNERS);
+
   const [addPartner] = useGraphQLMutation(ADD_PARTNER);
+
+  console.log(creditInfoPartners);
 
   const initialValues: Partner = {
     name: '',
@@ -39,12 +46,12 @@ const PartnerForm = observer(() => {
     street: '',
     postalCode: '',
     county: '',
-    country: ''
+    country: '',
   };
 
   const validationSchema = yup.object({
     type: yup.string().required('Palun vali partneri tüüp.'),
-    name: yup.string().required('Palun sisesta partneri nimi.')
+    name: yup.string().required('Palun sisesta partneri nimi.'),
   });
 
   const handleSubmit = async (partner: Partner) => {
@@ -54,6 +61,13 @@ const PartnerForm = observer(() => {
     } catch (err) {
       throw err;
     }
+  };
+
+  const handleAutosuggestSelect = ({ homepage, ...restValue }, { setValues, values }) => {
+    setValues({
+      ...values,
+      ...restValue,
+    });
   };
 
   return (
@@ -75,9 +89,24 @@ const PartnerForm = observer(() => {
             name="type"
             label="Partneri tüüp"
             options={types?.partnerTypes || []}
-            optionLabel={option => partnerTypeTranslations[option]}
+            optionLabel={(option) => partnerTypeTranslations[option]}
           />
-          <TextInput name="name" label="Nimi" />
+          <AutosuggestInput
+            name="name"
+            label="Nimi"
+            multiSection={true}
+            suggestions={[
+              { title: 'E-krediidiinfo', suggestions: creditInfoPartners || [] },
+              { title: 'Partnerid', suggestions: partners?.data || [] },
+            ]}
+            suggestionLabel={(suggestion) => suggestion.name}
+            fetchSuggestions={(value) => {
+              fetchCreditInfoPartners({ query: value });
+              fetchPartners({ name: value });
+            }}
+            onSelect={handleAutosuggestSelect}
+          />
+          {/* <TextInput name="name" label="Nimi" /> */}
           <TextInput name="regNr" label="Registrikood" />
           <TextInput name="VATnr" label="KMK nr" />
           <TextInput name="phoneNr" label="Telefoni number" type="tel" />

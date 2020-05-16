@@ -111,7 +111,7 @@ const ItemForm = ({ type }: { type: ItemType }) => {
           name="code"
           label="Kood"
           suggestions={searchedProducts?.data || []}
-          onChange={query => handleProductSuggestion('code', query)}
+          fetchSuggestions={query => handleProductSuggestion('code', query)}
           suggestionLabel={suggestion => suggestion.name}
           onSelect={handleAutosuggestSelect}
         />
@@ -119,7 +119,7 @@ const ItemForm = ({ type }: { type: ItemType }) => {
           name="name"
           label="Nimetus"
           suggestions={searchedProducts?.data || []}
-          onChange={query => handleProductSuggestion('name', query)}
+          fetchSuggestions={query => handleProductSuggestion('name', query)}
           suggestionLabel={suggestion => suggestion.name}
           onSelect={handleAutosuggestSelect}
         />

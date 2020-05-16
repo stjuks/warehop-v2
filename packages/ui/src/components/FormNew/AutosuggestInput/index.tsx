@@ -4,22 +4,30 @@ import { FiX } from 'react-icons/fi';
 import FormikField from '../util/FormikField';
 import TextBasedInput, { InputAction } from '../TextBasedInput';
 import ReactAutosuggest from 'react-autosuggest';
+import { useDebounce } from 'react-use';
 import { AutosuggestInputContainer, DefaultSuggestionItem } from './styles';
 
-interface BaseAutosuggestInputProps {
+interface SuggestionSection {
+  title: string;
   suggestions: any[];
-  onChange: (value: string | undefined) => void;
+}
+
+interface BaseAutosuggestInputProps {
+  suggestions: any[] | SuggestionSection[];
+  fetchSuggestions: (value: string | undefined) => void;
   suggestionLabel: (
     suggestion: any,
     props: { isHighlighted: boolean }
   ) => string | React.ReactElement;
   label?: string;
+  multiSection?: boolean;
 }
 
 interface AutosuggestInputProps extends BaseAutosuggestInputProps {
   value: string;
   error?: string;
   onSelect: (value: any) => void;
+  onChange: (value: string | undefined) => void;
 }
 
 const AutosuggestInput: React.FC<AutosuggestInputProps> = ({
@@ -29,9 +37,12 @@ const AutosuggestInput: React.FC<AutosuggestInputProps> = ({
   label,
   suggestions,
   suggestionLabel,
-  onSelect
+  onSelect,
+  multiSection,
+  fetchSuggestions,
 }) => {
   const [isFocused, setFocused] = useState(false);
+  const [fieldValue, setFieldValue] = useState('');
 
   const handleSuggestionSelect = (e: React.KeyboardEvent, { suggestionValue }) => {
     e.preventDefault();
@@ -40,8 +51,9 @@ const AutosuggestInput: React.FC<AutosuggestInputProps> = ({
 
   const handleSuggestionsChange = () => {};
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, { method }) => {
     onChange(e.target.value);
+    if (method === 'type') setFieldValue(e.target.value);
   };
 
   const handleClear = () => {
@@ -62,9 +74,17 @@ const AutosuggestInput: React.FC<AutosuggestInputProps> = ({
     }
   };
 
+  useDebounce(
+    () => {
+      if (value) fetchSuggestions(value);
+    },
+    300,
+    [fieldValue]
+  );
+
   const handleFocus = {
     onFocus: () => setFocused(true),
-    onBlur: () => setFocused(false)
+    onBlur: () => setFocused(false),
   };
 
   const actions: InputAction[] = [];
@@ -88,13 +108,16 @@ const AutosuggestInput: React.FC<AutosuggestInputProps> = ({
             onSuggestionsClearRequested={() => null}
             onSuggestionsFetchRequested={handleSuggestionsChange}
             shouldRenderSuggestions={() => true}
-            getSuggestionValue={suggestion => suggestion}
+            getSuggestionValue={(suggestion) => suggestion}
+            multiSection={multiSection}
             renderSuggestion={handleSuggestionRender}
+            renderSectionTitle={(section) => <strong>{section.title}</strong>}
+            getSectionSuggestions={(section) => section.suggestions}
             inputProps={{
               value: value || '',
               onChange: handleChange,
               className: 'input-field',
-              ...handleFocus
+              ...handleFocus,
             }}
           />
         </AutosuggestInputContainer>
@@ -110,7 +133,6 @@ interface FormikAutosuggestInputProps extends BaseAutosuggestInputProps {
 
 export const FormikAutosuggestInput: React.FC<FormikAutosuggestInputProps> = ({
   name,
-  onChange,
   onSelect,
   ...restProps
 }) => {
@@ -118,10 +140,9 @@ export const FormikAutosuggestInput: React.FC<FormikAutosuggestInputProps> = ({
 
   return (
     <FormikField name={name}>
-      {fieldProps => {
+      {(fieldProps) => {
         const handleChange = (value: string) => {
           fieldProps.onChange(value);
-          onChange(value);
         };
 
         const handleSelect = (value: any) => {

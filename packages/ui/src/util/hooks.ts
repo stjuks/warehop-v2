@@ -106,7 +106,7 @@ export const useGraphQLQuery = (query: Query, options?: GraphQLQueryOptions) => 
     await fetchData({ variables });
   };
 
-  const result: [any, [any, any], typeof restTuple] = [
+  const result: [any, [any, any], typeof restTuple ] = [
     transformedData,
     [fetchMoreData, customFetchData],
     restTuple,

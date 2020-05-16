@@ -49,21 +49,38 @@ export const FETCH_PARTNERS = new Query({
       }
     }
   `,
-  transformResult: (result) => result?.partners,
+  transformResult: result => result?.partners,
   onFetchMore: (oldData, newData) => {
     return {
       partners: {
         ...newData,
-        data: [...oldData.data, ...newData.data],
-      },
+        data: [...oldData.data, ...newData.data]
+      }
     };
   },
   fetchMoreOptions: (data, variables) => ({
     variables: {
       ...variables,
-      pagination: { ...variables.pagination, cursor: data.pageInfo.cursor },
-    },
-  }),
+      pagination: { ...variables.pagination, cursor: data.pageInfo.cursor }
+    }
+  })
+});
+
+export const FETCH_CREDITINFO_PARTNERS = new Query({
+  query: `
+    query searchCreditInfo($query: String!) {
+      searchCreditInfo(query: $query) {
+        name
+        regNr
+        address
+        phoneNr
+        email
+        homepage
+        VATnr
+      }
+    }
+  `,
+  transformResult: result => result.searchCreditInfo
 });
 
 export const ADD_PARTNER = new Mutation({
@@ -101,9 +118,9 @@ export const ADD_PARTNER = new Mutation({
   onMutate: ({ client }) => client?.cache.reset(),
   errorHandler: {
     EntityAlreadyExistsError: {
-      name: 'Sellise nimega partner juba eksisteerib.',
-    },
-  },
+      name: 'Sellise nimega partner juba eksisteerib.'
+    }
+  }
 });
 
 export const DELETE_PARTNER = new Mutation({
@@ -116,9 +133,9 @@ export const DELETE_PARTNER = new Mutation({
   errorHandler: {
     DeletionRestrictedError: {
       InvoiceItems: 'Partnerit ei saa kustutada, kuna ta on arvega seotud.',
-      Items: 'Partnerit ei saa kustutada, kuna ta on kaubaga seotud.',
-    },
-  },
+      Items: 'Partnerit ei saa kustutada, kuna ta on kaubaga seotud.'
+    }
+  }
 });
 
 export const EDIT_PARTNER = new Mutation({
@@ -158,9 +175,9 @@ export const EDIT_PARTNER = new Mutation({
   onMutate: ({ client }) => client?.cache.reset(),
   errorHandler: {
     EntityAlreadyExistsError: {
-      name: 'Sellise nimega partner juba eksisteerib.',
-    },
-  },
+      name: 'Sellise nimega partner juba eksisteerib.'
+    }
+  }
 });
 
 export const SEARCH_PARTNERS = gql`
