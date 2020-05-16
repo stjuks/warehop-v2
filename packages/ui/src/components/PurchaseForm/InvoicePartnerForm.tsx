@@ -19,7 +19,7 @@ interface InvoicePartnerFormProps {
 
 const InvoicePartnerForm: React.FC<InvoicePartnerFormProps> = ({ partnerType, formik }) => {
   const uiStore = useContext(UIStoreContext);
-
+  
   const config = {
     title: partnerType === 'CLIENT' ? 'Määra klient' : 'Määra tarnija',
   };

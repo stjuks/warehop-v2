@@ -207,6 +207,16 @@ export interface Partner {
   country?: string;
 }
 
+export interface CreditInfoPartner {
+  name: string;
+  regNr?: string;
+  address?: string;
+  phoneNr?: string;
+  email?: string;
+  homepage?: string;
+  VATnr?: string;
+}
+
 export interface Unit {
   id?: number;
   name: string;

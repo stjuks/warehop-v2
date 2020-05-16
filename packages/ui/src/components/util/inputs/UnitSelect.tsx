@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import AriaSelect from '@ui/components/Form/AriaSelect';
+import { SelectInput } from '@ui/components/FormNew';
 import CommonStoreContext from '@ui/stores/CommonStore';
 import { observer } from 'mobx-react-lite';
 import { FiPlusCircle } from 'react-icons/fi';
@@ -19,29 +20,31 @@ const UnitSelect: React.FC<UnitSelectProps> = observer(({ name, label }) => {
 
   const [units] = useGraphQLQuery(FETCH_UNITS, { loadOnMount: true });
 
-  const filteredUnits =
+  const handleSearch = query =>
     units?.filter(
-      (unit) =>
-        unit.name.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1 ||
-        unit.abbreviation.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
+      unit =>
+        unit.name.toLowerCase().indexOf(query.toLowerCase()) !== -1 ||
+        unit.abbreviation.toLowerCase().indexOf(query.toLowerCase()) !== -1
     ) || [];
 
   return (
-    <AriaSelect
+    <SelectInput
       label={label}
       name={name}
-      options={filteredUnits}
-      optionMap={{ label: (unit) => `${unit.name} (${unit.abbreviation})` }}
-      searchPlaceholder="Otsi ühikut"
-      onSearch={(query) => setSearchQuery(query)}
-      action={{
+      options={units}
+      optionLabel={unit => `${unit.name} (${unit.abbreviation})`}
+      searchProps={{
+        placeholder: 'Otsi ühikut',
+        onSearch: handleSearch
+      }}
+      menuAction={{
         label: (
           <>
             <FiPlusCircle style={{ marginRight: '0.25rem' }} />
             Lisa ühik
           </>
         ),
-        onClick: () => uiStore.openModal(<UnitForm />),
+        onClick: () => uiStore.openModal(<UnitForm />)
       }}
     />
   );

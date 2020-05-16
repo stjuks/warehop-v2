@@ -10,21 +10,20 @@ import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
 import Button from '../Button';
 import { Partner } from '@shared/types';
-import Form from '../Form';
+import Form from '../FormNew';
 import ContentContainer from '../util/ContentContainer';
 import CommonStoreContext from '@ui/stores/CommonStore';
-import AriaSelect from '../Form/AriaSelect';
+// import AriaSelect from '../Form/AriaSelect';
 import { partnerTypeTranslations } from '@ui/util/translations';
-import TextInput from '../Form/TextInput';
-import FormError from '../Form/FormError';
+// import TextInput from '../Form/TextInput';
+// import FormError from '../Form/FormError';
 import UIStoreContext from '@ui/stores/UIStore';
 import { useGraphQLQuery, useGraphQLMutation } from '@ui/util/hooks';
 import { FETCH_TYPES } from '@ui/api/common';
 import { ADD_PARTNER } from '@ui/api/partner';
+import { SelectInput, TextInput } from '../FormNew';
 
 const PartnerForm = observer(() => {
-  const partnerStore = useContext(PartnerStoreContext);
-  const commonStore = useContext(CommonStoreContext);
   const uiStore = useContext(UIStoreContext);
 
   const [types] = useGraphQLQuery(FETCH_TYPES, { loadOnMount: true });
@@ -40,12 +39,12 @@ const PartnerForm = observer(() => {
     street: '',
     postalCode: '',
     county: '',
-    country: '',
+    country: ''
   };
 
   const validationSchema = yup.object({
     type: yup.string().required('Palun vali partneri tüüp.'),
-    name: yup.string().required('Palun sisesta partneri nimi.'),
+    name: yup.string().required('Palun sisesta partneri nimi.')
   });
 
   const handleSubmit = async (partner: Partner) => {
@@ -66,17 +65,17 @@ const PartnerForm = observer(() => {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
-          onError={() =>
+          /* onError={() =>
             animateScroll.scrollToTop({ containerId: 'content-container', duration: 200 })
           }
-          persist
+        persist */
         >
-          <FormError />
-          <AriaSelect
-            options={types ? types.partnerTypes : []}
-            optionMap={{ label: (value) => partnerTypeTranslations[value] }}
+          {/* <FormError /> */}
+          <SelectInput
             name="type"
             label="Partneri tüüp"
+            options={types?.partnerTypes || []}
+            optionLabel={option => partnerTypeTranslations[option]}
           />
           <TextInput name="name" label="Nimi" />
           <TextInput name="regNr" label="Registrikood" />

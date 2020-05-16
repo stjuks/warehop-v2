@@ -1,27 +1,24 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { animateScroll } from 'react-scroll';
-import currency from 'currency.js';
 import moment from 'moment';
 import * as yup from 'yup';
 
 import routes from '../../util/routes';
 import { AddPurchaseItemBtn } from './styles';
-import InvoiceStoreContext, { parseInvoiceInput } from '../../stores/InvoiceStore';
 
 import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
 import Button from '../Button';
-import { Partner, InvoiceItem, InvoiceType, Invoice, AddInvoiceInput } from '@shared/types';
-import Form from '../Form';
+import { Invoice } from '@shared/types';
+import Form, { FileInput, DateInput, TextInput } from '../FormNew';
 import FieldArray from '../Form/util/FieldArray';
 import InvoiceItemListItem from '../InvoiceItemListItem';
 import PurchaseItemForm from '../PurchaseItemForm';
-import TextInput from '../Form/TextInput';
-import PartnerSelect from '../util/inputs/PartnerSelect';
+// import TextInput from '../Form/TextInput';
 import { Row } from '../Layout/styles';
-import FileInput from '../Form/FileInput';
-import DateInput from '../Form/DateInput';
+// import FileInput from '../Form/FileInput';
+// import DateInput from '../Form/DateInput';
 import { FormTitle } from '../Form/styles';
 import FormError from '../Form/FormError';
 import { filterObjectProperties } from '@ui/util/helpers';
@@ -30,7 +27,6 @@ import ContentContainer from '../util/ContentContainer';
 import { RouteComponentProps, useParams } from 'react-router';
 import { useGraphQLMutation, useGraphQLQuery } from '@ui/util/hooks';
 import { EDIT_INVOICE, ADD_INVOICE, FETCH_INVOICE } from '@ui/api/invoice';
-import InvoicePartnerForm from './InvoicePartnerForm';
 import InvoicePartnerField from './InvoicePartnerField';
 import { useFormikContext } from 'formik';
 
@@ -39,7 +35,7 @@ interface PurchaseFormProps extends RouteComponentProps {
   mode: 'EDIT' | 'ADD';
 }
 
-const PurchaseForm: React.FC<PurchaseFormProps> = observer(({ location, mode }) => {
+const PurchaseForm: React.FC<PurchaseFormProps> = observer(({ mode }) => {
   const uiStore = useContext(UIStoreContext);
 
   const [editInvoice] = useGraphQLMutation(EDIT_INVOICE);
@@ -97,11 +93,11 @@ const PurchaseForm: React.FC<PurchaseFormProps> = observer(({ location, mode }) 
           validationSchema={validationSchema}
           initialValues={initialValues}
           onSubmit={handleSubmit}
-          onError={() =>
+          id="purchase-form"
+          /* onError={() =>
             animateScroll.scrollToTop({ containerId: 'content-container', duration: 200 })
           }
-          id="purchase-form"
-          persist={mode === 'ADD'}
+          persist={mode === 'ADD'} */
         >
           <FormFields />
         </Form>
@@ -153,7 +149,7 @@ const FormFields: React.FC<any> = observer(() => {
       </Row>
       <FormTitle>Lisaandmed</FormTitle>
       <FileInput name="file" accept=".pdf" label="Arve fail (PDF)" />
-      <TextInput name="description" label="Märkused" isTextarea />
+      {/* <TextInput name="description" label="Märkused" isTextarea /> */}
       <FieldArray name="items">
         {(arrayHelpers) => (
           <>

@@ -1,6 +1,11 @@
 import { Op } from 'sequelize';
 import { Resolver, authResolver, paginate } from '.';
-import { PaginatedQueryInput, SearchPartnerInput } from '@shared/types';
+import cheerio from 'cheerio';
+import qs from 'querystring';
+import axios from 'axios';
+import { PaginatedQueryInput, SearchPartnerInput, CreditInfoPartner } from '@shared/types';
+import { httpsRequest } from '../util/helpers';
+import { cachedDataVersionTag } from 'v8';
 
 const partnerResolver: Resolver = {
   Query: {
@@ -31,6 +36,51 @@ const partnerResolver: Resolver = {
         limit,
         where
       });
+    }),
+    searchCreditInfo: authResolver(async ({ query }: { query: string }) => {
+      try {
+        const { data } = await axios.post(
+          'https://www.e-krediidiinfo.ee/companies/search',
+          qs.stringify({ action: 'getData' }),
+          {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              Accept: 'application/json, text/javascript, */*; q=0.01',
+              'X-Requested-With': 'XMLHttpRequest'
+            },
+            params: {
+              q: query,
+              dtn: 'otsing.ettevotted',
+              page_length: 10,
+              page_no: 1
+            }
+          }
+        );
+
+        const result = data.map(partner => ({
+          name: partner[0]
+            ? cheerio
+                .load(partner[0])('a')
+                .text()
+                .trim()
+            : null,
+          regNr: partner[1] || null,
+          address: partner[2] || null,
+          phoneNr: partner[3] || null,
+          email: partner[4]
+            ? cheerio
+                .load(partner[4])('a')
+                .text()
+                .trim()
+            : null,
+          homepage: partner[5] || null,
+          VATnr: partner[6] || null
+        }));
+
+        return result;
+      } catch (err) {
+        throw err;
+      }
     })
   },
   Mutation: {

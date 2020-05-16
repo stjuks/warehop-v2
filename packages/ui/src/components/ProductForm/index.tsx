@@ -11,19 +11,19 @@ import {
   ProductFormContainer,
   AddWarehouseButton,
   TrashButtonContainer,
-  WarehouseFieldsContainer,
+  WarehouseFieldsContainer
 } from './styles';
 
 import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
 import Button from '../Button';
 import { Warehouse, WarehouseQuantity, ProductItem } from '@shared/types';
-import Form from '../Form';
+import Form, { TextInput, SelectInput } from '../FormNew';
 import { FormTitle } from '../Form/styles';
-import TextInput from '../Form/TextInput';
+// import TextInput from '../Form/TextInput';
 import UnitSelect from '../util/inputs/UnitSelect';
 import PartnerSelect from '../util/inputs/PartnerSelect';
-import AriaSelect from '../Form/AriaSelect';
+// import AriaSelect from '../Form/AriaSelect';
 import { Row } from '../Layout/styles';
 import FieldArray from '../Form/util/FieldArray';
 import FormError from '../Form/FormError';
@@ -32,6 +32,7 @@ import { useGraphQLQuery, useGraphQLMutation } from '@ui/util/hooks';
 import { FETCH_WAREHOUSES } from '@ui/api/warehouse';
 import { ADD_ITEM, EDIT_ITEM } from '@ui/api/item';
 import WarehouseSelect from '../util/inputs/WarehouseSelect';
+import { useFormikContext } from 'formik';
 
 interface ProductFormProps {
   location: {
@@ -39,7 +40,7 @@ interface ProductFormProps {
   };
 }
 
-const ProductForm: React.FC<ProductFormProps> = observer((props) => {
+const ProductForm: React.FC<ProductFormProps> = observer(props => {
   const uiStore = useContext(UIStoreContext);
   const [addItem] = useGraphQLMutation(ADD_ITEM);
   const [editItem] = useGraphQLMutation(EDIT_ITEM);
@@ -54,32 +55,35 @@ const ProductForm: React.FC<ProductFormProps> = observer((props) => {
     unit: {
       id: 1,
       name: 'Tükk',
-      abbreviation: 'tk',
+      abbreviation: 'tk'
     },
     purchasePrice: '',
     retailPrice: '',
     description: '',
-    warehouseQuantity: [],
+    warehouseQuantity: []
   };
 
   const validationSchema = yup.object({
-    code: yup.string().nullable().required('Palun sisesta kauba kood.'),
-    name: yup.string().nullable().required('Palun sisesta kauba nimetus.'),
+    code: yup
+      .string()
+      .nullable()
+      .required('Palun sisesta kauba kood.'),
+    name: yup
+      .string()
+      .nullable()
+      .required('Palun sisesta kauba nimetus.'),
     purchasePrice: yup.string().nullable(),
     retailPrice: yup.string().nullable(),
     description: yup.string().nullable(),
-    warehouseQuantity: yup
-      .array()
-      .of(
-        yup.object({
-          name: yup.string().required('Palun sisesta lao nimi.'),
-          quantity: yup
-            .number()
-            .typeError('Kogus peab olema number.')
-            .required('Palun sisesta kauba kogus.'),
-        })
-      )
-      .required('Palun sisesta kauba kogus.'),
+    warehouseQuantity: yup.array().of(
+      yup.object({
+        name: yup.string().required('Palun sisesta lao nimi.'),
+        quantity: yup
+          .number()
+          .typeError('Kogus peab olema number.')
+          .required('Palun sisesta kogus.')
+      })
+    )
   });
 
   const handleSubmit = async (item: ProductItem) => {
@@ -105,29 +109,17 @@ const ProductForm: React.FC<ProductFormProps> = observer((props) => {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
-          persist={!isEditing}
+          /* persist={!isEditing}
           onError={() =>
             animateScroll.scrollToTop({ containerId: 'content-container', duration: 200 })
-          }
+          } */
         >
-          {(formikProps) => (
-            <>
-              <FormError
-                fields={[
-                  'warehouseQuantity',
-                  'warehouseQuantity[0].quantity',
-                  'warehouseQuantity[0].name',
-                ]}
-              />
-              <FormFields />
-              <FormTitle>Laoseis</FormTitle>
-              <FieldArray name="warehouseQuantity">
-                {(arrayHelpers) => (
-                  <WarehouseFields arrayHelpers={arrayHelpers} formikProps={formikProps} />
-                )}
-              </FieldArray>
-            </>
-          )}
+          <FormError />
+          <FormFields />
+          <FormTitle>Laoseis</FormTitle>
+          <FieldArray name="warehouseQuantity">
+            {arrayHelpers => <WarehouseFields arrayHelpers={arrayHelpers} />}
+          </FieldArray>
         </Form>
       </ProductFormContainer>
       <FooterContainer style={{ padding: '0.5rem 1rem' }}>
@@ -147,28 +139,29 @@ const FormFields: React.FC = () => {
       <FormTitle>Lisainfo</FormTitle>
       <PartnerSelect name="partner" label="Tarnija" partnerType="VENDOR" />
       <Row flex={[1, 1]}>
-        <TextInput name="purchasePrice" label="Ostuhind" inputMode="decimal" indicator={'€'} />
-        <TextInput name="retailPrice" label="Müügihind" inputMode="decimal" indicator={'€'} />
+        <TextInput name="purchasePrice" label="Ostuhind" type="decimal" indicator={'€'} />
+        <TextInput name="retailPrice" label="Müügihind" type="decimal" indicator={'€'} />
       </Row>
-      <TextInput name="description" label="Märkused" isTextarea />
+      {/* <TextInput name="description" label="Märkused" isTextarea /> */}
     </>
   );
 };
 
 const filterChosenWarehouseOptions = (formValues: WarehouseQuantity[], warehouses: Warehouse[]) => {
   return warehouses.filter(
-    (wh) => formValues.map((whVal) => Number(whVal.id)).indexOf(Number(wh.id)) === -1
+    wh => formValues.map(whVal => Number(whVal.id)).indexOf(Number(wh.id)) === -1
   );
 };
 
 const findFirstNonChosenWarehouse = (formValues: WarehouseQuantity[], warehouses: Warehouse[]) => {
   return warehouses.find(
-    (wh) => formValues.map((whVal) => Number(whVal.id)).indexOf(Number(wh.id)) === -1
+    wh => formValues.map(whVal => Number(whVal.id)).indexOf(Number(wh.id)) === -1
   );
 };
 
-const WarehouseFields: React.FC<any> = observer(({ formikProps, arrayHelpers }) => {
-  const { warehouseQuantity } = formikProps.values;
+const WarehouseFields: React.FC<any> = observer(({ arrayHelpers }) => {
+  const formik = useFormikContext<any>();
+  const { warehouseQuantity } = formik.values;
   const [warehouses] = useGraphQLQuery(FETCH_WAREHOUSES, { loadOnMount: true });
 
   return warehouses ? (
@@ -184,7 +177,7 @@ const WarehouseFields: React.FC<any> = observer(({ formikProps, arrayHelpers }) 
           <TextInput
             name={`warehouseQuantity[${i}].quantity`}
             label={i === 0 ? 'Kogus' : undefined}
-            type="number"
+            type="decimal"
             className="warehouse-quantity-input"
           />
           <TrashButtonContainer>

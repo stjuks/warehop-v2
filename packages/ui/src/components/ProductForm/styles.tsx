@@ -30,7 +30,7 @@ export const WarehouseFieldsContainer = styled.div`
       }
 
       .warehouse-quantity-input {
-        width: 6rem;
+        width: 7rem;
       }
     }
 `;

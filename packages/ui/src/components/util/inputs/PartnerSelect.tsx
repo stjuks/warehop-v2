@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import AriaSelect from '@ui/components/Form/AriaSelect';
+import { SelectInput } from '@ui/components/FormNew';
 import PartnerStoreContext from '@ui/stores/PartnerStore';
 import { observer } from 'mobx-react-lite';
 import { FiPlusCircle } from 'react-icons/fi';
@@ -22,27 +23,29 @@ const PartnerSelect: React.FC<PartnerSelectProps> = observer(({ name, label, par
 
   const [partners] = useGraphQLQuery(FETCH_PARTNERS, {
     variables: { type: partnerType, generalQuery: searchQuery },
-    loadOnMount: true,
+    loadOnMount: true
   });
 
   return (
-    <AriaSelect
+    <SelectInput
       name={name}
       label={label}
       isClearable={true}
-      optionMap={{ label: (partner) => partner.name }}
+      optionLabel={partner => partner.name}
       options={partners ? partners.data : []}
-      searchPlaceholder="Otsi partnerit"
-      action={{
+      searchProps={{
+        placeholder: 'Otsi partnerit',
+        onSearch: setSearchQuery
+      }}
+      menuAction={{
         label: (
           <>
             <FiPlusCircle style={{ marginRight: '0.25rem' }} />
             Lisa partner
           </>
         ),
-        onClick: () => uiStore.goTo(routes.partnerForm),
+        onClick: () => uiStore.goTo(routes.partnerForm)
       }}
-      onSearch={query => setSearchQuery(query)}
     />
   );
 });

@@ -44,8 +44,19 @@ export default gql`
     data: [Partner!]!
   }
 
+  type CreditInfoPartner {
+    name: String!
+    regNr: String
+    address: String
+    email: String
+    phoneNr: String
+    homepage: String
+    VATnr: String
+  }
+
   extend type Query {
     partners(filter: SearchPartnerInput): PaginatedPartner!
+    searchCreditInfo(query: String!): [CreditInfoPartner]!
   }
 
   extend type Mutation {

@@ -1,10 +1,15 @@
 import { ModelCtor, Model } from 'sequelize-typescript';
 import util from 'util';
+import https from 'https';
 import puppeteer from 'puppeteer';
 import { ApolloError } from 'apollo-server-express';
 import { ErrorCode } from '@shared/types';
 import { GraphQLError } from 'graphql';
-import { ValidationError as SequelizeValidationError, ValidationErrorItem, CreateOptions } from 'sequelize';
+import {
+  ValidationError as SequelizeValidationError,
+  ValidationErrorItem,
+  CreateOptions
+} from 'sequelize';
 
 interface ForeignKeyOpts {
   table: ModelCtor<Model<any, any>>;
@@ -50,9 +55,9 @@ export const createCheckConstraint = (opts: {
     `;
 };
 
-export const toCursorHash = (string) =>
+export const toCursorHash = string =>
   string ? Buffer.from(JSON.stringify(string)).toString('base64') : null;
-export const fromCursorHash = (string) =>
+export const fromCursorHash = string =>
   string ? Buffer.from(JSON.stringify(string), 'base64').toString('ascii') : null;
 
 export const createError = (message: string, code: ErrorCode, extensions?: any) => {
@@ -69,7 +74,7 @@ export const formatError = (err: GraphQLError) => {
       const validationError: SequelizeValidationError = exception;
 
       return createError('Entity with these fields already exists.', 'EntityAlreadyExistsError', {
-        fields: validationError.errors.map((error: ValidationErrorItem) => error.path),
+        fields: validationError.errors.map((error: ValidationErrorItem) => error.path)
       });
     }
 
@@ -78,7 +83,7 @@ export const formatError = (err: GraphQLError) => {
         'Entity is strictly related to another entity and cannot be deleted.',
         'DeletionRestrictedError',
         {
-          table: exception.parent.table,
+          table: exception.parent.table
         }
       );
     }
@@ -93,4 +98,18 @@ export const formatError = (err: GraphQLError) => {
   }
 
   return createError(err.message || 'Error executing request.', 'GeneralError');
+};
+
+export const httpsRequest = (options: https.RequestOptions) => {
+  return new Promise((resolve, reject) => {
+    const req = https.request(options);
+
+    req.on('response', res => {
+      resolve(res);
+    });
+
+    req.on('error', err => {
+      reject(err);
+    });
+  });
 };
