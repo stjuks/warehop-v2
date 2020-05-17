@@ -47,12 +47,13 @@ export const TextBasedInputContainer = styled.div<TextBasedInputContainerProps>`
   }
 
   .input-container {
-    height: 2.5rem;
+    min-height: 2.5rem;
     display: flex;
     position: relative;
     border-top-left-radius: 0.25rem;
     border-top-right-radius: 0.25rem;
     transition: all 0.2s;
+    align-items: center;
 
     .active-line {
       transform-origin: left;

@@ -11,7 +11,7 @@ import Header from '../Header';
 import { FooterContainer } from '../Footer/styles';
 import Button from '../Button';
 import { Invoice, InvoiceType, Partner, InvoiceItem, PartnerType } from '@shared/types';
-import Form, { FileInput, DateInput, TextInput } from '../FormNew';
+import Form, { FileInput, DateInput, TextInput, TextareaInput } from '../FormNew';
 import FieldArray from '../Form/util/FieldArray';
 import InvoiceItemListItem from '../InvoiceItemListItem';
 import PurchaseItemForm from '../PurchaseItemForm';
@@ -54,8 +54,9 @@ const createConfig = (mode: FormMode, type: InvoiceType) => {
   const buttonTitle = mode === 'EDIT' ? 'Muuda arve' : 'Loo arve';
   const backRoute = type === 'PURCHASE' ? routes.purchases : routes.sales;
   const partnerType: PartnerType = type === 'PURCHASE' ? 'CLIENT' : 'VENDOR';
+  const formId = type === 'PURCHASE' ? `${mode}-purchase-form` : `${mode}-sale-form`;
 
-  return { title, buttonTitle, backRoute, partnerType };
+  return { title, buttonTitle, backRoute, partnerType, formId };
 };
 
 const InvoiceForm: React.FC<InvoiceFormProps> = observer(({ mode, type }) => {
@@ -113,17 +114,17 @@ const InvoiceForm: React.FC<InvoiceFormProps> = observer(({ mode, type }) => {
           validationSchema={validationSchema}
           initialValues={initialValues}
           onSubmit={handleSubmit}
-          id="purchase-form"
+          id={config.formId}
           /* onError={() =>
             animateScroll.scrollToTop({ containerId: 'content-container', duration: 200 })
-          }
-          persist={mode === 'ADD'} */
+          } */
+          persist={mode === 'ADD'}
         >
           <FormFields type={type} config={config} mode={mode} />
         </Form>
       </ContentContainer>
       <FooterContainer style={{ padding: '0.25rem 1rem' }}>
-        <Button title={config.buttonTitle} form="purchase-form" type="submit" />
+        <Button title={config.buttonTitle} form={config.formId} type="submit" />
       </FooterContainer>
     </>
   );
@@ -172,7 +173,7 @@ const FormFields: React.FC<{
       </Row>
       <FormTitle>Lisaandmed</FormTitle>
       {type === 'PURCHASE' && <FileInput name="file" accept=".pdf" label="Arve fail (PDF)" />}
-      {/* <TextInput name="description" label="Märkused" isTextarea /> */}
+      <TextareaInput name="description" label="Märkused" />
       <FieldArray name="items">
         {(arrayHelpers) => (
           <>

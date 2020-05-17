@@ -130,10 +130,10 @@ const InvoiceItemForm: React.FC<InvoiceItemFormProps> = observer(
             initialValues={initialValues}
             onSubmit={handleSubmit}
             onChange={handleTypeSelect}
+            persist
             /* onError={() =>
               animateScroll.scrollToTop({ containerId: 'content-container', duration: 200 })
-            }
-            persist */
+            } */
           >
             <SelectInput
               name="type"

@@ -42,7 +42,6 @@ const InvoicePartnerForm: React.FC<InvoicePartnerFormProps> = ({ partnerType, fo
   });
 
   const handleSubmit = (values: InvoicePartnerInput) => {
-    console.log(filterObjectProperties(values, Object.keys(initialValues)));
     formik.setFieldValue('partner', filterObjectProperties(values, Object.keys(initialValues)));
     uiStore.goBack();
   };
@@ -56,6 +55,7 @@ const InvoicePartnerForm: React.FC<InvoicePartnerFormProps> = ({ partnerType, fo
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
+          persist
         >
           <ToggleInput name="savePartner" label="Salvesta partnerina" />
           <PartnerSuggest name="name" label="Nimi" />

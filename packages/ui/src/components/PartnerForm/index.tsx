@@ -66,10 +66,10 @@ const PartnerForm = observer(() => {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
+          persist
           /* onError={() =>
             animateScroll.scrollToTop({ containerId: 'content-container', duration: 200 })
-          }
-        persist */
+          } */
         >
           {/* <FormError /> */}
           <SelectInput

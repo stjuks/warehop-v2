@@ -12,6 +12,7 @@ import { FormikSelectInput } from './SelectInput';
 import { FormikTextInput } from './TextInput';
 import { FormikToggleInput } from './ToggleInput';
 import { loadFromLocalStorage, saveToLocalStorage } from '@ui/util/helpers';
+import { FormikTextareaInput } from './TextareaInput';
 
 interface FormProps {
   initialValues: object;
@@ -19,6 +20,7 @@ interface FormProps {
   onSubmit: (values: any) => any;
   onChange?: (args: { value: any; name: string }, formik: FormikContextType<any>) => any;
   validationSchema?: yup.ObjectSchema;
+  persist?: boolean;
 }
 
 const initialState = {
@@ -64,6 +66,7 @@ const Form: React.FC<FormProps> = ({
   id,
   validationSchema,
   onChange,
+  persist,
 }) => {
   const form = useForm();
 
@@ -75,7 +78,12 @@ const Form: React.FC<FormProps> = ({
       validateOnChange={false}
     >
       <FormProvider value={{ ...form, validationSchema }}>
-        <InnerForm id={id} validationSchema={validationSchema} onChange={onChange}>
+        <InnerForm
+          id={id}
+          validationSchema={validationSchema}
+          onChange={onChange}
+          persist={persist}
+        >
           {children}
         </InnerForm>
       </FormProvider>
@@ -89,7 +97,8 @@ const InnerForm: React.FC<{
   id: string;
   validationSchema?: yup.ObjectSchema;
   onChange?: (args: { value: any; name: string }, formik: FormikContextType<any>) => any;
-}> = ({ children, id, onChange }) => {
+  persist?: boolean;
+}> = ({ children, id, onChange, persist }) => {
   const formik = useFormikContext<any>();
   const { changedField } = useFormContext();
 
@@ -100,16 +109,22 @@ const InnerForm: React.FC<{
   }, [changedField]);
 
   useEffect(() => {
-    window.addEventListener('beforeunload', cleanFormStorage);
+    if (persist) {
+      window.addEventListener('beforeunload', cleanFormStorage);
 
-    const loadedValues = loadFromLocalStorage(`formData.${id}`);
+      const loadedValues = loadFromLocalStorage(`formData.${id}`);
 
-    if (loadedValues) setValues(loadedValues);
+      if (loadedValues) setValues(loadedValues);
+    }
   }, []);
 
-  useDebounce(() => {
-    saveToLocalStorage(`formData.${id}`, values);
-  }, 300, [values]);
+  useDebounce(
+    () => {
+      if (persist) saveToLocalStorage(`formData.${id}`, values);
+    },
+    300,
+    [values]
+  );
 
   return (
     <form onSubmit={formik.handleSubmit} id={id} style={{ padding: '0.75rem' }}>
@@ -126,3 +141,4 @@ export const FileInput = FormikFileInput;
 export const SelectInput = FormikSelectInput;
 export const TextInput = FormikTextInput;
 export const ToggleInput = FormikToggleInput;
+export const TextareaInput = FormikTextareaInput;

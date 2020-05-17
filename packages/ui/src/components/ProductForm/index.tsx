@@ -109,8 +109,8 @@ const ProductForm: React.FC<ProductFormProps> = observer(props => {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
-          /* persist={!isEditing}
-          onError={() =>
+          persist={!isEditing}
+          /* onError={() =>
             animateScroll.scrollToTop({ containerId: 'content-container', duration: 200 })
           } */
         >

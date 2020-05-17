@@ -185,16 +185,3 @@ export const saveToLocalStorage = (key: string, value: any) => {
 
   return true;
 };
-
-// saveToLocalStorage('forms.purchase-form', obj)
-// saveToLocalStorage('xd', true)
-
-console.log(localStorage);
-
-const obj = {};
-
-console.log(editObjectProperty('obj', '', 'tere'));
-
-console.log(obj);
-
-console.log(loadFromLocalStorage('purchasesFilter.isPaid'));
