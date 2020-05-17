@@ -47,7 +47,7 @@ export const TextBasedInputContainer = styled.div<TextBasedInputContainerProps>`
   }
 
   .input-container {
-    min-height: 2.5rem;
+    height: 2.5rem;
     display: flex;
     position: relative;
     border-top-left-radius: 0.25rem;
@@ -81,6 +81,7 @@ export const TextBasedInputContainer = styled.div<TextBasedInputContainerProps>`
       ${({ actionLength }) =>
         actionLength ? `padding-right: calc(${actionLength} * 1.75rem);` : ''}
       color: ${({ theme }) => `${theme.colors.text}`};
+      height: 100%;
       padding-left: 0.5rem;
       flex: 1;
       display: flex;

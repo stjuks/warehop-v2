@@ -3,6 +3,7 @@ import { FiX } from 'react-icons/fi';
 
 import TextBasedInput, { InputAction } from '../TextBasedInput';
 import FormikField from '../util/FormikField';
+import { TextareaInputContainer } from './styles';
 
 interface BaseTextareaInputProps {
   className?: string;
@@ -51,7 +52,7 @@ const TextareaInput: React.FC<TextareaInputProps> = ({
   };
 
   return (
-    <TextBasedInput
+    <TextareaInputContainer
       label={label}
       className={className}
       isFocused={isFocused}
@@ -59,7 +60,6 @@ const TextareaInput: React.FC<TextareaInputProps> = ({
       error={error}
       inputComponent={
         <textarea
-          style={{ padding: '0.5rem', minHeight: '2.5rem' }}
           onChange={handleChange}
           value={value || ''}
           className="input-field"

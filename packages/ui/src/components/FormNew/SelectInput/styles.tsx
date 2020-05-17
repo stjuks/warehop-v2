@@ -2,12 +2,13 @@ import styled from 'styled-components';
 import { Wrapper } from 'react-aria-menubutton';
 
 export const SelectInputContainer = styled(Wrapper).attrs({
-  className: 'select-wrapper'
+  className: 'select-wrapper',
 })``;
 
 export const SelectMenuWrapper = styled.div`
-  position: relative;
   flex: 1;
+  height: 100%;
+  width: 100%;
 
   .input-field {
     height: 100%;

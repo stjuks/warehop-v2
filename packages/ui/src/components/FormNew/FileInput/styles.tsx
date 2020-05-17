@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 export const FileInputContainer = styled.div`
   width: 100%;
+  height: 100%;
   position: relative;
 
   input[type='file'] {
