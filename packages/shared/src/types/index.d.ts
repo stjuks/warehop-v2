@@ -17,10 +17,9 @@ export interface InvoicePartnerInput {
   VATnr?: string;
   phoneNr?: string;
   email?: string;
-  street?: string;
+  address?: string;
   postalCode?: string;
   county?: string;
-  country?: string;
 }
 
 export interface AddInvoiceInput {
@@ -98,10 +97,8 @@ export interface AddPartnerInput {
   VATnr?: string;
   email?: string;
   phoneNr?: string;
-  country?: string;
   county?: string;
-  city?: string;
-  street?: string;
+  address?: string;
   postalCode?: string;
 }
 
@@ -201,10 +198,9 @@ export interface Partner {
   VATnr?: string;
   phoneNr?: string;
   email?: string;
-  street?: string;
+  address?: string;
   postalCode?: string;
   county?: string;
-  country?: string;
 }
 
 export interface CreditInfoPartner {

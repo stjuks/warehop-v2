@@ -11,6 +11,7 @@ import Button from '../Button';
 import { FooterContainer } from '../Footer/styles';
 // import ToggleInput from '../Form/ToggleInput';
 import PartnerSuggest from '../util/inputs/PartnerSuggest';
+import { filterObjectProperties } from '@ui/util/helpers';
 
 interface InvoicePartnerFormProps {
   partnerType: PartnerType;
@@ -41,7 +42,8 @@ const InvoicePartnerForm: React.FC<InvoicePartnerFormProps> = ({ partnerType, fo
   });
 
   const handleSubmit = (values: InvoicePartnerInput) => {
-    formik.setFieldValue('partner', values);
+    console.log(filterObjectProperties(values, Object.keys(initialValues)));
+    formik.setFieldValue('partner', filterObjectProperties(values, Object.keys(initialValues)));
     uiStore.goBack();
   };
 

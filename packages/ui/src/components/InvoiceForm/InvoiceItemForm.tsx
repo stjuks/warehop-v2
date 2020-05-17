@@ -24,7 +24,7 @@ import { FETCH_PRODUCTS } from '@ui/api/item';
 import { FETCH_TYPES } from '@ui/api/common';
 import { FormikProps, FormikContextType } from 'formik';
 
-interface PurchaseItemFormProps {
+interface InvoiceItemFormProps {
   arrayHelpers: any;
   item?: InvoiceItem;
   index?: number;
@@ -78,75 +78,8 @@ const forms = {
   EXPENSE: serviceAndExpenseForm,
 };
 
-const ItemForm = ({ type }: { type: ItemType }) => {
-  const [searchedProducts, { fetch: fetchProducts }] = useGraphQLQuery(FETCH_PRODUCTS);
-
-  // autofill fields on select
-  const handleAutosuggestSelect = (value, { setValues, values }) => {
-    const _values: any = {};
-
-    forms[type].fields.forEach((field) => {
-      if (value[field]) _values[field] = value[field];
-    });
-
-    const { warehouseQuantity, purchasePrice } = value;
-
-    if (warehouseQuantity && warehouseQuantity.length > 0) {
-      _values.warehouse = warehouseQuantity[0];
-      _values.quantity = warehouseQuantity[0].quantity;
-    }
-
-    _values.price = purchasePrice;
-
-    setValues({ values, ..._values });
-  };
-
-  const handleProductSuggestion = (key: string, query?: string) => {
-    fetchProducts({ [key]: query, pagination: { limit: 15 } });
-  };
-
-  if (type === 'PRODUCT') {
-    return (
-      <>
-        <AutosuggestInput
-          name="code"
-          label="Kood"
-          suggestions={searchedProducts?.data || []}
-          fetchSuggestions={(query) => handleProductSuggestion('code', query)}
-          suggestionLabel={(suggestion) => suggestion.name}
-          onSelect={handleAutosuggestSelect}
-        />
-        <AutosuggestInput
-          name="name"
-          label="Nimetus"
-          suggestions={searchedProducts?.data || []}
-          fetchSuggestions={(query) => handleProductSuggestion('name', query)}
-          suggestionLabel={(suggestion) => suggestion.name}
-          onSelect={handleAutosuggestSelect}
-        />
-        <UnitSelect name="unit" label="Ühik" />
-        <TextInput name="quantity" label="Kogus" type="decimal" />
-        <WarehouseSelect name="warehouse" label="Ladu" />
-        <TextInput name="price" label="Ostuhind" type="decimal" indicator={'€'} />
-      </>
-    );
-  }
-
-  return (
-    <>
-      <TextInput name="name" label="Nimetus" />
-      <Row flex={[1, 1]}>
-        <TextInput name="quantity" label="Kogus" type="decimal" />
-        <UnitSelect name="unit" label="Ühik" />
-      </Row>
-      <TextInput name="price" label="Ostuhind" type="decimal" indicator={'€'} />
-    </>
-  );
-};
-
-const PurchaseItemForm: React.FC<PurchaseItemFormProps> = observer(
+const InvoiceItemForm: React.FC<InvoiceItemFormProps> = observer(
   ({ index, arrayHelpers, item }) => {
-    const commonStore = useContext(CommonStoreContext);
     const uiStore = useContext(UIStoreContext);
 
     const [itemTypes] = useGraphQLQuery(FETCH_TYPES, { loadOnMount: true });
@@ -219,4 +152,74 @@ const PurchaseItemForm: React.FC<PurchaseItemFormProps> = observer(
   }
 );
 
-export default PurchaseItemForm;
+const ItemForm = ({ type }: { type: ItemType }) => {
+  const [searchedProducts, { fetch: fetchProducts }] = useGraphQLQuery(FETCH_PRODUCTS);
+
+  // autofill fields on select
+  const handleAutosuggestSelect = (value, { setValues, values }) => {
+    const _values: any = {};
+
+    // filter fields based on item type
+    forms[type].fields.forEach((field) => {
+      if (value[field]) _values[field] = value[field];
+    });
+
+    const { warehouseQuantity, purchasePrice } = value;
+
+    // if item is in a warehouse, select autofill first warehouse by default
+    if (warehouseQuantity && warehouseQuantity.length > 0) {
+      _values.warehouse = warehouseQuantity[0];
+      _values.quantity = warehouseQuantity[0].quantity;
+    }
+
+    _values.price = purchasePrice;
+
+    setValues({ values, ..._values });
+  };
+
+  const handleProductSuggestion = (key: string, query?: string) => {
+    fetchProducts({ [key]: query, pagination: { limit: 15 } });
+  };
+
+  if (type === 'PRODUCT') {
+    return (
+      <>
+        <AutosuggestInput
+          name="code"
+          label="Kood"
+          suggestions={searchedProducts?.data || []}
+          fetchSuggestions={(query) => handleProductSuggestion('code', query)}
+          suggestionLabel={(suggestion) => suggestion.name}
+          onSelect={handleAutosuggestSelect}
+        />
+        <AutosuggestInput
+          name="name"
+          label="Nimetus"
+          suggestions={searchedProducts?.data || []}
+          fetchSuggestions={(query) => handleProductSuggestion('name', query)}
+          suggestionLabel={(suggestion) => suggestion.name}
+          onSelect={handleAutosuggestSelect}
+        />
+        <Row flex={[1, 1]}>
+          <TextInput name="quantity" label="Kogus" type="decimal" />
+          <UnitSelect name="unit" label="Ühik" />
+        </Row>
+        <WarehouseSelect name="warehouse" label="Ladu" />
+        <TextInput name="price" label="Hind" type="decimal" indicator={'€'} />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <TextInput name="name" label="Nimetus" />
+      <Row flex={[1, 1]}>
+        <TextInput name="quantity" label="Kogus" type="decimal" />
+        <UnitSelect name="unit" label="Ühik" />
+      </Row>
+      <TextInput name="price" label="Hind" type="decimal" indicator={'€'} />
+    </>
+  );
+};
+
+export default InvoiceItemForm;

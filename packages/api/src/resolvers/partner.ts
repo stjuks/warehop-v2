@@ -34,7 +34,7 @@ const partnerResolver: Resolver = {
       return await paginate(models.Partner, {
         cursor,
         limit,
-        where
+        where,
       });
     }),
     searchCreditInfo: authResolver(async ({ query }: { query: string }) => {
@@ -46,42 +46,52 @@ const partnerResolver: Resolver = {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
               Accept: 'application/json, text/javascript, */*; q=0.01',
-              'X-Requested-With': 'XMLHttpRequest'
+              'X-Requested-With': 'XMLHttpRequest',
             },
             params: {
               q: query,
               dtn: 'otsing.ettevotted',
               page_length: 10,
-              page_no: 1
-            }
+              page_no: 1,
+            },
           }
         );
 
-        const result = data.map(partner => ({
-          name: partner[0]
-            ? cheerio
-                .load(partner[0])('a')
-                .text()
-                .trim()
-            : null,
+        const parseAddress = (address: string) => {
+          if (address) {
+            const splitAddress = address.split(' ');
+            const postalCode = splitAddress.pop();
+            const county = splitAddress.pop();
+
+            return {
+              address: splitAddress.join(' '),
+              county,
+              postalCode,
+            };
+          }
+
+          return {
+            address: null,
+            county: null,
+            postalCode: null,
+          };
+        };
+
+        const result = data.map((partner) => ({
+          name: partner[0] ? cheerio.load(partner[0])('a').text().trim() : null,
           regNr: partner[1] || null,
-          address: partner[2] || null,
           phoneNr: partner[3] || null,
-          email: partner[4]
-            ? cheerio
-                .load(partner[4])('a')
-                .text()
-                .trim()
-            : null,
+          email: partner[4] ? cheerio.load(partner[4])('a').text().trim() : null,
           homepage: partner[5] || null,
-          VATnr: partner[6] || null
+          VATnr: partner[6] || null,
+          ...parseAddress(partner[2]),
         }));
 
         return result;
       } catch (err) {
         throw err;
       }
-    })
+    }),
   },
   Mutation: {
     addPartner: authResolver(async ({ partner }, { models, user }) => {
@@ -94,12 +104,12 @@ const partnerResolver: Resolver = {
     editPartner: authResolver(async ({ id, partner }, { models, user }) => {
       const [editedRows] = await models.Partner.update(partner, {
         where: { id, userId: user.id },
-        returning: true
+        returning: true,
       });
 
       return editedRows;
-    })
-  }
+    }),
+  },
 };
 
 export default partnerResolver;

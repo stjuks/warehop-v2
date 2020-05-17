@@ -13,9 +13,8 @@ const invoiceSchema = `
       VATnr
       email
       phoneNr
-      country
+      address
       county
-      street
       postalCode
     }
     type

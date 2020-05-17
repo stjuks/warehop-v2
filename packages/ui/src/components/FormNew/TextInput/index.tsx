@@ -25,12 +25,16 @@ const TextInput: React.FC<TextInputProps> = ({
   value,
   className,
   type,
-  indicator
+  indicator,
 }) => {
   const [isFocused, setFocused] = useState(false);
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.value);
+    let v: any = e.target.value;
+
+    if ((type === 'numeric' || type === 'decimal') && !isNaN(v)) v = Number(v);
+
+    onChange(v);
   };
 
   const handleClear = () => {
@@ -49,7 +53,7 @@ const TextInput: React.FC<TextInputProps> = ({
 
   const handleFocus = {
     onFocus: () => setFocused(true),
-    onBlur: () => setFocused(false)
+    onBlur: () => setFocused(false),
   };
 
   return (
@@ -79,7 +83,7 @@ interface FormikTextInputProps extends BaseTextInputProps {
 
 export const FormikTextInput: React.FC<FormikTextInputProps> = ({ name, ...restProps }) => (
   <FormikField name={name}>
-    {fieldProps => <TextInput {...fieldProps} {...restProps} />}
+    {(fieldProps) => <TextInput {...fieldProps} {...restProps} />}
   </FormikField>
 );
 

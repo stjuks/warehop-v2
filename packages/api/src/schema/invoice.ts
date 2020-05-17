@@ -6,7 +6,7 @@ export default gql`
     type: ItemType
     name: String
     quantity: Float
-    price: String
+    price: Float
     unit: Unit
   }
 
@@ -15,7 +15,7 @@ export default gql`
     type: ItemType!
     name: String!
     quantity: Float!
-    price: String!
+    price: Float!
     unit: Unit
   }
 
@@ -24,7 +24,7 @@ export default gql`
     type: ItemType!
     name: String!
     quantity: Float!
-    price: String!
+    price: Float!
     code: String!
     warehouse: Warehouse!
     unit: Unit!
@@ -40,8 +40,8 @@ export default gql`
     items: [InvoiceItem!]!
     transactions: [Transaction!]!
     isPaid: Boolean!
-    paidSum: String!
-    sum: String!
+    paidSum: Float!
+    sum: Float!
     isLocked: Boolean!
     description: String
     file: String
@@ -53,10 +53,9 @@ export default gql`
     VATnr: String
     phoneNr: String
     email: String
-    street: String
+    address: String
     postalCode: String
     county: String
-    country: String
   }
 
   input InvoicePartnerInput {
@@ -66,16 +65,15 @@ export default gql`
     VATnr: String
     phoneNr: String
     email: String
-    street: String
+    address: String
     postalCode: String
     county: String
-    country: String
   }
 
   input InvoiceItemInput {
     type: ItemType!
     quantity: Float!
-    price: String!
+    price: Float!
     name: String!
     id: ID
     warehouseId: ID

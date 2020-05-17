@@ -113,8 +113,8 @@ export const ADD_ITEM = new Mutation({
       $partnerId: ID
       $unitId: ID
       $code: String
-      $purchasePrice: String
-      $retailPrice: String
+      $purchasePrice: Float
+      $retailPrice: Float
       $description: String
       $warehouseQuantity: [WarehouseQuantityInput!]!
     ) {

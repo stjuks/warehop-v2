@@ -32,10 +32,8 @@ export default gql`
     VATnr: String
     email: String
     phoneNr: String
-    country: String
     county: String
-    city: String
-    street: String
+    address: String
     postalCode: String
   }
 
@@ -52,6 +50,8 @@ export default gql`
     phoneNr: String
     homepage: String
     VATnr: String
+    county: String
+    postalCode: String
   }
 
   extend type Query {

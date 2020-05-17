@@ -56,16 +56,10 @@ export default class Partner extends Model<Partner> {
   phoneNr?: string;
 
   @Column
-  country?: string;
-
-  @Column
   county?: string;
 
   @Column
-  city?: string;
-
-  @Column
-  street?: string;
+  address?: string;
 
   @Column
   postalCode?: string;

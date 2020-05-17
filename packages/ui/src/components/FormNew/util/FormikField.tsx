@@ -14,10 +14,12 @@ const FormikField: React.FC<FormikFieldProps> = ({ children, name }) => {
 
   const { value, error } = getFieldMeta<string>(name);
 
-  const { validationSchema, addField } = useFormContext();
+  const { validationSchema, addField, setChangedField } = useFormContext();
 
   useEffect(() => {
     addField(name);
+
+    // return () => console.log(`unmount field "${name}"`);
   }, []);
 
   useEffectAfterMount(() => {
@@ -28,14 +30,15 @@ const FormikField: React.FC<FormikFieldProps> = ({ children, name }) => {
         schema.validateSync(value);
         setFieldError(name, '');
       } catch (err) {
-        
         setFieldError(name, err.message);
       }
     }
+
+    setChangedField(name, value);
   }, [value]);
 
   return typeof children === 'function'
-    ? children({ onChange: _value => setFieldValue(name, _value), error, value }, formik)
+    ? children({ onChange: (_value) => setFieldValue(name, _value), error, value }, formik)
     : null;
 };
 

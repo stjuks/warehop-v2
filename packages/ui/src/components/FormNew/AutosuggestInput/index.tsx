@@ -42,7 +42,7 @@ const AutosuggestInput: React.FC<AutosuggestInputProps> = ({
   fetchSuggestions,
 }) => {
   const [isFocused, setFocused] = useState(false);
-  const [fieldValue, setFieldValue] = useState('');
+  const [localValue, setLocalValue] = useState('');
 
   const handleSuggestionSelect = (e: React.KeyboardEvent, { suggestionValue }) => {
     e.preventDefault();
@@ -53,7 +53,9 @@ const AutosuggestInput: React.FC<AutosuggestInputProps> = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>, { method }) => {
     onChange(e.target.value);
-    if (method === 'type') setFieldValue(e.target.value);
+    if (method === 'type') {
+      setLocalValue(e.target.value);
+    }
   };
 
   const handleClear = () => {
@@ -76,10 +78,10 @@ const AutosuggestInput: React.FC<AutosuggestInputProps> = ({
 
   useDebounce(
     () => {
-      if (value) fetchSuggestions(value);
+      if (localValue) fetchSuggestions(localValue);
     },
     300,
-    [fieldValue]
+    [localValue]
   );
 
   const handleFocus = {
@@ -92,6 +94,13 @@ const AutosuggestInput: React.FC<AutosuggestInputProps> = ({
   if (!!value) {
     actions.push({ icon: <FiX />, onClick: handleClear });
   }
+
+  const inputProps = {
+    value: value || '',
+    onChange: handleChange,
+    className: 'input-field',
+    ...handleFocus,
+  };
 
   return (
     <TextBasedInput
@@ -113,12 +122,7 @@ const AutosuggestInput: React.FC<AutosuggestInputProps> = ({
             renderSuggestion={handleSuggestionRender}
             renderSectionTitle={(section) => <strong>{section.title}</strong>}
             getSectionSuggestions={(section) => section.suggestions}
-            inputProps={{
-              value: value || '',
-              onChange: handleChange,
-              className: 'input-field',
-              ...handleFocus,
-            }}
+            inputProps={inputProps}
           />
         </AutosuggestInputContainer>
       }

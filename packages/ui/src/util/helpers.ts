@@ -3,7 +3,7 @@ import { Option } from '../components/Form/AriaSelect';
 import { GraphQLError } from 'graphql';
 
 export const stall = async (delay: number) => {
-  await new Promise(resolve => setTimeout(resolve, delay));
+  await new Promise((resolve) => setTimeout(resolve, delay));
 };
 
 export interface MapSelectOptionAttributes {
@@ -12,14 +12,14 @@ export interface MapSelectOptionAttributes {
 }
 
 export const mapSelectOptions = (values: any[], optionMap?: MapSelectOptionAttributes) => {
-  const result: Option[] = values.map(value => mapSelectOption(value, optionMap));
+  const result: Option[] = values.map((value) => mapSelectOption(value, optionMap));
   return result;
 };
 
 export const filterObjectProperties = (obj: Object, keys: string[]) => {
   const result = {};
 
-  keys.forEach(key => {
+  keys.forEach((key) => {
     if (obj.hasOwnProperty(key)) result[key] = obj[key];
     else result[key] = undefined;
   });
@@ -31,10 +31,10 @@ export const paginatedData = <T>() => {
   const result: PaginatedData<T> = {
     pageInfo: {
       hasNextPage: false,
-      cursor: undefined
+      cursor: undefined,
     },
     data: [],
-    isLoaded: false
+    isLoaded: false,
   };
 
   return result;
@@ -76,7 +76,7 @@ export const getObjectProperty = <T>(obj: object, s: string) => {
 
 export const omitDeep = (value, key) => {
   if (Array.isArray(value)) {
-    return value.map(i => omitDeep(i, key));
+    return value.map((i) => omitDeep(i, key));
   } else if (typeof value === 'object' && value !== null) {
     return Object.keys(value).reduce((newObject, k) => {
       if (k == key) return newObject;
@@ -106,3 +106,95 @@ export const isEqual = (obj1: any, obj2: any) => {
 
   return obj1 === obj2;
 };
+
+export const editObjectProperty = (obj: any, path: string, editValue: any) => {
+  if (typeof obj !== 'object') return editValue;
+
+  const properties = path.split('.');
+
+  properties.reduce((prev, curr, index) => {
+    if (prev && typeof prev === 'object') {
+      if (prev[curr] === undefined) {
+        prev[curr] = {};
+      }
+
+      if (index + 1 === properties.length && editValue !== undefined) {
+        prev[curr] = editValue;
+      }
+
+      return prev[curr];
+    }
+
+    return undefined;
+  }, obj);
+
+  return obj;
+};
+
+export const loadFromLocalStorage = (key: string) => {
+  const keys = key.split('.');
+
+  const root = keys.shift();
+
+  if (root) {
+    const rootItem = localStorage.getItem(root);
+
+    if (rootItem) {
+      try {
+        const _rootItem = JSON.parse(rootItem);
+
+        return getObjectProperty(_rootItem, keys.join('.'));
+      } catch (err) {
+        return rootItem;
+      }
+    }
+  }
+
+  return undefined;
+};
+
+export const saveToLocalStorage = (key: string, value: any) => {
+  const keys = key.split('.');
+
+  const root = keys.shift();
+
+  if (root) {
+    if (keys.length === 0) {
+      localStorage.setItem(root, JSON.stringify(value));
+      return true;
+    }
+
+    const rootItem = localStorage.getItem(root);
+
+    if (rootItem) {
+      try {
+        const _rootItem = JSON.parse(rootItem);
+
+        editObjectProperty(_rootItem, keys.join('.'), value);
+
+        localStorage.setItem(root, JSON.stringify(_rootItem));
+      } catch (err) {
+        return false;
+      }
+    } else {
+      const item = editObjectProperty({}, keys.join('.'), value);
+
+      localStorage.setItem(root, JSON.stringify(item));
+    }
+  }
+
+  return true;
+};
+
+// saveToLocalStorage('forms.purchase-form', obj)
+// saveToLocalStorage('xd', true)
+
+console.log(localStorage);
+
+const obj = {};
+
+console.log(editObjectProperty('obj', '', 'tere'));
+
+console.log(obj);
+
+console.log(loadFromLocalStorage('purchasesFilter.isPaid'));

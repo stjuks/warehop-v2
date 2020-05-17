@@ -20,7 +20,7 @@ const validateInvoice = Joi.object({
         Joi.object({
           type: Joi.string().valid('PRODUCT', 'SERVICE', 'EXPENSE').required(),
           quantity: Joi.number().required(),
-          price: Joi.string().required(),
+          price: Joi.number().required(),
           name: Joi.string().required(),
           warehouseId: Joi.when('type', {
             is: 'PRODUCT',

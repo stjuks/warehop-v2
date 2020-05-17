@@ -19,8 +19,8 @@ export default gql`
     partnerId: ID
     unitId: ID
     code: String
-    purchasePrice: String
-    retailPrice: String
+    purchasePrice: Float
+    retailPrice: Float
     description: String
     warehouseQuantity: [WarehouseQuantityInput!]!
   }
@@ -29,8 +29,8 @@ export default gql`
     id: ID!
     type: ItemType!
     name: String!
-    purchasePrice: String
-    retailPrice: String
+    purchasePrice: Float
+    retailPrice: Float
     description: String
     unit: Unit
   }
@@ -39,8 +39,8 @@ export default gql`
     id: ID!
     type: ItemType!
     name: String!
-    purchasePrice: String
-    retailPrice: String
+    purchasePrice: Float
+    retailPrice: Float
     description: String
     unit: Unit!
     code: String!
@@ -52,8 +52,8 @@ export default gql`
     id: ID!
     type: ItemType!
     name: String!
-    purchasePrice: String
-    retailPrice: String
+    purchasePrice: Float
+    retailPrice: Float
     description: String
     unit: Unit
   }

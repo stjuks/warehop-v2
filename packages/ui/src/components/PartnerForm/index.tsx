@@ -22,15 +22,12 @@ import { useGraphQLQuery, useGraphQLMutation } from '@ui/util/hooks';
 import { FETCH_TYPES } from '@ui/api/common';
 import { ADD_PARTNER, FETCH_CREDITINFO_PARTNERS, FETCH_PARTNERS } from '@ui/api/partner';
 import { SelectInput, TextInput } from '../FormNew';
+import PartnerSuggest from '../util/inputs/PartnerSuggest';
 
 const PartnerForm = observer(() => {
   const uiStore = useContext(UIStoreContext);
 
   const [types] = useGraphQLQuery(FETCH_TYPES, { loadOnMount: true });
-  const [creditInfoPartners, { fetch: fetchCreditInfoPartners }] = useGraphQLQuery(
-    FETCH_CREDITINFO_PARTNERS
-  );
-  const [partners, { fetch: fetchPartners }] = useGraphQLQuery(FETCH_PARTNERS);
 
   const [addPartner] = useGraphQLMutation(ADD_PARTNER);
 
@@ -41,10 +38,9 @@ const PartnerForm = observer(() => {
     VATnr: '',
     phoneNr: '',
     email: '',
-    street: '',
+    address: '',
     postalCode: '',
     county: '',
-    country: '',
   };
 
   const validationSchema = yup.object({
@@ -59,13 +55,6 @@ const PartnerForm = observer(() => {
     } catch (err) {
       throw err;
     }
-  };
-
-  const handleAutosuggestSelect = ({ homepage, ...restValue }, { setValues, values }) => {
-    setValues({
-      ...values,
-      ...restValue,
-    });
   };
 
   return (
@@ -89,21 +78,7 @@ const PartnerForm = observer(() => {
             options={types?.partnerTypes || []}
             optionLabel={(option) => partnerTypeTranslations[option]}
           />
-          <AutosuggestInput
-            name="name"
-            label="Nimi"
-            multiSection={true}
-            suggestions={[
-              { title: 'E-krediidiinfo', suggestions: creditInfoPartners || [] },
-              { title: 'Partnerid', suggestions: partners?.data || [] },
-            ]}
-            suggestionLabel={(suggestion) => suggestion.name}
-            fetchSuggestions={(value) => {
-              fetchCreditInfoPartners({ query: value });
-              fetchPartners({ name: value });
-            }}
-            onSelect={handleAutosuggestSelect}
-          />
+          <PartnerSuggest name="name" label="Nimi" />
           <TextInput name="regNr" label="Registrikood" />
           <TextInput name="VATnr" label="KMK nr" />
           <TextInput name="phoneNr" label="Telefoni number" type="tel" />
@@ -111,7 +86,6 @@ const PartnerForm = observer(() => {
           <TextInput name="address" label="Aadress" />
           <TextInput name="postalCode" label="Postikood" />
           <TextInput name="county" label="Maakond" />
-          <TextInput name="country" label="Riik" />
         </Form>
       </ContentContainer>
       <FooterContainer style={{ padding: '0.5rem 1rem' }}>

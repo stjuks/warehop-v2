@@ -28,6 +28,7 @@ import TransactionDetails from '../TransactionDetails';
 import Modal from '../Modal';
 import SaleForm from '../SaleForm';
 import Transactions from '../Transactions';
+import InvoiceForm from '../InvoiceForm';
 
 const App = () => {
   return (
@@ -39,9 +40,22 @@ const App = () => {
               <Switch>
                 <Route path={routes.partnerForm} component={PartnerForm} />
                 <Route path={routes.productForm} component={ProductForm} />
-                <Route path={routes.purchaseForm.new} render={props => <PurchaseForm mode="ADD" {...props} />} />
-                <Route path={routes.purchaseForm.edit + "/:id"} render={props => <PurchaseForm mode="EDIT" {...props} />} />
-                {/* <Route path={routes.saleForm} component={SaleForm} /> */}
+                <Route
+                  path={routes.purchaseForm.new}
+                  render={(props) => <InvoiceForm mode="ADD" type="PURCHASE" {...props} />}
+                />
+                <Route
+                  path={routes.purchaseForm.edit + '/:id'}
+                  render={(props) => <InvoiceForm mode="EDIT" type="PURCHASE" {...props} />}
+                />
+                <Route
+                  path={routes.saleForm.new}
+                  render={(props) => <InvoiceForm mode="ADD" type="SALE" {...props} />}
+                />
+                <Route
+                  path={routes.saleForm.edit + '/:id'}
+                  render={(props) => <InvoiceForm mode="EDIT" type="SALE" {...props} />}
+                />
                 <Route path={routes.productDetails} component={ProductDetails} />
                 <Route path={routes.purchaseDetails} component={InvoiceDetails} />
                 <Route path={routes.incomeDetails} component={TransactionDetails} />

@@ -1,8 +1,9 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useEffect } from 'react';
 import * as yup from 'yup';
+import { useDebounce } from 'react-use';
 
-import { Formik, useFormikContext } from 'formik';
-import { FormProvider, FormContext } from './util/FormContext';
+import { Formik, useFormikContext, FormikProps, FormikContextType } from 'formik';
+import { FormProvider, FormContext, useFormContext } from './util/FormContext';
 
 import { FormikAutosuggestInput } from './AutosuggestInput';
 import { FormikDateInput } from './DateInput';
@@ -10,17 +11,19 @@ import { FormikFileInput } from './FileInput';
 import { FormikSelectInput } from './SelectInput';
 import { FormikTextInput } from './TextInput';
 import { FormikToggleInput } from './ToggleInput';
+import { loadFromLocalStorage, saveToLocalStorage } from '@ui/util/helpers';
 
 interface FormProps {
   initialValues: object;
   id: string;
   onSubmit: (values: any) => any;
+  onChange?: (args: { value: any; name: string }, formik: FormikContextType<any>) => any;
   validationSchema?: yup.ObjectSchema;
 }
 
 const initialState = {
   changedField: undefined,
-  fields: []
+  fields: [],
 };
 
 const formReducer = (state, msg) => {
@@ -48,13 +51,20 @@ const useForm = () => {
   const ctx: FormContext = {
     ...state,
     setChangedField,
-    addField
+    addField,
   };
 
   return ctx;
 };
 
-const Form: React.FC<FormProps> = ({ children, initialValues, onSubmit, id, validationSchema }) => {
+const Form: React.FC<FormProps> = ({
+  children,
+  initialValues,
+  onSubmit,
+  id,
+  validationSchema,
+  onChange,
+}) => {
   const form = useForm();
 
   return (
@@ -65,7 +75,7 @@ const Form: React.FC<FormProps> = ({ children, initialValues, onSubmit, id, vali
       validateOnChange={false}
     >
       <FormProvider value={{ ...form, validationSchema }}>
-        <InnerForm id={id} validationSchema={validationSchema}>
+        <InnerForm id={id} validationSchema={validationSchema} onChange={onChange}>
           {children}
         </InnerForm>
       </FormProvider>
@@ -73,14 +83,36 @@ const Form: React.FC<FormProps> = ({ children, initialValues, onSubmit, id, vali
   );
 };
 
+const cleanFormStorage = () => localStorage.removeItem('formData');
+
 const InnerForm: React.FC<{
   id: string;
   validationSchema?: yup.ObjectSchema;
-}> = ({ children, id, validationSchema }) => {
-  const { handleSubmit } = useFormikContext();
+  onChange?: (args: { value: any; name: string }, formik: FormikContextType<any>) => any;
+}> = ({ children, id, onChange }) => {
+  const formik = useFormikContext<any>();
+  const { changedField } = useFormContext();
+
+  const { values, setValues } = formik;
+
+  useEffect(() => {
+    if (onChange) onChange(changedField, formik);
+  }, [changedField]);
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', cleanFormStorage);
+
+    const loadedValues = loadFromLocalStorage(`formData.${id}`);
+
+    if (loadedValues) setValues(loadedValues);
+  }, []);
+
+  useDebounce(() => {
+    saveToLocalStorage(`formData.${id}`, values);
+  }, 300, [values]);
 
   return (
-    <form onSubmit={handleSubmit} id={id} style={{ padding: '0.75rem' }}>
+    <form onSubmit={formik.handleSubmit} id={id} style={{ padding: '0.75rem' }}>
       {children}
     </form>
   );
