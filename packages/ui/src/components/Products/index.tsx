@@ -59,22 +59,22 @@ const Products = observer(() => {
       <Header title="Kaubad" components={headerIcons} />
       <SortingContainer>
         <MenuSelect
-          name="warehouseId"
           options={warehouseOptions}
+          optionLabel={(option) => option.name}
           value={warehouseFilter}
-          searchPlaceholder="Otsi ladu"
-          onChange={({ value }) => setWarehouseFilter(value)}
-          optionMap={{ label: (wh) => wh.name }}
-          onSearch={(query, options) =>
-            options.filter(
-              (option) => option.value.name.toLowerCase().indexOf(query.toLowerCase()) !== -1
-            )
-          }
-          action={{
+          searchProps={{
+            onSearch: (query) =>
+              warehouseOptions.filter(
+                (option) => option.name.toLowerCase().indexOf(query.toLowerCase()) !== -1
+              ),
+            placeholder: 'Otsi ladu',
+            debounce: 0,
+          }}
+          onChange={(value) => setWarehouseFilter(value)}
+          menuAction={{
             label: 'Halda ladusid',
             onClick: () => uiStore.openModal(<Warehouses />),
           }}
-          noFormik
         />
       </SortingContainer>
       <ContentContainer isLoading={isLoadingProducts} key={JSON.stringify(filter)}>

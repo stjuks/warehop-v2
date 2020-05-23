@@ -6,15 +6,19 @@ import TextBasedInput, { InputAction } from '../TextBasedInput';
 import { FiX, FiCalendar } from 'react-icons/fi';
 import FormikField from '../util/FormikField';
 
-interface DateInputProps {
-  value: string | Date;
-  onChange: (value: Date | undefined) => any;
-  label?: string;
-  error?: string;
+interface BaseDateInputProps {
   className?: string;
+  label?: string;
+  isClearable?: boolean;
 }
 
-const DateInput: React.FC<DateInputProps> = ({ label, value, error, onChange, className }) => {
+interface DateInputProps extends BaseDateInputProps {
+  value: string | Date;
+  onChange: (value: Date | undefined) => any;
+  error?: string;
+}
+
+const DateInput: React.FC<DateInputProps> = ({ label, value, error, onChange, className, isClearable }) => {
   const [isFocused, setFocused] = useState(false);
 
   const handleChange = (values: Date[]) => {
@@ -27,14 +31,14 @@ const DateInput: React.FC<DateInputProps> = ({ label, value, error, onChange, cl
 
   const handleFocus = {
     onFocus: () => setFocused(true),
-    onBlur: () => setFocused(false)
+    onBlur: () => setFocused(false),
   };
 
   const displayValue = value ? moment(value).format('DD.MM.YYYY') : '';
 
   const actions: InputAction[] = [{ icon: <FiCalendar /> }];
 
-  if (!!value) {
+  if (isClearable && !!value) {
     actions.unshift({ icon: <FiX />, onClick: handleClear });
   }
 
@@ -47,7 +51,7 @@ const DateInput: React.FC<DateInputProps> = ({ label, value, error, onChange, cl
         <TextBasedInput
           className={className}
           isFocused={isFocused}
-          inputComponent={<input ref={ref} className="input-field" {...handleFocus} />}
+          inputComponent={<input ref={ref} className="input-field" size={1} {...handleFocus} />}
           label={label}
           value={displayValue}
           actions={actions}
@@ -58,15 +62,13 @@ const DateInput: React.FC<DateInputProps> = ({ label, value, error, onChange, cl
   );
 };
 
-interface FormikDateInputProps {
+interface FormikDateInputProps extends BaseDateInputProps {
   name: string;
-  label?: string;
-  className?: string;
 }
 
 export const FormikDateInput: React.FC<FormikDateInputProps> = ({ name, ...restProps }) => (
   <FormikField name={name}>
-    {fieldProps => <DateInput {...restProps} {...fieldProps} />}
+    {(fieldProps) => <DateInput {...restProps} {...fieldProps} />}
   </FormikField>
 );
 

@@ -1,8 +1,9 @@
 import styled from '@ui/util/styled';
 import { css } from 'styled-components';
 import AriaSelect from '../../Form/AriaSelect';
+import SelectInput from '@ui/components/FormNew/SelectInput';
 
-export const styledInput = {
+/* export const styledInput = {
   general: theme => `
     label {
       text-transform: uppercase;
@@ -45,30 +46,76 @@ export const styledInput = {
       border-color: ${theme.colors.darkGrey};
     `
   }
+}; */
+
+export const styledInput = {
+  general: (theme) => `
+    .input-container {
+      border-radius: 1.25rem;
+      border: 1px solid ${theme.colors.midGrey};
+      background: ${theme.colors.white};
+      padding: 0 0.5rem;
+
+      .actions {
+        right: 0.5rem;
+      }
+
+      .input-field {
+        font-size: 0.875rem;
+      }
+    }
+
+    .input-container:hover,
+    .input-container[data-focused="true"] {
+      background: ${theme.colors.white};
+      border: 1px solid ${theme.colors.darkGrey};
+    }
+
+    .input-container[data-focused="true"] {
+      .actions {
+        background: transparent;
+      }
+    }
+
+    .active-line {
+      display: none;
+    }
+
+    .error-message {
+      display: none;
+    }
+  `,
+  button: {
+    general: (theme) => ``,
+    hover: (theme) => ``,
+  },
 };
 
-export default styled(AriaSelect)`
+export default styled(SelectInput)`
   ${({ theme }) => `
+    padding: 0;
     ${styledInput.general(theme)}
 
-    .select-btn {
-      ${styledInput.button.general(theme)}
-    }
-    .select-btn:focus,
-    .select-btn:hover,
-    .select-btn[aria-expanded="true"] {
-      ${styledInput.button.hover(theme)}
-    }
-    .select-btn[aria-expanded="true"] {
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
-    }
     .select-menu {
-      box-shadow: none;
+      left: -1px;
+      width: calc(100% + 2px);
+
+      .select-menu-item,
+      .search-input {
+        padding-left: 0.75rem;
+      }
+    }
+    
+    .input-field[aria-expanded="true"] + .select-menu {
       border: 1px solid ${theme.colors.darkGrey};
-      top: 100%;
-      border-top-width: 0;
-      border-radius: 0 0 1.25rem 1.25rem;
+    }
+
+    .input-container[data-focused="true"] {
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
     }
   `}
 `;
+
+/* export default styled(SelectInput)`
+` */

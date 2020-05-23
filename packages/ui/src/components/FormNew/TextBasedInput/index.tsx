@@ -23,7 +23,7 @@ const TextBasedInput: React.FC<TextBasedInputProps> = ({
   label,
   actions,
   isFocused,
-  className
+  className,
 }) => (
   <TextBasedInputContainer className={className} actionLength={actions?.length}>
     {label && <label>{label}</label>}

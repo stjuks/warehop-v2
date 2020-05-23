@@ -86,6 +86,10 @@ export const omitDeep = (value, key) => {
   return value;
 };
 
+const obj = { x: new Date(), y: 'lol' }
+
+console.log(omitDeep(obj, 'y'));
+
 export const isEqual = (obj1: any, obj2: any) => {
   if (obj1 instanceof Object && obj2 instanceof Object) {
     const aProps = Object.getOwnPropertyNames(obj1);

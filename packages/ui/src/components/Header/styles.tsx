@@ -21,12 +21,16 @@ export const HeaderContainer = styled.div`
 
 export const TitleContainer = styled.div`
   display: flex;
+  
+  &,
+  .back-button {
+    font-family: 'Red Hat Display', sans-serif;
+  }
 
   .back-button {
     min-width: 1.5rem;
     display: flex;
     align-items: center;
-    font-family: 'Red Hat Display', sans-serif !important;
     font-weight: 500;
 
     .icon-container {

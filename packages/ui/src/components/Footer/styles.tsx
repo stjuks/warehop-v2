@@ -20,11 +20,11 @@ export const FooterItemContainer = styled.div`
   text-decoration: none;
   text-align: center;
   font-family: 'Red Hat Display', sans-serif;
-  font-weight: 500;
+  font-weight: 400;
   display: flex;
   align-items: center;
 
-  .footer-item__active {
+  .footer-item__active .footer-item__label {
     font-weight: 700;
   }
 
@@ -40,8 +40,10 @@ export const IconContainer = styled.div`
   justify-content: center;
 `;
 
-export const LabelContainer = styled.div`
+export const LabelContainer = styled.div.attrs({ className: 'footer-item__label' })`
   margin-top: 0.25rem;
   font-size: 0.75rem;
+  font-weight: 500;
   width: 3rem;
+  font-family: 'Red Hat Display', sans-serif;
 `;

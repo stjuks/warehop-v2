@@ -101,7 +101,7 @@ export const InvoicePartnerFieldContainer = styled.div`
     .add-btn {
       padding: 1rem;
       color: ${theme.colors.lightText};
-      font-weight: 700;
+      font-weight: 500;
       margin-bottom: 0.5rem;
       border-radius: 0.25rem;
       text-align: center;

@@ -19,13 +19,16 @@ export const SelectMenuWrapper = styled.div`
   }
 
   .select-menu-item {
-    padding: 0.375rem 0.5rem;
+    padding: 0.5rem;
     cursor: pointer;
-    border-radius: 0.25rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    color: ${({ theme }) => `${theme.colors.text}`};
 
     :hover,
     :focus {
-      background: #f0f0f0;
+      outline: none;
+      background: ${({ theme }) => `${theme.colors.lightGrey}`};
     }
   }
 
@@ -40,10 +43,15 @@ export const SelectMenuWrapper = styled.div`
     position: absolute;
     top: 100%;
     background: white;
-    border-bottom-left-radius: 0.5rem;
-    border-bottom-right-radius: 0.5rem;
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
     border: 1px solid #f0f0f0;
     padding: 0.25rem;
+
+    &[data-has-action='true'] {
+      border-bottom-left-radius: 1.5rem;
+      border-bottom-right-radius: 1.5rem;
+    }
 
     .options-list {
       max-height: 10rem;
@@ -52,6 +60,13 @@ export const SelectMenuWrapper = styled.div`
 
     .search-input {
       margin-bottom: 0.25rem;
+      border-radius: 0.5rem;
+
+      :hover,
+      :focus {
+        border-color: ${({ theme }) => `${theme.colors.darkGrey}`};
+        background: ${({ theme }) => `${theme.colors.lightGrey}`};
+      }
     }
 
     .search-input,
@@ -60,20 +75,27 @@ export const SelectMenuWrapper = styled.div`
       display: flex;
       align-items: center;
       padding: 0.25rem 0.5rem;
-      font-size: 0.875rem;
-      height: 2.375rem;
+      height: 2.5rem;
+      font-size: 1rem;
       width: 100%;
-      border: 1px solid #f0f0f0;
-      border-radius: 0.25rem;
+      border: 1px solid ${({ theme }) => `${theme.colors.midGrey}`};
       box-sizing: border-box;
     }
 
     .action-btn {
-      border: 1px solid blue;
-      color: blue;
+      background: ${({ theme }) => `${theme.colors.lightGrey}`};
+      color: ${({ theme }) => `${theme.colors.primary}`};
+      border-radius: 5rem;
       margin-top: 0.25rem;
+      transition: all 0.2s;
+      font-weight: 500;
       justify-content: center;
       cursor: pointer;
+
+      :hover,
+      :focus {
+        border-color: ${({ theme }) => `${theme.colors.darkGrey}`};
+      }
     }
   }
 `;

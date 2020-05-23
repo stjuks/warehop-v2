@@ -23,7 +23,7 @@ interface BaseSelectInputProps {
 interface SelectInputProps extends BaseSelectInputProps {
   onChange: (value: any) => any;
   value: any;
-  error: string;
+  error?: string;
 }
 
 const SelectInput: React.FC<SelectInputProps> = ({
@@ -36,7 +36,7 @@ const SelectInput: React.FC<SelectInputProps> = ({
   value,
   error,
   isClearable,
-  className
+  className,
 }) => {
   const [isFocused, setFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -69,11 +69,16 @@ const SelectInput: React.FC<SelectInputProps> = ({
 
   const handleFocus = {
     onFocus: () => setFocused(true),
-    onBlur: () => setFocused(false)
+    onBlur: () => setFocused(false),
   };
 
   const handleMenuToggle = ({ isOpen }) => {
-    if (!isOpen) setSearchQuery('');
+    if (!isOpen) {
+      setSearchQuery('');
+      setFocused(false);
+    } else {
+      setFocused(true);
+    }
   };
 
   useDebounce(
@@ -116,11 +121,11 @@ const SelectInput: React.FC<SelectInputProps> = ({
         value={displayValue}
         error={error}
         inputComponent={
-          <SelectMenuWrapper>
-            <Button className="select-menu-btn input-field" {...handleFocus}>
+          <SelectMenuWrapper className="select-btn-wrapper">
+            <Button className="select-menu-btn input-field">
               {displayValue}
             </Button>
-            <Menu className="select-menu">
+            <Menu className="select-menu" data-has-action={!!menuAction}>
               <>
                 {searchProps && (
                   <input
@@ -128,12 +133,11 @@ const SelectInput: React.FC<SelectInputProps> = ({
                     value={searchQuery}
                     className="search-input"
                     placeholder={searchProps.placeholder || 'Otsi'}
-                    {...handleFocus}
                   />
                 )}
                 <div className="options-list">
                   {_options?.map((option, i) => (
-                    <MenuItem key={i} className="select-menu-item" value={option} {...handleFocus}>
+                    <MenuItem key={i} className="select-menu-item" value={option}>
                       {optionLabel(option)}
                     </MenuItem>
                   ))}
@@ -143,7 +147,6 @@ const SelectInput: React.FC<SelectInputProps> = ({
                     className="action-btn"
                     onClick={handleActionClick}
                     onKeyDown={handleActionKeyDown}
-                    {...handleFocus}
                   >
                     {menuAction.label}
                   </MenuItem>
@@ -164,7 +167,7 @@ interface FormikSelectInputProps extends BaseSelectInputProps {
 
 export const FormikSelectInput: React.FC<FormikSelectInputProps> = ({ name, ...restProps }) => (
   <FormikField name={name}>
-    {fieldProps => <SelectInput {...restProps} {...fieldProps} />}
+    {(fieldProps) => <SelectInput {...restProps} {...fieldProps} />}
   </FormikField>
 );
 

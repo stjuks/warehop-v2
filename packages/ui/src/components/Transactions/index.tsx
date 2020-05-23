@@ -28,8 +28,8 @@ type TransactionsConfig = {
 };
 
 const Transactions: React.FC<TransactionsProps> = observer(({ type }) => {
-  const [startDate, setStartDate] = useState(new Date('2020-01-01'));
-  const [endDate, setEndDate] = useState(new Date('2020-12-31'));
+  const [startDate, setStartDate] = useState<any>(new Date('2020-01-01'));
+  const [endDate, setEndDate] = useState<any>(new Date('2020-12-31'));
   const [generalQuery, setGeneralQuery] = useState('');
 
   const FETCH_QUERY = type === 'EXPENSE' ? FETCH_EXPENSES : FETCH_INCOMES;
@@ -56,9 +56,9 @@ const Transactions: React.FC<TransactionsProps> = observer(({ type }) => {
     <>
       <Header title={config[type].headerTitle} components={headerIcons} />
       <SortingContainer>
-        <MenuDateInput noFormik name="startDate" onChange={setStartDate} value={startDate} />
+        <MenuDateInput onChange={setStartDate} value={startDate} />
         -
-        <MenuDateInput noFormik name="endDate" onChange={setEndDate} value={endDate} />
+        <MenuDateInput onChange={setEndDate} value={endDate} />
       </SortingContainer>
       <ContentContainer>
         {transactions?.data.map((transaction) => (

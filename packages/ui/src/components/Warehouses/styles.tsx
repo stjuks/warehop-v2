@@ -57,6 +57,7 @@ export const AddWarehouseButton = styled.button`
     justify-content: center;
     padding: 1rem;
     height: 3.5rem;
+    font-size: 1rem;
     font-weight: 500;
     transition: all .2s;
     color: ${theme.colors.primary};

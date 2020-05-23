@@ -26,23 +26,6 @@ export const SortingContainer = styled.div`
       }
     }
 
-    .action-btn {
-      width: 2rem;
-      height: 2rem;
-      margin-left: 0.5rem;
-      color: ${theme.colors.text};
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      outline: none;
-
-      :hover,
-      :focus {
-        background: ${theme.colors.midGrey};
-      }
-    }
-
     > {
       flex: 1;
       padding: 0.25rem;
