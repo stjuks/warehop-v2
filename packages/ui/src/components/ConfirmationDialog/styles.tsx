@@ -16,7 +16,6 @@ export const ConfirmationDialogContainer = styled.div<ConfirmationDialogContaine
     flex-direction: column;
     padding: 1.5rem;
     border-radius: 0.25rem;
-    margin: 1rem;
     color: ${theme.colors.lightText};
 
     .dialog-icon {

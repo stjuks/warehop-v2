@@ -3,7 +3,7 @@ import { DocumentNode } from 'graphql';
 import { useLazyQuery, LazyQueryHookOptions, useMutation } from '@apollo/react-hooks';
 import Query from '@ui/api/Query';
 import Mutation from '@ui/api/Mutation';
-import { omitDeep } from './helpers';
+import { omitDeep, omitKey } from './helpers';
 
 export function useDebounce<A extends any[]>(callback: (...args: A) => void, wait: number) {
   // track args & timeout handle between calls
@@ -127,7 +127,7 @@ export const useGraphQLMutation = <InputValues>(mutation: Mutation) => {
 
   const customMutate = async (variables: InputValues, customValues?: any) => {
     try {
-      omitDeep(variables, '__typename');
+      omitKey(variables, '__typename');
 
       const result = await mutate({
         variables,

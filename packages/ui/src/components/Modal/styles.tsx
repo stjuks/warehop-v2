@@ -14,12 +14,14 @@ export const ModalContainer = styled(ReactModal)`
       max-height: 95%;
       min-width: ${theme.devices.mobileS};
       background: white;
+      margin: 1rem;
 
       @media only screen and (max-width: ${theme.devices.mobileL}) {
         height: 100%;
         width: 100%;
         border-radius: 0;
         max-height: 100%;
+        margin: 0;
       }
 
       @media only screen and (min-width: ${theme.devices.mobileL}) {

@@ -86,10 +86,6 @@ export const omitDeep = (value, key) => {
   return value;
 };
 
-const obj = { x: new Date(), y: 'lol' }
-
-console.log(omitDeep(obj, 'y'));
-
 export const isEqual = (obj1: any, obj2: any) => {
   if (obj1 instanceof Object && obj2 instanceof Object) {
     const aProps = Object.getOwnPropertyNames(obj1);
@@ -188,4 +184,18 @@ export const saveToLocalStorage = (key: string, value: any) => {
   }
 
   return true;
+};
+
+export const omitKey = (o: any, key: string) => {
+  if (o && typeof o === 'object') {
+    if (o[key]) delete o[key];
+
+    if (Array.isArray(o)) {
+      o.forEach((j) => omitKey(j, key));
+    } else {
+      Object.values(o).forEach((v) => {
+        if (typeof v === 'object') omitKey(v, key);
+      });
+    }
+  }
 };
