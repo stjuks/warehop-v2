@@ -1,4 +1,6 @@
-import styled, { Color } from '@ui/util/styled';
+import styled from 'styled-components';
+import theme from '@ui/styles/theme';
+
 import Link from '../util/Link';
 import currency from 'currency.js';
 import ContentContainer from '../util/ContentContainer';
@@ -13,55 +15,53 @@ export const InvoiceDetailsContainer = styled(ContentContainer)`
 `;
 
 export const InvoiceHero = styled.div<InvoiceHeroProps>`
-  ${({ theme, paidSum }) => `
-    padding: 0.5rem 0 0.5rem 1.25rem;
-    position: relative;
+  padding: 0.5rem 0 0.5rem 1.25rem;
+  position: relative;
 
-    .row-1 {
-      font-size: 1.5rem;
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-    }
+  .row-1 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
 
-    .row-1,
-    .row-2 {
-      display: flex;
-      align-items: center;
+  .row-1,
+  .row-2 {
+    display: flex;
+    align-items: center;
 
-      .col-2 {
-        margin-left: auto;
-        position: relative;
+    .col-2 {
+      margin-left: auto;
+      position: relative;
 
-        :before {
-          content: '${currency(paidSum)}€ /';
-          white-space: nowrap;
-          position: absolute;
-          font-size: 0.75rem;
-          right: 0;
-          top: -0.875rem;
-          color: ${theme.colors.lightText};
-          font-weight: 400;
-        }
+      :before {
+        content: '${({ paidSum }) => currency(paidSum).toString()}€ /';
+        white-space: nowrap;
+        position: absolute;
+        font-size: 0.75rem;
+        right: 0;
+        top: -0.875rem;
+        color: ${theme.colors.lightText.rgb()};
+        font-weight: 400;
       }
     }
+  }
 
-    :before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0;
-        border-top-right-radius: 2px;
-        border-bottom-right-radius: 2px;
-        height: 100%;
-        width: 2px;
-        background: ${theme.colors.primary};
-    }
+  :before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    height: 100%;
+    width: 2px;
+    background: ${theme.colors.primary.rgb()};
+  }
 
-    .row-2 {
-        font-weight: 500;
-        color: ${theme.colors.lightText};
-    }
-  `}
+  .row-2 {
+    font-weight: 500;
+    color: ${theme.colors.lightText.rgb()};
+  }
 `;
 
 interface IsPaidStyledProps {
@@ -76,8 +76,8 @@ export const IsPaidStyled = styled.div<IsPaidStyledProps>`
   font-size: 0.875rem;
   display: inline-block;
 
-  ${({ isPaid, theme, isLocked }) => {
-    let color: Color = theme.colors.lightText;
+  ${({ isPaid, isLocked }) => {
+    let color = theme.colors.lightText;
 
     if (isLocked === false) color = theme.colors.primary;
     else if (isPaid) color = theme.colors.success;
@@ -91,39 +91,37 @@ export const IsPaidStyled = styled.div<IsPaidStyledProps>`
 `;
 
 export const TransactionItem = styled(Link)`
-  ${({ theme }) => `
-    ${detailCardStyles(theme)}
+  ${detailCardStyles(theme)}
 
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 
-    .sum  {
-      font-weight: 500;
-    }
-    
-    .expense-arrow,
-    .income-arrow {
-      margin-right: 0.5rem;
-      font-size: 0.75rem;
-    }
+  .sum  {
+    font-weight: 500;
+  }
 
-    .expense-arrow {
-      color: ${theme.colors.danger};
-    }
+  .expense-arrow,
+  .income-arrow {
+    margin-right: 0.5rem;
+    font-size: 0.75rem;
+  }
 
-    .income-arrow {
-      color: ${theme.colors.success};
-    }
+  .expense-arrow {
+    color: ${theme.colors.danger.rgb()};
+  }
 
-    .indicator {
-      color: ${theme.colors.lightText};
-      margin-left: 0.5rem;
-    }
+  .income-arrow {
+    color: ${theme.colors.success.rgb()};
+  }
 
-    .date {
-      margin-left: auto;
-      font-size: 0.875rem;
-      color: ${theme.colors.lightText};
-    }
-  `}
+  .indicator {
+    color: ${theme.colors.lightText.rgb()};
+    margin-left: 0.5rem;
+  }
+
+  .date {
+    margin-left: auto;
+    font-size: 0.875rem;
+    color: ${theme.colors.lightText.rgb()};
+  }
 `;

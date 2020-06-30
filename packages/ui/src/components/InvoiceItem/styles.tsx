@@ -1,4 +1,6 @@
-import styled, { Color } from '@ui/util/styled';
+import styled from 'styled-components';
+import theme from '@ui/styles/theme';
+
 import { ProductItemContainer } from '../ProductItem/styles';
 
 interface DaysLeftStyledProps {
@@ -7,7 +9,7 @@ interface DaysLeftStyledProps {
   isLocked: boolean;
 }
 
-export const InvoiceItemContainer = styled(ProductItemContainer)`
+export const InvoiceItemContainer = styled(ProductItemContainer as any)`
   .sum,
   .days-left {
     margin-left: auto;
@@ -21,8 +23,8 @@ export const DaysLeftStyled = styled.div<DaysLeftStyledProps>`
   border-radius: 1rem;
   font-size: 0.875rem;
 
-  ${({ theme, isPaid, diff, isLocked }) => {
-    let color: Color = theme.colors.lightText;
+  ${({ isPaid, diff, isLocked }) => {
+    let color = theme.colors.lightText;
 
     if (isLocked === false) color = theme.colors.primary;
     else if (isPaid) color = theme.colors.success;

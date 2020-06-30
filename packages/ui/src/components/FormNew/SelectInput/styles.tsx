@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import theme from '@ui/styles/theme';
+
 import { Wrapper } from 'react-aria-menubutton';
 
 export const SelectInputContainer = styled(Wrapper).attrs({
@@ -23,12 +25,12 @@ export const SelectMenuWrapper = styled.div`
     cursor: pointer;
     border-radius: 0.5rem;
     font-weight: 500;
-    color: ${({ theme }) => `${theme.colors.text}`};
+    color: ${theme.colors.text.rgb()};
 
     :hover,
     :focus {
       outline: none;
-      background: ${({ theme }) => `${theme.colors.lightGrey}`};
+      background: ${theme.colors.lightGrey.rgb()};
     }
   }
 
@@ -64,8 +66,8 @@ export const SelectMenuWrapper = styled.div`
 
       :hover,
       :focus {
-        border-color: ${({ theme }) => `${theme.colors.darkGrey}`};
-        background: ${({ theme }) => `${theme.colors.lightGrey}`};
+        border-color: ${theme.colors.darkGrey.rgb()};
+        background: ${theme.colors.lightGrey.rgb()};
       }
     }
 
@@ -78,13 +80,13 @@ export const SelectMenuWrapper = styled.div`
       height: 2.5rem;
       font-size: 1rem;
       width: 100%;
-      border: 1px solid ${({ theme }) => `${theme.colors.midGrey}`};
+      border: 1px solid ${theme.colors.midGrey.rgb()};
       box-sizing: border-box;
     }
 
     .action-btn {
-      background: ${({ theme }) => `${theme.colors.lightGrey}`};
-      color: ${({ theme }) => `${theme.colors.primary}`};
+      background: ${theme.colors.lightGrey.rgb()};
+      color: ${theme.colors.primary.rgb()};
       border-radius: 5rem;
       margin-top: 0.25rem;
       transition: all 0.2s;
@@ -94,7 +96,7 @@ export const SelectMenuWrapper = styled.div`
 
       :hover,
       :focus {
-        border-color: ${({ theme }) => `${theme.colors.darkGrey}`};
+        border-color: ${theme.colors.darkGrey.rgb()};
       }
     }
   }

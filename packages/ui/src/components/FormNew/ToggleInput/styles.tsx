@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import theme from '@ui/styles/theme';
 
 export const ToggleInputContainer = styled.label`
   position: relative;
@@ -21,17 +22,17 @@ export const ToggleInputContainer = styled.label`
     margin-right: 0.5rem;
     width: 2.5rem;
     height: 1rem;
-    background: #f0f0f0;
+    background: ${theme.colors.lightGrey.rgb()};
     border-radius: 4rem;
-    border: 1px solid #e0e0e0;
+    border: 1px solid ${theme.colors.darkGrey.rgb()};
     position: relative;
 
     .indicator {
       transition: all 0.2s;
       height: 1.25rem;
       width: 1.25rem;
-      background: #f0f0f0;
-      border: 1px solid #e0e0e0;
+      background: ${theme.colors.lightColor1.rgb()};
+      border: 1px solid ${theme.colors.darkGrey.rgb()};
       left: 25%;
       top: 50%;
       transform: translate(-50%, -50%);
@@ -41,10 +42,10 @@ export const ToggleInputContainer = styled.label`
   }
 
   input:checked + .indicator-container {
-    background: rgba(0, 0, 255, 0.1);
+    background: ${theme.colors.primary.opacity(0.05)};
 
     .indicator {
-      background: blue;
+      background: ${theme.colors.primary.rgb()};
       left: 75%;
     }
   }

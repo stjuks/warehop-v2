@@ -1,10 +1,8 @@
-import React, { useContext, useState, useEffect } from 'react';
-import AriaSelect from '@ui/components/Form/AriaSelect';
+import React, { useContext, useState } from 'react';
 import { SelectInput } from '@ui/components/FormNew';
-import PartnerStoreContext from '@ui/stores/PartnerStore';
 import { observer } from 'mobx-react-lite';
 import { FiPlusCircle } from 'react-icons/fi';
-import { PartnerType, Partner } from '@shared/types';
+import { PartnerType } from '@shared/types';
 import UIStoreContext from '@ui/stores/UIStore';
 import routes from '@ui/util/routes';
 import { FETCH_PARTNERS } from '@ui/api/partner';

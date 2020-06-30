@@ -3,10 +3,8 @@ import { observer } from 'mobx-react-lite';
 import { useGraphQLQuery } from '@ui/util/hooks';
 import { FETCH_WAREHOUSES } from '@ui/api/warehouse';
 import { SelectInput } from '@ui/components/FormNew';
-// import AriaSelect from '@ui/components/Form/AriaSelect';
 import { FiPlusCircle } from 'react-icons/fi';
 import UIStoreContext from '@ui/stores/UIStore';
-import WarehouseForm from '@ui/components/WarehouseForm';
 import { Warehouse } from '@shared/types';
 import Warehouses from '@ui/components/Warehouses';
 
@@ -29,7 +27,6 @@ const WarehouseSelect: React.FC<WarehouseSelectProps> = observer(
         label={label}
         className={className}
         optionLabel={warehouse => warehouse.name}
-        // optionMap={{ label: (warehouse) => warehouse.name }}
         options={options || warehouses || []}
         searchProps={{
           placeholder: 'Otsi ladu',

@@ -1,12 +1,13 @@
 import React from 'react';
-import styled from '@ui/util/styled';
+import styled from 'styled-components';
+import theme from '@ui/styles/theme';
 import { FiRefreshCw } from 'react-icons/fi';
 
 const StyledButton = styled.button`
   padding: 1rem;
   width: 100%;
   outline: none;
-  font-family: 'Roboto';
+  font-family: ${theme.fonts.primary};
   display: flex;
   font-weight: 500;
   align-items: center;
@@ -17,17 +18,15 @@ const StyledButton = styled.button`
     stroke-width: 3;
   }
 
-  ${({ theme }) => `
-    background: ${theme.colors.lightColor1};
-    color: ${theme.colors.lightText};
-    border: solid ${theme.colors.midGrey};
-    border-width: 1px 0 0 0;
+  background: ${theme.colors.lightColor1.rgb()};
+  color: ${theme.colors.lightText.rgb()};
+  border: solid ${theme.colors.midGrey.rgb()};
+  border-width: 1px 0 0 0;
 
-    :hover,
-    :focus {
-        color: ${theme.colors.primary};
-    }
-  `}
+  :hover,
+  :focus {
+    color: ${theme.colors.primary.rgb()};
+  }
 `;
 
 interface LoadMoreButtonProps {

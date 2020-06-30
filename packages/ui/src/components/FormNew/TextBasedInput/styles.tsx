@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import theme from '@ui/styles/theme';
 
 interface TextBasedInputContainerProps {
   actionLength?: number;
@@ -61,7 +62,7 @@ export const TextBasedInputContainer = styled.div<TextBasedInputContainerProps>`
       height: 1px;
       bottom: 0px;
       width: 100%;
-      background: ${({ theme }) => `${theme.colors.lightText}`};
+      background: ${theme.colors.lightText.rgb()};
       position: absolute;
 
       :after {
@@ -72,7 +73,7 @@ export const TextBasedInputContainer = styled.div<TextBasedInputContainerProps>`
         position: absolute;
         bottom: 1px;
         height: 1px;
-        background: ${({ theme }) => `${theme.colors.primary}`};
+        background: ${theme.colors.primary.rgb()};
         width: 100%;
       }
     }
@@ -80,7 +81,7 @@ export const TextBasedInputContainer = styled.div<TextBasedInputContainerProps>`
     .input-field {
       ${({ actionLength }) =>
         actionLength ? `padding-right: calc(${actionLength} * 1.75rem);` : ''}
-      color: ${({ theme }) => `${theme.colors.text}`};
+      color: ${theme.colors.text.rgb()};
       height: 100%;
       padding-left: 0.5rem;
       flex: 1;
@@ -105,7 +106,7 @@ export const TextBasedInputContainer = styled.div<TextBasedInputContainerProps>`
       pointer-events: none;
       
       * {
-        color: ${({ theme }) => `${theme.colors.lightText}`};
+        color: ${theme.colors.lightText.rgb()};
       }
 
       .indicator {

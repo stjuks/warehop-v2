@@ -1,7 +1,7 @@
-import styled from '@ui/util/styled';
-import { createGlobalStyle } from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
+import theme from '@ui/styles/theme';
 
-interface IContentContainerProps {
+interface ContentContainerProps {
   padded?: boolean;
 }
 
@@ -11,10 +11,10 @@ export const GlobalStyle = createGlobalStyle`
   html {
     font-size: 16px;
     -webkit-overflow-scrolling: touch;
-    color: ${({ theme }) => `${theme.colors.text}`};
+    color: ${theme.colors.text.rgb()};
 
     * {
-      font-family: 'Roboto', sans-serif;
+      font-family: ${theme.fonts.primary};
     }
   }
 
@@ -38,7 +38,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    background: ${({ theme }) => `${theme.colors.lightGrey}`};
+    background: ${theme.colors.lightGrey.rgb()};
     position: absolute;
     margin: 0;
     height: 100vh;
@@ -82,14 +82,14 @@ export const GlobalStyle = createGlobalStyle`
   .flatpickr-months .flatpickr-month,
   .flatpickr-current-month .flatpickr-monthDropdown-months,
   .flatpickr-current-month input.cur-year {
-    background: ${({ theme }) => `${theme.colors.primary}`};
-    color: ${({ theme }) => `${theme.colors.white}`};
+    background: ${theme.colors.primary.rgb()};
+    color: ${theme.colors.white.rgb()};
   }
 
   .flatpickr-current-month 
   .flatpickr-monthDropdown-months 
   .flatpickr-monthDropdown-month {
-    background: ${({ theme }) => `${theme.colors.white}`};
+    background: ${theme.colors.white.rgb()};
   }
 
   .flatpickr-day.selected, 
@@ -110,7 +110,7 @@ export const GlobalStyle = createGlobalStyle`
   .flatpickr-day.selected.nextMonthDay, 
   .flatpickr-day.startRange.nextMonthDay, 
   .flatpickr-day.endRange.nextMonthDay {
-    background: ${({ theme }) => `${theme.colors.primary}`};
+    background: ${theme.colors.primary.rgb()};
     border: none;
   }
 
@@ -134,19 +134,16 @@ export const GlobalStyle = createGlobalStyle`
 `;
 
 export const AppContainer = styled.div`
-  ${({ theme }) => `
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        color: ${theme.colors.text};
-    `}
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: ${theme.colors.text.rgb()};
 `;
 
-export const ContentContainer = styled.div<IContentContainerProps>`
-  ${({ theme, padded }) => `
-        background: ${theme.colors.lightGrey};
-        flex: 1;
-        overflow: auto;
-        ${padded ? 'padding: 1rem;' : ''}
-    `}
+export const ContentContainer = styled.div<ContentContainerProps>`
+  background: ${theme.colors.lightGrey.rgb()};
+  flex: 1;
+  overflow: auto;
+
+  ${({ padded }) => (padded ? 'padding: 1rem;' : '')}
 `;

@@ -3,5 +3,5 @@
   "prettier.printWidth": 100,
   "prettier.tabWidth": 2,
   "editor.tabSize": 2,
-  "prettier.trailingComma": "all"
+  "prettier.trailingComma": "none"
 }

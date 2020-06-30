@@ -1,5 +1,4 @@
-import styled from '@ui/util/styled';
-import { css } from 'styled-components';
+import styled, { css } from 'styled-components';
 
 interface RowProps {
   flex?: number[];
@@ -24,8 +23,8 @@ const createFlex = (flex: number[]) => {
 
 export const Row = styled.div<RowProps>`
   ${({ flex = [1] }) => `
-        display: flex;
-        flex-wrap: wrap;
-        ${createFlex(flex)}
-    `}
+    display: flex;
+    flex-wrap: wrap;
+    ${createFlex(flex)}
+  `}
 `;

@@ -1,11 +1,13 @@
-import styled from '@ui/util/styled';
+import styled from 'styled-components';
+import theme from '@ui/styles/theme';
+
 import { Wrapper, Button, Menu, MenuItem } from 'react-aria-menubutton';
 
 export const DropdownMenuWrapper = styled(Wrapper).attrs({
-  className: 'dropdown-wrapper'
+  className: 'dropdown-wrapper',
 })`
   position: relative;
-  font-family: 'Roboto', sans-serif;
+  font-family: ${theme.fonts.primary};
 `;
 
 export const MenuButton = styled(Button).attrs({ className: 'dropdown-btn' })`
@@ -14,7 +16,7 @@ export const MenuButton = styled(Button).attrs({ className: 'dropdown-btn' })`
 `;
 
 export const DropdownMenuContainer = styled(Menu).attrs({
-  className: 'dropdown-menu'
+  className: 'dropdown-menu',
 })`
   position: absolute;
   top: calc(100% + 0.25rem);
@@ -23,16 +25,14 @@ export const DropdownMenuContainer = styled(Menu).attrs({
   font-size: 1rem;
   padding: 0.375rem 0;
 
-  ${({ theme }) => `
-    background: ${theme.colors.lightGrey};
-    box-shadow: ${theme.lightShadow};
-    border: 1px solid ${theme.colors.midGrey};
-    border-radius: 0.25rem;
-  `}
+  background: ${theme.colors.lightGrey.rgb()};
+  box-shadow: ${theme.shadows.lightShadow};
+  border: 1px solid ${theme.colors.midGrey.rgb()};
+  border-radius: 0.25rem;
 `;
 
 export const DropdownMenuItem = styled(MenuItem).attrs({
-  className: 'dropdown-menu-item'
+  className: 'dropdown-menu-item',
 })`
   .react-icon {
     margin-right: 0.375rem;
@@ -47,12 +47,10 @@ export const DropdownMenuItem = styled(MenuItem).attrs({
   display: flex;
   align-items: center;
 
-  ${({ theme }) => `
-    color: ${theme.colors.lightText};
+  color: ${theme.colors.lightText.rgb()};
 
-    :hover,
-    :focus {
-      color: ${theme.colors.primary};
-    }
-  `}
+  :hover,
+  :focus {
+    color: ${theme.colors.primary.rgb()};
+  }
 `;

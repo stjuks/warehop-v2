@@ -1,5 +1,5 @@
-import styled from '@ui/util/styled';
-import { keyframes } from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+import theme from '@ui/styles/theme';
 
 interface ContentContainerStyledProps {
   padded?: boolean;
@@ -37,28 +37,25 @@ export const ContentContainerStyled = styled.div<ContentContainerStyledProps>`
     opacity: 0;
   }
 
-  ${({ theme, padded }) => `
-    background: ${theme.colors.lightGrey};
-    flex: 1;
-    overflow: auto;
-    
-    :after {
-      background: ${theme.colors.lightGrey};
-    }
-    
-    ${padded ? 'padding: 1rem;' : ''}
-  `}
+  background: ${theme.colors.lightGrey.rgb()};
+  flex: 1;
+  overflow: auto;
+
+  :after {
+    background: ${theme.colors.lightGrey.rgb()};
+  }
+
+  ${({ padded }) => (padded ? 'padding: 1rem;' : '')}
 `;
 
 export const LoadingOverlay = styled.div`
-  ${({ theme }) => `
-    background: ${theme.colors.lightGrey.opacity(0.75)};
+  background: ${theme.colors.lightGrey.opacity(0.75)};
 
-    .loading-message {
-        font-family: 'Roboto', sans-serif;
-        color: ${theme.colors.lightText};
-    }
-  `}
+  .loading-message {
+    font-family: ${theme.fonts.primary};
+    color: ${theme.colors.lightText.rgb()};
+  }
+
   position: absolute;
   top: 0;
   bottom: 0;

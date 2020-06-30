@@ -1,7 +1,7 @@
-import styled from '@ui/util/styled';
+import styled from 'styled-components';
 import { ProductItemContainer } from '../ProductItem/styles';
 
-export const PartnerListItemContainer = styled(ProductItemContainer)`
+export const PartnerListItemContainer = styled(ProductItemContainer as any)`
   .col-1 {
     .row-2 {
       display: block;

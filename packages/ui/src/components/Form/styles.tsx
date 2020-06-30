@@ -1,4 +1,5 @@
-import styled from '@ui/util/styled';
+import styled from 'styled-components';
+import theme from '@ui/styles/theme';
 
 interface InputFieldProps {
   isFocused?: boolean;
@@ -11,30 +12,28 @@ export const FormContainer = styled.form`
 `;
 
 export const FormTitle = styled.h3`
-  ${({ theme }) => `
-    display: flex;
-    align-items: center;
-    padding: 0.25rem 1rem;
-    text-transform: uppercase;
-    color: ${theme.colors.text};
-    font-family: 'Red Hat Display', sans-serif;
-    font-size: 0.875rem;
-    font-weight: 500;
-    margin: 1rem 0 1.5rem 0.25rem;
-    position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0.25rem 1rem;
+  text-transform: uppercase;
+  color: ${theme.colors.text.rgb()};
+  font-family: ${theme.fonts.secondary};
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 1rem 0 1.5rem 0.25rem;
+  position: relative;
 
-    :before {
-      content: '';
-      position: absolute;
-      background: ${theme.colors.primary};
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      border-top-right-radius: 2px;
-      border-bottom-right-radius: 2px;
-    }
-  `}
+  :before {
+    content: '';
+    position: absolute;
+    background: ${theme.colors.primary.rgb()};
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+  }
 `;
 
 export const InputContainer = styled.div.attrs(({ className }) => ({
@@ -46,88 +45,79 @@ export const InputContainer = styled.div.attrs(({ className }) => ({
 `;
 
 export const LabelContainer = styled.label.attrs({ className: 'label' })`
-  ${({ theme }) => `
-    height: 1.5rem;
-    display: flex;
-    align-items: center;
-    font-size: 0.875rem;
-    color: ${theme.colors.text};
-  `}
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  color: ${theme.colors.text.rgb()};
 `;
 
 export const InputFieldContainer = styled.div<InputFieldProps>`
-  ${({ isFocused, theme, hasValue, isMounted = true }) => `
-        min-height: 2.5rem;
-        display: flex;
-        box-shadow: 0 1px 0 ${theme.colors.lightText};
-        position: relative;
-        background: ${isFocused ? theme.colors.midGrey : 'transparent'};
-        border-top-left-radius: 0.25rem;
-        border-top-right-radius: 0.25rem;
-        transition: background .2s;
+  min-height: 2.5rem;
+  display: flex;
+  box-shadow: 0 1px 0 ${theme.colors.lightText.rgb()};
+  position: relative;
+  background: ${({ isFocused }) => (isFocused ? theme.colors.midGrey.rgb() : 'transparent')};
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+  transition: background 0.2s;
 
+  .flatpickr-input[readonly] {
+    cursor: default;
+  }
 
-        .flatpickr-input[readonly] {
-            cursor: default;
-        }
+  :after {
+    content: '';
+    height: 1px;
+    width: ${({ isFocused, hasValue }) => (isFocused || hasValue ? '100%' : '0%')};
+    transition: ${({ isMounted }) => (isMounted ? 'width .2s' : 'none')};
+    position: absolute;
+    background: ${theme.colors.primary.rgb()};
+    bottom: 0;
+  }
 
-        :after {
-            content: '';
-            height: 1px;
-            width: ${isFocused || hasValue ? '100%' : '0%'};
-            transition: ${isMounted ? 'width .2s' : 'none'};
-            position: absolute;
-            background: ${theme.colors.primary};
-            bottom: 0;
-        }
+  .value-container,
+  .select-btn,
+  .react-autosuggest__container {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+  }
 
-        .value-container,
-        .select-btn,
-        .react-autosuggest__container {
-            flex: 1;
-            width: 100%;
-            height: 100%;
-        }
+  .value-container {
+    padding-left: 0.5rem;
+    display: flex;
+    align-items: center;
+    outline: none;
+    background: transparent;
+    font-size: 1rem;
+    font-weight: 500;
+    min-height: 2.5rem;
+    min-width: 0;
+  }
 
-        .value-container {
-            padding-left: 0.5rem;
-            display: flex;
-            align-items: center;
-            outline: none;
-            background: transparent;
-            font-size: 1rem;
-            font-weight: 500;
-            min-height: 2.5rem;
-            min-width: 0;
-        }
-
-        textarea {
-            padding-top: 0.75rem;
-            font-family: 'Roboto', sans-serif;
-        }
-    `}
+  textarea {
+    padding-top: 0.75rem;
+    font-family: ${theme.fonts.primary};
+  }
 `;
 
 export const ErrorMessageContainer = styled.div.attrs({
   className: 'error-message',
 })`
-  ${({ theme }) => `
-        height: 1.5rem;
-        color: ${theme.colors.danger};
-        font-size: 0.75rem;
-        display: flex;
-        align-items: center;
-    `}
+  height: 1.5rem;
+  color: ${theme.colors.danger.rgb()};
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
 `;
 
 export const InputIndicatorContainer = styled.div.attrs({
   className: 'input-indicator',
 })`
-  ${({ theme }) => `
-        color: ${theme.colors.lightText};
-        min-width: 2rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    `}
+  color: ${theme.colors.lightText.rgb()};
+  min-width: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;

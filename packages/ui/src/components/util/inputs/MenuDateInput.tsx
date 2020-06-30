@@ -1,9 +1,9 @@
-import styled from '@ui/util/styled';
+import styled from 'styled-components';
+import theme from '@ui/styles/theme';
+
 import DateInput from '@ui/components/FormNew/DateInput';
 import { styledInput } from './MenuSelect';
 
 export default styled(DateInput)`
-  ${({ theme }) => `
-    ${styledInput.general(theme)}
-  `}
+  ${styledInput.general()}
 `;

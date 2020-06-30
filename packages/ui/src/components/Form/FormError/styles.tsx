@@ -1,4 +1,5 @@
-import styled from '@ui/util/styled';
+import styled from 'styled-components';
+import theme from '@ui/styles/theme';
 
 export const FormErrorContainer = styled.div`
   font-size: 0.875rem;
@@ -13,9 +14,7 @@ export const FormErrorContainer = styled.div`
     margin: 0;
   }
 
-  ${({ theme }) => `
-        border: 1px solid ${theme.colors.danger.opacity(0.4)};
-        background: ${theme.colors.danger.opacity(0.025)};
-        color: ${theme.colors.danger};
-    `}
+  border: 1px solid ${theme.colors.danger.opacity(0.4)};
+  background: ${theme.colors.danger.opacity(0.025)};
+  color: ${theme.colors.danger.rgb()};
 `;

@@ -1,5 +1,6 @@
 import React from 'react';
-import styled from '@ui/util/styled';
+import styled from 'styled-components';
+import theme from '@ui/styles/theme';
 
 interface DropdownMenuProps {
   items: {
@@ -30,57 +31,53 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({ items, menuProps, me
 );
 
 export const MenuContainer = styled.div.attrs({ className: 'select-menu' })`
-  ${({ theme }) => `
-        position: absolute;
-        top: calc(100% + 0.25rem);
-        width: 100%;
-        border: 1px solid ${theme.colors.midGrey};
-        background: ${theme.colors.lightGrey};
-        box-shadow: ${theme.blueShadow};
-        padding: 0.25rem;
-        box-sizing: border-box;
-        border-radius: 0.25rem;
-        z-index: 99;
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  width: 100%;
+  border: 1px solid ${theme.colors.midGrey.rgb()};
+  background: ${theme.colors.lightGrey.rgb()};
+  box-shadow: ${theme.shadows.blueShadow};
+  padding: 0.25rem;
+  box-sizing: border-box;
+  border-radius: 0.25rem;
+  z-index: 99;
 
-        ul {
-            margin: 0;
-            list-style-type: none;
-            padding: 0;
-        }
+  ul {
+    margin: 0;
+    list-style-type: none;
+    padding: 0;
+  }
 
-        .react-autosuggest__suggestion--highlighted .select-menu-item {
-            box-shadow: ${theme.lightShadow};
-            background: ${theme.colors.midGrey};
-        }
+  .react-autosuggest__suggestion--highlighted .select-menu-item {
+    box-shadow: ${theme.shadows.lightShadow};
+    background: ${theme.colors.midGrey.rgb()};
+  }
 
-        &.react-autosuggest__suggestions-container {
-            display: none;
-        }
+  &.react-autosuggest__suggestions-container {
+    display: none;
+  }
 
-        &.react-autosuggest__suggestions-container--open {
-            display: block;
-        }
-    `}
+  &.react-autosuggest__suggestions-container--open {
+    display: block;
+  }
 `;
 
 export const MenuItemContainer = styled.div.attrs({
-  className: 'select-menu-item'
+  className: 'select-menu-item',
 })`
-  ${({ theme }) => `
-        padding: 0.5rem 1rem;
-        font-weight: 500;
-        outline: none;
-        border-radius: 0.25rem;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  outline: none;
+  border-radius: 0.25rem;
 
-        :focus,
-        :hover {
-            background: ${theme.colors.midGrey};
-        }
+  :focus,
+  :hover {
+    background: ${theme.colors.midGrey.rgb()};
+  }
 
-        &[data-active="true"] {
-            background: ${theme.colors.primary};
-            box-shadow: none;
-            color: ${theme.colors.lightGrey};
-        }
-    `}
+  &[data-active='true'] {
+    background: ${theme.colors.primary.rgb()};
+    box-shadow: none;
+    color: ${theme.colors.lightGrey.rgb()};
+  }
 `;

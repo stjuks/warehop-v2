@@ -1,13 +1,12 @@
-import styled from '@ui/util/styled';
+import styled from 'styled-components';
+import theme from '@ui/styles/theme';
 import { ContentContainer } from '../App/styles';
 
-export const ProductsContainer = styled(ContentContainer)``;
+export const ProductsContainer = styled(ContentContainer as any)``;
 
 export const SortingContainer = styled.div`
-  ${({ theme }) => `
-        background: ${theme.colors.lightGrey};
-        border-bottom: 1px solid ${theme.colors.lightColor1};
-    `}
+  background: ${theme.colors.lightGrey.rgb()};
+  border-bottom: 1px solid ${theme.colors.lightColor1.rgb()};
   display: flex;
   flex-direction: column;
   padding: 0.5rem 0.75rem;
@@ -20,15 +19,13 @@ export const SortingContainer = styled.div`
 `;
 
 export const NewItemButtonContainer = styled.button`
-  ${({ theme }) => `
-        display: flex;
-        color: ${theme.colors.primary};
-        text-shadow: ${theme.blueShadow};
-        cursor: pointer;
+  display: flex;
+  color: ${theme.colors.primary.rgb()};
+  text-shadow: ${theme.shadows.blueShadow};
+  cursor: pointer;
 
-        && svg {
-            stroke-width: 2;
-            font-size: 2rem;
-        }
-    `}
+  && svg {
+    stroke-width: 2;
+    font-size: 2rem;
+  }
 `;
