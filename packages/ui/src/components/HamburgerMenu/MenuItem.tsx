@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { MenuItemContainer } from './styles';
+import UIStoreContext from '@ui/stores/UIStore';
 
 export interface IMenuItemProps {
   label: string;

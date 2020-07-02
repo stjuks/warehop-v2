@@ -5,7 +5,7 @@ import AriaSelect from '../../Form/AriaSelect';
 import SelectInput from '@ui/components/FormNew/SelectInput';
 
 export const styledInput = {
-  general: () => `
+  general: () => css`
     .input-container {
       border-radius: 1.25rem;
       border: 1px solid ${theme.colors.midGrey.rgb()};
@@ -22,12 +22,12 @@ export const styledInput = {
     }
 
     .input-container:hover,
-    .input-container[data-focused="true"] {
+    .input-container[data-focused='true'] {
       background: ${theme.colors.white.rgb()};
       border: 1px solid ${theme.colors.darkGrey.rgb()};
     }
 
-    .input-container[data-focused="true"] {
+    .input-container[data-focused='true'] {
       .actions {
         background: transparent;
       }
@@ -65,7 +65,12 @@ export default styled(SelectInput)`
     border: 1px solid ${theme.colors.darkGrey.rgb()};
   }
 
-  .input-container[data-focused='true'] {
+  .input-container[data-focused=true],
+  &[data-opened=true] .input-container {
+    border-color: ${theme.colors.darkGrey.rgb()};
+  }
+
+  &[data-opened=true] .input-container {
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
   }

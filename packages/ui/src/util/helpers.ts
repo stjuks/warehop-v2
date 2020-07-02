@@ -118,7 +118,7 @@ export const editObjectProperty = (obj: any, path: string, editValue: any) => {
         prev[curr] = {};
       }
 
-      if (index + 1 === properties.length && editValue !== undefined) {
+      if (index + 1 === properties.length) {
         prev[curr] = editValue;
       }
 
@@ -143,7 +143,7 @@ export const loadFromLocalStorage = (key: string) => {
       try {
         const _rootItem = JSON.parse(rootItem);
 
-        return getObjectProperty(_rootItem, keys.join('.'));
+        return keys.length === 0 ? _rootItem : getObjectProperty(_rootItem, keys.join('.'));
       } catch (err) {
         return rootItem;
       }
@@ -184,6 +184,20 @@ export const saveToLocalStorage = (key: string, value: any) => {
   }
 
   return true;
+};
+
+export const removeFromLocalStorage = (key: string) => {
+  const keys = key.split('.');
+  const root = keys.shift();
+
+  if (root) {
+    const rootItem = loadFromLocalStorage(root);
+
+    if (typeof rootItem === 'object') {
+      const editedItem = editObjectProperty(rootItem, keys.join('.'), undefined);
+      saveToLocalStorage(root, editedItem);
+    }
+  }
 };
 
 export const omitKey = (o: any, key: string) => {

@@ -11,7 +11,7 @@ import { FormikFileInput } from './FileInput';
 import { FormikSelectInput } from './SelectInput';
 import { FormikTextInput } from './TextInput';
 import { FormikToggleInput } from './ToggleInput';
-import { loadFromLocalStorage, saveToLocalStorage } from '@ui/util/helpers';
+import { loadFromLocalStorage, saveToLocalStorage, removeFromLocalStorage } from '@ui/util/helpers';
 import { FormikTextareaInput } from './TextareaInput';
 
 interface FormProps {
@@ -104,6 +104,11 @@ const InnerForm: React.FC<{
 
   const { values, setValues } = formik;
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    formik.handleSubmit(e);
+    removeFromLocalStorage(`formData.${id}`);
+  };
+
   useEffect(() => {
     if (onChange) onChange(changedField, formik);
   }, [changedField]);
@@ -116,6 +121,8 @@ const InnerForm: React.FC<{
 
       if (loadedValues) setValues(loadedValues);
     }
+
+    return () => window.removeEventListener('beforeunload', cleanFormStorage);
   }, []);
 
   useDebounce(
@@ -127,7 +134,7 @@ const InnerForm: React.FC<{
   );
 
   return (
-    <form onSubmit={formik.handleSubmit} id={id} style={{ padding: '0.75rem' }}>
+    <form onSubmit={handleSubmit} id={id} style={{ padding: '0.75rem' }}>
       {children}
     </form>
   );

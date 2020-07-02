@@ -39,6 +39,7 @@ const SelectInput: React.FC<SelectInputProps> = ({
   className,
 }) => {
   const [isFocused, setFocused] = useState(false);
+  const [isOpened, setOpened] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchOptions, setSearchOptions] = useState<any[] | undefined>(undefined);
 
@@ -74,10 +75,10 @@ const SelectInput: React.FC<SelectInputProps> = ({
 
   const handleMenuToggle = ({ isOpen }) => {
     if (!isOpen) {
+      setOpened(false);
       setSearchQuery('');
-      setFocused(false);
     } else {
-      setFocused(true);
+      setOpened(true);
     }
   };
 
@@ -113,6 +114,7 @@ const SelectInput: React.FC<SelectInputProps> = ({
     <SelectInputContainer
       onSelection={handleSelection}
       onMenuToggle={handleMenuToggle}
+      data-opened={isOpened}
       className={className}
     >
       <TextBasedInput
@@ -122,7 +124,7 @@ const SelectInput: React.FC<SelectInputProps> = ({
         error={error}
         inputComponent={
           <SelectMenuWrapper className="select-btn-wrapper">
-            <Button className="select-menu-btn input-field">
+            <Button className="select-menu-btn input-field" {...handleFocus}>
               {displayValue}
             </Button>
             <Menu className="select-menu" data-has-action={!!menuAction}>

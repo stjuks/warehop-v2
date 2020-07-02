@@ -47,16 +47,12 @@ const ProductForm: React.FC<ProductFormProps> = observer(props => {
 
   const isEditing = props.location.state !== undefined;
 
-  const initialValues: ProductItem = props.location.state || {
+  const initialValues: any = props.location.state || {
     type: 'PRODUCT',
     code: '',
     name: '',
     partner: undefined,
-    unit: {
-      id: 1,
-      name: 'Tükk',
-      abbreviation: 'tk'
-    },
+    unit: undefined,
     purchasePrice: '',
     retailPrice: '',
     description: '',
@@ -110,9 +106,6 @@ const ProductForm: React.FC<ProductFormProps> = observer(props => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
           persist={!isEditing}
-          /* onError={() =>
-            animateScroll.scrollToTop({ containerId: 'content-container', duration: 200 })
-          } */
         >
           <FormError />
           <FormFields />

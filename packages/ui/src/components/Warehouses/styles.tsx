@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import theme from '@ui/styles/theme';
 
 export const WarehouseItemContainer = styled.div`
-  padding: 0 1rem;
+  padding: 0 1.5rem;
   color: ${theme.colors.text.rgb()};
   font-weight: 500;
   height: 3.5rem;

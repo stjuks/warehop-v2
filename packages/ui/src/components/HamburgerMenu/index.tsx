@@ -9,7 +9,7 @@ import {
   FaPiggyBank,
   FaHandshake,
   FaChartLine,
-  FaCog
+  FaCog,
 } from 'react-icons/fa';
 
 import { MenuContainer, BackgroundContainer } from './styles';
@@ -27,48 +27,48 @@ const HamburgerMenu = observer(() => {
       {
         label: 'Kaubad',
         icon: <FaBoxes />,
-        to: routes.products
+        to: routes.products,
       },
       {
         label: 'Ost',
         icon: <FaShoppingBasket />,
-        to: routes.purchases
+        to: routes.purchases,
       },
       {
         label: 'Müük',
         icon: <FaMoneyCheck />,
-        to: routes.sales
-      }
+        to: routes.sales,
+      },
     ],
     [
       {
         label: 'Kulud',
         icon: <FaWallet />,
-        to: routes.expenses
+        to: routes.expenses,
       },
       {
         label: 'Tulud',
         icon: <FaPiggyBank />,
-        to: routes.incomes
+        to: routes.incomes,
       },
       {
         label: 'Partnerid',
         icon: <FaHandshake />,
-        to: routes.partners
+        to: routes.partners,
       },
       {
         label: 'Statistika',
         icon: <FaChartLine />,
-        to: routes.statistics
-      }
+        to: routes.statistics,
+      },
     ],
     [
       {
         label: 'Sätted',
         icon: <FaCog />,
-        to: routes.settings
-      }
-    ]
+        to: routes.settings,
+      },
+    ],
   ];
 
   return (
@@ -82,9 +82,9 @@ const HamburgerMenu = observer(() => {
       <CSSTransition in={uiStore.isHamburgerMenuOpen} timeout={0} classNames={menuTransitionName}>
         <MenuContainer transitionName={menuTransitionName}>
           {menuItems.map((subItems, i) => {
-            return (
+            return uiStore.isHamburgerMenuOpen ? (
               <React.Fragment key={i}>
-                {subItems.map(item => (
+                {subItems.map((item) => (
                   <MenuItem
                     {...item}
                     key={item.label}
@@ -93,7 +93,7 @@ const HamburgerMenu = observer(() => {
                 ))}
                 {i + 1 !== menuItems.length && <div className="divider" />}
               </React.Fragment>
-            );
+            ) : null;
           })}
         </MenuContainer>
       </CSSTransition>
