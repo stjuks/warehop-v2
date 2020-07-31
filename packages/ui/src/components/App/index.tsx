@@ -25,6 +25,7 @@ import TransactionDetails from '../TransactionDetails';
 import Modal from '../Modal';
 import Transactions from '../Transactions';
 import InvoiceForm from '../InvoiceForm';
+import Toasts from '../Toasts';
 
 const App = () => {
   return (
@@ -71,8 +72,9 @@ const App = () => {
               />
             </Switch>
             <Footer />
-            <HamburgerMenu />
             <Modal />
+            <Toasts />
+            <HamburgerMenu />
             <GlobalStyle />
           </AppContainer>
         </Router>

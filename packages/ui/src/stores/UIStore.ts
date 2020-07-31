@@ -2,8 +2,8 @@ import React from 'react';
 import { observable, action } from 'mobx';
 import { createContext } from 'react';
 import history from '@ui/util/history';
-import routes from '@ui/util/routes';
 import { LocationDescriptorObject } from 'history';
+import { ToastProps } from '@ui/components/Toast';
 
 interface HistoryOptions extends LocationDescriptorObject {
   replace?: boolean;
@@ -15,6 +15,7 @@ class UIStore {
   @observable isLoading: boolean = false;
   @observable loadingMessage?: string = undefined;
   @observable modals: React.ReactElement[] = [];
+  @observable toasts: ToastProps[] = [];
 
   @observable routeHistory: string[] = [];
 
@@ -73,6 +74,17 @@ class UIStore {
   @action
   closeModal = () => {
     this.modals.pop();
+  };
+
+  @action
+  addToast = (toastProps: ToastProps) => {
+    this.toasts.push(toastProps);
+  };
+
+  @action
+  closeToast = (index: number) => {
+    this.toasts.splice(index, 1);
+    console.log(this.toasts);
   };
 }
 

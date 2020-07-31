@@ -14,6 +14,7 @@ export const SelectMenuWrapper = styled.div`
 
   .input-field {
     height: 100%;
+    white-space: nowrap;
   }
 
   .select-menu-btn {

@@ -11,7 +11,7 @@ import {
   ProductFormContainer,
   AddWarehouseButton,
   TrashButtonContainer,
-  WarehouseFieldsContainer
+  WarehouseFieldsContainer,
 } from './styles';
 
 import Header from '../Header';
@@ -40,7 +40,7 @@ interface ProductFormProps {
   };
 }
 
-const ProductForm: React.FC<ProductFormProps> = observer(props => {
+const ProductForm: React.FC<ProductFormProps> = observer((props) => {
   const uiStore = useContext(UIStoreContext);
   const [addItem] = useGraphQLMutation(ADD_ITEM);
   const [editItem] = useGraphQLMutation(EDIT_ITEM);
@@ -56,18 +56,12 @@ const ProductForm: React.FC<ProductFormProps> = observer(props => {
     purchasePrice: '',
     retailPrice: '',
     description: '',
-    warehouseQuantity: []
+    warehouseQuantity: [],
   };
 
   const validationSchema = yup.object({
-    code: yup
-      .string()
-      .nullable()
-      .required('Palun sisesta kauba kood.'),
-    name: yup
-      .string()
-      .nullable()
-      .required('Palun sisesta kauba nimetus.'),
+    code: yup.string().nullable().required('Palun sisesta kauba kood.'),
+    name: yup.string().nullable().required('Palun sisesta kauba nimetus.'),
     purchasePrice: yup.string().nullable(),
     retailPrice: yup.string().nullable(),
     description: yup.string().nullable(),
@@ -77,9 +71,9 @@ const ProductForm: React.FC<ProductFormProps> = observer(props => {
         quantity: yup
           .number()
           .typeError('Kogus peab olema number.')
-          .required('Palun sisesta kogus.')
+          .required('Palun sisesta kogus.'),
       })
-    )
+    ),
   });
 
   const handleSubmit = async (item: ProductItem) => {
@@ -91,6 +85,7 @@ const ProductForm: React.FC<ProductFormProps> = observer(props => {
       if (isEditing) await editItem({ id, item: itemInput });
       else await addItem(itemInput);
       uiStore.goBack(routes.products);
+      uiStore.addToast({ type: 'success', text: 'Kaup edukalt lisatud.' });
     } catch (err) {
       throw err;
     }
@@ -111,7 +106,7 @@ const ProductForm: React.FC<ProductFormProps> = observer(props => {
           <FormFields />
           <FormTitle>Laoseis</FormTitle>
           <FieldArray name="warehouseQuantity">
-            {arrayHelpers => <WarehouseFields arrayHelpers={arrayHelpers} />}
+            {(arrayHelpers) => <WarehouseFields arrayHelpers={arrayHelpers} />}
           </FieldArray>
         </Form>
       </ProductFormContainer>
@@ -142,13 +137,13 @@ const FormFields: React.FC = () => {
 
 const filterChosenWarehouseOptions = (formValues: WarehouseQuantity[], warehouses: Warehouse[]) => {
   return warehouses.filter(
-    wh => formValues.map(whVal => Number(whVal.id)).indexOf(Number(wh.id)) === -1
+    (wh) => formValues.map((whVal) => Number(whVal.id)).indexOf(Number(wh.id)) === -1
   );
 };
 
 const findFirstNonChosenWarehouse = (formValues: WarehouseQuantity[], warehouses: Warehouse[]) => {
   return warehouses.find(
-    wh => formValues.map(whVal => Number(whVal.id)).indexOf(Number(wh.id)) === -1
+    (wh) => formValues.map((whVal) => Number(whVal.id)).indexOf(Number(wh.id)) === -1
   );
 };
 
